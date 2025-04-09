@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Resources</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            padding-top: 30px;
+            margin-bottom: 20px;
+            color: #2196f3;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .box {
+            background-color: #1e1e1e;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            border-color: #2196f3;
+            transition: all 0.3s ease;
+        }
+        
+        .box h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+        
+        .box p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .box a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 15px;
+            color: white;
+            background: linear-gradient(45deg, #2196f3, #7e57c2);
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        
+        .box a:hover {
+            opacity: 0.9;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: #b0b0b0;
+            text-decoration: none;
+            padding: 8px 16px;
+            background-color: #1e1e1e;
+            border-radius: 5px;
+        }
+        
+        .back-button:hover {
+            color: #2196f3;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                justify-content: center;
+            }
+            
+            .box {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">← Back to Home</a>
+    
+    <!-- Header -->
+    <h1>Documentation Resources</h1>
+    
+    <!-- Documentation Boxes Container -->
+    <div class="container">
+        <!-- Python -->
+        <div class="box">
+            <h2>Python</h2>
+            <p>The official Python documentation provides comprehensive details on Python's syntax, libraries, and modules, along with tutorials and reference materials.</p>
+            <a href="https://docs.python.org/3/" target="_blank">Visit</a>
+        </div>
+        
+        <!-- C -->
+        <div class="box">
+            <h2>C</h2>
+            <p>The official C documentation includes detailed references and standards for the C programming language, including syntax, functions, and libraries.</p>
+            <a href="https://devdocs.io/c/" target="_blank">Visit</a>
+        </div>
+        
+        <!-- Java -->
+        <div class="box">
+            <h2>Java</h2>
+            <p>The official Java documentation offers detailed information on Java's APIs, libraries, and language features, including comprehensive guides and reference materials.</p>
+            <a href="https://docs.oracle.com/en/java/" target="_blank">Visit</a>
+        </div>
+        
+        <!-- C++ -->
+        <div class="box">
+            <h2>C++</h2>
+            <p>The official C++ documentation provides in-depth information on C++ syntax, standard libraries, and features, including detailed reference materials and guides.</p>
+            <a href="https://cplusplus.com/" target="_blank">Visit</a>
+        </div>
+        
+        <!-- Kotlin -->
+        <div class="box">
+            <h2>Kotlin</h2>
+            <p>The official Kotlin documentation includes detailed information on Kotlin syntax, libraries, and features, with tutorials and reference materials.</p>
+            <a href="https://kotlinlang.org/docs/home.html" target="_blank">Visit</a>
+        </div>
+        
+        <!-- Data Structures -->
+        <div class="box">
+            <h2>Data Structures</h2>
+            <p>Oracle documentation on data structures primarily focuses on Oracle Database features, including tables, indexes, and data types.</p>
+            <a href="https://docs.oracle.com/cd/E24705_01/doc.91/e24245/data_structures.htm" target="_blank">Visit</a>
+        </div>
+        
+        <!-- JavaScript -->
+        <div class="box">
+            <h2>JavaScript</h2>
+            <p>The official JavaScript documentation provides detailed information on JavaScript syntax, standard libraries, and features, including tutorials and reference materials.</p>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">Visit</a>
+        </div>
+        
+        <!-- ReactJS -->
+        <div class="box">
+            <h2>ReactJS</h2>
+            <p>The official React documentation offers comprehensive guides, tutorials, and API references for building user interfaces with React. It covers topics such as components, hooks, and state management.</p>
+            <a href="https://legacy.reactjs.org/docs/getting-started.html" target="_blank">Visit</a>
+        </div>
+        
+        <!-- Node.js -->
+        <div class="box">
+            <h2>Node.js</h2>
+            <p>The official Node.js documentation provides detailed information on Node.js APIs, modules, and core concepts, including guides and reference materials for server-side JavaScript development.</p>
+            <a href="https://nodejs.org/docs/latest/api/" target="_blank">Visit</a>
+        </div>
+        
+        <!-- MySQL -->
+        <div class="box">
+            <h2>MySQL</h2>
+            <p>The official MySQL documentation provides in-depth information on MySQL features, including database management, SQL syntax, and server configuration.</p>
+            <a href="https://dev.mysql.com/doc/" target="_blank">Visit</a>
+        </div>
+    </div>
+</body>
+</html>

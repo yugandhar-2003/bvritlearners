@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Useful Platforms - BVRIT Learning Platform</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-surface-2: #2d2d2d;
+            --dark-border: #333333;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --primary-color: #2196f3;
+            --primary-dark: #1976d2;
+            --primary-light: #64b5f6;
+            --accent-color: #7e57c2;
+            --accent-dark: #5e35b1;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            overflow: hidden;
+        }
+
+        .bg-animation .square {
+            position: absolute;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            animation: float 25s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100%) rotate(0deg);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-1000%) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Category Navigation */
+        .category-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .category-button {
+            background-color: var(--dark-surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius-md);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-button:hover {
+            background-color: var(--dark-surface-2);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .category-button.active {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto 3rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Platform Card */
+        .platform-card {
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--dark-border);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .platform-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--dark-border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .platform-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .platform-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .platform-card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .platform-description {
+            color: var(--text-secondary);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .platform-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            margin-top: auto;
+            align-self: flex-start;
+        }
+
+        .platform-link:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-fast);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            color: var(--primary-color);
+            background-color: var(--dark-surface-2);
+            transform: translateX(-5px);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .category-button {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .category-nav {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0 1.5rem;
+            }
+
+            .category-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1 class="logo">Useful Platforms</h1>
+        <p class="tagline">Create accounts on these essential platforms to boost your career</p>
+    </header>
+
+    <!-- Category Navigation -->
+    <div class="category-nav" id="categoryNav">
+        <button class="category-button active" data-category="all">
+            <i class="fas fa-globe"></i> All Platforms
+        </button>
+        <button class="category-button" data-category="coding">
+            <i class="fas fa-code"></i> Coding Practice
+        </button>
+        <button class="category-button" data-category="career">
+            <i class="fas fa-briefcase"></i> Career Development
+        </button>
+        <button class="category-button" data-category="learning">
+            <i class="fas fa-graduation-cap"></i> Learning Resources
+        </button>
+        <button class="category-button" data-category="aptitude">
+            <i class="fas fa-brain"></i> Aptitude Practice
+        </button>
+    </div>
+
+    <!-- Platform Cards Container -->
+    <div class="container" id="platformContainer"></div>
+
+    <script>
+        // Platform data with categories
+        const platforms = [
+            {
+                name: 'GitHub',
+                url: 'https://github.com',
+                description: 'A platform for version control and collaboration. It lets you and others work together on projects from anywhere.',
+                category: 'coding',
+                icon: 'fab fa-github'
+            },
+            {
+                name: 'LinkedIn',
+                url: 'https://www.linkedin.com/',
+                description: 'A professional networking platform that helps you connect with colleagues, potential employers, and industry experts. Essential for job searching and career advancement.',
+                category: 'career',
+                icon: 'fab fa-linkedin'
+            },
+            {
+                name: 'LeetCode',
+                url: 'https://leetcode.com',
+                description: 'Offers a wide variety of coding problems ranging from easy to hard, focusing on data structures and algorithms. Great for technical interview preparation.',
+                category: 'coding',
+                icon: 'fas fa-code'
+            },
+            {
+                name: 'HackerRank',
+                url: 'https://www.hackerrank.com',
+                description: 'Provides coding challenges across multiple domains such as algorithms, data structures, artificial intelligence, and more. Popular for interview preparation.',
+                category: 'coding',
+                icon: 'fas fa-laptop-code'
+            },
+            {
+                name: 'Codewars',
+                url: 'https://www.codewars.com/',
+                description: 'Gamifies coding practice by allowing users to solve challenges (called "katas") and earn ranks. Supports many programming languages and makes learning fun.',
+                category: 'coding',
+                icon: 'fas fa-terminal'
+            },
+            {
+                name: 'PrepInsta',
+                url: 'https://prepinsta.com',
+                description: 'A comprehensive platform that provides placement preparation, interview experiences, and study materials for various companies and exams.',
+                category: 'career',
+                icon: 'fas fa-briefcase'
+            },
+            {
+                name: 'GeeksforGeeks',
+                url: 'https://www.geeksforgeeks.org/',
+                description: 'Offers extensive resources for coding, algorithms, and technical interviews, helping users strengthen their programming skills with tutorials and practice problems.',
+                category: 'learning',
+                icon: 'fas fa-laptop'
+            },
+            {
+                name: 'Coding Ninjas',
+                url: 'https://www.codingninjas.com/',
+                description: 'Provides comprehensive boot camps and courses in programming, data science, and machine learning with hands-on projects and expert video tutorials.',
+                category: 'learning',
+                icon: 'fas fa-user-ninja'
+            },
+            {
+                name: 'PrepBytes',
+                url: 'https://www.prepbytes.com/',
+                description: 'Focuses on competitive programming with personalized coding programs, intensive courses, and interview preparation resources for tech careers.',
+                category: 'coding',
+                icon: 'fas fa-code-branch'
+            },
+            {
+                name: 'IndiaBIX',
+                url: 'https://www.indiabix.com/',
+                description: 'Features a vast collection of practice questions in quantitative aptitude, logical reasoning, and verbal ability for competitive exam preparation.',
+                category: 'aptitude',
+                icon: 'fas fa-calculator'
+            },
+            {
+                name: 'Sawaal',
+                url: 'https://www.sawaal.com/',
+                description: 'Offers numerous practice questions in quantitative aptitude, logical reasoning, and verbal ability to help you prepare for competitive exams and interviews.',
+                category: 'aptitude',
+                icon: 'fas fa-question-circle'
+            },
+            {
+                name: 'Testbook',
+                url: 'https://testbook.com/',
+                description: 'Provides a wide range of practice questions and mock tests for quantitative aptitude and reasoning, tailored for various competitive exams and job assessments.',
+                category: 'aptitude',
+                icon: 'fas fa-book'
+            },
+            {
+                name: 'Coursera',
+                url: 'https://www.coursera.org/',
+                description: 'Offers courses from top universities and companies worldwide, covering a wide range of subjects including computer science, business, and data science.',
+                category: 'learning',
+                icon: 'fas fa-graduation-cap'
+            },
+            {
+                name: 'Udemy',
+                url: 'https://www.udemy.com/',
+                description: 'A global marketplace for learning and teaching online where students can master new skills and achieve their goals by learning from an extensive library of courses.',
+                category: 'learning',
+                icon: 'fas fa-chalkboard-teacher'
+            },
+            {
+                name: 'Stack Overflow',
+                url: 'https://stackoverflow.com/',
+                description: 'A community-based platform where developers can ask questions, share knowledge, and build their careers. Essential for solving programming problems.',
+                category: 'coding',
+                icon: 'fab fa-stack-overflow'
+            },
+            {
+                name: 'Indeed',
+                url: 'https://www.indeed.com/',
+                description: 'One of the world\'s largest job sites, helping job seekers find employment opportunities across various industries and locations.',
+                category: 'career',
+                icon: 'fas fa-search'
+            },
+            {
+                name: 'Glassdoor',
+                url: 'https://www.glassdoor.com/',
+                description: 'Provides insights into companies with employee reviews, salary information, and interview questions to help you make informed career decisions.',
+                category: 'career',
+                icon: 'fas fa-door-open'
+            },
+            {
+                name: 'edX',
+                url: 'https://www.edx.org/',
+                description: 'Offers high-quality courses from the world\'s best universities and institutions to help learners gain new skills and advance their careers.',
+                category: 'learning',
+                icon: 'fas fa-university'
+            },
+            {
+                name: 'Kaggle',
+                url: 'https://www.kaggle.com/',
+                description: 'A platform for data science competitions, datasets, and community collaboration that helps you improve your skills and solve real-world problems.',
+                category: 'coding',
+                icon: 'fas fa-database'
+            },
+            {
+                name: 'Naukri',
+                url: 'https://www.naukri.com/',
+                description: 'India\'s leading job portal that connects job seekers with employers across various industries and locations.',
+                category: 'career',
+                icon: 'fas fa-user-tie'
+            }
+        ];
+
+        // Initialize background animation
+        function createBackgroundAnimation() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            const squareCount = 15;
+
+            for (let i = 0; i < squareCount; i++) {
+                const square = document.createElement('div');
+                square.classList.add('square');
+
+                // Random size between 30px and 100px
+                const size = Math.random() * 70 + 30;
+                square.style.width = `${size}px`;
+                square.style.height = `${size}px`;
+
+                // Random position
+                square.style.left = `${Math.random() * 100}%`;
+
+                // Random delay
+                square.style.animationDelay = `${Math.random() * 15}s`;
+
+                // Random duration between 15s and 30s
+                square.style.animationDuration = `${Math.random() * 15 + 15}s`;
+
+                bgAnimation.appendChild(square);
+            }
+        }
+
+        // Create platform cards
+        function createPlatformCards(category = 'all') {
+            const platformContainer = document.getElementById('platformContainer');
+            platformContainer.innerHTML = '';
+
+            // Filter platforms by category if needed
+            const filteredPlatforms = category === 'all'
+                ? platforms
+                : platforms.filter(platform => platform.category === category);
+
+            // Create cards for each platform
+            filteredPlatforms.forEach((platform, index) => {
+                const card = document.createElement('div');
+                card.className = 'platform-card';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+
+                const cardContent = `
+                    <div class="platform-card-header">
+                        <div class="platform-icon">
+                            <i class="${platform.icon}"></i>
+                        </div>
+                        <h2 class="platform-title">${platform.name}</h2>
+                    </div>
+                    <div class="platform-card-body">
+                        <p class="platform-description">${platform.description}</p>
+                        <a href="${platform.url}" class="platform-link" target="_blank">
+                            <span>Visit Platform</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                `;
+
+                card.innerHTML = cardContent;
+                platformContainer.appendChild(card);
+
+                // Animate card appearance with staggered delay
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                    card.style.transition = 'all 0.5s ease';
+                }, 50 * index);
+            });
+
+            // Show message if no platforms in category
+            if (filteredPlatforms.length === 0) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.style.gridColumn = '1 / -1';
+                emptyMessage.style.textAlign = 'center';
+                emptyMessage.style.padding = '3rem';
+                emptyMessage.style.color = 'var(--text-secondary)';
+                emptyMessage.innerHTML = `
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>No platforms found in this category</h3>
+                    <p>Please try another category</p>
+                `;
+                platformContainer.appendChild(emptyMessage);
+            }
+        }
+
+        // Handle category navigation
+        function setupCategoryNavigation() {
+            const categoryButtons = document.querySelectorAll('.category-button');
+
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active state
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // Filter platforms by category
+                    const category = button.dataset.category;
+                    createPlatformCards(category);
+                });
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create background animation
+            createBackgroundAnimation();
+
+            // Create initial platform cards
+            createPlatformCards();
+
+            // Setup category navigation
+            setupCategoryNavigation();
+
+            // Animate elements
+            if (typeof gsap !== 'undefined') {
+                gsap.from('.logo', {opacity: 0, y: -30, duration: 0.8, ease: 'power3.out'});
+                gsap.from('.tagline', {opacity: 0, y: -20, duration: 0.8, delay: 0.2, ease: 'power3.out'});
+                gsap.from('.category-nav', {opacity: 0, y: 20, duration: 0.8, delay: 0.3, ease: 'power3.out'});
+                gsap.from('.category-button', {opacity: 0, y: 10, duration: 0.5, stagger: 0.1, delay: 0.4, ease: 'power3.out'});
+                gsap.from('.back-button', {opacity: 0, x: -20, duration: 0.8, delay: 0.5, ease: 'power3.out'});
+            }
+        });
+    </script>
+</body>
+</html>

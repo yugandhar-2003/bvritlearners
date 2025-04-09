@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <title>Course Structure - BVRIT</title> <!-- Updated Title -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap CSS (Keep if script.js needs it) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" />
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="styles.css" />
+
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../index.html" class="back-button"> <!-- Adjust path if needed -->
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Course Structure & Syllabus</h1>
+    </header>
+
+    <div class="container main-content-container"> <!-- Added class -->
+      <!-- Filter Section -->
+      <div class="filter-section">
+          <h2 class="filter-title">
+              <i class="fas fa-filter"></i> Filter by Regulation
+          </h2>
+          <!-- Renamed id and added filter-buttons class -->
+          <div class="filter-buttons" id="course-filter-buttons">
+              <!-- Added filter-button class to buttons -->
+              <button class="filter-button btn mb-2 me-1 active" data-filter="all">Show all</button>
+              <button class="filter-button btn mb-2 mx-1" data-filter="paper2018">R22 (2022-2023)</button>
+              <button class="filter-button btn mb-2 mx-1" data-filter="paper2019">R20A (2021-2022)</button>
+              <button class="filter-button btn mb-2 mx-1" data-filter="paper2020">R20 (2020-2021)</button>
+          </div>
+      </div>
+
+
+      <!-- Filterable Cards Section - Using Bootstrap Row for compatibility with potential JS -->
+      <!-- Renamed id -->
+      <div class="row gy-4 cards-grid" id="course-cards">  <!-- Added cards-grid class and gy-4 for spacing -->
+
+        <!-- R22 cards (Original data-name="paper2018") -->
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018"> <!-- Added card-item class -->
+          <div class="card h-100"> <!-- Added h-100 for equal height -->
+            <a href="https://drive.google.com/file/d/1LettJKQ2diZxmtp_4mVC8fcxCVIw7dHC/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CSE-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/16E8Hhs7YVCepIeWskX89JSs93fRX-OJ0/view?usp=share_link" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                   <h6 class="card-title">AIDS-R22</h6>
+                   <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1lbYSy4zuzP8Wq-92IiS1ErlPR_z7Xqle/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">BME-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1bZmmhuqHz44zaf_Rv4cOvW5H_6F0_TkL/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CHEMICAL-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/101U8K7Dw1PDRb6JFJ6b13dtznkqd0CQJ/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                     <h6 class="card-title">CIVIL-R22</h6>
+                     <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                 </div>
+             </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1bTLSen9SEE4fr9cJCOkmwVBwlFWOlScT/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">CSE(AIML)-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1ExP0Kdhaso1fXCrsn9jvCopJy3FgYKxk/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CSE(DS)-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1RrMga26J6q2q8Q_KAG8WM3V4JrgG9Yac/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                   <h6 class="card-title">CSBS-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1Pi-Fs7-_OabhAxFvTwYgx0bVJdjVDHRO/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">EEE-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1uyQOb4cKCoEetXKFo7sWcBCIEHG05OGE/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">ECE-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1JiKKPkc2scm7D_Tbabucq-U0tgVrVpJc/view?usp=drive_link" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">IT-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1cylZIc1mQ0Z-GJ-WP3nJD2D36Ua6nRu4/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">MECHANICAL-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+             </a>
+            </div>
+          </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2018">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1tkbbGQO0nQMvmREiMb61_2z71fEObqEi/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">PHARMACEUTICAL-R22</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+
+
+        <!-- R20A cards (Original data-name="paper2019") -->
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/10E_Q-6xAkMicx-8FYk4eBJl699ImMBzR/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CSE-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1VYMpJxS4XuGwOhCduvY-pQqq0u5KjmKW/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">AIDS-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+             </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1a0fBk_GiyVj3fFVm4mpX4s6UgHr-e2VA/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">BME-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1HEBkUkuz4IcuNDW_jRvSWbxRDuajvNHs/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">CHEMICAL-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+             </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1IIs2-HKqPE1wgKY7tR8vh2Fwx54Z6K_x/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CIVIL-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1Nk102TLahTWb5Kc3xiQET10zQy9ppAxM/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">CSE(AIML)-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1G2x8c1iCp9YWU9Yl0TwSt9DrMQamNfCV/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                   <h6 class="card-title">CSE(DS)-R20A</h6>
+                   <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1RrMga26J6q2q8Q_KAG8WM3V4JrgG9Yac/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                   <h6 class="card-title">CSBS-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1O5ybylnN5mGK17EjH3tMdZ2MC5XeUZj5/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">EEE-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+             </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1P7iToMP5sZb7TnyrDLP0eoTP_ztFSL2-/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                   <h6 class="card-title">ECE-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1_zbdWkyMwB0cocQlvdVNcNe6yxgWXL9I/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">IT-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1H_kJTr0wLIWvOKNGzR1MBAcdCPmjbmtR/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">MECHANICAL-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+             </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2019">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1q9tGKPyL1bABUSCjKfMlrb9yYeaRnzzY/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">PHARMACEUTICAL-R20A</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+             </a>
+            </div>
+          </div>
+
+
+        <!-- R20 cards (Original data-name="paper2020") -->
+        <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1tMwGEePd4YXjwjalG62Evj_ACawQ32uC/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CSE-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1BDh4irnQyIlUrGi98Zo7CU8kUlMAn5q9/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">BME-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1zRMHwvwoQirmE2ybj1CS-i-NBtyplzL7/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CHEMICAL-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1Cz1cTi1XLk1MIkESeR0mLoxawQJUgVxL/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CIVIL-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1VnQGyfmm7adWa-_8fncWbK5kxTui_aTa/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CSE(AIML)-R20</h6> <!-- Note: Link might be R20A? Verify source -->
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1d743vOMBbQ8_KrCRWTlGlwnl3s9mnnTC/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">CSE(DS)-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1RrMga26J6q2q8Q_KAG8WM3V4JrgG9Yac/view" target="_blank" class="card-link-wrapper">
+                 <div class="card-body">
+                    <h6 class="card-title">CSBS-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/11z-9jIKufNPIWeDohewPsoh9E2GtGu-t/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">EEE-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+             </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/13c_yzGHeMEhlAae9p8PN7NDjSdgrMGJG/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                   <h6 class="card-title">ECE-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/1Npv9q-CzxTUifXt5v7tx4ailtYmaSFKR/view?usp=drive_link" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">IT-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/10QM-Zt-7vD0FS_8ZwcyiaSYYbnEqJfuP/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                    <h6 class="card-title">MECHANICAL-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 card-item" data-name="paper2020">
+            <div class="card h-100">
+             <a href="https://drive.google.com/file/d/17iNzzBog7-fEz7m0qh9wK6Tx_CJ_3-g7/view" target="_blank" class="card-link-wrapper">
+                <div class="card-body">
+                   <h6 class="card-title">PHARMACEUTICAL-R20</h6>
+                    <span class="view-syllabus-text"><i class="fas fa-external-link-alt"></i> View Syllabus</span>
+                </div>
+            </a>
+            </div>
+          </div>
+
+      </div> <!-- /.row -->
+    </div> <!-- /.container -->
+
+    <!-- Keep Bootstrap JS if script.js depends on it -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Your Filter Script -->
+    <script src="script.js" defer></script>
+</body>
+</html>

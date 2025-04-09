@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Quizzes</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern Quiz Styles -->
+    <link rel="stylesheet" href="../modern-quiz-styles.css">
+    <!-- Custom Styles (if needed) -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../../tutorials/index.html" class="back-button" style="position: absolute; top: 20px; left: 20px; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+        <i class="fas fa-arrow-left"></i> Back to Tutorials
+    </a>
+
+    <div class="container">
+        <h1>Python Quizzes</h1>
+        <p style="margin-bottom: 2rem;">Test your Python knowledge with these interactive quizzes</p>
+
+        <div class="quiz-grid">
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Basic Operations in Python</h3>
+                    <p class="quiz-card-description">Test your knowledge of Python's basic operations including arithmetic, comparison, and logical operators.</p>
+                    <a href="..\python\python operations\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Control Statements in Python</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions about Python's control flow statements including if-else, loops, and more.</p>
+                    <a href="..\python\Python control statements\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Variables and Data Types in Python</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of Python variables, data types, and type conversion techniques.</p>
+                    <a href="..\python\pythonvar\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Functions in Python</h3>
+                    <p class="quiz-card-description">Test your knowledge of Python functions, parameters, return values, and scope concepts.</p>
+                    <a href="..\python\python function\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Modules and Packages in Python</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions about Python modules, packages, imports, and the standard library.</p>
+                    <a href="..\python\python modules\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">File Handling in Python</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of Python file operations, reading, writing, and working with different file formats.</p>
+                    <a href="..\python\python file handling\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Error and Exception Handling in Python</h3>
+                    <p class="quiz-card-description">Test your knowledge of Python's exception handling mechanisms, try-except blocks, and custom exceptions.</p>
+                    <a href="..\python\python exception\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add a script to handle the active tab state -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make the first quiz card active by default
+            const firstCard = document.querySelector('.quiz-card');
+            if (firstCard) {
+                firstCard.classList.add('active');
+            }
+
+            // Add hover effects
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    cards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

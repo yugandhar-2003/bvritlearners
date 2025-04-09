@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- *** UPDATED TITLE *** -->
+    <title>Java Arrays & ArrayLists Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* --- CSS styles (using same base colors as previous example) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Keeping Gradient: Blue/Cyan Theme for Java */
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        body::before { /* Subtle pattern */
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+        /* Dark Mode Gradient: Darker Blue/Teal */
+        html.dark body { background: linear-gradient(135deg, #1e40af 0%, #155e75 100%); }
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        html.dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; }
+
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; }
+        /* Hover/Selected Color: Blue Theme */
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(59, 130, 246, 0.5); } /* Blue hover */
+        .option.selected { border-color: #3b82f6; background: linear-gradient(to right, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15)); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); } /* Blue selected */
+        .option.correct { background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important; border-color: #10b981 !important; color: #047857 !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: #ef4444 !important; color: #b91c1c !important; cursor: default; }
+        .option.disabled { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
+        .option .feedback-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; opacity: 0; transition: opacity 0.3s ease; }
+        .option .feedback-icon .icon-correct { color: #10b981; }
+        .option .feedback-icon .icon-incorrect { color: #ef4444; }
+        .option.correct .feedback-icon .icon-correct, .option.incorrect .feedback-icon .icon-incorrect { opacity: 1; }
+        .option.correct:not(.selected) .feedback-icon .icon-correct { opacity: 1; } /* Show correct icon even if not selected (when user was wrong) */
+
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark .progress-container { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+        /* Progress Bar Gradient: Blue/Cyan */
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #60a5fa, #22d3ee); box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1; }
+        /* Score Circle Gradients: Green/Yellow/Red (Keep standard for performance indication) */
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        /* Primary Button Gradient: Blue/Cyan */
+        .btn-primary { background: linear-gradient(to right, #3b82f6, #0ea5e9); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #2563eb, #0284c7); }
+        .btn-secondary { background-color: #e5e7eb; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover:not(:disabled) { background-color: #d1d5db; }
+        /* Submit Button Gradient: Green/Teal (Keep for contrast) */
+        .btn-submit { background: linear-gradient(to right, #10b981, #2dd4bf); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #059669, #14b8a6); }
+
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #60a5fa; } /* Blue border */
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+        html.dark .explanation { background-color: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-left-color: #93c5fd; } /* Lighter blue border dark */
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #272822; border: 1px solid #444; font-size: 0.9em; }
+        html.dark .code-snippet-container { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .java-logo img, .java-logo svg { animation: pulseLogo 2.5s infinite ease-in-out; }
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3)); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; }
+
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #facc15 !important; border-color: #facc15 !important; }
+        html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        /* Focus Color: Blue Theme */
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #2563eb; outline-offset: 2px; } /* Blue focus */
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #60a5fa; } /* Lighter Blue focus dark */
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #6b7280; }
+        html.dark .history-date { color: #9ca3af; }
+
+        /* Text Color Adjustments for Blue Theme */
+        html.dark .text-blue-900 { color: #bfdbfe; }
+        html.dark .text-blue-800 { color: #93c5fd; }
+        html.dark .text-blue-700 { color: #60a5fa; }
+        html.dark .text-blue-600 { color: #3b82f6; }
+        html.dark .text-blue-500 { color: #0ea5e9; } /* Adjusted for Cyan part */
+        html.dark .text-blue-300 { color: #bfdbfe; }
+        html.dark .text-blue-200 { color: #dbeafe; }
+        html.dark .text-indigo-900 { color: #bfdbfe; } /* Re-using blue shades */
+        html.dark .text-indigo-800 { color: #93c5fd; }
+        html.dark .text-indigo-700 { color: #60a5fa; }
+        html.dark .text-indigo-500 { color: #0ea5e9; }
+        html.dark .text-indigo-300 { color: #bfdbfe; }
+        html.dark .text-red-600 { color: #f87171; }
+        html.dark .text-red-400 { color: #fb7185; }
+
+        /* Background/Border Adjustments for Blue Theme */
+        html.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1); }
+        html.dark .bg-blue-900\/30 { background-color: rgba(30, 64, 175, 0.3); }
+        html.dark .border-blue-100 { border-color: #93c5fd; }
+        html.dark .border-blue-700\/50 { border-color: rgba(29, 78, 216, 0.5); }
+        html.dark .bg-indigo-50 { background-color: rgba(59, 130, 246, 0.1); } /* Use blue */
+        html.dark .bg-indigo-900\/30 { background-color: rgba(30, 64, 175, 0.3); } /* Use blue */
+        html.dark .border-indigo-100 { border-color: #93c5fd; } /* Use blue */
+        html.dark .border-indigo-700\/50 { border-color: rgba(29, 78, 216, 0.5); } /* Use blue */
+
+
+        /* General Dark Mode Text/BG */
+        html.dark .text-gray-500 { color: #9ca3af; }
+        html.dark .text-gray-600 { color: #cbd5e1; }
+        html.dark .text-gray-700 { color: #e2e8f0; }
+        html.dark .text-gray-800 { color: #f1f5f9; }
+        html.dark .bg-gray-200 { background-color: #4b5563;}
+        html.dark .text-green-700 { color: #a7f3d0; }
+        html.dark .text-green-500 { color: #34d399; }
+        html.dark .text-red-700 { color: #fda4af; }
+        html.dark .text-red-500 { color: #f87171; }
+        html.dark .bg-green-50 { background-color: rgba(16, 185, 129, 0.1); }
+        html.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.1); }
+        html.dark .bg-green-100 { background-color: rgba(5, 150, 105, 0.2); }
+        html.dark .dark\:ring-green-600 { --tw-ring-color: #10b981; }
+        html.dark .dark\:bg-green-800\/50 { background-color: rgba(6, 95, 70, 0.5); }
+        html.dark .dark\:bg-green-900\/30 { background-color: rgba(6, 78, 59, 0.3); }
+        html.dark .dark\:bg-red-900\/30 { background-color: rgba(159, 18, 57, 0.3); }
+        html.dark .dark\:text-gray-100 { color: #f1f5f9; }
+        html.dark .dark\:text-gray-300 { color: #d1d5db; }
+        html.dark .dark\:text-gray-400 { color: #9ca3af; }
+        html.dark .dark\:border-gray-700 { border-color: #374151; }
+        html.dark .dark\:text-indigo-300 { color: #93c5fd; } /* Explanation title */
+        html.dark .option.selected { color: #e0f2fe; } /* Adjusted for blue theme */
+        html.dark .option.correct { color: #d1fae5 !important; }
+        html.dark .option.incorrect { color: #fee2e2 !important; }
+        html.dark .option.incorrect.selected { color: #fee2e2 !important; }
+
+        /* Review specific styling */
+        .review-item ul li.font-semibold.text-green-700 { /* Correct answer */ }
+        .review-item ul li.font-semibold.text-red-700 { /* User's wrong answer */ }
+        .review-item ul li.ring-1 { /* User's correct answer */ }
+        .review-item ul li .fa-check { /* Correct icon */ }
+        .review-item ul li .fa-times { /* Incorrect icon */ }
+
+        /* --- End of CSS --- */
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- *** UPDATED HEADER *** -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Java Arrays & ArrayLists Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your knowledge of fixed-size arrays and dynamic ArrayLists</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- *** UPDATED START SCREEN TEXT *** -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-blue-900 dark:text-blue-200">Ready for Java Collections?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">This quiz covers declaring, initializing, accessing, and manipulating Java Arrays and ArrayLists. Let's test your skills!</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- *** UPDATED HISTORY TITLE *** -->
+                <h3 class="text-lg font-semibold mb-3 text-blue-800 dark:text-blue-300">Recent Attempts (Arrays & ArrayLists)</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <!-- Status Badges -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/X</span> <!-- X will be set dynamically -->
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-gray-100 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4"></div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;"></div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden"><i class="fas fa-arrow-left mr-2"></i> Prev</button>
+                <div id="nav-spacer" class="flex-grow"></div> <!-- Spacer -->
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i></button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>Submit <i class="fas fa-check-circle ml-2"></i></button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+             <canvas id="confetti-canvas"></canvas>
+             <!-- *** UPDATED RESULTS TITLE *** -->
+             <h2 class="text-3xl font-bold mb-6 text-center text-blue-900 dark:text-blue-200">Quiz Results: Arrays & ArrayLists</h2>
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-blue-700 dark:text-blue-300">0/X</span> <!-- X will be set dynamically -->
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Stats -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <!-- *** UPDATED Performance Message Area *** -->
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center"><i class="fas fa-search mr-2"></i> Review Answers</button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center"><i class="fas fa-redo mr-2"></i> Restart Quiz</button>
+            </div>
+             <!-- *** UPDATED Share Button *** -->
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm"><i class="fas fa-share-alt mr-2"></i> Share Score</button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- *** UPDATED REVIEW TITLE *** -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-blue-900 dark:text-blue-200">Review Answers: Arrays & ArrayLists</h2>
+                <div id="review-questions" class="space-y-8"></div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center"><i class="fas fa-arrow-left mr-2"></i> Back to Results</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script> <!-- Explicitly load Java -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // --- *** UPDATED quizData for Java Arrays & ArrayLists *** ---
+        const quizData = [
+            {
+                question: "Which statement correctly declares and initializes an integer array named `scores` with a size of 10?",
+                options: [
+                    "int scores = new int(10);",
+                    "int[] scores = new int[10];",
+                    "int scores[10];",
+                    "Array scores = new Array<int>(10);"
+                ],
+                correctAnswer: 1,
+                explanation: "In Java, arrays are declared with `type[] name` or `type name[]`. Initialization uses `new type[size]`."
+            },
+            {
+                question: "How do you access the third element in a Java array named `data`?",
+                options: [
+                    "data(3)",
+                    "data.get(2)",
+                    "data[2]",
+                    "data[3]"
+                ],
+                correctAnswer: 2,
+                explanation: "Java arrays use zero-based indexing. The third element is at index 2, accessed using square brackets `[]`."
+            },
+            {
+                question: "What is the value of `myArray.length` for the following array?",
+                code: "String[] myArray = {\"Java\", \"Python\", \"C++\"};",
+                options: [
+                    "2",
+                    "3",
+                    "4",
+                    "Throws an error"
+                ],
+                correctAnswer: 1,
+                explanation: "The `.length` property of an array returns the total number of elements it contains, which is 3 in this case."
+            },
+            {
+                question: "Which of the following is a key difference between an Array and an `ArrayList` in Java?",
+                options: [
+                    "Arrays can store primitives, ArrayLists cannot.", // ArrayList<int> not allowed directly
+                    "ArrayLists have a fixed size, Arrays are dynamic.",
+                    "Arrays have a fixed size, ArrayLists can dynamically resize.",
+                    "Arrays use methods like `.add()`, ArrayLists use `[]`."
+                ],
+                correctAnswer: 2, // ArrayList can store wrappers like Integer, not primitives directly.
+                explanation: "Arrays have a fixed size defined at creation. `ArrayList` is part of the Collections Framework and can grow or shrink its size dynamically. While `ArrayList` cannot store primitive types directly, it uses wrapper classes (e.g., `Integer` for `int`)."
+            },
+            {
+                question: "Which method is used to add an element to the end of an `ArrayList` named `list`?",
+                options: [
+                    "list.insert(element)",
+                    "list.append(element)",
+                    "list.put(element)",
+                    "list.add(element)"
+                ],
+                correctAnswer: 3,
+                explanation: "The `add(E element)` method appends the specified element to the end of the `ArrayList`."
+            },
+            {
+                question: "How do you get the number of elements currently stored in an `ArrayList` named `names`?",
+                options: [
+                    "names.length",
+                    "names.count()",
+                    "names.size()",
+                    "names.capacity()"
+                ],
+                correctAnswer: 2,
+                explanation: "The `size()` method returns the number of elements in the `ArrayList` (similar to `length` for arrays)."
+            },
+            {
+                question: "What is the output of the following code snippet?",
+                code: "int[] nums = {10, 20, 30};\nSystem.out.println(nums[1]);",
+                options: [
+                    "10",
+                    "20",
+                    "30",
+                    "ArrayIndexOutOfBoundsException"
+                ],
+                correctAnswer: 1,
+                explanation: "Arrays are zero-indexed. `nums[1]` refers to the second element in the array, which is 20."
+            },
+            {
+                question: "Which import statement is required to use the `ArrayList` class?",
+                options: [
+                    "import java.array;",
+                    "import java.collection;",
+                    "import java.util.ArrayList;",
+                    "import java.util.*;"
+                ],
+                correctAnswer: 2, // Technically 3 also works, but 2 is more specific and generally preferred
+                explanation: "The `ArrayList` class resides in the `java.util` package. You need to import it specifically (`java.util.ArrayList`) or import the entire package (`java.util.*`). Importing specifically is often considered better practice."
+            },
+            {
+                question: "How do you retrieve the element at index 5 from an `ArrayList` named `items`?",
+                options: [
+                    "items[5]",
+                    "items.get(5)",
+                    "items.retrieve(5)",
+                    "items.element(5)"
+                ],
+                correctAnswer: 1,
+                explanation: "The `get(int index)` method is used to retrieve the element at a specific index in an `ArrayList`."
+            },
+            {
+                question: "What happens if you try to access an index outside the bounds of an array (e.g., `arr[arr.length]`)?",
+                options: [
+                    "It returns `null`.",
+                    "It returns `0` or `false`.",
+                    "It throws an `ArrayIndexOutOfBoundsException`.",
+                    "It wraps around to the beginning of the array."
+                ],
+                correctAnswer: 2,
+                explanation: "Accessing an array index less than 0 or greater than or equal to its length results in an `ArrayIndexOutOfBoundsException` at runtime."
+            },
+             {
+                question: "Which loop is generally preferred for simply iterating through all elements of an array or `ArrayList` when you don't need the index?",
+                options: [
+                    "Standard `for` loop (with index)",
+                    "Enhanced `for` loop (for-each loop)",
+                    "`while` loop",
+                    "`do-while` loop"
+                ],
+                correctAnswer: 1,
+                explanation: "The enhanced for loop (`for (Type element : collection)`) provides a concise syntax for iterating over elements without needing to manage an index variable, making the code often more readable for simple traversals."
+            },
+             {
+                question: "How do you change the element at index 2 in an `ArrayList` named `data` to the value \"updated\"?",
+                options: [
+                    "data[2] = \"updated\";", // This syntax is for arrays
+                    "data.update(2, \"updated\");",
+                    "data.set(2, \"updated\");",
+                    "data.replace(2, \"updated\");"
+                ],
+                correctAnswer: 2,
+                explanation: "The `set(int index, E element)` method replaces the element at the specified position in the list with the specified element. Array syntax `[]=` is not used for `ArrayList` modification."
+            }
+        ];
+
+
+        const TIME_LIMIT_SECONDS = 10 * 60; // 10 minutes for this quiz
+        const MAX_HISTORY_ITEMS = 5;
+        // --- *** UPDATED *** localStorage Keys for Arrays & ArrayLists Quiz ---
+        const QUIZ_STATE_KEY = 'javaQuizState_ArraysLists'; // Unique key for this quiz's state
+        const SCORE_HISTORY_KEY = 'javaQuizScoreHistory_ArraysLists'; // Unique key for this quiz's history
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = []; // Will be initialized based on quizData length
+        let questionsOrder = []; // Will be initialized based on quizData length
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history for *this* quiz
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+            // Re-highlight code snippets if Prism is loaded and DOM is ready
+            if (typeof Prism !== 'undefined' && document.readyState === 'complete') {
+                 // Use a small delay to ensure styles are applied
+                 setTimeout(() => Prism.highlightAll(), 50);
+            }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // Uses the specific QUIZ_STATE_KEY for Arrays & ArrayLists
+        function saveState() {
+             if (!quizActive) return;
+             try {
+                 const state = {
+                     currentQuestionIndex,
+                     userAnswers,
+                     timeElapsed,
+                     questionsOrder,
+                     quizActive: true,
+                     quizDataLength: quizData.length // Store length for validation
+                 };
+                 localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) {
+                 console.error("Failed to save quiz state:", e);
+                 // Optionally notify user or disable saving
+             }
+        }
+
+        function loadState() {
+             const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+             if (savedState) {
+                 try {
+                     const state = JSON.parse(savedState);
+                     // **Crucial Validation:** Check if saved state matches current quiz structure
+                     if (state.quizActive &&
+                         Array.isArray(state.questionsOrder) &&
+                         Array.isArray(state.userAnswers) &&
+                         state.quizDataLength === quizData.length && // Check length match
+                         state.questionsOrder.length === quizData.length &&
+                         state.userAnswers.length === quizData.length &&
+                         state.currentQuestionIndex < quizData.length) // Check index validity
+                     {
+                         currentQuestionIndex = state.currentQuestionIndex || 0;
+                         userAnswers = state.userAnswers;
+                         timeElapsed = state.timeElapsed || 0;
+                         questionsOrder = state.questionsOrder;
+                         quizActive = true;
+                         console.log(`In-progress state loaded for ${QUIZ_STATE_KEY}.`);
+                         return true;
+                     } else {
+                         console.warn(`Saved state for ${QUIZ_STATE_KEY} is invalid or from a different quiz version.`);
+                         clearState(); // Clear the invalid state
+                         return false;
+                     }
+                 } catch (e) {
+                     console.error(`Failed to parse saved state for ${QUIZ_STATE_KEY}:`, e);
+                     clearState(); // Clear corrupted state
+                     return false;
+                 }
+             }
+             return false; // No saved state found
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log(`In-progress state cleared for ${QUIZ_STATE_KEY}.`);
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        // Uses the specific SCORE_HISTORY_KEY for Arrays & ArrayLists
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                // Basic validation
+                if (!Array.isArray(scoreHistory)) {
+                    console.warn(`Invalid score history format for ${SCORE_HISTORY_KEY}. Resetting.`);
+                    scoreHistory = [];
+                }
+                // Optional: Further validation of each history item's structure
+            } catch (e) {
+                console.error(`Failed to load score history for ${SCORE_HISTORY_KEY}:`, e);
+                scoreHistory = []; // Reset on error
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                // Ensure history contains valid objects before saving (basic check)
+                const validHistory = scoreHistory.filter(item => typeof item === 'object' && item !== null && 'timestamp' in item);
+                const limitedHistory = validHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) {
+                console.error(`Failed to save score history for ${SCORE_HISTORY_KEY}:`, e);
+            }
+        }
+
+        function addScoreToHistory(attemptData) {
+            // Add timestamp if not already present (though submitQuiz should add it)
+             if (!attemptData.timestamp) {
+                 attemptData.timestamp = Date.now();
+             }
+            scoreHistory.push(attemptData);
+            saveScoreHistory(); // Save updated history
+            displayScoreHistory(); // Refresh the display
+        }
+
+        function clearScoreHistory() {
+             // Confirmation message specific to this quiz
+             if (confirm("Are you sure you want to clear the Java Arrays & ArrayLists quiz history? This cannot be undone.")) {
+                 scoreHistory = []; // Clear in-memory array
+                 localStorage.removeItem(SCORE_HISTORY_KEY); // Clear from storage
+                 displayScoreHistory(); // Update the UI
+                 console.log(`Score history cleared for ${SCORE_HISTORY_KEY}.`);
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; // Clear existing items
+            if (scoreHistory.length === 0) {
+                 // Empty message specific to this quiz
+                 scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous Arrays & ArrayLists attempts recorded.</p>`;
+                 clearHistoryBtn.classList.add('hidden'); // Hide clear button
+             } else {
+                 // Sort history newest first
+                 const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+                 sortedHistory.forEach(attempt => {
+                     const item = document.createElement('div');
+                     item.className = 'history-item';
+                     const date = new Date(attempt.timestamp);
+                     // Consistent date/time formatting
+                     const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                     const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                     // Ensure values exist before displaying
+                     const displayScore = attempt.score ?? '?';
+                     const displayTotal = attempt.totalQuestions ?? '?';
+                     const displayAccuracy = attempt.accuracy ?? '?';
+
+                     item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${displayScore}/${displayTotal}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${displayAccuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                            ${formattedDate}<br>${formattedTime}
+                        </div>
+                     `;
+                     scoreHistoryList.appendChild(item);
+                 });
+                 clearHistoryBtn.classList.remove('hidden'); // Show clear button
+             }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             // Initialize state arrays based on current quizData length *before* loading state
+             userAnswers = Array(quizData.length).fill(null);
+             questionsOrder = Array.from(quizData.keys());
+
+             if (loadState()) {
+                 // Resuming: State variables are already loaded by loadState()
+                 console.log(`Resuming ${QUIZ_STATE_KEY}.`);
+                 startTime = Date.now() - timeElapsed * 1000; // Adjust start time
+             } else {
+                 // Starting New: Reset everything
+                 console.log(`Starting new ${QUIZ_STATE_KEY}.`);
+                 currentQuestionIndex = 0;
+                 score = 0; // Reset score for a new quiz
+                 userAnswers = Array(quizData.length).fill(null); // Initialize based on current length
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys()); // Generate order based on current length
+                 shuffleArray(questionsOrder); // Shuffle for a new quiz
+                 startTime = Date.now();
+                 clearState(); // Ensure no remnants of old state interfere
+             }
+
+             // Hide/show screens
+             startScreen.style.display = 'none';
+             resultsContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             quizContainer.style.display = 'block';
+             quizActive = true;
+
+             // Load first question, start timer, update UI
+             loadQuestion(currentQuestionIndex);
+             startTimer();
+             updateNavigation();
+             saveState(); // Save the initial state (or loaded state if resuming)
+        }
+
+        function loadQuestion(index) {
+             if (index < 0 || index >= quizData.length) {
+                console.error(`Invalid question index: ${index}`);
+                return; // Stop if index is out of bounds
+             }
+
+             const originalQuestionIndex = questionsOrder[index];
+             const question = quizData[originalQuestionIndex];
+
+             if (!question) {
+                console.error(`Could not find question data for original index: ${originalQuestionIndex}`);
+                // Maybe try to end the quiz or go to the next valid question?
+                // For now, just stop execution for this load.
+                return;
+             }
+
+             const totalQuestions = quizData.length;
+
+             // Update counter and score display
+             questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+             // Update score display on results screen simultaneously
+             scoreValue.textContent = `${score}/${totalQuestions}`;
+
+             // Question card animation reset and trigger
+             questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+             void questionCard.offsetWidth; // Trigger reflow for animation restart
+             questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+             questionText.textContent = `${index + 1}. ${question.question}`;
+             feedbackMessage.textContent = ''; // Clear previous feedback
+             codeSnippetArea.innerHTML = ''; // Clear previous code snippet
+
+             // Display code snippet if it exists
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container'; // Base class for styling
+                 const code = document.createElement('code');
+                 code.className = 'language-java'; // Specific language for Prism
+                 code.textContent = question.code; // Set the code content
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+
+                 // Highlight *after* adding to DOM
+                 if (typeof Prism !== 'undefined') {
+                     // Use highlightElement for better performance than highlightAll
+                     setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+             optionsContainer.innerHTML = ''; // Clear previous options
+             const selectedAnswerIndex = userAnswers[index]; // Get saved answer for this question
+
+             // Create and display options
+             question.options.forEach((optionText, optionIndex) => {
+                 const optionElement = document.createElement('div');
+                 optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                 optionElement.setAttribute('role', 'radio'); // Accessibility
+                 optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                 optionElement.tabIndex = 0; // Make focusable
+
+                 // Option Label (A, B, C...) + Text
+                 const label = document.createElement('span');
+                 label.className = 'flex-grow mr-4';
+                 // Use innerHTML for potential basic formatting, ensure escaped if needed
+                 label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                 // Feedback Icon container (Check/Cross)
+                 const feedbackIconContainer = document.createElement('span');
+                 feedbackIconContainer.className = 'feedback-icon text-xl';
+                 feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>`;
+
+                 optionElement.appendChild(label);
+                 optionElement.appendChild(feedbackIconContainer);
+
+                 // Event handler for selection
+                 const handleSelection = () => {
+                     // Only allow selection if not already disabled (i.e., answered)
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+
+                 optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                     // Allow selection with Enter or Space key
+                     if (e.key === 'Enter' || e.key === ' ') {
+                         e.preventDefault(); // Prevent default space bar scroll
+                         handleSelection();
+                     }
+                 });
+
+                 optionsContainer.appendChild(optionElement);
+             });
+
+             // If an answer was already selected (e.g., navigating back/forward or resuming)
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex); // Display feedback immediately
+                 nextBtn.disabled = false; // Enable navigation
+                 if (index === totalQuestions - 1) {
+                     submitBtn.disabled = false; // Enable submit on last question
+                 }
+             } else {
+                 // No answer selected yet
+                 nextBtn.disabled = true; // Disable navigation
+                 if (index === totalQuestions - 1) {
+                     submitBtn.disabled = true; // Disable submit on last question
+                 }
+             }
+
+             updateProgress(index); // Update progress bar
+             updateNavigation(); // Update button visibility/state
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+             // Prevent changing answer once selected for the current question view
+             if (userAnswers[displayIndex] !== null) return;
+
+             userAnswers[displayIndex] = selectedOptionIndex; // Store the user's answer
+             showFeedback(displayIndex, selectedOptionIndex); // Show immediate feedback
+
+             // Enable navigation buttons now that an answer is selected
+             nextBtn.disabled = false;
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+
+             saveState(); // Save the updated answers to local storage
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+            const originalQuestionIndex = questionsOrder[displayIndex];
+            const question = quizData[originalQuestionIndex];
+            if (!question) return; // Safety check
+
+            const isCorrect = selectedOptionIndex === question.correctAnswer;
+            const options = optionsContainer.querySelectorAll('.option');
+
+            options.forEach((optElement, currentOptionIndex) => {
+                optElement.classList.add('disabled'); // Disable all options after selection
+                optElement.style.cursor = 'default';
+                optElement.tabIndex = -1; // Remove from tab order
+
+                const iconCorrect = optElement.querySelector('.icon-correct');
+                const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                if (iconCorrect) iconCorrect.style.opacity = '0'; // Reset icons first
+                if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                // Apply styling based on selection and correctness
+                if (currentOptionIndex === selectedOptionIndex) {
+                    // This is the option the user selected
+                    optElement.classList.add('selected');
+                    optElement.setAttribute('aria-checked', 'true');
+                    if (isCorrect) {
+                        optElement.classList.add('correct');
+                        if (iconCorrect) iconCorrect.style.opacity = '1';
+                        feedbackMessage.textContent = "Correct!";
+                        feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                    } else {
+                        optElement.classList.add('incorrect');
+                        if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                        feedbackMessage.textContent = "Incorrect!";
+                        feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                        // Also highlight the actual correct answer if the user was wrong
+                        const correctOptionElement = options[question.correctAnswer];
+                        if (correctOptionElement && currentOptionIndex !== question.correctAnswer) {
+                            correctOptionElement.classList.add('correct');
+                            const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                            if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show check on the actual correct one
+                        }
+                    }
+                } else if (currentOptionIndex === question.correctAnswer) {
+                    // This is the correct answer, but the user didn't select it (implicitly, because the selected one was wrong)
+                     optElement.classList.add('correct'); // Visually indicate the correct answer
+                     const correctOptIcon = optElement.querySelector('.icon-correct');
+                     if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                } else {
+                    // This is an incorrect option the user didn't select
+                     optElement.setAttribute('aria-checked', 'false');
+                     // Optionally slightly fade out unselected, incorrect options
+                     // optElement.classList.add('opacity-70');
+                }
+            });
+
+             // Remove feedback animation classes after a short delay
+             setTimeout(() => {
+                 feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+             }, 1000);
+        }
+
+
+        function updateProgress(index) {
+             const totalQuestions = quizData.length;
+             const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+             progressBar.style.width = `${progress}%`;
+             // Counter text is updated in loadQuestion
+        }
+
+        function updateNavigation() {
+            const totalQuestions = quizData.length;
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+
+            // Toggle visibility of Prev/Next/Submit buttons
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Adjust spacer visibility based on whether Prev button is shown
+            navSpacer.classList.toggle('hidden', isFirstQuestion); // Hide spacer if Prev is hidden
+
+            // Enable/disable Next/Submit based on whether the *current* question has an answer
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when navigating forward
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when navigating backward
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+             clearInterval(timerInterval); // Ensure no previous timer is running
+             if (!quizActive) return; // Don't start if quiz isn't active
+
+             const updateTimerDisplay = () => {
+                 const now = Date.now();
+                 // Calculate elapsed time based on adjusted startTime
+                 timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                 const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                 if (timeRemaining <= 0) {
+                     // Time's up!
+                     timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                     timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                     clearInterval(timerInterval);
+                     if(quizActive) { // Check quizActive to prevent double submission
+                       console.log("Time's up! Auto-submitting quiz.");
+                       submitQuiz(true); // Auto-submit, passing true for timeUp
+                     }
+                     return; // Stop further updates
+                 }
+
+                 // Update timer display
+                 timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                 // Add/remove warning class based on remaining time
+                 timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                 // Ensure text color is not stuck on red if time increases (unlikely but safe)
+                 if (timeRemaining > 60) {
+                     timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+                 }
+
+                 // Periodic state saving (e.g., every 5 seconds)
+                 if (quizActive && timeElapsed > 0 && timeElapsed % 5 === 0) {
+                     saveState();
+                 }
+             };
+
+             updateTimerDisplay(); // Initial call to display time immediately
+             timerInterval = setInterval(updateTimerDisplay, 1000); // Update every second
+        }
+
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+             // Prevent submission if quiz isn't active, unless forced by timeUp
+             if (!quizActive && !timeUp) {
+                 console.log("Quiz not active, submission blocked.");
+                 return;
+             }
+             if (!quizActive && timeUp) {
+                  console.log("Quiz already submitted or inactive, timeUp submission blocked.");
+                  return; // Avoid submitting again if timer fires after manual submit
+             }
+
+             quizActive = false; // Mark quiz as finished
+             clearInterval(timerInterval); // Stop the timer definitively
+
+             // Calculate final score
+             score = 0;
+             userAnswers.forEach((answerIndex, displayIdx) => {
+                 if (answerIndex !== null) { // Only score answered questions
+                     const originalQuestionIndex = questionsOrder[displayIdx];
+                     // Safety check: ensure the question exists in current quizData
+                     if (quizData[originalQuestionIndex] && answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                         score++;
+                     }
+                 }
+             });
+
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? parseFloat(((score / totalQuestions) * 100).toFixed(1)) : 0; // Calculate accuracy
+             const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed; // Use full time if timed out
+
+             // Add attempt to score history
+             addScoreToHistory({
+                 score: score,
+                 totalQuestions: totalQuestions,
+                 accuracy: accuracy,
+                 timestamp: Date.now(), // Record submission time
+                 timeTaken: finalTime
+             });
+
+             // --- Display Results Screen ---
+             quizContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             resultsContainer.style.display = 'block';
+             // Animation for results screen
+             resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void resultsContainer.offsetWidth; // Trigger reflow
+             resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+             // Update results display elements
+             scoreValue.textContent = `${score}/${totalQuestions}`;
+             accuracyValue.textContent = `${accuracy}%`;
+             accuracyBar.style.width = `${accuracy}%`; // Set accuracy bar width
+             timeTaken.textContent = formatTime(finalTime); // Display formatted time
+
+             // *** UPDATED *** Performance Message Text (Arrays & ArrayLists themed)
+             let performanceText = "";
+             let scoreLevel = 'low'; // Default score level
+
+             if (timeUp) {
+                 performanceText = "Time's up! Let's review your Array and ArrayList skills.";
+                 // Determine level based on accuracy even if time ran out
+                 if (accuracy >= 85) scoreLevel = 'high';
+                 else if (accuracy >= 60) scoreLevel = 'medium';
+             } else {
+                 // Graded performance messages
+                if (accuracy >= 95) { performanceText = "Excellent! You're an Array and ArrayList pro!"; scoreLevel = 'high'; }
+                else if (accuracy >= 85) { performanceText = "Great job! Solid understanding of Java collections."; scoreLevel = 'high'; }
+                else if (accuracy >= 70) { performanceText = "Good work! Keep practicing with Arrays and ArrayLists."; scoreLevel = 'medium'; }
+                else if (accuracy >= 50) { performanceText = "Not bad! Review the differences and common methods."; scoreLevel = 'medium'; }
+                else { performanceText = "Keep coding! Focus on indexing, methods, and dynamic sizing."; scoreLevel = 'low'; }
+             }
+             performanceMessage.textContent = performanceText;
+             // Set score circle border color based on performance
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+             // Trigger confetti for high scores (if not timed out)
+             if (scoreLevel === 'high' && !timeUp && typeof confetti === 'function') {
+                 triggerConfetti();
+             }
+
+             // Important: Clear the in-progress state *after* results are processed
+             clearState();
+        }
+
+
+        // --- Confetti ---
+        function triggerConfetti() {
+            if (typeof confetti !== 'function') {
+                 console.warn("Confetti function not found.");
+                 return;
+            }
+            const myConfetti = confetti.create(confettiCanvas, {
+                resize: true,
+                useWorker: true // Use worker for better performance
+            });
+            // Initial burst
+            myConfetti({
+                particleCount: 130,
+                spread: 120,
+                origin: { y: 0.6 }, // Start slightly below top
+                gravity: 0.8,
+                ticks: 350,
+                zIndex: 1000 // Ensure it's above other elements
+            });
+            // Delayed secondary bursts from sides
+            setTimeout(() => {
+                myConfetti({ particleCount: 60, spread: 150, origin: { x: 0, y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+                myConfetti({ particleCount: 60, spread: 150, origin: { x: 1, y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+            }, 200);
+        }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none'; // Hide results
+            reviewContainer.style.display = 'block'; // Show review section
+            // Animation for review screen
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth; // Trigger reflow
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review content
+
+            // Iterate through the questions *in the order they were presented*
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                const question = quizData[originalQuestionIndex];
+                const userAnswerIndex = userAnswers[displayIndex]; // User's answer for this question
+
+                 // Safety Check: Ensure question data exists
+                 if (!question) {
+                     console.error(`Review Error: Missing question data for original index ${originalQuestionIndex} at display index ${displayIndex}`);
+                     // Optionally display an error message in the review section
+                     const errorItem = document.createElement('div');
+                     errorItem.className = 'review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-900/30';
+                     errorItem.innerHTML = `<p class="font-semibold text-yellow-700 dark:text-yellow-300">Error loading question ${displayIndex + 1}. Data might be corrupt.</p>`;
+                     reviewQuestions.appendChild(errorItem);
+                     return; // Skip this iteration
+                 }
+
+                const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                // Create container for the review item
+                const reviewItem = document.createElement('div');
+                reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                    isCorrect
+                        ? 'border-green-500 bg-green-50 dark:bg-green-900/30' // Correct answer styling
+                        : (userAnswerIndex === null || userAnswerIndex === undefined ? 'border-gray-400 bg-gray-50 dark:bg-gray-700/30' : 'border-red-500 bg-red-50 dark:bg-red-900/30') // Unanswered vs Incorrect styling
+                }`;
+
+                // Build HTML for the review item
+                let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                // Add code snippet if it exists
+                if (question.code) {
+                    // Basic escaping for HTML display within <pre><code>
+                    const escapedCode = question.code.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+                    reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-java">${escapedCode}</code></pre>`;
+                }
+
+                reviewHTML += `<div class="mb-4">`; // Container for answers
+                reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Options:</p>`;
+                reviewHTML += `<ul class="space-y-2 list-none">`;
+
+                // Iterate through options to display them with feedback
+                question.options.forEach((optionText, i) => {
+                    let liClass = "text-gray-700 dark:text-gray-300"; // Default style
+                    let iconHTML = "";
+
+                    // Highlight the Actual Correct Answer
+                    if (i === question.correctAnswer) {
+                        liClass = "font-semibold text-green-700 dark:text-green-400"; // Style for correct answer
+                        iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; // Checkmark icon
+                    }
+
+                    // Indicate the User's Answer
+                    if (i === userAnswerIndex) {
+                        if (isCorrect) {
+                            // User selected the correct answer - add ring/bg highlight
+                            liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                            // Icon is already set above for correct answer
+                        } else {
+                            // User selected the wrong answer - strike through and add cross icon
+                            liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; // Style for incorrect selection
+                            iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; // Cross icon
+                        }
+                    }
+
+                    reviewHTML += `
+                        <li class="flex items-center ${liClass} p-1 rounded">
+                            <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                            <span class="flex-grow">${optionText}</span>
+                            ${iconHTML}
+                        </li>`;
+                });
+
+                 // Indicate if the question was unanswered
+                 if (userAnswerIndex === null || userAnswerIndex === undefined) {
+                     reviewHTML += `<li class="mt-2 text-sm italic text-gray-500 dark:text-gray-400">You did not answer this question.</li>`;
+                 }
+
+
+                reviewHTML += `</ul></div>`; // Close answers container
+
+                // Add explanation if it exists
+                if (question.explanation) {
+                    // Use CSS to handle explanation border color based on parent .review-item.correct/incorrect
+                    reviewHTML += `
+                        <div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                             <strong class="block mb-1 text-sm text-blue-800 dark:text-blue-300">Explanation:</strong>
+                             <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                        </div>`;
+                 }
+
+                reviewItem.innerHTML = reviewHTML; // Set the built HTML
+                reviewQuestions.appendChild(reviewItem); // Add item to the container
+            });
+
+            // Re-run Prism highlighting for code snippets within the review section
+            if (typeof Prism !== 'undefined') {
+                // Ensure highlighting runs after DOM updates
+                setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+            }
+        }
+
+        function showResultsScreen() {
+             reviewContainer.style.display = 'none'; // Hide review
+             resultsContainer.style.display = 'block'; // Show results
+             // Optional: Re-add animation if desired when coming back from review
+             resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void resultsContainer.offsetWidth; // Trigger reflow
+             resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+
+        // --- Restart ---
+        function restartQuiz() {
+             // Reset core state variables
+             currentQuestionIndex = 0;
+             score = 0;
+             userAnswers = Array(quizData.length).fill(null); // Reset answers based on current length
+             questionsOrder = []; // Will be repopulated on start
+             timeElapsed = 0;
+             quizActive = false; // Mark as inactive
+             clearInterval(timerInterval); // Stop any running timer
+
+             // Reset UI elements to initial state
+             progressBar.style.width = '0%';
+             timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+             timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+             feedbackMessage.textContent = ''; // Clear feedback area
+             codeSnippetArea.innerHTML = ''; // Clear code area in quiz card template
+             optionsContainer.innerHTML = ''; // Clear options in quiz card template
+
+             // Hide quiz, results, review screens; show start screen
+             resultsContainer.style.display = 'none';
+             quizContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             startScreen.style.display = 'block';
+
+             // Re-apply start screen animation for visual feedback
+             startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+             void startScreen.offsetWidth; // Trigger reflow
+             startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+             // Reset button states for quiz container (although it's hidden)
+             nextBtn.disabled = true;
+             submitBtn.disabled = true;
+             prevBtn.classList.add('hidden');
+             navSpacer.classList.remove('hidden'); // Show spacer initially
+
+             // Refresh score history display on start screen (using correct key)
+             displayScoreHistory();
+
+             // Clear any lingering in-progress state for this specific quiz
+             clearState();
+
+             console.log(`Java Arrays & ArrayLists quiz reset for ${QUIZ_STATE_KEY}.`); // Specific log message
+        }
+
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             // Recalculate accuracy here if needed, or ensure score/totalQuestions are accessible
+             const accuracy = totalQuestions > 0 ? parseFloat(((score / totalQuestions) * 100).toFixed(1)) : 0;
+             // *** UPDATED *** Share Text specific to this quiz
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy}%) on the Java Arrays & ArrayLists Quiz! How's your Java collections knowledge?`;
+             const shareUrl = window.location.href; // Share the current page URL
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My Java Arrays & ArrayLists Quiz Result!', // Title for the share dialog
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Results shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Optional: Fallback to copy if sharing fails or is cancelled
+                     copyToClipboard(`${shareText} Check it out: ${shareUrl}`);
+                 }
+             } else {
+                 // Fallback for browsers that don't support navigator.share
+                 console.log('Web Share API not supported, copying to clipboard.');
+                 copyToClipboard(`${shareText} Check it out: ${shareUrl}`);
+             }
+         }
+
+        // --- Clipboard Copy ---
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Provide feedback (alert is simple, consider a less intrusive notification)
+                alert("Results copied to clipboard!");
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                alert("Failed to copy results."); // Inform user of failure
+            });
+        }
+
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Pass false for manual submission
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+         document.addEventListener('keydown', (e) => {
+             // Determine which screen is active
+             const isQuizActive = quizContainer.style.display === 'block';
+             const isResultsActive = resultsContainer.style.display === 'block';
+             const isReviewActive = reviewContainer.style.display === 'block';
+             const isStartActive = startScreen.style.display === 'block';
+
+             // Only apply keyboard shortcuts relevant to the active screen
+             if (isQuizActive) {
+                // Arrow key navigation for options
+                 if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                     const focusableOptions = Array.from(optionsContainer.querySelectorAll('.option:not(.disabled)'));
+                     if (focusableOptions.length > 0) {
+                         e.preventDefault(); // Prevent page scroll
+                         const currentFocusIndex = focusableOptions.findIndex(opt => opt === document.activeElement);
+                         let nextFocusIndex = 0; // Default to first option
+
+                         if (currentFocusIndex !== -1) { // If an option is already focused
+                              if (e.key === 'ArrowDown') {
+                                 nextFocusIndex = (currentFocusIndex + 1) % focusableOptions.length;
+                             } else { // ArrowUp
+                                 nextFocusIndex = (currentFocusIndex - 1 + focusableOptions.length) % focusableOptions.length;
+                             }
+                         }
+                         focusableOptions[nextFocusIndex].focus();
+                     }
+                 }
+                 // Activate focused button with Enter/Space
+                 else if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+                 // Optionally add number keys (1-4 or A-D) to select options if desired
+
+             } else if (isStartActive) {
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+
+             } else if (isResultsActive) {
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+
+             } else if (isReviewActive) {
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Set dark mode based on user preference/saved setting
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            // Load score history specific to *this* quiz
+            loadScoreHistory(); // Uses SCORE_HISTORY_KEY (Arrays & ArrayLists)
+            displayScoreHistory(); // Display the loaded history
+
+            // Set initial screen visibility
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block'; // Show start screen first
+
+            // Initialize button states relevant at start
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+
+            console.log("Java Arrays & ArrayLists Quiz application initialized."); // Specific log message
+        }
+
+        // Run initialization when the DOM is fully loaded and ready
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

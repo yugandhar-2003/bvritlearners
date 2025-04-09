@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Affordability Calculator</title>
+    <!-- Font Awesome (Optional, for icons if desired) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        /* === CSS Styles Start === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --accent-color: #198754; /* Green for affordability */
+            --light-grey: #f8f9fa;
+            --medium-grey: #e9ecef;
+            --dark-grey: #dee2e6;
+            --text-dark: #212529;
+            --text-medium: #495057;
+            --text-light: #6c757d;
+            --border-color: #e2e8f0;
+            --error-color: #dc3545;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+            --card-bg: #ffffff;
+            --shadow-medium: 0 8px 25px rgba(0, 123, 255, 0.08);
+            --focus-ring: 0 0 0 3px rgba(0, 123, 255, 0.15);
+            --border-radius-main: 12px;
+            --border-radius-inner: 6px;
+            --transition-speed: 0.3s;
+            --transition-ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-medium);
+            line-height: 1.7;
+            padding: 20px;
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px; /* Adjusted max-width */
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .page-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #fcfdff;
+        }
+        .page-header h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 5px;
+         }
+         .page-header p {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-light);
+         }
+
+        .calculator-section {
+            padding: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .calculator-section:last-of-type {
+             border-bottom: none;
+        }
+
+        .calculator-title {
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .intro-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+            gap: 20px 25px;
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            margin-bottom: 6px;
+        }
+        .input-group label .fa-question-circle { /* Style for optional help icons */
+            color: var(--secondary-color);
+            font-size: 0.8em;
+            margin-left: 4px;
+            cursor: help;
+        }
+
+        .input-field-area {
+            position: relative;
+            display: flex;
+            align-items: center; /* Align input and adornment */
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--dark-grey);
+            border-radius: var(--border-radius-inner);
+            font-size: 0.95rem;
+            transition: border-color var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease);
+            background-color: var(--card-bg);
+            color: var(--text-dark);
+        }
+         input[type="number"] { padding-right: 35px; } /* Space for right adornment */
+         input[type="number"].no-adornment { padding-right: 12px; } /* No adornment */
+
+        select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;}
+
+
+        input::placeholder { color: #adb5bd; }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: var(--focus-ring);
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .input-adornment {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.85rem;
+            pointer-events: none; /* Don't interfere with input clicks */
+        }
+        .input-description {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .calculate-button-container {
+            text-align: center;
+            margin-top: 20px; /* Reduced margin */
+            margin-bottom: 25px;
+        }
+        .calculate-button {
+             padding: 10px 25px; /* Slightly smaller */
+             background: var(--primary-color);
+             color: white; border: none; border-radius: var(--border-radius-inner);
+             font-size: 1rem; font-weight: 600; cursor: pointer;
+             transition: background-color var(--transition-speed) var(--transition-ease);
+        }
+        .calculate-button:hover { background-color: #0056b3; }
+
+        .results-area {
+            background-color: #e7f3ff; /* Light blue background */
+            padding: 20px;
+            border-radius: var(--border-radius-inner);
+            text-align: center;
+            border: 1px solid #b3d7ff;
+            margin-bottom: 15px; /* Space before error */
+        }
+        .results-area .result-label {
+            font-size: 1rem;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+         .results-area .result-value {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        .results-area .result-value.placeholder {
+             color: var(--text-light);
+             font-size: 1.5rem;
+             font-weight: 500;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-align: center;
+            min-height: 1.3em;
+            font-weight: 500;
+            display: none; /* Hidden by default */
+        }
+
+         /* Mortgage Rate Teaser */
+        .mortgage-rate-info {
+            text-align: center;
+            margin-top: 25px;
+            padding: 15px;
+            background-color: var(--light-grey);
+            border-radius: var(--border-radius-inner);
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
+        .mortgage-rate-info strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        .mortgage-rate-info span { margin: 0 8px; color: var(--text-medium); }
+        .mortgage-rate-info a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .mortgage-rate-info a:hover { text-decoration: underline; }
+
+
+        /* Informational Text Section */
+        .info-section { padding: 30px 35px; font-size: 0.95rem; border-top: 1px solid var(--border-color); background-color: #fcfdff; }
+        .info-section h3 { font-size: 1.25rem; font-weight: 600; color: var(--text-dark); margin-bottom: 12px; margin-top: 25px; }
+        .info-section h3:first-child { margin-top: 0; }
+        .info-section p, .info-section li { margin-bottom: 15px; color: var(--text-medium); line-height: 1.75;}
+        .info-section ul { padding-left: 25px; list-style: disc;}
+        .info-section code { background-color: var(--medium-grey); padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 0.9em;}
+        .info-section strong { font-weight: 600; color: var(--text-dark); }
+
+        .related-links { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color); }
+        .related-links strong { font-weight: 600; margin-right: 5px;}
+        .related-links a { margin: 0 8px; color: var(--primary-color); text-decoration: none; font-weight: 500;}
+        .related-links a:hover { text-decoration: underline; }
+
+        footer {
+             background-color: var(--text-dark); color: var(--light-grey); text-align: center;
+             padding: 20px 30px; font-size: 0.85rem; opacity: 0.95;
+        }
+
+         @media (max-width: 700px) {
+             .input-grid { grid-template-columns: 1fr; /* Stack inputs */ }
+             .page-header h1 { font-size: 1.6rem; }
+             .calculator-title { font-size: 1.3rem; }
+             .results-area .result-value { font-size: 1.7rem; }
+             body { padding: 10px;}
+             .calculator-section, .info-section { padding: 20px;}
+             .mortgage-rate-info { font-size: 0.85rem; }
+             .mortgage-rate-info span { display: block; margin: 5px 0; } /* Stack rates */
+             .mortgage-rate-info a { display: inline-block; margin-top: 8px; }
+         }
+
+        /* === CSS Styles End === */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <h1>How Much House Can I Afford?</h1>
+            <p>Estimate an affordable house purchase price based on income/DTI or a fixed monthly budget.</p>
+        </header>
+
+        <!-- Calculator 1: Based on Income/DTI -->
+        <section class="calculator-section">
+            <h2 class="calculator-title">Affordability Based on Income & DTI</h2>
+            <p class="intro-text">Modify the values and click calculate. Mainly intended for U.S. residents.</p>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="income">Annual household income <i class="fas fa-question-circle" title="Total combined income before taxes"></i></label>
+                    <div class="input-field-area">
+                        <input type="number" id="income" value="120000" min="0" placeholder="e.g., 120000">
+                        <span class="input-adornment">$</span>
+                    </div>
+                    <div class="input-description">Salary + other incomes (before tax)</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="term1">Mortgage loan term</label>
+                    <div class="input-field-area">
+                        <input type="number" id="term1" value="30" min="1" step="1" placeholder="e.g., 30" class="no-adornment">
+                    </div>
+                     <div class="input-description">years</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="rate1">Interest rate</label>
+                    <div class="input-field-area">
+                        <input type="number" id="rate1" value="6.438" min="0" step="0.001" placeholder="e.g., 6.5">
+                         <span class="input-adornment">%</span>
+                    </div>
+                </div>
+
+                 <div class="input-group">
+                    <label for="debt">Monthly debt payback <i class="fas fa-question-circle" title="Sum of minimum monthly payments for non-housing debts like car loans, student loans, credit cards."></i></label>
+                    <div class="input-field-area">
+                        <input type="number" id="debt" value="0" min="0" placeholder="e.g., 500">
+                         <span class="input-adornment">$</span>
+                    </div>
+                     <div class="input-description">Car, student loan, credit cards, etc.</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="downPayment1">Down payment</label>
+                     <div class="input-field-area">
+                        <input type="number" id="downPayment1" value="20" min="0" max="100" step="0.1" placeholder="e.g., 20">
+                        <span class="input-adornment">%</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="propTax1">Property tax</label>
+                     <div class="input-field-area">
+                        <input type="number" id="propTax1" value="1.5" min="0" step="0.01" placeholder="e.g., 1.2">
+                         <span class="input-adornment">%</span>
+                    </div>
+                    <div class="input-description">per year (as % of home value)</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="hoa1">HOA or co-op fee</label>
+                    <div class="input-field-area">
+                        <input type="number" id="hoa1" value="0" min="0" step="0.01" placeholder="e.g., 0.1">
+                        <span class="input-adornment">%</span>
+                    </div>
+                     <div class="input-description">per year (as % of home value)</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="insurance1">Home Insurance</label>
+                    <div class="input-field-area">
+                        <input type="number" id="insurance1" value="0.5" min="0" step="0.01" placeholder="e.g., 0.5">
+                        <span class="input-adornment">%</span>
+                    </div>
+                    <div class="input-description">per year (as % of home value)</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="dtiRatio">Debt-to-income (DTI) ratio rule</label>
+                    <select id="dtiRatio">
+                        <option value="28/36" selected>Conventional loan (28/36 rule)</option>
+                        <option value="31/43">FHA loan (31/43 rule)</option>
+                        <option value="0/41">VA loan (41% back-end rule)</option>
+                        <option value="custom">Custom...</option>
+                        <!-- Custom options will be added by JS if 'custom' selected -->
+                    </select>
+                    <div class="input-description">Lender guideline (Housing/Total Debt %)</div>
+                </div>
+
+                 <!-- Hidden inputs for Custom DTI -->
+                 <div class="input-group custom-dti-input" style="display: none;">
+                     <label for="customFrontDti">Custom Front-End DTI</label>
+                     <div class="input-field-area">
+                         <input type="number" id="customFrontDti" value="28" min="0" max="50" step="1">
+                         <span class="input-adornment">%</span>
+                     </div>
+                 </div>
+                 <div class="input-group custom-dti-input" style="display: none;">
+                     <label for="customBackDti">Custom Back-End DTI</label>
+                     <div class="input-field-area">
+                         <input type="number" id="customBackDti" value="36" min="0" max="50" step="1">
+                         <span class="input-adornment">%</span>
+                     </div>
+                 </div>
+
+            </div> <!-- /input-grid -->
+
+            <div class="calculate-button-container">
+                <button id="calculateDtiBtn" class="calculate-button">Calculate Affordability (DTI)</button>
+            </div>
+
+            <div id="resultsDti" class="results-area">
+                <span class="result-label">Estimated Affordable House Price:</span>
+                <span class="result-value placeholder">$ ---,--.--</span>
+                <!-- Optional: Add monthly payment breakdown here -->
+            </div>
+            <div id="errorDti" class="error-message"></div>
+
+             <div class="mortgage-rate-info">
+                <strong>Latest Mortgage Rate Estimates:</strong>
+                <span>30 Years: 6.438%</span>
+                <span>15 Years: 5.785%</span>
+                <span>10 Years: 5.661%</span>
+                <a href="#">See Your Local Rates</a>
+            </div>
+
+        </section>
+
+        <!-- Calculator 2: Based on Fixed Budget -->
+        <section class="calculator-section">
+            <h2 class="calculator-title">Affordability Based on Fixed Monthly Budget</h2>
+            <p class="intro-text">Estimate affordability based on a set monthly amount allocated for housing costs.</p>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="budget">Budget for house <i class="fas fa-question-circle" title="Maximum total amount you want to spend each month on PITI, HOA, and Maintenance."></i></label>
+                    <div class="input-field-area">
+                        <input type="number" id="budget" value="3500" min="0" placeholder="e.g., 3500">
+                        <span class="input-adornment">$</span>
+                    </div>
+                     <div class="input-description">per month</div>
+                </div>
+
+                 <div class="input-group">
+                    <label for="term2">Mortgage loan term</label>
+                    <div class="input-field-area">
+                        <input type="number" id="term2" value="30" min="1" step="1" placeholder="e.g., 30" class="no-adornment">
+                    </div>
+                     <div class="input-description">years</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="rate2">Interest rate</label>
+                    <div class="input-field-area">
+                        <input type="number" id="rate2" value="6.438" min="0" step="0.001" placeholder="e.g., 6.5">
+                         <span class="input-adornment">%</span>
+                    </div>
+                </div>
+
+                 <div class="input-group">
+                    <label for="downPayment2">Down payment</label>
+                     <div class="input-field-area">
+                        <input type="number" id="downPayment2" value="20" min="0" max="100" step="0.1" placeholder="e.g., 20">
+                        <span class="input-adornment">%</span>
+                    </div>
+                </div>
+
+                 <div class="input-group">
+                    <label for="propTax2">Property tax</label>
+                     <div class="input-field-area">
+                        <input type="number" id="propTax2" value="1.5" min="0" step="0.01" placeholder="e.g., 1.2">
+                         <span class="input-adornment">%</span>
+                    </div>
+                     <div class="input-description">per year (as % of home value)</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="hoa2">HOA or co-op fee</label>
+                    <div class="input-field-area">
+                        <input type="number" id="hoa2" value="0" min="0" step="0.01" placeholder="e.g., 0.1">
+                        <span class="input-adornment">%</span>
+                    </div>
+                    <div class="input-description">per year (as % of home value)</div>
+                </div>
+
+                 <div class="input-group">
+                    <label for="insurance2">Home Insurance</label>
+                    <div class="input-field-area">
+                        <input type="number" id="insurance2" value="0.5" min="0" step="0.01" placeholder="e.g., 0.5">
+                        <span class="input-adornment">%</span>
+                    </div>
+                    <div class="input-description">per year (as % of home value)</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="maintenance">Maintenance cost</label>
+                     <div class="input-field-area">
+                        <input type="number" id="maintenance" value="1.5" min="0" step="0.01" placeholder="e.g., 1.0">
+                        <span class="input-adornment">%</span>
+                    </div>
+                    <div class="input-description">per year (repairs, utilities estimate)</div>
+                </div>
+
+            </div> <!-- /input-grid -->
+
+            <div class="calculate-button-container">
+                <button id="calculateBudgetBtn" class="calculate-button">Calculate Affordability (Budget)</button>
+            </div>
+
+            <div id="resultsBudget" class="results-area">
+                <span class="result-label">Estimated Affordable House Price:</span>
+                <span class="result-value placeholder">$ ---,--.--</span>
+            </div>
+             <div id="errorBudget" class="error-message"></div>
+
+        </section>
+
+        <!-- Informational Text Section -->
+        <section class="info-section">
+            <div class="related-links">
+                 <strong>Related:</strong>
+                 <a href="#">Mortgage Calculator</a> |
+                 <a href="#">Refinance Calculator</a> |
+                 <a href="#">Mortgage Payoff Calculator</a> |
+                 <a href="#">Rent Calculator</a> |
+                 <a href="#">Debt-to-Income (DTI) Ratio Calculator</a> |
+                 <a href="#">FHA Loan Calculator</a> |
+                 <a href="#">VA Mortgage Calculator</a>
+            </div>
+
+             <p>In the U.S., conventional, FHA, and other mortgage lenders like to use two ratios, called the front-end and back-end ratios, to determine how much money they are willing to loan. They are basic debt-to-income ratios (DTI), albeit slightly different and explained below. For more information about or to do calculations involving debt-to-income ratios, please visit the Debt-to-Income (DTI) Ratio Calculator.</p>
+             <p>Because they are used by lenders to assess the risk of lending to each home-buyer, home-buyers can strive to lower their DTI in order to not only be able to qualify for a mortgage, but for a favorable one. The lower the DTI, the more likely a home-buyer is to get a good deal.</p>
+
+             <h3>Front-End Ratio</h3>
+             <p>The front-end debt ratio is also known as the mortgage-to-income ratio and is computed by dividing total monthly housing costs by monthly gross income.</p>
+             <p><code>Front-end debt ratio = (monthly housing costs / monthly gross income) × 100%</code></p>
+             <p>For our calculator, only conventional and FHA loans utilize the front-end debt ratio. The monthly housing costs not only include interest and principal of the loan (P&I), but other costs associated with housing like insurance (I), property taxes (T), and HOA/Co-Op Fee. This is often abbreviated as PITI + HOA.</p>
+
+             <h3>Back-End Ratio</h3>
+             <p>The back-end debt ratio includes everything in the front-end ratio dealing with housing costs, along with any accrued recurring monthly debt like car loans, student loans, and credit cards.</p>
+              <p><code>Back-end debt ratio = (monthly housing costs + all other recurring monthly debt / monthly gross income) × 100%</code></p>
+             <p>This ratio is known as the debt-to-income ratio and is used for all the calculations of this calculator.</p>
+
+             <h3>Conventional Loans and the 28/36 Rule</h3>
+             <p>In the U.S., a conventional loan is a mortgage that is not insured by the federal government directly and generally refers to a mortgage loan that follows the guidelines of government-sponsored enterprises (GSE's) like Fannie Mae or Freddie Mac. Conventional loans may be either conforming or non-conforming. Conforming loans are bought by housing agencies such as Freddie Mac and Fannie Mae and follow their terms and conditions. Non-conforming loans are any loans not bought by these housing agencies that don't follow the terms and conditions laid out by these agencies, but are generally still considered conventional loans.</p>
+             <p>The <strong>28/36 Rule</strong> is a commonly accepted guideline used in the U.S. and Canada to determine each household's risk for conventional loans. It states that a household should spend no more than <strong>28%</strong> of its gross monthly income on the front-end debt (PITI + HOA) and no more than <strong>36%</strong> of its gross monthly income on the back-end debt (PITI + HOA + Other Debts). The 28/36 Rule is a qualification requirement for conforming conventional loans.</p>
+             <p>While it has been adopted as one of the most widely-used methods of determining the risk associated with a borrower, as Shiller documents in his critically-acclaimed book Irrational Exuberance, the 28/36 Rule is often dismissed by lenders under heavy stress in competitive lending markets. Because it is so leniently enforced, certain lenders can sometimes lend to risky borrowers who may not actually qualify based on the 28/36 Rule.</p>
+
+             <h3>FHA Loans</h3>
+             <p>Please visit our FHA Loan Calculator to get more in-depth information regarding FHA loans, or to calculate estimated monthly payments on FHA loans.</p>
+             <p>An FHA loan is a mortgage insured by the Federal Housing Administration. Borrowers must pay for mortgage insurance (MIP) in order to protect lenders from losses in instances of defaults on loans. The insurance allows lenders to offer FHA loans at lower interest rates than usual with more flexible requirements, such as lower down payment as a percentage of the purchase price.</p>
+             <p>To be approved for FHA loans, the ratio of front-end to back-end ratio of applicants needs to be better than <strong>31/43</strong>. In other words, monthly housing costs should not exceed 31%, and all secured and non-secured monthly recurring debts should not exceed 43% of monthly gross income. FHA loans also require 1.75% upfront premiums (UFMIP) and ongoing annual MIP.</p>
+             <p>FHA loans have more lax debt-to-income controls than conventional loans; they allow borrowers to have 3% more front-end debt and 7% more back-end debt. The reason that FHA loans can be offered to riskier clients is the required upfront payment and ongoing mortgage insurance premiums.</p>
+
+             <h3>VA Loans</h3>
+             <p>Please visit our VA Mortgage Calculator to get more in-depth information regarding VA loans, or to calculate estimated monthly payments on VA mortgages.</p>
+             <p>A VA loan is a mortgage loan granted to veterans, service members on active duty, members of the national guard, reservists, or surviving spouses, and is guaranteed by the U.S. Department of Veterans Affairs (VA).</p>
+             <p>To be approved for a VA loan, the back-end ratio of the applicant needs to be better than <strong>41%</strong>. In other words, the sum of monthly housing costs and all recurring secured and non-secured debts should not exceed 41% of gross monthly income. VA loans generally do not consider front-end ratios of applicants but require funding fees (which vary).</p>
+
+             <h3>Custom Debt-to-Income Ratios</h3>
+             <p>The calculator also allows the user to select custom debt-to-income ratios. If coupled with down payments less than 20%, 0.5% of Private Mortgage Insurance (PMI) per year (calculated on the loan amount) will automatically be added to monthly housing costs, assuming a conventional loan scenario. There are generally no options significantly above 50% because that DTI often exceeds risk thresholds for most mortgage lenders.</p>
+             <p>In general, home-buyers should use lower percentages for more conservative estimates and higher percentages for more aggressive (and potentially riskier) estimates. A 20% DTI is easier to manage during stressful financial periods compared to, say, a 45% DTI. Home-buyers who are unsure of which option to use can try the Conventional Loan option, which uses the standard 28/36 Rule.</p>
+
+             <h3>Unaffordability</h3>
+             <p>If you cannot immediately afford the house you want, below are some steps that can be taken to increase house affordability, albeit with time and due diligence.</p>
+             <ul>
+                 <li><strong>Reduce debt in other areas</strong>—This may include anything from choosing a less expensive car to paying off student loans. In essence, lowering the standard of living in other areas can make it more possible to afford a particularly sought-after house.</li>
+                 <li><strong>Increase credit score</strong>—A better credit score can help buyers find a loan with a better interest rate. A lower interest rate helps the buyer's purchasing power.</li>
+                 <li><strong>Bigger down payment</strong>—Paying more upfront accomplishes two things. One, it directly increases the amount the buyer can afford. Two, a big down payment helps the buyer find a better interest rate and potentially avoid PMI, therefore increasing the buyer's purchasing power.</li>
+                 <li><strong>Save more</strong>—When desired DTI ratios aren't met, mortgage lenders may look at the amount of savings (reserves) of each borrower as a compensating factor.</li>
+                 <li><strong>Higher income</strong>—Although increasing income is easier said than done, it can culminate in the most drastic change in a borrower's ability to purchase a certain home. A large increase in salary immediately has a large impact on DTI ratios. Acquiring a higher income usually involves different combinations of achieving higher education, improving skills, networking, constant job searching, and typically lots of hard work.</li>
+             </ul>
+             <p>Working towards achieving one or more of these will increase a household's success rate in qualifying for the purchase of a home in accordance with lenders' standards of qualifications. If these prove to be difficult, home-buyers can maybe consider less expensive homes. Some people find better luck moving to different cities. If not, there are various housing assistance programs at the local level, though these are geared more towards low-income households. Renting is a viable alternative to owning a home, and it may be helpful to rent for the time being in order to set up a better buying situation in the future. For more information about or to do calculations involving rent, please visit the Rent Calculator.</p>
+
+        </section>
+
+        <footer>
+            <p>© <span id="currentYear"></span> Your Website Name. All Rights Reserved.</p>
+        </footer>
+
+    </div> <!-- /container -->
+
+    <script>
+        // === JavaScript Logic Start ===
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Element Selection ---
+            // DTI Calculator Elements
+            const incomeInput = document.getElementById('income');
+            const term1Input = document.getElementById('term1');
+            const rate1Input = document.getElementById('rate1');
+            const debtInput = document.getElementById('debt');
+            const downPayment1Input = document.getElementById('downPayment1');
+            const propTax1Input = document.getElementById('propTax1');
+            const hoa1Input = document.getElementById('hoa1');
+            const insurance1Input = document.getElementById('insurance1');
+            const dtiRatioSelect = document.getElementById('dtiRatio');
+            const customFrontDtiInput = document.getElementById('customFrontDti');
+            const customBackDtiInput = document.getElementById('customBackDti');
+            const customDtiInputs = document.querySelectorAll('.custom-dti-input');
+            const calculateDtiBtn = document.getElementById('calculateDtiBtn');
+            const resultsDtiDiv = document.getElementById('resultsDti').querySelector('.result-value');
+            const errorDtiDiv = document.getElementById('errorDti');
+
+            // Budget Calculator Elements
+            const budgetInput = document.getElementById('budget');
+            const term2Input = document.getElementById('term2');
+            const rate2Input = document.getElementById('rate2');
+            const downPayment2Input = document.getElementById('downPayment2');
+            const propTax2Input = document.getElementById('propTax2');
+            const hoa2Input = document.getElementById('hoa2');
+            const insurance2Input = document.getElementById('insurance2');
+            const maintenanceInput = document.getElementById('maintenance');
+            const calculateBudgetBtn = document.getElementById('calculateBudgetBtn');
+            const resultsBudgetDiv = document.getElementById('resultsBudget').querySelector('.result-value');
+            const errorBudgetDiv = document.getElementById('errorBudget');
+
+            // Footer Year
+             const currentYearSpan = document.getElementById('currentYear');
+             if (currentYearSpan) {
+                 currentYearSpan.textContent = new Date().getFullYear();
+             }
+
+            // --- Helper Functions ---
+            const getNum = (el, defaultVal = 0) => parseFloat(el.value) || defaultVal;
+            const formatCurrency = (value) => {
+                if (typeof value !== 'number' || !isFinite(value)) {
+                    return '$ ---,--.--';
+                }
+                return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }); // Show whole dollars
+            };
+            const showError = (errDiv, msg) => {
+                errDiv.textContent = msg;
+                errDiv.style.display = 'block';
+            };
+            const clearError = (errDiv) => {
+                errDiv.textContent = '';
+                errDiv.style.display = 'none';
+            };
+            const clearResult = (resDiv) => {
+                 resDiv.textContent = '$ ---,--.--';
+                 resDiv.classList.add('placeholder');
+            }
+             const displayResult = (resDiv, value) => {
+                 resDiv.textContent = formatCurrency(value);
+                 resDiv.classList.remove('placeholder');
+            }
+
+            // --- Event Listeners ---
+            calculateDtiBtn.addEventListener('click', calculateDtiAffordability);
+            calculateBudgetBtn.addEventListener('click', calculateBudgetAffordability);
+            dtiRatioSelect.addEventListener('change', handleDtiChange);
+
+             // Optional: Calculate on Enter keypress
+             const dtiInputs = [incomeInput, term1Input, rate1Input, debtInput, downPayment1Input, propTax1Input, hoa1Input, insurance1Input, customFrontDtiInput, customBackDtiInput];
+             const budgetInputs = [budgetInput, term2Input, rate2Input, downPayment2Input, propTax2Input, hoa2Input, insurance2Input, maintenanceInput];
+
+             dtiInputs.forEach(input => input.addEventListener('keypress', (e) => { if (e.key === 'Enter') calculateDtiAffordability(); }));
+             budgetInputs.forEach(input => input.addEventListener('keypress', (e) => { if (e.key === 'Enter') calculateBudgetAffordability(); }));
+
+
+            // --- Initialization ---
+             handleDtiChange(); // Set initial visibility of custom DTI fields
+
+            // --- Core Calculation Logic ---
+
+            function handleDtiChange() {
+                const showCustom = dtiRatioSelect.value === 'custom';
+                customDtiInputs.forEach(el => el.style.display = showCustom ? 'block' : 'none');
+            }
+
+            /** Calculates the monthly mortgage payment (Principal & Interest) */
+            function calculateMonthlyMortgage(loanAmount, annualRatePercent, termYears) {
+                if (loanAmount <= 0) return 0;
+                const monthlyRate = annualRatePercent / 100 / 12;
+                const numberOfPayments = termYears * 12;
+
+                if (numberOfPayments <= 0) return Infinity; // Invalid term
+
+                // Handle 0% interest rate
+                if (monthlyRate === 0) {
+                    return loanAmount / numberOfPayments;
+                }
+
+                // Standard mortgage payment formula
+                const payment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                return payment;
+            }
+
+            /** Calculates affordability based on Income/DTI */
+            function calculateDtiAffordability() {
+                clearError(errorDtiDiv);
+                clearResult(resultsDtiDiv);
+
+                // 1. Get Inputs
+                const income = getNum(incomeInput);
+                const term = getNum(term1Input);
+                const annualRate = getNum(rate1Input);
+                const monthlyDebt = getNum(debtInput);
+                const downPaymentPercent = getNum(downPayment1Input);
+                const propTaxPercent = getNum(propTax1Input);
+                const hoaPercent = getNum(hoa1Input); // % of home value per year
+                const insurancePercent = getNum(insurance1Input);
+                const dtiValue = dtiRatioSelect.value;
+
+                // 2. Validate Basic Inputs
+                if (income <= 0) { showError(errorDtiDiv, "Annual income must be positive."); return; }
+                if (term <= 0) { showError(errorDtiDiv, "Loan term must be positive."); return; }
+                if (annualRate < 0) { showError(errorDtiDiv, "Interest rate cannot be negative."); return; }
+                if (monthlyDebt < 0) { showError(errorDtiDiv, "Monthly debt cannot be negative."); return; }
+                if (downPaymentPercent < 0 || downPaymentPercent > 100) { showError(errorDtiDiv, "Down payment must be between 0% and 100%."); return; }
+                if (propTaxPercent < 0 || hoaPercent < 0 || insurancePercent < 0) { showError(errorDtiDiv, "Tax, HOA, and Insurance percentages cannot be negative."); return; }
+
+
+                // 3. Determine DTI Limits
+                let frontEndDtiLimit = 0.28; // Default Conventional
+                let backEndDtiLimit = 0.36;
+
+                if (dtiValue === 'custom') {
+                     frontEndDtiLimit = getNum(customFrontDtiInput) / 100;
+                     backEndDtiLimit = getNum(customBackDtiInput) / 100;
+                     if (frontEndDtiLimit <= 0 || frontEndDtiLimit > 0.5 || backEndDtiLimit <= 0 || backEndDtiLimit > 0.5) {
+                         showError(errorDtiDiv, "Custom DTI ratios must be between 1% and 50%."); return;
+                     }
+                      if (frontEndDtiLimit > backEndDtiLimit) {
+                         showError(errorDtiDiv, "Front-end DTI cannot be higher than back-end DTI."); return;
+                     }
+                } else if (dtiValue === '31/43') { // FHA
+                     frontEndDtiLimit = 0.31;
+                     backEndDtiLimit = 0.43;
+                } else if (dtiValue === '0/41') { // VA - No official front-end limit, but back-end is key
+                    frontEndDtiLimit = 1; // Effectively ignore front-end by setting to 100%
+                    backEndDtiLimit = 0.41;
+                } // else defaults to Conventional 28/36
+
+
+                // 4. Calculate Max Allowed Payments
+                const monthlyIncome = income / 12;
+                const maxFrontEndPayment = monthlyIncome * frontEndDtiLimit;
+                const maxBackEndTotalDebt = monthlyIncome * backEndDtiLimit;
+
+                // Max allowed for *housing* based on back-end limit
+                const maxHousingPaymentFromBackEnd = maxBackEndTotalDebt - monthlyDebt;
+
+                 if (maxHousingPaymentFromBackEnd <= 0) {
+                    showError(errorDtiDiv, "Existing monthly debt exceeds or meets the allowed back-end DTI limit. Cannot afford housing payment.");
+                    return;
+                }
+
+                // The actual limit for PITI + HOA is the minimum of the two calculations
+                const maxMonthlyHousingPaymentAllowed = Math.min(maxFrontEndPayment, maxHousingPaymentFromBackEnd);
+
+                 if (maxMonthlyHousingPaymentAllowed <= 0) {
+                     showError(errorDtiDiv, "Calculated maximum housing payment is zero or negative based on income and DTI rules.");
+                     return;
+                 }
+
+
+                // 5. Calculate Affordable House Price (Iterative or Direct Formula)
+                // Formula derived: AffordablePrice = maxMonthlyPayment / MonthlyCostFactorPerDollarOfPrice
+                // MonthlyCostFactor = (LoanRatio * MortgageFactor) + OtherCostFactor + PmiFactor
+
+                const monthlyRate = annualRate / 100 / 12;
+                const numberOfPayments = term * 12;
+                const downPaymentRatio = downPaymentPercent / 100;
+                const loanRatio = 1 - downPaymentRatio;
+
+                // Mortgage Factor (cost per dollar of *loan amount*)
+                let mortgageFactorPerLoanDollar;
+                 if (loanRatio <= 0) { // 100% down payment
+                     mortgageFactorPerLoanDollar = 0;
+                 } else if (monthlyRate === 0) {
+                    mortgageFactorPerLoanDollar = (numberOfPayments > 0) ? (1 / numberOfPayments) : Infinity;
+                } else {
+                    mortgageFactorPerLoanDollar = (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                }
+
+                 if (!isFinite(mortgageFactorPerLoanDollar)) {
+                     showError(errorDtiDiv, "Could not calculate mortgage factor (check term/rate)."); return;
+                 }
+
+                 // Mortgage Factor (cost per dollar of *house price*)
+                 const mortgageFactorPerHouseDollar = loanRatio * mortgageFactorPerLoanDollar;
+
+
+                // Other Costs Factor (Taxes, Insurance, HOA per dollar of house price per month)
+                const otherCostsFactor = (propTaxPercent / 100 + insurancePercent / 100 + hoaPercent / 100) / 12;
+
+                // PMI Factor (per dollar of house price per month) - Add if down payment < 20%
+                const pmiRate = 0.005; // Assumed 0.5% annual PMI rate
+                const pmiFactor = (downPaymentPercent < 20 && loanRatio > 0) ? (loanRatio * pmiRate / 12) : 0;
+
+                // Total Monthly Cost Factor per dollar of House Price
+                const totalMonthlyCostFactor = mortgageFactorPerHouseDollar + otherCostsFactor + pmiFactor;
+
+                if (totalMonthlyCostFactor <= 0) {
+                     // This might happen if rate is 0, term is long, and all other % costs are 0
+                    if (maxMonthlyHousingPaymentAllowed > 0) {
+                         showError(errorDtiDiv, "Affordability is potentially unlimited with zero costs. Please add estimates for tax/insurance.");
+                         // Or display a very large number? Or specific message?
+                         // displayResult(resultsDtiDiv, Infinity); // Or a large capped value
+                         return;
+                     } else {
+                          showError(errorDtiDiv, "Cannot calculate affordability with zero monthly cost factor.");
+                          return;
+                     }
+                }
+
+                // Calculate Affordable House Price
+                const affordableHousePrice = maxMonthlyHousingPaymentAllowed / totalMonthlyCostFactor;
+
+                if (!isFinite(affordableHousePrice) || affordableHousePrice <= 0) {
+                    showError(errorDtiDiv, "Could not calculate a valid affordable price. Check inputs (e.g., ensure costs > 0 if budget > 0).");
+                } else {
+                    displayResult(resultsDtiDiv, affordableHousePrice);
+                }
+            }
+
+            /** Calculates affordability based on Fixed Budget */
+            function calculateBudgetAffordability() {
+                clearError(errorBudgetDiv);
+                clearResult(resultsBudgetDiv);
+
+                // 1. Get Inputs
+                const budget = getNum(budgetInput);
+                const term = getNum(term2Input);
+                const annualRate = getNum(rate2Input);
+                const downPaymentPercent = getNum(downPayment2Input);
+                const propTaxPercent = getNum(propTax2Input);
+                const hoaPercent = getNum(hoa2Input); // % of home value per year
+                const insurancePercent = getNum(insurance2Input);
+                const maintenancePercent = getNum(maintenanceInput);
+
+                // 2. Validate Basic Inputs
+                if (budget <= 0) { showError(errorBudgetDiv, "Monthly budget must be positive."); return; }
+                if (term <= 0) { showError(errorBudgetDiv, "Loan term must be positive."); return; }
+                if (annualRate < 0) { showError(errorBudgetDiv, "Interest rate cannot be negative."); return; }
+                if (downPaymentPercent < 0 || downPaymentPercent > 100) { showError(errorBudgetDiv, "Down payment must be between 0% and 100%."); return; }
+                 if (propTaxPercent < 0 || hoaPercent < 0 || insurancePercent < 0 || maintenancePercent < 0) { showError(errorBudgetDiv, "Tax, HOA, Insurance, and Maintenance percentages cannot be negative."); return; }
+
+
+                // 3. Calculate Affordable House Price
+                // Formula: AffordablePrice = budget / MonthlyCostFactorPerDollarOfPrice
+                // MonthlyCostFactor = (LoanRatio * MortgageFactor) + OtherCostFactor + MaintenanceFactor + PmiFactor
+
+                const monthlyRate = annualRate / 100 / 12;
+                const numberOfPayments = term * 12;
+                const downPaymentRatio = downPaymentPercent / 100;
+                const loanRatio = 1 - downPaymentRatio;
+
+                // Mortgage Factor (cost per dollar of *loan amount*)
+                 let mortgageFactorPerLoanDollar;
+                 if (loanRatio <= 0) { // 100% down payment
+                     mortgageFactorPerLoanDollar = 0;
+                 } else if (monthlyRate === 0) {
+                    mortgageFactorPerLoanDollar = (numberOfPayments > 0) ? (1 / numberOfPayments) : Infinity;
+                } else {
+                    mortgageFactorPerLoanDollar = (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+                }
+
+                 if (!isFinite(mortgageFactorPerLoanDollar)) {
+                     showError(errorBudgetDiv, "Could not calculate mortgage factor (check term/rate)."); return;
+                 }
+
+                 // Mortgage Factor (cost per dollar of *house price*)
+                 const mortgageFactorPerHouseDollar = loanRatio * mortgageFactorPerLoanDollar;
+
+
+                // Other Costs Factor (Taxes, Insurance, HOA per dollar of house price per month)
+                const otherCostsFactor = (propTaxPercent / 100 + insurancePercent / 100 + hoaPercent / 100) / 12;
+
+                // Maintenance Factor (per dollar of house price per month)
+                const maintenanceFactor = (maintenancePercent / 100) / 12;
+
+                // PMI Factor (per dollar of house price per month)
+                const pmiRate = 0.005; // Assumed 0.5% annual PMI rate
+                const pmiFactor = (downPaymentPercent < 20 && loanRatio > 0) ? (loanRatio * pmiRate / 12) : 0;
+
+                 // Total Monthly Cost Factor per dollar of House Price
+                const totalMonthlyCostFactor = mortgageFactorPerHouseDollar + otherCostsFactor + maintenanceFactor + pmiFactor;
+
+
+                 if (totalMonthlyCostFactor <= 0) {
+                     showError(errorBudgetDiv, "Monthly cost factor is zero or negative. Cannot calculate affordability with the given inputs (e.g., ensure some costs exist if budget is positive).");
+                     return;
+                 }
+
+                 // Calculate Affordable House Price
+                const affordableHousePrice = budget / totalMonthlyCostFactor;
+
+                if (!isFinite(affordableHousePrice) || affordableHousePrice <= 0) {
+                    showError(errorBudgetDiv, "Could not calculate a valid affordable price. Check inputs.");
+                } else {
+                    displayResult(resultsBudgetDiv, affordableHousePrice);
+                }
+            }
+
+
+        });
+        // === JavaScript Logic End ===
+    </script>
+
+</body>
+</html>

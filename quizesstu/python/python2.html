@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- UPDATED TITLE -->
+    <title>Python Operators & Expressions Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* --- CSS styles remain unchanged from the previous version --- */
+        /* --- (Paste the full CSS from the previous response here) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); /* Adjusted blue/purple gradient */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        body::before { /* Subtle pattern */
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+        html.dark body { background: linear-gradient(135deg, #1e3a8a 0%, #5b21b6 100%); } /* Darker blue/purple */
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        html.dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; }
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(99, 102, 241, 0.5); }
+        .option.selected { border-color: #6366f1; background: linear-gradient(to right, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15)); box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2); }
+        .option.correct { background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important; border-color: #10b981 !important; color: #047857 !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: #ef4444 !important; color: #b91c1c !important; cursor: default; }
+        .option.disabled { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
+        .option .feedback-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; opacity: 0; transition: opacity 0.3s ease; }
+        .option .feedback-icon .icon-correct { color: #10b981; }
+        .option .feedback-icon .icon-incorrect { color: #ef4444; }
+        .option.correct .feedback-icon .icon-correct, .option.incorrect .feedback-icon .icon-incorrect { opacity: 1; }
+        .option.correct:not(.selected) .feedback-icon .icon-correct { opacity: 1; }
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark .progress-container { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #34d399, #6366f1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, #6366f1, #8b5cf6); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #4f46e5, #7c3aed); }
+        .btn-secondary { background-color: #e5e7eb; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover:not(:disabled) { background-color: #d1d5db; }
+        .btn-submit { background: linear-gradient(to right, #10b981, #2dd4bf); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #059669, #14b8a6); }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #a78bfa; }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+        html.dark .explanation { background-color: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-left-color: #4f46e5; }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #272822; border: 1px solid #444; font-size: 0.9em; }
+        html.dark .code-snippet-container { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .python-logo img, .python-logo svg { animation: pulseLogo 2.5s infinite ease-in-out; }
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3)); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #facc15 !important; border-color: #facc15 !important; }
+        html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #4f46e5; outline-offset: 2px; }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #a5b4fc; }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #6b7280; }
+        html.dark .history-date { color: #9ca3af; }
+        html.dark .text-gray-500 { color: #9ca3af; }
+        html.dark .text-gray-600 { color: #cbd5e1; }
+        html.dark .text-gray-700 { color: #e2e8f0; }
+        html.dark .text-gray-800 { color: #f1f5f9; }
+        html.dark .text-indigo-900 { color: #c7d2fe; }
+        html.dark .text-indigo-800 { color: #a5b4fc; } /* Adjusted for history title */
+        html.dark .text-indigo-700 { color: #a5b4fc; }
+        html.dark .text-indigo-600 { color: #a5b4fc; }
+        html.dark .text-indigo-300 { color: #a5b4fc; } /* Adjusted for history title */
+        html.dark .text-indigo-200 { color: #c7d2fe; } /* Added for start screen title */
+        html.dark .text-red-600 { color: #f87171; } /* Clear history button */
+        html.dark .text-red-400 { color: #fb7185; } /* Clear history button */
+        html.dark .bg-gray-200 { background-color: #4b5563;}
+        html.dark .bg-indigo-50 { background-color: #3730a3;}
+        html.dark .bg-indigo-900\/30 { background-color: rgba(55, 48, 163, 0.3); } /* Performance msg bg */
+        html.dark .border-indigo-100 { border-color: #a5b4fc; }
+        html.dark .border-indigo-700\/50 { border-color: rgba(99, 102, 241, 0.5); }
+        html.dark .text-green-700 { color: #a7f3d0; } /* Review correct answer text */
+        html.dark .text-green-500 { color: #34d399; } /* Review correct answer icon */
+        html.dark .text-red-700 { color: #fda4af; } /* Review incorrect answer text */
+        html.dark .text-red-500 { color: #f87171; } /* Review incorrect answer icon */
+        html.dark .bg-green-50 { background-color: rgba(16, 185, 129, 0.1); } /* Review item correct bg */
+        html.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.1); } /* Review item incorrect bg */
+        html.dark .bg-green-100 { background-color: rgba(5, 150, 105, 0.2); } /* Review user correct highlight */
+        html.dark .dark\:ring-green-600 { --tw-ring-color: #10b981; } /* Review user correct highlight */
+        html.dark .dark\:bg-green-800\/50 { background-color: rgba(6, 95, 70, 0.5); } /* Review user correct highlight */
+        html.dark .dark\:bg-green-900\/30 { background-color: rgba(6, 78, 59, 0.3); } /* Review item correct bg */
+        html.dark .dark\:bg-red-900\/30 { background-color: rgba(159, 18, 57, 0.3); } /* Review item incorrect bg */
+        html.dark .dark\:text-gray-100 { color: #f1f5f9; } /* Review question text */
+        html.dark .dark\:text-gray-300 { color: #d1d5db; } /* Review default option text */
+        html.dark .dark\:text-gray-400 { color: #9ca3af; } /* Review "Your Answer:", option letter, history date */
+        html.dark .dark\:border-gray-700 { border-color: #374151; } /* Review explanation top border */
+        html.dark .dark\:text-indigo-300 { color: #a5b4fc; } /* Review explanation title */
+        html.dark .option.selected { /* Dark mode selected option text */ color: #e0e7ff; }
+        html.dark .option.correct { /* Dark mode correct option text */ color: #d1fae5 !important; }
+        html.dark .option.incorrect { /* Dark mode incorrect option text */ color: #fee2e2 !important; }
+        html.dark .option.incorrect.selected { /* Dark mode user incorrect option text */ color: #fee2e2 !important; }
+        /* --- End of CSS --- */
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- UPDATED HEADER -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Python Operators & Expressions Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your knowledge of Python's operators!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready for Operator Action?</h2>
+             <!-- UPDATED DESCRIPTION -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers arithmetic, comparison, logical, assignment, membership, and identity operators.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- UPDATED HISTORY TITLE -->
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts (Operators)</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <!-- Status Badges -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4"></div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;"></div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden"><i class="fas fa-arrow-left mr-2"></i> Prev</button>
+                <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i></button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>Submit <i class="fas fa-check-circle ml-2"></i></button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+             <canvas id="confetti-canvas"></canvas>
+             <!-- UPDATED RESULTS TITLE -->
+             <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Quiz Results: Operators</h2>
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Stats -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center"><i class="fas fa-search mr-2"></i> Review Answers</button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center"><i class="fas fa-redo mr-2"></i> Restart Quiz</button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm"><i class="fas fa-share-alt mr-2"></i> Share Score</button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- UPDATED REVIEW TITLE -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Answers: Operators</h2>
+                <div id="review-questions" class="space-y-8"></div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center"><i class="fas fa-arrow-left mr-2"></i> Back to Results</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // Part 2: Operators and Expressions Questions
+            { question: "What is the result of `10 + 3 * 2` in Python?", options: ["26", "16", "20", "Error"], correctAnswer: 1, explanation: "Multiplication (*) has higher precedence than addition (+), so `3 * 2` is evaluated first (6), then `10 + 6` equals 16." },
+            { question: "Which operator is used for exponentiation (raising to the power of)?", options: ["^", "**", "pow()", "exp()"], correctAnswer: 1, explanation: "The `**` operator is used for exponentiation. `2 ** 3` is 8." },
+            { question: "What will `15 // 4` evaluate to?", options: ["3.75", "3", "4", "3.0"], correctAnswer: 1, explanation: "The `//` operator performs floor division, returning the whole number part of the division result. 15 divided by 4 is 3 with a remainder." },
+            { question: "Which operator calculates the remainder of a division?", options: ["/", "//", "%", "rem()"], correctAnswer: 2, explanation: "The modulo operator `%` returns the remainder. `15 % 4` is 3." },
+            { question: "What is the result of the expression `5 == '5'`?", options: ["True", "False", "Error", "Sometimes True"], correctAnswer: 1, explanation: "The `==` operator checks for equality of value. An integer (5) is not equal in value to a string ('5')." },
+            { question: "Which operator checks if two variables refer to the exact same object in memory?", options: ["==", "===", "is", "equals()"], correctAnswer: 2, explanation: "`is` checks for identity (same object), while `==` checks for equality (same value)." },
+            { question: "Evaluate the logical expression: `True and not False`", options: ["True", "False", "Error", "None"], correctAnswer: 0, explanation: "`not False` evaluates to `True`. `True and True` evaluates to `True`." },
+            { question: "What is the result of `False or True`?", options: ["True", "False", "Error", "0"], correctAnswer: 0, explanation: "The `or` operator returns `True` if at least one of its operands is `True`." },
+            { question: "Consider `x = 10`. What is the value of `x` after `x += 5`?", options: ["10", "5", "15", "Error"], correctAnswer: 2, explanation: "`x += 5` is shorthand for `x = x + 5`. So, `x` becomes `10 + 5`, which is 15." },
+            { question: "Which assignment operator is used to multiply and assign?", options: ["*=", "=*", "=>", "**="], correctAnswer: 0, explanation: "`*=` is the multiplication assignment operator (e.g., `x *= 3` is `x = x * 3`)." },
+            { question: "What does the `in` operator check for?", options: ["Identity", "Type equality", "Value equality", "Membership"], correctAnswer: 3, explanation: "The `in` operator checks if a value is present within a sequence (like a list, tuple, or string)." },
+            { question: "What is the output of `print('a' in 'banana')`?", options: ["True", "False", "Error", "1"], correctAnswer: 0, explanation: "The character 'a' is present multiple times within the string 'banana', so the `in` operator returns `True`." },
+            { question: "What is the output of `print(5 > 3 and 10 != 10)`?", options: ["True", "False", "Error", "None"], correctAnswer: 1, explanation: "`5 > 3` is `True`. `10 != 10` is `False`. `True and False` evaluates to `False`." },
+            { question: "Which operator has higher precedence: `and` or `or`?", options: ["and", "or", "They have the same precedence", "Depends on context"], correctAnswer: 0, explanation: "In boolean logic, `and` has higher precedence than `or`, similar to how multiplication has higher precedence than addition." },
+            { question: "What is the value of `y` after this code?\n`x = 5\ny = x\nx = 10`", code: "x = 5\ny = x\nx = 10", options: ["5", "10", "Error", "None"], correctAnswer: 0, explanation: "When `y = x` is executed, `y` gets the value `5`. Changing `x` later does *not* affect `y` because integers are immutable." },
+            { question: "What is the result of `not (5 > 10)`?", options: ["True", "False", "Error", "-5"], correctAnswer: 0, explanation: "`5 > 10` is `False`. `not False` evaluates to `True`." },
+            { question: "Consider `a = [1, 2]` and `b = [1, 2]`. What is `a == b`?", options: ["True", "False", "Error", "Sometimes True"], correctAnswer: 0, explanation: "`==` compares the *values* of the lists. Since both lists contain the same elements in the same order, they are equal in value." },
+            { question: "Consider `a = [1, 2]` and `b = [1, 2]`. What is `a is b`?", options: ["True", "False", "Error", "Sometimes True"], correctAnswer: 1, explanation: "`is` compares the *identity* (memory location). `a` and `b` are two separate list objects, even though they contain the same values, so `a is b` is `False`." },
+            { question: "What is the result of `(2 + 3) * 4`?", options: ["14", "20", "10", "Error"], correctAnswer: 1, explanation: "Parentheses `()` have the highest precedence. `2 + 3` is evaluated first (5), then `5 * 4` equals 20." },
+            { question: "Which expression checks if `num` is NOT between 10 and 20 (inclusive)?", options: ["num < 10 and num > 20", "num <= 10 or num >= 20", "not (10 <= num <= 20)", "num not in range(10, 21)"], correctAnswer: 2, explanation: "`10 <= num <= 20` checks if `num` IS between 10 and 20. Applying `not` to this expression correctly checks if it's outside that range. Option 3 is a common way to express this." }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // --- UPDATED localStorage Keys ---
+        const QUIZ_STATE_KEY = 'pythonQuizState_Operators';
+        const SCORE_HISTORY_KEY = 'pythonQuizScoreHistory_Operators';
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             if (typeof Prism !== 'undefined') {
+                 // Use timeout to ensure DOM updates before re-highlighting
+                 setTimeout(() => Prism.highlightAll(), 0);
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true };
+                 // Use the specific key for this quiz
+                 localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+        function loadState() {
+             // Use the specific key for this quiz
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log(`In-progress state loaded for ${QUIZ_STATE_KEY}.`);
+                        return true;
+                    } else {
+                         console.warn(`Saved state for ${QUIZ_STATE_KEY} is invalid.`);
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error(`Failed to parse saved state for ${QUIZ_STATE_KEY}:`, e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+        function clearState() {
+            // Use the specific key for this quiz
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log(`In-progress state cleared for ${QUIZ_STATE_KEY}.`);
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                // Use the specific key for this quiz's history
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error(`Failed to load score history for ${SCORE_HISTORY_KEY}:`, e);
+                scoreHistory = [];
+            }
+        }
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                // Use the specific key for this quiz's history
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error(`Failed to save score history for ${SCORE_HISTORY_KEY}:`, e); }
+        }
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory(); // Saves using the correct key
+            displayScoreHistory();
+        }
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear the Operator quiz history? This cannot be undone.")) {
+                 scoreHistory = [];
+                 // Use the specific key for this quiz's history
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log(`Score history cleared for ${SCORE_HISTORY_KEY}.`);
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; // Clear current list
+            if (scoreHistory.length === 0) {
+                // Update empty message
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous Operator attempts recorded.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) { // Tries to load state using QUIZ_STATE_KEY
+                 console.log(`Resuming ${QUIZ_STATE_KEY}.`);
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 console.log(`Starting new ${QUIZ_STATE_KEY}.`);
+                 currentQuestionIndex = 0; score = 0; userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0; questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder);
+                 startTime = Date.now();
+             }
+            startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block'; quizActive = true;
+            loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); saveState(); // Saves state using QUIZ_STATE_KEY
+        }
+
+        function loadQuestion(index) {
+             // --- This function's core logic remains the same ---
+             // It uses the globally scoped quizData, questionsOrder, userAnswers etc.
+             if (index < 0 || index >= quizData.length) return;
+             const questionIndexInOriginalData = questionsOrder[index];
+             const question = quizData[questionIndexInOriginalData];
+             if (!question) return;
+             questionCard.classList.remove('animate__animated', 'animate__fadeInUp'); void questionCard.offsetWidth; questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+             questionText.textContent = `${index + 1}. ${question.question}`; feedbackMessage.textContent = ''; codeSnippetArea.innerHTML = '';
+             if (question.code) { /* ... code snippet handling ... */
+                const pre = document.createElement('pre'); pre.className = 'code-snippet-container'; const code = document.createElement('code'); code.className = 'language-python'; code.textContent = question.code; pre.appendChild(code); codeSnippetArea.appendChild(pre); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightElement(code), 0); }
+             }
+             optionsContainer.innerHTML = ''; const selectedAnswerIndex = userAnswers[index];
+             question.options.forEach((optionText, optionIndex) => { /* ... option creation and event listeners ... */
+                 const optionElement = document.createElement('div'); optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300'; optionElement.setAttribute('role', 'radio'); optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false'); optionElement.tabIndex = 0; const label = document.createElement('span'); label.className = 'flex-grow mr-4'; label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`; const feedbackIconContainer = document.createElement('span'); feedbackIconContainer.className = 'feedback-icon text-xl'; feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>`; optionElement.appendChild(label); optionElement.appendChild(feedbackIconContainer); const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } }; optionElement.addEventListener('click', handleSelection); optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } }); optionsContainer.appendChild(optionElement);
+             });
+             if (selectedAnswerIndex !== null) { showFeedback(index, selectedAnswerIndex); } else { nextBtn.disabled = true; if (index === quizData.length - 1) submitBtn.disabled = true; }
+             updateProgress(index); updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+             // --- This function's core logic remains the same ---
+             if (userAnswers[displayIndex] !== null) return;
+             userAnswers[displayIndex] = selectedOptionIndex;
+             showFeedback(displayIndex, selectedOptionIndex);
+             nextBtn.disabled = false;
+             if (displayIndex === quizData.length - 1) { submitBtn.disabled = false; }
+             saveState(); // Saves state using QUIZ_STATE_KEY
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             // --- This function's core logic remains the same ---
+             const originalQuestionIndex = questionsOrder[displayIndex]; const question = quizData[originalQuestionIndex]; const isCorrect = selectedOptionIndex === question.correctAnswer; const options = optionsContainer.querySelectorAll('.option');
+             options.forEach((optElement, currentOptionIndex) => { /* ... feedback styling logic ... */
+                optElement.classList.add('disabled'); optElement.style.cursor = 'default'; optElement.tabIndex = -1; const iconCorrect = optElement.querySelector('.icon-correct'); const iconIncorrect = optElement.querySelector('.icon-incorrect'); if (iconCorrect) iconCorrect.style.opacity = '0'; if (iconIncorrect) iconIncorrect.style.opacity = '0'; if (currentOptionIndex === selectedOptionIndex) { optElement.classList.add('selected'); optElement.setAttribute('aria-checked', 'true'); if (isCorrect) { optElement.classList.add('correct'); if (iconCorrect) iconCorrect.style.opacity = '1'; feedbackMessage.textContent = "Correct!"; feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse'; } else { optElement.classList.add('incorrect'); if (iconIncorrect) iconIncorrect.style.opacity = '1'; feedbackMessage.textContent = "Incorrect!"; feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX'; const correctOptionElement = options[question.correctAnswer]; if (correctOptionElement) { correctOptionElement.classList.add('correct'); const correctOptIcon = correctOptionElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } } else { optElement.setAttribute('aria-checked', 'false'); if (currentOptionIndex === question.correctAnswer && !isCorrect) { optElement.classList.add('correct'); const correctOptIcon = optElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } }
+            });
+            setTimeout(() => { feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX'); }, 1000);
+        }
+
+        function updateProgress(index) {
+             // --- This function's core logic remains the same ---
+             const totalQuestions = quizData.length; const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0; progressBar.style.width = `${progress}%`; questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+        function updateNavigation() {
+            // --- This function's core logic remains the same ---
+             const isFirstQuestion = currentQuestionIndex === 0; const isLastQuestion = currentQuestionIndex === quizData.length - 1; prevBtn.classList.toggle('hidden', isFirstQuestion); navSpacer.classList.toggle('hidden', !isFirstQuestion); nextBtn.classList.toggle('hidden', isLastQuestion); submitBtn.classList.toggle('hidden', !isLastQuestion); const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null; nextBtn.disabled = !currentAnswerSelected; if (isLastQuestion) submitBtn.disabled = !currentAnswerSelected;
+        }
+        function nextQuestion() {
+             // --- This function's core logic remains the same ---
+             if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); }
+        }
+        function prevQuestion() {
+             // --- This function's core logic remains the same ---
+             if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+             // --- This function's core logic remains the same ---
+             clearInterval(timerInterval); if (!quizActive) return; const updateTimerDisplay = () => { const now = Date.now(); timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed; if (timeRemaining <= 0) { timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`; timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); clearInterval(timerInterval); if(quizActive) { submitQuiz(true); } return; } timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`; timerElement.classList.toggle('timer-warning', timeRemaining <= 60); timerElement.classList.remove('text-red-500', 'dark:text-red-400'); if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); } }; updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+             if (!quizActive && !timeUp) return; quizActive = false; clearInterval(timerInterval);
+             score = 0; userAnswers.forEach((answerIndex, displayIdx) => { if (answerIndex !== null) { const originalQuestionIndex = questionsOrder[displayIdx]; if (answerIndex === quizData[originalQuestionIndex].correctAnswer) score++; } });
+             const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+             // Add attempt to score history (uses the correct key via the function)
+             addScoreToHistory({ score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)), timestamp: Date.now(), timeTaken: finalTime });
+             // UI Updates
+             quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+             scoreValue.textContent = `${score}/${totalQuestions}`; accuracyValue.textContent = `${accuracy.toFixed(1)}%`; accuracyBar.style.width = `${accuracy}%`; timeTaken.textContent = formatTime(finalTime);
+             // Performance Message
+             let performanceText = ""; let scoreLevel = 'low';
+             if (timeUp) { /* ... time up message ... */
+                 performanceText = "Time's up! Operator results:"; if (accuracy >= 85) scoreLevel = 'high'; else if (accuracy >= 60) scoreLevel = 'medium';
+             } else { /* ... score based message ... */
+                if (accuracy >= 95) { performanceText = "Outstanding Operator skills!"; scoreLevel = 'high'; } else if (accuracy >= 85) { performanceText = "Excellent work with operators!"; scoreLevel = 'high'; } else if (accuracy >= 70) { performanceText = "Great job on operators!"; scoreLevel = 'medium'; } else if (accuracy >= 50) { performanceText = "Good effort! Keep practicing operators."; scoreLevel = 'medium'; } else { performanceText = "Keep studying operators! Review & try again."; scoreLevel = 'low'; }
+             }
+             performanceMessage.textContent = performanceText; scoreCircle.setAttribute('data-score-level', scoreLevel);
+             // Confetti
+             if (scoreLevel === 'high' && !timeUp) triggerConfetti();
+             // Clear IN-PROGRESS state (uses the correct key via the function)
+             clearState();
+        }
+
+        // --- Confetti ---
+        function triggerConfetti() {
+            // --- This function's core logic remains the same ---
+            if (typeof confetti !== 'function') return; const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true }); myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 }); setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200);
+        }
+
+        // --- Review Screen ---
+        function showReview() {
+             // --- This function's core logic remains the same ---
+             resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block'; reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn'); reviewQuestions.innerHTML = '';
+             questionsOrder.forEach((originalQuestionIndex, displayIndex) => { /* ... review item creation logic ... */
+                const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer; const reviewItem = document.createElement('div'); reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : 'border-red-500 bg-red-50 dark:bg-red-900/30' }`; let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`; if (question.code) { const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">"); reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-python">${escapedCode}</code></pre>`; } reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`; question.options.forEach((optionText, i) => { let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = ""; if (i === question.correctAnswer) { liClass = "font-semibold text-green-700 dark:text-green-400"; iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; } if (i === userAnswerIndex) { if (isCorrect) liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50"; else { liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; } } reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${optionText}</span>${iconHTML}</li>`; }); reviewHTML += `</ul>`; if (question.explanation) { reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700"><strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p></div>`; } reviewItem.innerHTML = reviewHTML; reviewQuestions.appendChild(reviewItem);
+            });
+             if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0); }
+        }
+        function showResultsScreen() {
+            // --- This function's core logic remains the same ---
+             reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+            // --- This function's core logic remains the same ---
+             // It clears in-progress state, resets vars, resets UI, and shows history again
+             currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+             progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = '';
+             resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block';
+             startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn');
+             nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.remove('hidden');
+             displayScoreHistory(); // Ensure history is shown on start screen
+             console.log(`Operator quiz reset for ${QUIZ_STATE_KEY}.`);
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+            // --- This function's core logic remains the same ---
+            // Updates text slightly for context
+             const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Python Operators Quiz!`; const shareUrl = window.location.href;
+             if (navigator.share) { try { await navigator.share({ title: 'My Python Operator Quiz Result!', text: shareText, url: shareUrl }); } catch (err) { console.error('Error sharing:', err); } } else { copyToClipboard(`${shareText} ${shareUrl}`); }
+         }
+        function copyToClipboard(text) {
+            // --- This function's core logic remains the same ---
+            navigator.clipboard.writeText(text).then(() => { alert("Results copied!"); }).catch(err => { console.error('Could not copy: ', err); alert("Failed to copy."); });
+        }
+
+        // --- Event Listeners ---
+        // --- Setup remains the same ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+        // --- Setup remains the same ---
+         document.addEventListener('keydown', (e) => { if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); } else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); } else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); } else if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); } else if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); } else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); } else if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); } else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); } else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); } });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // --- Logic remains the same, uses the correct keys ---
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory(); // Loads using SCORE_HISTORY_KEY
+            displayScoreHistory(); // Displays loaded history
+            quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            console.log("Operator Quiz application initialized.");
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

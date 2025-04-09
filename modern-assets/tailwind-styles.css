@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans text-gray-800 bg-gray-50;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold;
+  }
+}
+
+/* Custom components */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500;
+  }
+  
+  .btn-accent {
+    @apply bg-accent-600 text-white hover:bg-accent-700 focus:ring-accent-500;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-custom overflow-hidden transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-custom-lg hover:-translate-y-1;
+  }
+  
+  .nav-link {
+    @apply text-gray-700 hover:text-primary-600 transition-colors duration-300;
+  }
+  
+  .gradient-bg-primary {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-500;
+  }
+  
+  .gradient-bg-secondary {
+    @apply bg-gradient-to-r from-secondary-600 to-accent-500;
+  }
+  
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-500;
+  }
+  
+  .section {
+    @apply py-16 px-4 sm:px-6 lg:px-8;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .backdrop-blur {
+    backdrop-filter: blur(8px);
+  }
+  
+  .glass-effect {
+    @apply bg-white bg-opacity-20 backdrop-blur border border-white border-opacity-20 shadow-custom;
+  }
+}
+
+/* Custom animations */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-400;
+}
+
+/* Modern button styles */
+.modern-button {
+  @apply relative overflow-hidden rounded-lg px-6 py-3 font-medium text-white transition-all duration-300;
+}
+
+.modern-button::before {
+  content: '';
+  @apply absolute inset-0 w-full h-full bg-white bg-opacity-20 transform scale-x-0 origin-left transition-transform duration-300;
+}
+
+.modern-button:hover::before {
+  @apply scale-x-100;
+}
+
+/* Card hover effects */
+.card-hover-effect {
+  @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-2;
+}
+
+/* Image hover effects */
+.image-hover-zoom {
+  @apply overflow-hidden;
+}
+
+.image-hover-zoom img {
+  @apply transition-transform duration-500 hover:scale-110;
+}
+
+/* Custom form elements */
+.form-input {
+  @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+/* Custom navigation */
+.modern-nav {
+  @apply fixed top-0 left-0 right-0 z-50 transition-all duration-300;
+}
+
+.nav-scrolled {
+  @apply bg-white shadow-md;
+}
+
+/* Custom carousel */
+.modern-carousel {
+  @apply relative overflow-hidden rounded-xl;
+}
+
+.carousel-caption-modern {
+  @apply absolute inset-0 flex flex-col items-center justify-center text-white text-center p-4 bg-black bg-opacity-40;
+}
+
+/* Footer styles */
+.modern-footer {
+  @apply bg-gray-900 text-white py-12;
+}
+
+/* Contact info */
+.contact-info {
+  @apply flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-300;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .btn {
+    @apply px-4 py-2 text-sm;
+  }
+  
+  .section {
+    @apply py-10;
+  }
+}

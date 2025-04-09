@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Fat Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #070606;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #3a5a78;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: #3a5a78;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #3a5a78;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .gender-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .gender-option {
+            flex: 1;
+        }
+        
+        .gender-option input {
+            display: none;
+        }
+        
+        .gender-option label {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .gender-option input:checked + label {
+            background-color: #3a5a78;
+            color: white;
+            border-color: #3a5a78;
+        }
+        
+        button.calculate {
+            background-color: #3a5a78;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button.calculate:hover {
+            background-color: #2c4760;
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .result h2 {
+            color: #3a5a78;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-value {
+            font-size: 26px;
+            color: #3a5a78;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .category {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .category-essential {
+            color: #2e7d32;
+        }
+        
+        .category-athletic {
+            color: #388e3c;
+        }
+        
+        .category-fitness {
+            color: #43a047;
+        }
+        
+        .category-average {
+            color: #ffa000;
+        }
+        
+        .category-obese {
+            color: #e53935;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .info-table th, .info-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .info-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .error {
+            color: #e53935;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .navy-input {
+            margin-top: 5px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .navy-input input {
+            flex: 1;
+        }
+        
+        .measurements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .measurements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Body Fat Calculator</h1>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="navy">Navy Formula</button>
+            <button class="tab" data-tab="skinfold">Skinfold Method</button>
+            <button class="tab" data-tab="bmi">BMI Method</button>
+        </div>
+        
+        <!-- Navy Formula Tab -->
+        <div class="tab-content active" id="navy-tab">
+            <form id="navy-form">
+                <div class="gender-group">
+                    <div class="gender-option">
+                        <input type="radio" id="navy-male" name="navy-gender" value="male" checked>
+                        <label for="navy-male">Male</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" id="navy-female" name="navy-gender" value="female">
+                        <label for="navy-female">Female</label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Unit System</label>
+                    <select id="navy-unit">
+                        <option value="metric">Metric (cm, kg)</option>
+                        <option value="imperial">Imperial (in, lbs)</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="navy-height">Height</label>
+                    <input type="number" id="navy-height" step="0.1" required>
+                    <div id="navy-height-error" class="error">Please enter a valid height</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="navy-weight">Weight</label>
+                    <input type="number" id="navy-weight" step="0.1" required>
+                    <div id="navy-weight-error" class="error">Please enter a valid weight</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="navy-neck">Neck Circumference</label>
+                    <input type="number" id="navy-neck" step="0.1" required>
+                    <div id="navy-neck-error" class="error">Please enter a valid measurement</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="navy-waist">Waist Circumference</label>
+                    <input type="number" id="navy-waist" step="0.1" required>
+                    <div id="navy-waist-error" class="error">Please enter a valid measurement</div>
+                </div>
+                
+                <div class="input-group" id="navy-hip-group">
+                    <label for="navy-hip">Hip Circumference (Females Only)</label>
+                    <input type="number" id="navy-hip" step="0.1">
+                    <div id="navy-hip-error" class="error">Please enter a valid measurement</div>
+                </div>
+                
+                <button type="submit" class="calculate">Calculate Body Fat</button>
+            </form>
+        </div>
+        
+        <!-- Skinfold Method Tab -->
+        <div class="tab-content" id="skinfold-tab">
+            <form id="skinfold-form">
+                <div class="gender-group">
+                    <div class="gender-option">
+                        <input type="radio" id="skinfold-male" name="skinfold-gender" value="male" checked>
+                        <label for="skinfold-male">Male</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" id="skinfold-female" name="skinfold-gender" value="female">
+                        <label for="skinfold-female">Female</label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Measurement Unit</label>
+                    <select id="skinfold-unit">
+                        <option value="mm">Millimeters (mm)</option>
+                    </select>
+                </div>
+                
+                <div class="measurements-grid">
+                    <div class="input-group">
+                        <label for="skinfold-chest">Chest</label>
+                        <input type="number" id="skinfold-chest" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="skinfold-abdominal">Abdominal</label>
+                        <input type="number" id="skinfold-abdominal" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="skinfold-thigh">Thigh</label>
+                        <input type="number" id="skinfold-thigh" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="skinfold-tricep">Tricep</label>
+                        <input type="number" id="skinfold-tricep" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="skinfold-subscapular">Subscapular</label>
+                        <input type="number" id="skinfold-subscapular" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="skinfold-suprailiac">Suprailiac</label>
+                        <input type="number" id="skinfold-suprailiac" step="0.1" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="skinfold-midaxillary">Midaxillary</label>
+                        <input type="number" id="skinfold-midaxillary" step="0.1" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="calculate">Calculate Body Fat</button>
+            </form>
+        </div>
+        
+        <!-- BMI Method Tab -->
+        <div class="tab-content" id="bmi-tab">
+            <form id="bmi-form">
+                <div class="gender-group">
+                    <div class="gender-option">
+                        <input type="radio" id="bmi-male" name="bmi-gender" value="male" checked>
+                        <label for="bmi-male">Male</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" id="bmi-female" name="bmi-gender" value="female">
+                        <label for="bmi-female">Female</label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Unit System</label>
+                    <select id="bmi-unit">
+                        <option value="metric">Metric (cm, kg)</option>
+                        <option value="imperial">Imperial (in, lbs)</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="bmi-height">Height</label>
+                    <input type="number" id="bmi-height" step="0.1" required>
+                    <div id="bmi-height-error" class="error">Please enter a valid height</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="bmi-weight">Weight</label>
+                    <input type="number" id="bmi-weight" step="0.1" required>
+                    <div id="bmi-weight-error" class="error">Please enter a valid weight</div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="bmi-age">Age</label>
+                    <input type="number" id="bmi-age" min="18" max="100" required>
+                    <div id="bmi-age-error" class="error">Please enter a valid age between 18 and 100</div>
+                </div>
+                
+                <button type="submit" class="calculate">Calculate Body Fat</button>
+            </form>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="result" id="result">
+            <h2>Your Body Fat Percentage</h2>
+            <div class="result-value" id="result-value"></div>
+            <div class="category" id="category"></div>
+            
+            <div>
+                <h3>Body Fat Category Reference</h3>
+                <table class="info-table">
+                    <thead>
+                        <tr>
+                            <th>Classification</th>
+                            <th>Women</th>
+                            <th>Men</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Essential Fat</td>
+                            <td>10-13%</td>
+                            <td>2-5%</td>
+                        </tr>
+                        <tr>
+                            <td>Athletes</td>
+                            <td>14-20%</td>
+                            <td>6-13%</td>
+                        </tr>
+                        <tr>
+                            <td>Fitness</td>
+                            <td>21-24%</td>
+                            <td>14-17%</td>
+                        </tr>
+                        <tr>
+                            <td>Average</td>
+                            <td>25-31%</td>
+                            <td>18-24%</td>
+                        </tr>
+                        <tr>
+                            <td>Obese</td>
+                            <td>32%+</td>
+                            <td>25%+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="method-info" style="margin-top: 20px;">
+                <h3>Method Information</h3>
+                <div id="formula-info"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching Logic
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and tab contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                
+                // Add active class to current tab and tab content
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+                
+                // Hide results when switching tabs
+                document.getElementById('result').style.display = 'none';
+            });
+        });
+        
+        // Toggle hip measurement visibility based on gender (Navy method)
+        document.querySelectorAll('input[name="navy-gender"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const hipGroup = document.getElementById('navy-hip-group');
+                hipGroup.style.display = radio.value === 'female' ? 'block' : 'none';
+            });
+        });
+        
+        // Initially hide hip measurement for males
+        document.getElementById('navy-hip-group').style.display = document.getElementById('navy-male').checked ? 'none' : 'block';
+        
+        // Navy Method Form Submission
+        document.getElementById('navy-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Reset errors
+            document.querySelectorAll('.error').forEach(el => el.style.display = 'none');
+            
+            // Get form values
+            const gender = document.querySelector('input[name="navy-gender"]:checked').value;
+            const unitSystem = document.getElementById('navy-unit').value;
+            const height = parseFloat(document.getElementById('navy-height').value);
+            const weight = parseFloat(document.getElementById('navy-weight').value);
+            const neck = parseFloat(document.getElementById('navy-neck').value);
+            const waist = parseFloat(document.getElementById('navy-waist').value);
+            const hip = gender === 'female' ? parseFloat(document.getElementById('navy-hip').value) : 0;
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!height || height <= 0) {
+                document.getElementById('navy-height-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!weight || weight <= 0) {
+                document.getElementById('navy-weight-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!neck || neck <= 0) {
+                document.getElementById('navy-neck-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!waist || waist <= 0) {
+                document.getElementById('navy-waist-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (gender === 'female' && (!hip || hip <= 0)) {
+                document.getElementById('navy-hip-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Convert measurements if using imperial
+            let heightCm = height;
+            let waistCm = waist;
+            let neckCm = neck;
+            let hipCm = hip;
+            
+            if (unitSystem === 'imperial') {
+                // Convert inches to cm
+                heightCm = height * 2.54;
+                waistCm = waist * 2.54;
+                neckCm = neck * 2.54;
+                if (gender === 'female') {
+                    hipCm = hip * 2.54;
+                }
+            }
+            
+            // Calculate body fat percentage using Navy formula
+            let bodyFat;
+            if (gender === 'male') {
+                bodyFat = 495 / (1.0324 - 0.19077 * Math.log10(waistCm - neckCm) + 0.15456 * Math.log10(heightCm)) - 450;
+            } else {
+                bodyFat = 495 / (1.29579 - 0.35004 * Math.log10(waistCm + hipCm - neckCm) + 0.22100 * Math.log10(heightCm)) - 450;
+            }
+            
+            // Display results
+            displayResults(bodyFat, gender, 'Navy Method');
+        });
+        
+        // Skinfold Method Form Submission
+        document.getElementById('skinfold-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const gender = document.querySelector('input[name="skinfold-gender"]:checked').value;
+            const chest = parseFloat(document.getElementById('skinfold-chest').value);
+            const abdominal = parseFloat(document.getElementById('skinfold-abdominal').value);
+            const thigh = parseFloat(document.getElementById('skinfold-thigh').value);
+            const tricep = parseFloat(document.getElementById('skinfold-tricep').value);
+            const subscapular = parseFloat(document.getElementById('skinfold-subscapular').value);
+            const suprailiac = parseFloat(document.getElementById('skinfold-suprailiac').value);
+            const midaxillary = parseFloat(document.getElementById('skinfold-midaxillary').value);
+            
+            // Calculate sum of seven skinfolds
+            const sum7 = chest + abdominal + thigh + tricep + subscapular + suprailiac + midaxillary;
+            
+            // Calculate body fat using Jackson-Pollock 7-site formula
+            let bodyDensity;
+            if (gender === 'male') {
+                bodyDensity = 1.112 - (0.00043499 * sum7) + (0.00000055 * sum7 * sum7) - (0.00028826 * 30); // Assuming age 30 for simplicity
+            } else {
+                bodyDensity = 1.097 - (0.00046971 * sum7) + (0.00000056 * sum7 * sum7) - (0.00012828 * 30); // Assuming age 30 for simplicity
+            }
+            
+            // Convert body density to body fat percentage using Siri's equation
+            const bodyFat = (495 / bodyDensity) - 450;
+            
+            // Display results
+            displayResults(bodyFat, gender, '7-Site Skinfold Method (Jackson-Pollock)');
+        });
+        
+        // BMI Method Form Submission
+        document.getElementById('bmi-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Reset errors
+            document.querySelectorAll('.error').forEach(el => el.style.display = 'none');
+            
+            // Get form values
+            const gender = document.querySelector('input[name="bmi-gender"]:checked').value;
+            const unitSystem = document.getElementById('bmi-unit').value;
+            const height = parseFloat(document.getElementById('bmi-height').value);
+            const weight = parseFloat(document.getElementById('bmi-weight').value);
+            const age = parseInt(document.getElementById('bmi-age').value);
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (!height || height <= 0) {
+                document.getElementById('bmi-height-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!weight || weight <= 0) {
+                document.getElementById('bmi-weight-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!age || age < 18 || age > 100) {
+                document.getElementById('bmi-age-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Convert to metric if using imperial
+            let heightM = height;
+            let weightKg = weight;
+            
+            if (unitSystem === 'imperial') {
+                // Convert inches to meters
+                heightM = height * 0.0254;
+                // Convert pounds to kg
+                weightKg = weight * 0.453592;
+            } else {
+                // Convert cm to meters
+                heightM = height / 100;
+            }
+            
+            // Calculate BMI
+            const bmi = weightKg / (heightM * heightM);
+            
+            // Calculate body fat using Deurenberg formula
+            let bodyFat = (1.2 * bmi) + (0.23 * age) - (10.8 * (gender === 'male' ? 1 : 0)) - 5.4;
+            
+            // Display results
+            displayResults(bodyFat, gender, 'BMI Method (Deurenberg Equation)');
+        });
+        
+        // Function to display results
+        function displayResults(bodyFat, gender, method) {
+            const resultValue = document.getElementById('result-value');
+            const category = document.getElementById('category');
+            const formulaInfo = document.getElementById('formula-info');
+            
+            // Round body fat to one decimal place
+            bodyFat = Math.round(bodyFat * 10) / 10;
+            
+            // Update result value
+            resultValue.textContent = bodyFat + '%';
+            
+            // Determine category and color
+            let categoryText = '';
+            let categoryClass = '';
+            
+            if (gender === 'male') {
+                if (bodyFat < 6) {
+                    categoryText = 'Essential Fat';
+                    categoryClass = 'category-essential';
+                } else if (bodyFat < 14) {
+                    categoryText = 'Athletic';
+                    categoryClass = 'category-athletic';
+                } else if (bodyFat < 18) {
+                    categoryText = 'Fitness';
+                    categoryClass = 'category-fitness';
+                } else if (bodyFat < 25) {
+                    categoryText = 'Average';
+                    categoryClass = 'category-average';
+                } else {
+                    categoryText = 'Obese';
+                    categoryClass = 'category-obese';
+                }
+            } else {
+                if (bodyFat < 14) {
+                    categoryText = 'Essential Fat';
+                    categoryClass = 'category-essential';
+                } else if (bodyFat < 21) {
+                    categoryText = 'Athletic';
+                    categoryClass = 'category-athletic';
+                } else if (bodyFat < 25) {
+                    categoryText = 'Fitness';
+                    categoryClass = 'category-fitness';
+                } else if (bodyFat < 32) {
+                    categoryText = 'Average';
+                    categoryClass = 'category-average';
+                } else {
+                    categoryText = 'Obese';
+                    categoryClass = 'category-obese';
+                }
+            }
+            
+            // Update category display
+            category.textContent = categoryText;
+            category.className = 'category ' + categoryClass;
+            
+            // Update method info
+            formulaInfo.textContent = `Calculation method: ${method}`;
+            
+            // Show result container
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

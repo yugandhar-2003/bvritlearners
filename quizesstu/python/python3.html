@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- *** UPDATED TITLE *** -->
+    <title>Python Conditional Statements Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* --- CSS styles remain unchanged from the previous version --- */
+        /* --- (Paste the full CSS from the previous response here) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); /* Adjusted green/blue gradient */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        body::before { /* Subtle pattern */
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+        html.dark body { background: linear-gradient(135deg, #047857 0%, #1e3a8a 100%); } /* Darker green/blue */
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        html.dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; }
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(16, 185, 129, 0.5); } /* Adjusted hover color */
+        .option.selected { border-color: #10b981; background: linear-gradient(to right, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15)); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); } /* Adjusted selected color */
+        .option.correct { background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important; border-color: #10b981 !important; color: #047857 !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: #ef4444 !important; color: #b91c1c !important; cursor: default; }
+        .option.disabled { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
+        .option .feedback-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; opacity: 0; transition: opacity 0.3s ease; }
+        .option .feedback-icon .icon-correct { color: #10b981; }
+        .option .feedback-icon .icon-incorrect { color: #ef4444; }
+        .option.correct .feedback-icon .icon-correct, .option.incorrect .feedback-icon .icon-incorrect { opacity: 1; }
+        .option.correct:not(.selected) .feedback-icon .icon-correct { opacity: 1; }
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark .progress-container { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #34d399, #60a5fa); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); } /* Adjusted progress bar gradient */
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, #10b981, #3b82f6); color: white; } /* Adjusted primary button */
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #059669, #2563eb); }
+        .btn-secondary { background-color: #e5e7eb; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover:not(:disabled) { background-color: #d1d5db; }
+        .btn-submit { background: linear-gradient(to right, #14b8a6, #60a5fa); color: white; } /* Adjusted submit button */
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #0f766e, #3b82f6); }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #60a5fa; } /* Adjusted explanation border */
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+        html.dark .explanation { background-color: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-left-color: #60a5fa; }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #272822; border: 1px solid #444; font-size: 0.9em; }
+        html.dark .code-snippet-container { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .python-logo img, .python-logo svg { animation: pulseLogo 2.5s infinite ease-in-out; }
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3)); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #facc15 !important; border-color: #facc15 !important; }
+        html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #1d4ed8; outline-offset: 2px; } /* Adjusted focus color */
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #93c5fd; }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #6b7280; }
+        html.dark .history-date { color: #9ca3af; }
+        html.dark .text-gray-500 { color: #9ca3af; }
+        html.dark .text-gray-600 { color: #cbd5e1; }
+        html.dark .text-gray-700 { color: #e2e8f0; }
+        html.dark .text-gray-800 { color: #f1f5f9; }
+        html.dark .text-green-900 { color: #a7f3d0; } /* Adjusted green */
+        html.dark .text-green-800 { color: #6ee7b7; } /* Adjusted green */
+        html.dark .text-green-700 { color: #a7f3d0; }
+        html.dark .text-green-600 { color: #34d399; }
+        html.dark .text-green-500 { color: #34d399; }
+        html.dark .text-green-400 { color: #6ee7b7; } /* Review correct answer text */
+        html.dark .text-blue-900 { color: #bfdbfe; } /* Adjusted blue */
+        html.dark .text-blue-800 { color: #93c5fd; } /* Adjusted blue for history title */
+        html.dark .text-blue-700 { color: #93c5fd; }
+        html.dark .text-blue-600 { color: #93c5fd; }
+        html.dark .text-blue-500 { color: #60a5fa; }
+        html.dark .text-blue-300 { color: #bfdbfe; } /* Adjusted blue for history title */
+        html.dark .text-blue-200 { color: #bfdbfe; } /* Added for start screen title */
+        html.dark .text-red-600 { color: #f87171; } /* Clear history button */
+        html.dark .text-red-400 { color: #fb7185; } /* Clear history button */
+        html.dark .bg-gray-200 { background-color: #4b5563;}
+        html.dark .bg-green-50 { background-color: rgba(16, 185, 129, 0.1); }
+        html.dark .bg-green-100 { background-color: rgba(5, 150, 105, 0.2); }
+        html.dark .bg-green-900\/30 { background-color: rgba(6, 78, 59, 0.3); }
+        html.dark .bg-blue-50 { background-color: #1e3a8a;} /* Adjusted blue */
+        html.dark .bg-blue-900\/30 { background-color: rgba(30, 58, 138, 0.3); } /* Performance msg bg */
+        html.dark .border-blue-100 { border-color: #93c5fd; } /* Adjusted blue */
+        html.dark .border-blue-700\/50 { border-color: rgba(29, 78, 216, 0.5); } /* Adjusted blue */
+        html.dark .text-red-700 { color: #fda4af; } /* Review incorrect answer text */
+        html.dark .text-red-500 { color: #f87171; } /* Review incorrect answer icon */
+        html.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.1); } /* Review item incorrect bg */
+        html.dark .bg-red-900\/30 { background-color: rgba(159, 18, 57, 0.3); } /* Review item incorrect bg */
+        html.dark .dark\:ring-green-600 { --tw-ring-color: #10b981; } /* Review user correct highlight */
+        html.dark .dark\:bg-green-800\/50 { background-color: rgba(6, 95, 70, 0.5); } /* Review user correct highlight */
+        html.dark .dark\:text-gray-100 { color: #f1f5f9; } /* Review question text */
+        html.dark .dark\:text-gray-300 { color: #d1d5db; } /* Review default option text */
+        html.dark .dark\:text-gray-400 { color: #9ca3af; } /* Review "Your Answer:", option letter, history date */
+        html.dark .dark\:border-gray-700 { border-color: #374151; } /* Review explanation top border */
+        html.dark .dark\:text-blue-300 { color: #bfdbfe; } /* Review explanation title */
+        html.dark .option.selected { /* Dark mode selected option text */ color: #e0f2fe; } /* Adjusted blue */
+        html.dark .option.correct { /* Dark mode correct option text */ color: #d1fae5 !important; }
+        html.dark .option.incorrect { /* Dark mode incorrect option text */ color: #fee2e2 !important; }
+        html.dark .option.incorrect.selected { /* Dark mode user incorrect option text */ color: #fee2e2 !important; }
+        /* --- End of CSS --- */
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- *** UPDATED HEADER *** -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Python Conditional Statements Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your mastery of `if`, `elif`, and `else`!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- *** UPDATED START SCREEN TEXT *** -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-green-900 dark:text-blue-200">Ready to Branch Out?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers `if`, `elif`, `else`, nested logic, truthy/falsy values, and logical conditions.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- *** UPDATED HISTORY TITLE *** -->
+                <h3 class="text-lg font-semibold mb-3 text-green-800 dark:text-blue-300">Recent Attempts (Conditionals)</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <!-- Status Badges -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-green-900 dark:text-blue-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4"></div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;"></div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden"><i class="fas fa-arrow-left mr-2"></i> Prev</button>
+                <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i></button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>Submit <i class="fas fa-check-circle ml-2"></i></button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+             <canvas id="confetti-canvas"></canvas>
+             <!-- *** UPDATED RESULTS TITLE *** -->
+             <h2 class="text-3xl font-bold mb-6 text-center text-green-900 dark:text-blue-200">Quiz Results: Conditionals</h2>
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-green-700 dark:text-blue-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Stats -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center"><i class="fas fa-search mr-2"></i> Review Answers</button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center"><i class="fas fa-redo mr-2"></i> Restart Quiz</button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm"><i class="fas fa-share-alt mr-2"></i> Share Score</button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- *** UPDATED REVIEW TITLE *** -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-green-900 dark:text-blue-200">Review Answers: Conditionals</h2>
+                <div id="review-questions" class="space-y-8"></div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center"><i class="fas fa-arrow-left mr-2"></i> Back to Results</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // *** NEW quizData for Conditional Statements (Tougher Questions) ***
+        const quizData = [
+            {
+                question: "What will be printed by the following code?",
+                code: "a = 0\nb = ''\nc = []\nif a or b or c:\n    print('Truthy')\nelif not a:\n    print('Falsy a')\nelse:\n    print('Else')",
+                options: ["Truthy", "Falsy a", "Else", "Nothing is printed"],
+                correctAnswer: 1,
+                explanation: "In Python, 0, empty strings (''), and empty lists ([]) are considered 'falsy'. The `if` condition `a or b or c` evaluates to `False or False or False`, which is `False`. The first `elif` condition `not a` evaluates to `not 0`, which is `True`. Therefore, 'Falsy a' is printed, and the rest of the block is skipped."
+            },
+            {
+                question: "Consider the code below. What is the final value of `status`?",
+                code: "score = 75\nstatus = 'Fail'\nif score >= 90:\n    status = 'A'\nelif score >= 80:\n    status = 'B'\nelif score >= 70:\n    status = 'C'\nelif score >= 60:\n    status = 'D'",
+                options: ["A", "B", "C", "Fail"],
+                correctAnswer: 2,
+                explanation: "The conditions are checked in order. `score >= 90` is false. `score >= 80` is false. `score >= 70` (75 >= 70) is true. The code block for this `elif` executes, setting `status` to 'C'. Subsequent `elif` conditions are *not* checked because a true condition was already found."
+            },
+            {
+                question: "Which value for `x` would cause 'Maybe' to be printed?",
+                code: "x = ? # Assign a value here\nif x > 10:\n    if x < 20:\n        print('Yes')\n    else:\n        print('No')\nelif x == 10:\n    print('Maybe')\nelse:\n    print('Definitely No')",
+                options: ["5", "10", "15", "25"],
+                correctAnswer: 1,
+                explanation: "The outer `if` checks `x > 10`. If `x` is 10, this is false. The code proceeds to the `elif x == 10` condition, which is true when `x` is 10, printing 'Maybe'."
+            },
+            {
+                question: "What is the output of this code snippet?",
+                code: "result = None\nif result:\n    print('Has result')\nelse:\n    print('No result')",
+                options: ["Has result", "No result", "Error", "None"],
+                correctAnswer: 1,
+                explanation: "`None` is a falsy value in Python. Therefore, the condition `if result:` evaluates to `False`, and the `else` block is executed, printing 'No result'."
+            },
+            {
+                question: "Analyze the nested conditions. What gets printed?",
+                code: "is_logged_in = True\nis_admin = False\nhas_permission = True\n\nif is_logged_in:\n    print('Logged In.')\n    if is_admin:\n        print('Admin Access.')\n    elif has_permission:\n        print('Permission Granted.')\nelse:\n    print('Access Denied.')",
+                options: ["Logged In.\nAdmin Access.", "Logged In.\nPermission Granted.", "Logged In.", "Access Denied."],
+                correctAnswer: 1,
+                explanation: "`is_logged_in` is True, so 'Logged In.' is printed. Then the inner conditions are checked. `is_admin` is False, so its block is skipped. The `elif has_permission` is checked, which is True, so 'Permission Granted.' is printed."
+            },
+            {
+                question: "What is printed by this code due to short-circuiting?",
+                code: "def check():\n    print('Checking...')\n    return False\n\nx = 10\nif x < 5 and check():\n    print('Condition Met')\nelse:\n    print('Condition Failed')",
+                options: ["Checking...\nCondition Met", "Condition Failed", "Checking...\nCondition Failed", "Condition Met"],
+                correctAnswer: 1,
+                explanation: "The `and` operator uses short-circuit evaluation. The first part, `x < 5` (10 < 5), is `False`. Since the first part of an `and` is false, the entire expression must be false, regardless of the second part. Therefore, the `check()` function is *never called*, and only 'Condition Failed' is printed."
+            },
+            {
+                question: "What is printed by this code due to short-circuiting?",
+                code: "def check():\n    print('Checking...')\n    return True\n\nx = 10\nif x > 5 or check():\n    print('Condition Met')\nelse:\n    print('Condition Failed')",
+                options: ["Checking...\nCondition Met", "Condition Met", "Checking...\nCondition Failed", "Condition Failed"],
+                correctAnswer: 1,
+                explanation: "The `or` operator also uses short-circuit evaluation. The first part, `x > 5` (10 > 5), is `True`. Since the first part of an `or` is true, the entire expression must be true, regardless of the second part. Therefore, the `check()` function is *never called*, and 'Condition Met' is printed."
+            },
+            {
+                question: "What does this conditional expression evaluate to?",
+                code: "message = 'High' if score > 90 else 'Low'\nscore = 85",
+                options: ["High", "Low", "Error", "None"],
+                correctAnswer: 1, // Note: The code runs *after* the line, so score is 85 when evaluated
+                explanation: "This is a ternary conditional expression. `score > 90` (85 > 90) is `False`. Therefore, the expression evaluates to the value after `else`, which is 'Low'." /* Correction: The question implies score=85 is set *before* the expression runs conceptually, even if written after. Let's assume score=85 applies. */
+            },
+             { // Corrected version of the above
+                question: "What is the value of `message` after this code executes?",
+                code: "score = 85\nmessage = 'High' if score > 90 else 'Low'",
+                options: ["High", "Low", "Error", "None"],
+                correctAnswer: 1,
+                explanation: "This is a ternary conditional expression. The condition `score > 90` (85 > 90) evaluates to `False`. Therefore, the expression assigns the value after `else`, which is 'Low', to the `message` variable."
+            },
+            {
+                question: "Which `print` statement executes?",
+                code: "value = 0\nif value > 0:\n    print('Positive')\nelif value < 0:\n    print('Negative')\nelse:\n    print('Zero')",
+                options: ["Positive", "Negative", "Zero", "None of them"],
+                correctAnswer: 2,
+                explanation: "`value > 0` is False. `value < 0` is False. Since both the `if` and `elif` conditions are false, the `else` block is executed, printing 'Zero'."
+            },
+            {
+                question: "What condition needs to be met for 'Condition C' to be printed?",
+                code: "a = True\nb = False\nc = True\n\nif a and b:\n    print('Condition A')\nelif not b and c:\n    print('Condition B')\nelif a or b or not c:\n    print('Condition C')\nelse:\n    print('Condition D')",
+                options: ["Condition A", "Condition B", "Condition C", "Condition D"],
+                correctAnswer: 1,
+                explanation: "`a and b` (True and False) is False. `not b and c` (not False and True -> True and True) is True. Since this `elif` condition is true, 'Condition B' is printed, and the remaining `elif` and `else` are skipped. 'Condition C' would only print if the first two conditions were false AND `a or b or not c` was true."
+            },
+            {
+                question: "What is the output if `items = []`?",
+                code: "items = [] # Or some other value\nif items:\n    print('List has items')\n    if len(items) > 5:\n        print('Many items')\nelif not items:\n    print('List is empty')\nelse:\n    print('Something else')",
+                options: ["List has items", "List is empty", "Something else", "List has items\nMany items"],
+                correctAnswer: 1,
+                explanation: "An empty list `[]` is falsy in Python. The first condition `if items:` evaluates to `False`. The code proceeds to the `elif not items:`. Since `items` is falsy, `not items` is `True`. Thus, 'List is empty' is printed."
+            },
+            {
+                question: "What will be printed?",
+                code: "x = 5\nif type(x) is int:\n    print('Integer')\nelif x > 0:\n    print('Positive')\nelse:\n    print('Other')",
+                options: ["Integer", "Positive", "Other", "Integer\nPositive"],
+                correctAnswer: 0,
+                explanation: "The first condition `type(x) is int` checks if the type of `x` is the integer type. Since `x` is 5, this is `True`. The corresponding block prints 'Integer', and the rest of the `if`/`elif`/`else` structure is skipped, even though `x > 0` is also true."
+            },
+            {
+                question: "Which number would cause 'Mid-range' to be printed?",
+                code: "num = ? # Assign a number\nif num < 0:\n    print('Negative')\nelif 0 <= num < 10:\n    print('Low-range')\nelif 10 <= num < 20:\n    print('Mid-range')\nelse:\n    print('High-range')",
+                options: ["-5", "5", "15", "25"],
+                correctAnswer: 2,
+                explanation: "We need the condition `10 <= num < 20` to be true, and preceding conditions to be false. For `num = 15`: `num < 0` is false. `0 <= num < 10` is false. `10 <= 15 < 20` is true. Thus, 'Mid-range' is printed."
+            },
+            {
+                question: "What is the behavior of `if None:`?",
+                options: ["It always executes the `if` block.", "It always executes the `else` (or `elif`) block.", "It causes a TypeError.", "It depends on the context."],
+                correctAnswer: 1,
+                explanation: "`None` is considered a falsy value in Python. In a boolean context like an `if` statement, `if None:` evaluates to `False`. Therefore, the code execution will proceed to the corresponding `elif` or `else` block, or skip the `if` block entirely if there are no other branches."
+            },
+             {
+                question: "What is the output of this code snippet?",
+                code: "a = 10\nb = 5\n\nif a > 5:\n    print('A')\n    if b > 10:\n        print('B')\nelif a == 10:\n    print('C')\nelse:\n    print('D')",
+                options: ["A", "A\nC", "A\nB", "C"],
+                correctAnswer: 0,
+                explanation: "The outer `if a > 5` (10 > 5) is True, so 'A' is printed. Then the inner condition `if b > 10` (5 > 10) is checked. This is False, so the inner `if` block is skipped. Importantly, because the outer `if` was True, the `elif a == 10` branch is *never* reached or evaluated."
+            },
+            {
+                question: "Consider `x = [1, 2]`. What does `if x:` evaluate to?",
+                options: ["True", "False", "Error", "It checks if x is a list"],
+                correctAnswer: 0,
+                explanation: "Non-empty sequences (like lists, tuples, strings) are considered 'truthy' in Python. Since `x` is `[1, 2]`, which is not empty, `if x:` evaluates to `True`."
+            },
+            {
+                question: "What gets printed if `temp = 30`?",
+                code: "temp = 30\nstatus = ''\nif temp < 0:\n    status = 'Freezing'\nelif temp < 15:\n    status = 'Cold'\nelif temp < 25:\n    status = 'Warm'\nelse:\n    status = 'Hot'\n\nprint(status)",
+                options: ["Freezing", "Cold", "Warm", "Hot"],
+                correctAnswer: 3,
+                explanation: "`temp < 0` (30 < 0) is False. `temp < 15` (30 < 15) is False. `temp < 25` (30 < 25) is False. Since all `if`/`elif` conditions are false, the `else` block executes, setting `status` to 'Hot'. This value is then printed."
+            },
+             {
+                question: "Which of these values is NOT considered 'falsy' in Python?",
+                options: ["0", "None", "'' (empty string)", "'False' (string)"],
+                correctAnswer: 3,
+                explanation: "In Python, 0, 0.0, None, False, empty strings (''), empty lists ([]), empty tuples (()), and empty dictionaries ({}) are falsy. Any non-empty string, including the string 'False', is considered 'truthy'."
+            },
+            {
+                question: "What is the most concise way to check if a variable `my_var` is NOT None?",
+                options: ["if my_var != None:", "if not my_var is None:", "if my_var is not None:", "if my_var:"],
+                correctAnswer: 2,
+                explanation: "The idiomatic and recommended way to check for identity (specifically against singletons like `None`, `True`, `False`) is using `is` or `is not`. `if my_var is not None:` is the standard. While `if my_var:` works if `my_var` is never expected to be other falsy values (like 0 or ''), `is not None` is explicit and safer for checking specifically against `None`."
+            }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // --- *** UPDATED localStorage Keys *** ---
+        const QUIZ_STATE_KEY = 'pythonQuizState_Conditionals';
+        const SCORE_HISTORY_KEY = 'pythonQuizScoreHistory_Conditionals';
+
+        // --- DOM Elements ---
+        // (DOM element variables remain the same - no need to change these)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        // (State variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions ---
+        // (Helper functions shuffleArray, formatTime remain the same)
+        function shuffleArray(array) { /* ... no changes ... */
+             for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; }
+        }
+        function formatTime(seconds) { /* ... no changes ... */
+            const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        // (Dark Mode function applyDarkMode remains the same)
+        function applyDarkMode(isDark) { /* ... no changes ... */
+             const icon = darkModeToggle.querySelector('i'); if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); } else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); } if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 0); }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // *** Uses NEW QUIZ_STATE_KEY ***
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true };
+                 localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); // Use new key
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY); // Use new key
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Add more robust validation if needed (e.g., check if questionsOrder matches current quizData length)
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder; // Restore saved order
+                        quizActive = true;
+                        console.log(`In-progress state loaded for ${QUIZ_STATE_KEY}.`);
+                        return true;
+                    } else {
+                         console.warn(`Saved state for ${QUIZ_STATE_KEY} is invalid or mismatched.`);
+                        clearState(); // Clear invalid state
+                        return false;
+                    }
+                } catch (e) {
+                    console.error(`Failed to parse saved state for ${QUIZ_STATE_KEY}:`, e);
+                    clearState(); // Clear corrupted state
+                    return false;
+                }
+            }
+            return false;
+        }
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY); // Use new key
+            console.log(`In-progress state cleared for ${QUIZ_STATE_KEY}.`);
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        // *** Uses NEW SCORE_HISTORY_KEY ***
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); // Use new key
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = []; // Basic validation
+            } catch (e) {
+                console.error(`Failed to load score history for ${SCORE_HISTORY_KEY}:`, e);
+                scoreHistory = [];
+            }
+        }
+        function saveScoreHistory() {
+            try {
+                // Keep only the last MAX_HISTORY_ITEMS attempts
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); // Use new key
+            } catch (e) { console.error(`Failed to save score history for ${SCORE_HISTORY_KEY}:`, e); }
+        }
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory(); // Saves using the correct key
+            displayScoreHistory(); // Update UI
+        }
+        function clearScoreHistory() {
+             // *** Update confirmation message ***
+             if (confirm("Are you sure you want to clear the Conditional Statements quiz history? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY); // Use new key
+                 displayScoreHistory(); // Update UI
+                 console.log(`Score history cleared for ${SCORE_HISTORY_KEY}.`);
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; // Clear current list
+            if (scoreHistory.length === 0) {
+                 // *** Update empty message ***
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous Conditional Statements attempts recorded.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                // Sort by timestamp descending to show newest first
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    // Added safety check for potential missing data in older history items
+                    const scoreText = attempt.score !== undefined ? attempt.score : '?';
+                    const totalText = attempt.totalQuestions !== undefined ? attempt.totalQuestions : quizData.length;
+                    const accuracyText = attempt.accuracy !== undefined ? `(${attempt.accuracy}%)` : '';
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${scoreText}/${totalText}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> ${accuracyText}</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             // *** Uses updated loadState with new key ***
+             if (loadState()) {
+                 console.log(`Resuming ${QUIZ_STATE_KEY}.`);
+                 // Calculate start time based on elapsed time if resuming
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 console.log(`Starting new ${QUIZ_STATE_KEY}.`);
+                 // Initialize fresh state
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys()); // Get indices [0, 1, 2, ...]
+                 shuffleArray(questionsOrder); // Shuffle the order
+                 startTime = Date.now();
+             }
+
+            // UI transitions
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true; // Mark quiz as active
+
+            loadQuestion(currentQuestionIndex); // Load the first (or resumed) question
+            startTimer();
+            updateNavigation();
+            saveState(); // Save initial state (including shuffled order)
+        }
+
+        function loadQuestion(index) {
+            // (Load Question function remains largely the same, relies on global vars like questionsOrder)
+             if (index < 0 || index >= quizData.length) return;
+
+             const questionIndexInOriginalData = questionsOrder[index]; // Get the original index from shuffled order
+             const question = quizData[questionIndexInOriginalData];
+
+             if (!question) {
+                 console.error(`Question data not found for shuffled index ${index} (original index ${questionIndexInOriginalData})`);
+                 return; // Avoid errors if data is inconsistent
+             }
+
+             // Animate card entry
+             questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+             void questionCard.offsetWidth; // Trigger reflow
+             questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+             questionText.textContent = `${index + 1}. ${question.question}`; // Display question number based on shuffled order
+             feedbackMessage.textContent = ''; // Clear previous feedback
+             codeSnippetArea.innerHTML = ''; // Clear previous code snippet
+
+             // Display code snippet if present
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container'; // Existing class for styling
+                 const code = document.createElement('code');
+                 code.className = 'language-python'; // For Prism.js highlighting
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 // Ensure Prism highlights the new code
+                 if (typeof Prism !== 'undefined') {
+                     // Use setTimeout to allow DOM update before highlighting
+                     setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+             // Display options
+             optionsContainer.innerHTML = '';
+             const selectedAnswerIndex = userAnswers[index]; // Get stored answer for this question index
+
+             question.options.forEach((optionText, optionIndex) => {
+                 const optionElement = document.createElement('div');
+                 optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                 optionElement.setAttribute('role', 'radio');
+                 optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                 optionElement.tabIndex = 0; // Make it focusable
+
+                 const label = document.createElement('span');
+                 label.className = 'flex-grow mr-4';
+                 // Use A, B, C... labels
+                 label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                 const feedbackIconContainer = document.createElement('span');
+                 feedbackIconContainer.className = 'feedback-icon text-xl';
+                 feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>`;
+
+                 optionElement.appendChild(label);
+                 optionElement.appendChild(feedbackIconContainer);
+
+                 // Event listener for selection
+                 const handleSelection = () => {
+                     // Only allow selection if not already answered/disabled
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+
+                 optionElement.addEventListener('click', handleSelection);
+                 // Allow selection with Enter/Space keys for accessibility
+                 optionElement.addEventListener('keydown', (e) => {
+                     if (e.key === 'Enter' || e.key === ' ') {
+                         e.preventDefault(); // Prevent page scroll on space
+                         handleSelection();
+                     }
+                 });
+
+                 optionsContainer.appendChild(optionElement);
+             });
+
+             // If an answer was previously selected for this question, show feedback immediately
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false; // Enable next button if already answered
+                  if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 // Disable Next/Submit if no answer selected yet
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+
+             updateProgress(index);
+             updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            // (Select Option function remains the same, uses userAnswers which corresponds to display order)
+            // Prevent changing answer once selected
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex; // Store the selected option index based on display order
+            showFeedback(displayIndex, selectedOptionIndex); // Show immediate feedback
+
+            nextBtn.disabled = false; // Enable the Next button
+            if (displayIndex === quizData.length - 1) {
+                submitBtn.disabled = false; // Enable Submit button on the last question
+            }
+
+            saveState(); // Save the updated state (including the new answer)
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+            // (Show Feedback function remains the same, calculates correctness based on original question index)
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             // Update score immediately if just answered correctly (optional, score calculated finally on submit)
+             // if (isCorrect && score related logic if needed here...) {}
+
+             // Apply styling to options
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); // Disable all options after selection
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 // Reset icons first
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 // Style the selected option
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Highlight the actual correct answer if the user was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct'); // Apply 'correct' style visually
+                              const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                               if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark on correct one too
+                         }
+                     }
+                 } else {
+                     // For non-selected options
+                     optElement.setAttribute('aria-checked', 'false');
+                     // If the user was incorrect, also highlight the correct answer
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct'); // Apply 'correct' style visually
+                          const correctOptIcon = optElement.querySelector('.icon-correct');
+                           if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark
+                     }
+                 }
+             });
+
+            // Remove animation classes after a short delay
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+             // (Update Progress function remains the same)
+             const totalQuestions = quizData.length;
+             const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+             progressBar.style.width = `${progress}%`;
+             questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            // (Update Navigation function remains the same)
+             const isFirstQuestion = currentQuestionIndex === 0;
+             const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+             prevBtn.classList.toggle('hidden', isFirstQuestion);
+             navSpacer.classList.toggle('hidden', !isFirstQuestion); // Hide spacer only when prev button hidden
+             nextBtn.classList.toggle('hidden', isLastQuestion);
+             submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+             // Enable/Disable based on whether the *current* question is answered
+             const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+             nextBtn.disabled = !currentAnswerSelected;
+             if (isLastQuestion) {
+                 submitBtn.disabled = !currentAnswerSelected;
+             }
+        }
+
+        function nextQuestion() {
+            // (Next Question function remains the same)
+             if (currentQuestionIndex < quizData.length - 1) {
+                 currentQuestionIndex++;
+                 loadQuestion(currentQuestionIndex);
+                 saveState(); // Save state when moving to the next question
+             }
+        }
+
+        function prevQuestion() {
+            // (Previous Question function remains the same)
+             if (currentQuestionIndex > 0) {
+                 currentQuestionIndex--;
+                 loadQuestion(currentQuestionIndex);
+                 saveState(); // Save state when moving to the previous question
+             }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+             // (Timer logic remains the same)
+             clearInterval(timerInterval); // Clear any existing timer
+             if (!quizActive) return; // Don't start if quiz isn't active
+
+             const updateTimerDisplay = () => {
+                 const now = Date.now();
+                 // Calculate elapsed time based on current time and start time
+                 timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+
+                 const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                 if (timeRemaining <= 0) {
+                     // Time's up
+                     timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                     timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); // Use red color for time up
+                     clearInterval(timerInterval);
+                     if (quizActive) { // Ensure submit only happens once
+                        submitQuiz(true); // Auto-submit when time runs out
+                     }
+                     return; // Stop further updates
+                 }
+
+                 // Update display with remaining time
+                 timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                 // Add/remove warning class for the last minute
+                 timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                 // Ensure red color is removed if timer goes back above 60 (unlikely but safe)
+                  timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+
+                 // Save state periodically (e.g., every 10 seconds)
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                     saveState();
+                 }
+             };
+
+             updateTimerDisplay(); // Initial display
+             timerInterval = setInterval(updateTimerDisplay, 1000); // Update every second
+        }
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+             if (!quizActive && !timeUp) return; // Prevent multiple submissions
+
+             quizActive = false; // Mark quiz as inactive
+             clearInterval(timerInterval); // Stop the timer
+
+             // Calculate score based on stored answers (userAnswers) and shuffled order (questionsOrder)
+             score = 0;
+             userAnswers.forEach((answerIndex, displayIdx) => {
+                 if (answerIndex !== null) { // Only count answered questions
+                     const originalQuestionIndex = questionsOrder[displayIdx]; // Get original index
+                     if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                         score++;
+                     }
+                 }
+             });
+
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Use current timeElapsed unless time ran out
+             const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+             // *** Add attempt to score history (uses the correct key via the function) ***
+             addScoreToHistory({
+                 score: score,
+                 totalQuestions: totalQuestions,
+                 accuracy: parseFloat(accuracy.toFixed(1)), // Store as number with 1 decimal place
+                 timestamp: Date.now(),
+                 timeTaken: finalTime
+             });
+
+             // --- UI Updates for Results Screen ---
+             quizContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             resultsContainer.style.display = 'block';
+             // Re-trigger animation for visibility
+             resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void resultsContainer.offsetWidth;
+             resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+             scoreValue.textContent = `${score}/${totalQuestions}`;
+             accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+             accuracyBar.style.width = `${accuracy}%`; // Set progress bar width
+             timeTaken.textContent = formatTime(finalTime);
+
+             // --- Performance Message & Score Circle Styling ---
+             let performanceText = "";
+             let scoreLevel = 'low'; // Default to low
+
+             if (timeUp) {
+                 performanceText = "Time's up! Here are your results on Conditionals:";
+                 // Adjust level even if time is up based on score
+                  if (accuracy >= 80) scoreLevel = 'high';
+                  else if (accuracy >= 50) scoreLevel = 'medium';
+             } else {
+                 // Score-based messages
+                 if (accuracy >= 95) { performanceText = "Flawless logic! Master of Python conditionals!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 80) { performanceText = "Excellent grasp of conditional statements!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 60) { performanceText = "Good understanding of if/elif/else!"; scoreLevel = 'medium'; }
+                 else if (accuracy >= 40) { performanceText = "Solid effort! Keep practicing those conditions."; scoreLevel = 'medium'; }
+                 else { performanceText = "Conditionals can be tricky. Review and try again!"; scoreLevel = 'low'; }
+             }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel); // Apply appropriate border color
+
+             // --- Confetti ---
+             if (scoreLevel === 'high' && !timeUp) {
+                 triggerConfetti();
+             }
+
+             // *** Clear IN-PROGRESS state (uses the correct key via the function) ***
+             clearState();
+        }
+
+        // --- Confetti ---
+        function triggerConfetti() {
+             // (Confetti function remains the same)
+            if (typeof confetti !== 'function') { console.warn("Confetti library not loaded."); return; }
+            const myConfetti = confetti.create(confettiCanvas, {
+                resize: true,
+                useWorker: true // Use worker for better performance
+            });
+            // Launch confetti bursts
+            myConfetti({
+                particleCount: 130,
+                spread: 120,
+                origin: { y: 0.6 },
+                gravity: 0.8,
+                ticks: 350,
+                zIndex: 1000 // Ensure it's above other elements
+            });
+             // Add a couple more smaller bursts for effect
+            setTimeout(() => {
+                 myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                 myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+            }, 200);
+        }
+
+        // --- Review Screen ---
+        function showReview() {
+             // (Review screen logic remains the same, displays based on questionsOrder)
+             resultsContainer.style.display = 'none';
+             reviewContainer.style.display = 'block';
+             // Animation
+             reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void reviewContainer.offsetWidth;
+             reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+             reviewQuestions.innerHTML = ''; // Clear previous review items
+
+             // Iterate through the questions *in the order they were presented*
+             questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex]; // Get the user's answer for this displayed question
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 // Base classes + conditional styling for correct/incorrect
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                         ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
+                         : 'border-red-500 bg-red-50 dark:bg-red-900/30'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`; // Use display index + 1
+
+                 // Add code snippet if it exists
+                 if (question.code) {
+                     // Basic escaping for safety, though Prism handles it well
+                     const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                     reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-python">${escapedCode}</code></pre>`;
+                 }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 // Display all options, highlighting user's choice and correct answer
+                 question.options.forEach((optionText, i) => {
+                     let liClass = "text-gray-700 dark:text-gray-300"; // Default style
+                     let iconHTML = ""; // No icon by default
+
+                     // Style the correct answer
+                     if (i === question.correctAnswer) {
+                         liClass = "font-semibold text-green-700 dark:text-green-400"; // Correct answer text style
+                         iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; // Correct icon
+                     }
+
+                     // Override styles/icon if this was the user's answer
+                     if (i === userAnswerIndex) {
+                         if (isCorrect) {
+                             // User chose correctly - add subtle highlight
+                             liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                         } else {
+                             // User chose incorrectly - strike-through and different color/icon
+                             liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; // Incorrect style
+                             iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; // Incorrect icon
+                         }
+                     } else if (i === question.correctAnswer && !isCorrect) {
+                         // Make sure the correct answer is still clearly marked if user was wrong
+                        liClass = "font-semibold text-green-700 dark:text-green-400"; // Keep correct style
+                        iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; // Keep correct icon
+                     }
+
+
+                     reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${optionText}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+
+                 reviewHTML += `</ul>`;
+
+                 // Add explanation if available
+                 if (question.explanation) {
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                       <strong class="block mb-1 text-sm text-blue-800 dark:text-blue-300">Explanation:</strong>
+                                       <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                    </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+             });
+
+             // Re-run Prism highlighting for the dynamically added code snippets
+             if (typeof Prism !== 'undefined') {
+                 // Highlight all code blocks under the reviewQuestions container
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        function showResultsScreen() {
+             // (Show Results Screen function remains the same)
+             reviewContainer.style.display = 'none';
+             resultsContainer.style.display = 'block';
+             // Animation
+             resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void resultsContainer.offsetWidth;
+             resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+             // (Restart Quiz function remains the same conceptually)
+             // Reset all state variables
+             currentQuestionIndex = 0;
+             score = 0;
+             userAnswers = [];
+             questionsOrder = []; // Clear the shuffled order
+             timeElapsed = 0;
+             quizActive = false;
+             clearInterval(timerInterval); // Stop any running timer
+
+             // Reset UI elements
+             progressBar.style.width = '0%';
+             timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+             timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+             feedbackMessage.textContent = '';
+
+             // Hide quiz/results/review, show start screen
+             resultsContainer.style.display = 'none';
+             quizContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             startScreen.style.display = 'block';
+
+             // Re-apply start screen animation
+             startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+             void startScreen.offsetWidth; // Trigger reflow
+             startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+             // Reset button states
+             nextBtn.disabled = true;
+             submitBtn.disabled = true;
+             prevBtn.classList.add('hidden');
+             navSpacer.classList.remove('hidden'); // Show spacer again if needed
+
+             // *** Ensure history is shown on start screen (uses correct key) ***
+             displayScoreHistory();
+
+             // Optionally clear the in-progress state from localStorage, though starting a new quiz will overwrite it.
+             // clearState(); // Uncomment if explicit clearing on restart is desired
+
+             // *** Update console log ***
+             console.log(`Conditional Statements Quiz reset. Ready for new attempt using ${QUIZ_STATE_KEY}.`);
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             // (Sharing function remains the same, but update text)
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // *** Update share text ***
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Python Conditional Statements Quiz! Can you beat my score?`;
+             const shareUrl = window.location.href; // Use current page URL
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         // *** Update share title ***
+                         title: 'My Python Conditionals Quiz Result!',
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Fallback to copy if share fails (e.g., user cancels)
+                      copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 // Fallback for browsers without navigator.share
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             // (Copy to Clipboard function remains the same)
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Results copied to clipboard!"); // Provide feedback
+            }).catch(err => {
+                console.error('Could not copy results to clipboard: ', err);
+                alert("Failed to copy results. Please copy manually."); // Inform user on failure
+            });
+        }
+
+        // --- Event Listeners ---
+        // (Event Listeners setup remains the same)
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // False indicates not due to time up
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory); // Uses updated function
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+        // (Keyboard Navigation setup remains the same)
+         document.addEventListener('keydown', (e) => {
+             // Check if focus is on a button and Enter/Space is pressed
+             if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+             else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+             else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+             else if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+             else if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+             else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+             else if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); } // Uses updated function
+              // Add basic option navigation? (More complex)
+              // else if (quizContainer.style.display === 'block' && ['1','2','3','4','a','b','c','d'].includes(e.key.toLowerCase())) { ... }
+         });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Check for saved dark mode preference
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            // *** Load score history using the NEW key ***
+            loadScoreHistory();
+            // *** Display history (or empty message) using the NEW key's data ***
+            displayScoreHistory();
+
+            // Set initial UI state (hide quiz/results/review, show start)
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block'; // Ensure start screen is visible
+
+            // Ensure buttons are in correct initial state
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+
+            // *** Update console log ***
+            console.log("Conditional Statements Quiz application initialized.");
+            console.log(`Using keys: State='${QUIZ_STATE_KEY}', History='${SCORE_HISTORY_KEY}'`);
+        }
+
+        // --- Run Initialization on Page Load ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

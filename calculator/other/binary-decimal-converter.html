@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary-Decimal Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #050606;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid #4285f4;
+            color: #4285f4;
+        }
+        
+        .converter {
+            display: none;
+        }
+        
+        .converter.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        
+        .error {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #4285f4;
+            font-size: 18px;
+            word-break: break-all;
+        }
+        
+        .history {
+            margin-top: 30px;
+        }
+        
+        .history h3 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Binary-Decimal Converter</h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-target="binary-to-decimal">Binary to Decimal</div>
+            <div class="tab" data-target="decimal-to-binary">Decimal to Binary</div>
+        </div>
+        
+        <div id="binary-to-decimal" class="converter active">
+            <div class="input-group">
+                <label for="binary-input">Enter Binary Number:</label>
+                <input type="text" id="binary-input" placeholder="e.g. 10101">
+                <div class="error" id="binary-error">Please enter a valid binary number (0s and 1s only)</div>
+            </div>
+            <button id="convert-to-decimal">Convert to Decimal</button>
+            <div class="result" id="decimal-result">Decimal result will appear here</div>
+        </div>
+        
+        <div id="decimal-to-binary" class="converter">
+            <div class="input-group">
+                <label for="decimal-input">Enter Decimal Number:</label>
+                <input type="number" id="decimal-input" placeholder="e.g. 42">
+                <div class="error" id="decimal-error">Please enter a valid decimal number</div>
+            </div>
+            <button id="convert-to-binary">Convert to Binary</button>
+            <div class="result" id="binary-result">Binary result will appear here</div>
+        </div>
+        
+        <div class="history">
+            <h3>Conversion History</h3>
+            <div class="history-list" id="history-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const binaryToDecimalTab = document.querySelector('[data-target="binary-to-decimal"]');
+        const decimalToBinaryTab = document.querySelector('[data-target="decimal-to-binary"]');
+        const binaryToDecimalConverter = document.getElementById('binary-to-decimal');
+        const decimalToBinaryConverter = document.getElementById('decimal-to-binary');
+        const binaryInput = document.getElementById('binary-input');
+        const decimalInput = document.getElementById('decimal-input');
+        const convertToDecimalBtn = document.getElementById('convert-to-decimal');
+        const convertToBinaryBtn = document.getElementById('convert-to-binary');
+        const decimalResult = document.getElementById('decimal-result');
+        const binaryResult = document.getElementById('binary-result');
+        const binaryError = document.getElementById('binary-error');
+        const decimalError = document.getElementById('decimal-error');
+        const historyList = document.getElementById('history-list');
+
+        // Conversion history array
+        let conversionHistory = [];
+
+        // Tab switching functionality
+        binaryToDecimalTab.addEventListener('click', () => {
+            binaryToDecimalTab.classList.add('active');
+            decimalToBinaryTab.classList.remove('active');
+            binaryToDecimalConverter.classList.add('active');
+            decimalToBinaryConverter.classList.remove('active');
+        });
+
+        decimalToBinaryTab.addEventListener('click', () => {
+            decimalToBinaryTab.classList.add('active');
+            binaryToDecimalTab.classList.remove('active');
+            decimalToBinaryConverter.classList.add('active');
+            binaryToDecimalConverter.classList.remove('active');
+        });
+
+        // Binary to Decimal conversion
+        convertToDecimalBtn.addEventListener('click', () => {
+            const binary = binaryInput.value.trim();
+            
+            // Validate binary input
+            if (!isValidBinary(binary)) {
+                binaryError.style.display = 'block';
+                return;
+            } else {
+                binaryError.style.display = 'none';
+            }
+            
+            // Convert binary to decimal
+            const decimal = parseInt(binary, 2);
+            
+            // Display result
+            decimalResult.textContent = `Decimal: ${decimal}`;
+            
+            // Add to history
+            addToHistory(`Binary ${binary} → Decimal ${decimal}`);
+        });
+
+        // Decimal to Binary conversion
+        convertToBinaryBtn.addEventListener('click', () => {
+            const decimal = decimalInput.value.trim();
+            
+            // Validate decimal input
+            if (!isValidDecimal(decimal)) {
+                decimalError.style.display = 'block';
+                return;
+            } else {
+                decimalError.style.display = 'none';
+            }
+            
+            // Convert decimal to binary
+            const binary = parseInt(decimal).toString(2);
+            
+            // Display result
+            binaryResult.textContent = `Binary: ${binary}`;
+            
+            // Add to history
+            addToHistory(`Decimal ${decimal} → Binary ${binary}`);
+        });
+
+        // Input validation functions
+        function isValidBinary(binary) {
+            return /^[01]+$/.test(binary);
+        }
+
+        function isValidDecimal(decimal) {
+            return /^\d+$/.test(decimal) && decimal >= 0;
+        }
+
+        // Add conversion to history
+        function addToHistory(conversionText) {
+            // Add to array (limit to 10 entries)
+            conversionHistory.unshift(conversionText);
+            if (conversionHistory.length > 10) {
+                conversionHistory.pop();
+            }
+            
+            // Update DOM
+            updateHistoryDisplay();
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            conversionHistory.forEach(conversion => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.textContent = conversion;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Input validation on typing
+        binaryInput.addEventListener('input', () => {
+            if (isValidBinary(binaryInput.value.trim()) || binaryInput.value.trim() === '') {
+                binaryError.style.display = 'none';
+            }
+        });
+
+        decimalInput.addEventListener('input', () => {
+            if (isValidDecimal(decimalInput.value.trim()) || decimalInput.value.trim() === '') {
+                decimalError.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

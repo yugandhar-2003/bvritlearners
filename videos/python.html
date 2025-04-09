@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python for Beginners - BVRIT Learning Platform</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="modern-course-styles.css">
+
+    <!-- Critical styles to ensure navigation is always visible -->
+    <style>
+        /* Force navbar to always be visible - with highest priority */
+        .navbar-modern,
+        nav.navbar-modern,
+        body > nav.navbar-modern,
+        html body nav.navbar-modern {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 2147483647 !important; /* Maximum possible z-index value */
+            background-color: rgba(18, 18, 18, 0.98) !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: none !important;
+            pointer-events: auto !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+            min-height: 60px !important;
+        }
+
+        /* Force navbar menu to always be visible */
+        .navbar-menu,
+        #navbarMenu,
+        .navbar-modern .navbar-menu,
+        nav.navbar-modern .navbar-menu,
+        .navbar-container .navbar-menu,
+        div#navbarMenu {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            margin: 0 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Spacer removed since header is no longer present */
+
+        /* Resource button styles */
+        .resource-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, var(--accent-600) 0%, var(--accent-500) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(190, 75, 219, 0.3);
+        }
+
+        .resource-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(190, 75, 219, 0.4);
+        }
+
+        .resource-button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Topics section styles */
+        .topics-section {
+            background-color: var(--dark-surface-lighter);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .topics-section h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-text);
+            text-align: center;
+            position: relative;
+            display: inline-block;
+        }
+
+        .topics-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-500), var(--accent-500));
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header removed as requested -->
+
+    <div class="container-modern">
+        <!-- Back Button -->
+        <a href="../tutorials/index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Tutorials
+        </a>
+
+        <!-- Course Header -->
+        <div class="course-header">
+            <h1 class="course-title">Python for Beginners</h1>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button" data-tab="english">
+                <i class="fas fa-language"></i> English Tutorial
+            </button>
+            <button class="tab-button" data-tab="hindi">
+                <i class="fas fa-language"></i> Hindi Tutorial
+            </button>
+            <button class="tab-button" data-tab="telugu">
+                <i class="fas fa-language"></i> Telugu Tutorial
+            </button>
+        </div>
+
+        <!-- Tab Container -->
+        <div class="tab-container">
+            <!-- English Tab -->
+            <div class="tab-content" id="english-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/videoseries?si=WFH36G4GzXjYPfqI&amp;list=PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Hindi Tab -->
+            <div class="tab-content" id="hindi-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/7wnove7K-ZQ?list=PLu0W_9lII9agwh1XjRt242xIpHhPT2llg" title="Introduction to Programming &amp; Python | Python Tutorial - Day #1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Telugu Tab -->
+            <div class="tab-content" id="telugu-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/LajgX-9nNB8?list=PLC2mgeYbYNm-3aTUq98pbmrA3P1_m-aJR" title="Python Tutorials For Beginners in Telugu - Tutorial 1 | Python Introduction in Telugu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Button -->
+        <div style="text-align: center;">
+            <a href="https://drive.google.com/drive/folders/13vtjk-AIrk_e27319M1TJlaYGjlDs6Qw?usp=sharing" class="resource-button">
+                <i class="fas fa-download"></i> Get Resources
+            </a>
+        </div>
+        <!-- Topics Section -->
+        <div class="topics-section">
+            <h2>Python Tutorial Topics</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem;">
+                <!-- Basics Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-code" style="margin-right: 0.5rem;"></i> Basics
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Introduction to Python</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Installing Python and setting up the environment
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Python syntax and structure
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Running Python scripts
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Data Types and Variables</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Integers, floats, strings, booleans
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Lists, tuples, dictionaries, sets
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Variable assignment and naming conventions
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Control Structures</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Conditional statements (if, elif, else)
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Loops (for, while)
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Break and continue statements
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Intermediate Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-laptop-code" style="margin-right: 0.5rem;"></i> Intermediate
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Functions</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Defining and calling functions
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Parameters and return values
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Lambda functions
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Modules and Packages</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Importing modules
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Creating and using your own modules
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Python Standard Library
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Error Handling</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Try, except, finally blocks
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Handling different types of exceptions
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Raising exceptions
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Advanced Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Advanced
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Object-Oriented Programming</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Classes and objects
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Methods and attributes
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Inheritance and polymorphism
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Advanced Data Structures</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Advanced list operations
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Dictionary comprehensions
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Sets and frozensets
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Concurrency and Parallelism</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Threading and multiprocessing
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Asynchronous programming (asyncio)
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Concurrent futures
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Course JavaScript -->
+    <script src="modern-course.js"></script>
+</body>
+</html>

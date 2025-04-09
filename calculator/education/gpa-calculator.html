@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CGPA Calculator (10-point)</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #09090a;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 25px;
+    }
+
+    .course-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    input, select {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      flex: 1;
+    }
+
+    .course-name {
+      flex: 2;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .remove-course {
+      background-color: #e74c3c;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .remove-course:hover {
+      background-color: #c0392b;
+    }
+
+    .result-section {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .result {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .info {
+      background-color: #f1f1f1;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CGPA Calculator (10-point Scale)</h1>
+    <div class="action-buttons">
+      <button id="add-course">Add Course</button>
+      <button id="calculate">Calculate CGPA</button>
+      <button id="reset">Reset</button>
+    </div>
+
+    <div id="courses-container">
+      <div class="course-row">
+        <input type="text" class="course-name" placeholder="Course Name" />
+        <input type="number" class="credit-hours" placeholder="Credit Hours" min="1" max="6" />
+        <select class="grade">
+          <option value="10">A (10)</option>
+          <option value="9">A- (9)</option>
+          <option value="8">B+ (8)</option>
+          <option value="7">B (7)</option>
+          <option value="6">C+ (6)</option>
+          <option value="5">C (5)</option>
+          <option value="4">D (4)</option>
+          <option value="0">F (0)</option>
+        </select>
+        <button class="remove-course">×</button>
+      </div>
+    </div>
+
+    <div class="result-section" id="result-section" style="display: none;">
+      <h2>Your CGPA</h2>
+      <div class="result" id="cgpa-result">0.00</div>
+      <div class="message" id="message"></div>
+    </div>
+
+    <div class="info">
+      <strong>How is CGPA calculated?</strong><br>
+      CGPA = (Sum of (Grade Points × Credit Hours)) ÷ Total Credit Hours<br>
+      Scale: 0 to 10
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const coursesContainer = document.getElementById("courses-container");
+      const addBtn = document.getElementById("add-course");
+      const calculateBtn = document.getElementById("calculate");
+      const resetBtn = document.getElementById("reset");
+      const resultSection = document.getElementById("result-section");
+      const cgpaResult = document.getElementById("cgpa-result");
+      const message = document.getElementById("message");
+
+      function addRemoveHandler(button) {
+        button.addEventListener("click", () => {
+          const rows = document.querySelectorAll(".course-row");
+          if (rows.length > 1) {
+            button.parentElement.remove();
+          }
+        });
+      }
+
+      addRemoveHandler(document.querySelector(".remove-course"));
+
+      addBtn.addEventListener("click", () => {
+        const row = document.createElement("div");
+        row.className = "course-row";
+        row.innerHTML = `
+          <input type="text" class="course-name" placeholder="Course Name" />
+          <input type="number" class="credit-hours" placeholder="Credit Hours" min="1" max="6" />
+          <select class="grade">
+            <option value="10">A (10)</option>
+            <option value="9">A- (9)</option>
+            <option value="8">B+ (8)</option>
+            <option value="7">B (7)</option>
+            <option value="6">C+ (6)</option>
+            <option value="5">C (5)</option>
+            <option value="4">D (4)</option>
+            <option value="0">F (0)</option>
+          </select>
+          <button class="remove-course">×</button>
+        `;
+        coursesContainer.appendChild(row);
+        addRemoveHandler(row.querySelector(".remove-course"));
+      });
+
+      calculateBtn.addEventListener("click", () => {
+        const rows = document.querySelectorAll(".course-row");
+        let totalPoints = 0;
+        let totalCredits = 0;
+        for (const row of rows) {
+          const name = row.querySelector(".course-name").value.trim();
+          const credit = parseFloat(row.querySelector(".credit-hours").value);
+          const grade = parseFloat(row.querySelector(".grade").value);
+
+          if (!name || isNaN(credit) || isNaN(grade)) {
+            alert("Please fill all course details.");
+            return;
+          }
+
+          totalCredits += credit;
+          totalPoints += credit * grade;
+        }
+
+        const cgpa = totalPoints / totalCredits;
+        cgpaResult.textContent = cgpa.toFixed(2);
+        resultSection.style.display = "block";
+
+        if (cgpa >= 9) {
+          message.textContent = "Outstanding! You're on top!";
+        } else if (cgpa >= 8) {
+          message.textContent = "Excellent! Keep it up!";
+        } else if (cgpa >= 7) {
+          message.textContent = "Very Good. You’re doing well.";
+        } else if (cgpa >= 6) {
+          message.textContent = "Good. You can improve even more.";
+        } else if (cgpa >= 5) {
+          message.textContent = "Average. Try to work harder.";
+        } else {
+          message.textContent = "Needs improvement. Stay focused!";
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        while (coursesContainer.children.length > 1) {
+          coursesContainer.lastChild.remove();
+        }
+        const firstRow = coursesContainer.firstElementChild;
+        firstRow.querySelector(".course-name").value = "";
+        firstRow.querySelector(".credit-hours").value = "";
+        firstRow.querySelector(".grade").selectedIndex = 0;
+        resultSection.style.display = "none";
+      });
+    });
+  </script>
+</body>
+</html>

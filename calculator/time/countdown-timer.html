@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #0a0909;
+        }
+        
+        .container {
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .time-segment {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .time-value {
+            font-size: 3rem;
+            font-weight: bold;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            min-width: 80px;
+        }
+        
+        .time-label {
+            margin-top: 10px;
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .start-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .pause-btn {
+            background-color: #FF9800;
+            color: white;
+        }
+        
+        .reset-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .timer-input {
+            margin-bottom: 20px;
+        }
+        
+        input {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 60px;
+            text-align: center;
+            margin: 0 5px;
+        }
+        
+        label {
+            margin-right: 10px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        
+        <div class="timer-input">
+            <label for="hours">Hours:</label>
+            <input type="number" id="hours" min="0" max="99" value="0">
+            
+            <label for="minutes">Minutes:</label>
+            <input type="number" id="minutes" min="0" max="59" value="0">
+            
+            <label for="seconds">Seconds:</label>
+            <input type="number" id="seconds" min="0" max="59" value="0">
+        </div>
+        
+        <div class="timer">
+            <div class="time-segment">
+                <div id="hours-display" class="time-value">00</div>
+                <div class="time-label">Hours</div>
+            </div>
+            <div class="time-segment">
+                <div id="minutes-display" class="time-value">00</div>
+                <div class="time-label">Minutes</div>
+            </div>
+            <div class="time-segment">
+                <div id="seconds-display" class="time-value">00</div>
+                <div class="time-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="start-btn" id="start-btn">Start</button>
+            <button class="pause-btn" id="pause-btn" disabled>Pause</button>
+            <button class="reset-btn" id="reset-btn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const hoursInput = document.getElementById('hours');
+        const minutesInput = document.getElementById('minutes');
+        const secondsInput = document.getElementById('seconds');
+        
+        const hoursDisplay = document.getElementById('hours-display');
+        const minutesDisplay = document.getElementById('minutes-display');
+        const secondsDisplay = document.getElementById('seconds-display');
+        
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        
+        // Timer variables
+        let totalSeconds = 0;
+        let countdownInterval = null;
+        let isRunning = false;
+        
+        // Helper function to format time
+        function formatTime(time) {
+            return time < 10 ? `0${time}` : time;
+        }
+        
+        // Update display
+        function updateDisplay() {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            hoursDisplay.textContent = formatTime(hours);
+            minutesDisplay.textContent = formatTime(minutes);
+            secondsDisplay.textContent = formatTime(seconds);
+        }
+        
+        // Start timer
+        function startTimer() {
+            if (!isRunning) {
+                // If timer is not set, get values from inputs
+                if (totalSeconds <= 0) {
+                    const hours = parseInt(hoursInput.value) || 0;
+                    const minutes = parseInt(minutesInput.value) || 0;
+                    const seconds = parseInt(secondsInput.value) || 0;
+                    
+                    totalSeconds = hours * 3600 + minutes * 60 + seconds;
+                    
+                    // If user didn't enter any time
+                    if (totalSeconds <= 0) {
+                        alert("Please enter a valid time");
+                        return;
+                    }
+                }
+                
+                isRunning = true;
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                
+                // Disable input fields when timer is running
+                hoursInput.disabled = true;
+                minutesInput.disabled = true;
+                secondsInput.disabled = true;
+                
+                countdownInterval = setInterval(() => {
+                    if (totalSeconds > 0) {
+                        totalSeconds--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(countdownInterval);
+                        isRunning = false;
+                        startBtn.disabled = false;
+                        pauseBtn.disabled = true;
+                        alert("Time's up!");
+                        
+                        // Enable input fields
+                        hoursInput.disabled = false;
+                        minutesInput.disabled = false;
+                        secondsInput.disabled = false;
+                    }
+                }, 1000);
+            }
+        }
+        
+        // Pause timer
+        function pauseTimer() {
+            if (isRunning) {
+                clearInterval(countdownInterval);
+                isRunning = false;
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+            }
+        }
+        
+        // Reset timer
+        function resetTimer() {
+            clearInterval(countdownInterval);
+            isRunning = false;
+            totalSeconds = 0;
+            
+            // Reset displays
+            hoursDisplay.textContent = "00";
+            minutesDisplay.textContent = "00";
+            secondsDisplay.textContent = "00";
+            
+            // Reset inputs
+            hoursInput.value = "0";
+            minutesInput.value = "0";
+            secondsInput.value = "0";
+            
+            // Enable buttons and inputs
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            hoursInput.disabled = false;
+            minutesInput.disabled = false;
+            secondsInput.disabled = false;
+        }
+        
+        // Event listeners
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        
+        // Update display initially
+        updateDisplay();
+    </script>
+</body>
+</html>

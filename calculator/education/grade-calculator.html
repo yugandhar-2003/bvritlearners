@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #09090a;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        
+        .input-section {
+            margin-bottom: 20px;
+        }
+        
+        .assessment-row {
+            display: flex;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+        
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .assessment-name {
+            flex: 2;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .remove-assessment {
+            background-color: #e74c3c;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .remove-assessment:hover {
+            background-color: #c0392b;
+        }
+        
+        .result-section {
+            margin-top: 20px;
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .result {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+        
+        .grade-scale {
+            margin-top: 30px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        .grade-scale th, .grade-scale td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .grade-scale th {
+            background-color: #f2f2f2;
+        }
+
+        .final-grade-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .final-grade-input label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .final-goals {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #grade-needed-result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grade Calculator</h1>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="current-grade">Current Grade</div>
+            <div class="tab" data-tab="final-grade">Final Grade Needed</div>
+        </div>
+        
+        <div id="current-grade" class="tab-content active">
+            <div class="input-section">
+                <div class="action-buttons">
+                    <button id="add-assessment">Add Assessment</button>
+                    <button id="calculate">Calculate Grade</button>
+                    <button id="reset">Reset</button>
+                </div>
+                
+                <div id="assessments-container">
+                    <div class="assessment-row">
+                        <input type="text" class="assessment-name" placeholder="Assessment Name" required>
+                        <input type="number" class="score" placeholder="Your Score" min="0" required>
+                        <input type="number" class="total" placeholder="Total Points" min="1" required>
+                        <input type="number" class="weight" placeholder="Weight %" min="0" max="100" required>
+                        <button class="remove-assessment">×</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-section" id="result-section" style="display: none;">
+                <h2>Your Results</h2>
+                <div>Weighted Average: <span class="result" id="weighted-avg">0%</span></div>
+                <div>Letter Grade: <span class="result" id="letter-grade">N/A</span></div>
+            </div>
+            
+            <table class="grade-scale">
+                <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>F</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Percentage</td>
+                        <td>90-100%</td>
+                        <td>80-89%</td>
+                        <td>70-79%</td>
+                        <td>60-69%</td>
+                        <td>0-59%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="final-grade" class="tab-content">
+            <div class="final-grade-input">
+                <label for="current-percentage">Current Grade:</label>
+                <input type="number" id="current-percentage" placeholder="Current %" min="0" max="100" required>
+            </div>
+            
+            <div class="final-grade-input">
+                <label for="current-weight">Current Weight:</label>
+                <input type="number" id="current-weight" placeholder="Weight %" min="0" max="100" required>
+            </div>
+            
+            <div class="final-grade-input">
+                <label for="final-weight">Final Exam Weight:</label>
+                <input type="number" id="final-weight" placeholder="Weight %" min="0" max="100" required>
+            </div>
+            
+            <div class="final-goals">
+                <h3>Desired Final Grade</h3>
+                <div class="assessment-row">
+                    <select id="desired-grade">
+                        <option value="90">A (90%)</option>
+                        <option value="80">B (80%)</option>
+                        <option value="70">C (70%)</option>
+                        <option value="60">D (60%)</option>
+                    </select>
+                    <button id="calculate-needed">Calculate Needed Grade</button>
+                </div>
+            </div>
+            
+            <div id="grade-needed-result"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Current Grade Calculator functionality
+            const assessmentsContainer = document.getElementById('assessments-container');
+            const addAssessmentButton = document.getElementById('add-assessment');
+            const calculateButton = document.getElementById('calculate');
+            const resetButton = document.getElementById('reset');
+            const resultSection = document.getElementById('result-section');
+            const weightedAvg = document.getElementById('weighted-avg');
+            const letterGrade = document.getElementById('letter-grade');
+            
+            // Add a new assessment row
+            addAssessmentButton.addEventListener('click', function() {
+                const assessmentRow = document.createElement('div');
+                assessmentRow.className = 'assessment-row';
+                assessmentRow.innerHTML = `
+                    <input type="text" class="assessment-name" placeholder="Assessment Name" required>
+                    <input type="number" class="score" placeholder="Your Score" min="0" required>
+                    <input type="number" class="total" placeholder="Total Points" min="1" required>
+                    <input type="number" class="weight" placeholder="Weight %" min="0" max="100" required>
+                    <button class="remove-assessment">×</button>
+                `;
+                assessmentsContainer.appendChild(assessmentRow);
+                
+                // Add event listener to the new remove button
+                const removeButton = assessmentRow.querySelector('.remove-assessment');
+                removeButton.addEventListener('click', function() {
+                    assessmentsContainer.removeChild(assessmentRow);
+                });
+            });
+            
+            // Add event listener to the initial remove button
+            const initialRemoveButton = document.querySelector('.remove-assessment');
+            initialRemoveButton.addEventListener('click', function() {
+                const assessmentRows = document.querySelectorAll('.assessment-row');
+                if (assessmentRows.length > 1) {
+                    assessmentsContainer.removeChild(this.parentElement);
+                }
+            });
+            
+            // Calculate Grade
+            calculateButton.addEventListener('click', function() {
+                const assessmentRows = document.querySelectorAll('.assessment-row');
+                let totalWeightedScore = 0;
+                let totalWeight = 0;
+                let isValid = true;
+                
+                assessmentRows.forEach(row => {
+                    const score = parseFloat(row.querySelector('.score').value);
+                    const total = parseFloat(row.querySelector('.total').value);
+                    const weight = parseFloat(row.querySelector('.weight').value);
+                    
+                    if (isNaN(score) || isNaN(total) || isNaN(weight) || total === 0) {
+                        isValid = false;
+                        alert('Please fill in all assessment details correctly');
+                        return;
+                    }
+                    
+                    const percentage = (score / total) * 100;
+                    totalWeightedScore += percentage * (weight / 100);
+                    totalWeight += weight;
+                });
+                
+                if (!isValid) {
+                    return;
+                }
+                
+                // Check if weights sum to approximately 100%
+                if (Math.abs(totalWeight - 100) > 1) {
+                    alert(`Warning: Your weights sum to ${totalWeight}%, not 100%. The calculation may not be accurate.`);
+                }
+                
+                // Normalize the weighted score if weights don't sum to 100%
+                if (totalWeight > 0) {
+                    totalWeightedScore = (totalWeightedScore / totalWeight) * 100;
+                }
+                
+                // Display result
+                resultSection.style.display = 'block';
+                weightedAvg.textContent = totalWeightedScore.toFixed(2) + '%';
+                
+                // Determine letter grade
+                let grade = '';
+                if (totalWeightedScore >= 90) {
+                    grade = 'A';
+                } else if (totalWeightedScore >= 80) {
+                    grade = 'B';
+                } else if (totalWeightedScore >= 70) {
+                    grade = 'C';
+                } else if (totalWeightedScore >= 60) {
+                    grade = 'D';
+                } else {
+                    grade = 'F';
+                }
+                
+                letterGrade.textContent = grade;
+            });
+            
+            // Reset the form
+            resetButton.addEventListener('click', function() {
+                // Remove all assessment rows except the first one
+                while (assessmentsContainer.children.length > 1) {
+                    assessmentsContainer.removeChild(assessmentsContainer.lastChild);
+                }
+                
+                // Clear the first assessment row inputs
+                const firstRow = assessmentsContainer.firstChild;
+                firstRow.querySelector('.assessment-name').value = '';
+                firstRow.querySelector('.score').value = '';
+                firstRow.querySelector('.total').value = '';
+                firstRow.querySelector('.weight').value = '';
+                
+                // Hide result section
+                resultSection.style.display = 'none';
+            });
+            
+            // Final Grade Needed Calculator functionality
+            const calculateNeededButton = document.getElementById('calculate-needed');
+            const gradeNeededResult = document.getElementById('grade-needed-result');
+            
+            calculateNeededButton.addEventListener('click', function() {
+                const currentPercentage = parseFloat(document.getElementById('current-percentage').value);
+                const currentWeight = parseFloat(document.getElementById('current-weight').value);
+                const finalWeight = parseFloat(document.getElementById('final-weight').value);
+                const desiredGrade = parseFloat(document.getElementById('desired-grade').value);
+                
+                if (isNaN(currentPercentage) || isNaN(currentWeight) || isNaN(finalWeight) || currentWeight + finalWeight !== 100) {
+                    alert('Please fill in all fields correctly. Current weight and final weight should sum to 100%.');
+                    return;
+                }
+                
+                // Calculate the needed grade on the final
+                const currentContribution = currentPercentage * (currentWeight / 100);
+                const neededContribution = desiredGrade - currentContribution;
+                const neededGrade = (neededContribution / finalWeight) * 100;
+                
+                if (neededGrade > 100) {
+                    gradeNeededResult.innerHTML = `<span style="color: #e74c3c">You need a ${neededGrade.toFixed(2)}% on the final to get a ${desiredGrade}% in the course.<br>This is not possible as it exceeds 100%.</span>`;
+                } else if (neededGrade < 0) {
+                    gradeNeededResult.innerHTML = `<span style="color: #27ae60">Good news! You already have enough points to get a ${desiredGrade}% in the course.</span>`;
+                } else {
+                    gradeNeededResult.innerHTML = `<span style="color: #2980b9">You need a ${neededGrade.toFixed(2)}% on the final to get a ${desiredGrade}% in the course.</span>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

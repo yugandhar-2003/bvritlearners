@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSE Academic Videos - BVRIT Learning Platform</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+    <style>
+        :root {
+            /* Dark theme colors */
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-border: #333333;
+            --dark-text: #ffffff;
+            --dark-text-secondary: rgba(255, 255, 255, 0.7);
+
+            /* Primary colors */
+            --primary-300: #4dabf7;
+            --primary-400: #339af0;
+            --primary-500: #0D99E6;
+            --primary-600: #1c7ed6;
+            --primary-700: #1971c2;
+
+            /* Accent colors */
+            --accent-300: #e599f7;
+            --accent-400: #da77f2;
+            --accent-500: #cc5de8;
+            --accent-600: #be4bdb;
+            --accent-700: #ae3ec9;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+
+            /* Border radius */
+            --border-radius-sm: 0.25rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 0.75rem;
+            --border-radius-xl: 1rem;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+            padding: 2rem;
+            text-align: center;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--border-radius-md);
+            background: linear-gradient(45deg, var(--primary-600) 0%, var(--primary-500) 100%);
+            box-shadow: 0 4px 10px rgba(0, 115, 245, 0.3);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            align-self: flex-start;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 115, 245, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-button svg {
+            margin-right: 0.75rem;
+            width: 18px;
+            height: 18px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--primary-400) 0%, var(--accent-400) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-500), var(--accent-500));
+            border-radius: 3px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--dark-text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @media (min-width: 640px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background-color: var(--dark-surface);
+            color: var(--dark-text);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-xl);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--dark-border);
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 115, 245, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 115, 245, 0.2), 0 0 20px rgba(0, 115, 245, 0.1);
+            border-color: rgba(0, 115, 245, 0.3);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+            z-index: 1;
+        }
+
+        .card h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+            transition: width 0.3s ease;
+        }
+
+        .card:hover h2::after {
+            width: 100%;
+        }
+
+        .card.expanded {
+            grid-column: 1 / -1;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 2rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card.expanded h2,
+        .card.expanded p {
+            display: none;
+        }
+
+        .exit-button {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: linear-gradient(45deg, var(--accent-600) 0%, var(--accent-500) 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(190, 75, 219, 0.3);
+            z-index: 10;
+        }
+
+        .exit-button:hover {
+            background: linear-gradient(45deg, var(--accent-700) 0%, var(--accent-600) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(190, 75, 219, 0.4);
+        }
+
+        .expanded iframe {
+            border-radius: var(--border-radius-lg);
+            max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .expanded iframe {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="../../index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Home
+        </a>
+
+        <h1>Computer Science Engineering</h1>
+        <p class="subtitle">Click on any subject card to view the video playlist</p>
+
+        <div class="grid" id="video-grid">
+            <div class="card" data-video-id="videoseries?si=ghgQoNzhTWgz-k-7&amp;list=PLfMyF1rjOOM4qBOVi1aDyXz1tgwaOKhFZ">
+                <i class="fab fa-java" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Java Programming</h2>
+            </div>
+            <div class="card" data-video-id="videoseries?si=xhZswZN8BRsDd1lO&amp;list=PLfMyF1rjOOM6ykVndRAehUoUmHn-qCbtQ">
+                <i class="fas fa-brain" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Introduction to Artificial Intelligence</h2>
+            </div>
+            <div class="card" data-video-id="videoseries?si=Akuirg_9vwWp2mrU&amp;list=PLfMyF1rjOOM4gpmSvSCyAFLvAXMZB7iAP">
+                <i class="fas fa-database" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Database Management</h2>
+            </div>
+            <div class="card" data-video-id="videoseries?si=bAQ5OfbWdGIS_4Im&amp;list=PLfMyF1rjOOM6knaYjPlti7YbJC8QYk68L">
+                <i class="fas fa-project-diagram" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Data Structures With Python</h2>
+            </div>
+            <div class="card" data-video-id="videoseries?si=F58Xt0XrEusPLZyt&amp;list=PLfMyF1rjOOM5nr2puqek7RLIWwPMiXkzk">
+                <i class="fab fa-python" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Python Programming</h2>
+            </div>
+            <div class="card" data-video-id="videoseries?si=qH0a-0xHeyJ29Vog&amp;list=PLfMyF1rjOOM6pZkQYrkpO4X41Kh7JMoo8">
+                <i class="fas fa-code-branch" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Design and Analysis of Algorithm</h2>
+            </div>
+            <div class="card" data-video-id="videoseries?si=mx22VFjXStJrfm8_&amp;list=PLfMyF1rjOOM7wVlfAC8XbGnH4QP-8c14L">
+                <i class="fas fa-sitemap" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Software Design with UML</h2>
+            </div>
+            <div class="card" data-video-id="videoseries?si=d7CiF_qJ5wM2JcfD&amp;list=PLfMyF1rjOOM51SmVVqy-46pWybTY436KW">
+                <i class="fas fa-globe" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Open Source Web Development</h2>
+            </div>
+
+            <div class="card" data-video-id="videoseries?si=zr01Vxmbwzuid75I&amp;list=PLfMyF1rjOOM5rI79DGsl6lOZF4BRL1oBB">
+                <i class="fas fa-cubes" style="font-size: 2rem; color: var(--primary-400); margin-bottom: 1rem;"></i>
+                <h2>Advanced Data Structure</h2>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const grid = document.getElementById('video-grid');
+            const cards = document.querySelectorAll('.card');
+
+            // Add animation classes to cards with delay
+            cards.forEach((card, index) => {
+                card.classList.add('fade-in');
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                card.addEventListener('click', function () {
+                    if (!card.classList.contains('expanded')) {
+                        // Collapse any expanded card first
+                        cards.forEach(c => {
+                            c.classList.remove('expanded');
+                            const exitButton = c.querySelector('.exit-button');
+                            if (exitButton) exitButton.remove();
+                            // Remove any existing iframe
+                            const iframe = c.querySelector('iframe');
+                            if (iframe) iframe.remove();
+                        });
+
+                        // Move the clicked card to the top
+                        grid.insertBefore(card, grid.firstChild);
+                        card.classList.add('expanded');
+
+                        // Add YouTube iframe to the clicked card
+                        const videoId = card.getAttribute('data-video-id');
+                        const iframe = document.createElement('iframe');
+                        iframe.width = "800";
+                        iframe.height = "450";
+                        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                        iframe.frameBorder = "0";
+                        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                        iframe.referrerpolicy = "strict-origin-when-cross-origin";
+                        iframe.allowFullscreen = true;
+                        iframe.style.borderRadius = "12px";
+                        iframe.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.4)";
+                        iframe.style.maxWidth = "100%";
+                        card.appendChild(iframe);
+
+                        // Add exit button to the clicked card
+                        const exitButton = document.createElement('button');
+                        exitButton.innerHTML = '<i class="fas fa-times"></i> Exit';
+                        exitButton.className = 'exit-button';
+                        card.appendChild(exitButton);
+
+                        exitButton.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            card.classList.remove('expanded');
+                            iframe.remove();
+                            exitButton.remove();
+                        });
+
+                        // Scroll to the expanded card
+                        setTimeout(() => {
+                            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+                    }
+                });
+            });
+
+            // Add hover effect with GSAP if available
+            if (window.gsap) {
+                cards.forEach(card => {
+                    card.addEventListener('mouseenter', () => {
+                        if (!card.classList.contains('expanded')) {
+                            gsap.to(card, { y: -10, scale: 1.02, duration: 0.3, ease: 'power2.out' });
+                        }
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        if (!card.classList.contains('expanded')) {
+                            gsap.to(card, { y: 0, scale: 1, duration: 0.3, ease: 'power2.out' });
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

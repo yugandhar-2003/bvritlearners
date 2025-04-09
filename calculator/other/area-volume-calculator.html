@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area & Volume Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #030303;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #4285f4;
+            border-bottom: 2px solid #4285f4;
+        }
+        
+        .tab:hover {
+            color: #4285f4;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .shape-selector {
+            margin-bottom: 20px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #357ae8;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            display: none;
+        }
+        
+        .form-container {
+            margin-top: 20px;
+        }
+        
+        .error {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .tab {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Area & Volume Calculator</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="openTab('area')">Area</button>
+            <button class="tab" onclick="openTab('volume')">Volume</button>
+        </div>
+        
+        <div id="area" class="tab-content active">
+            <div class="shape-selector">
+                <label for="area-shape">Select Shape:</label>
+                <select id="area-shape" onchange="updateAreaInputs()">
+                    <option value="square">Square</option>
+                    <option value="rectangle">Rectangle</option>
+                    <option value="circle">Circle</option>
+                    <option value="triangle">Triangle</option>
+                    <option value="trapezoid">Trapezoid</option>
+                </select>
+            </div>
+            
+            <div class="form-container" id="area-inputs">
+                <!-- Inputs will be dynamically generated here -->
+            </div>
+            
+            <button onclick="calculateArea()">Calculate Area</button>
+            
+            <div class="result" id="area-result"></div>
+        </div>
+        
+        <div id="volume" class="tab-content">
+            <div class="shape-selector">
+                <label for="volume-shape">Select Shape:</label>
+                <select id="volume-shape" onchange="updateVolumeInputs()">
+                    <option value="cube">Cube</option>
+                    <option value="rectangular-prism">Rectangular Prism</option>
+                    <option value="sphere">Sphere</option>
+                    <option value="cylinder">Cylinder</option>
+                    <option value="cone">Cone</option>
+                </select>
+            </div>
+            
+            <div class="form-container" id="volume-inputs">
+                <!-- Inputs will be dynamically generated here -->
+            </div>
+            
+            <button onclick="calculateVolume()">Calculate Volume</button>
+            
+            <div class="result" id="volume-result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Change tabs
+        function openTab(tabName) {
+            const tabs = document.getElementsByClassName('tab');
+            const tabContents = document.getElementsByClassName('tab-content');
+            
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+                tabContents[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add('active');
+            
+            // Reset results
+            document.getElementById('area-result').style.display = 'none';
+            document.getElementById('volume-result').style.display = 'none';
+            
+            // Initialize inputs for the selected tab
+            if (tabName === 'area') {
+                updateAreaInputs();
+            } else {
+                updateVolumeInputs();
+            }
+        }
+        
+        // Update area inputs based on selected shape
+        function updateAreaInputs() {
+            const shape = document.getElementById('area-shape').value;
+            const inputContainer = document.getElementById('area-inputs');
+            
+            // Clear previous inputs
+            inputContainer.innerHTML = '';
+            
+            switch (shape) {
+                case 'square':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="square-side">Side Length:</label>
+                            <input type="number" id="square-side" placeholder="Enter side length" step="any" min="0">
+                            <div class="error" id="square-side-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'rectangle':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="rectangle-length">Length:</label>
+                            <input type="number" id="rectangle-length" placeholder="Enter length" step="any" min="0">
+                            <div class="error" id="rectangle-length-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="rectangle-width">Width:</label>
+                            <input type="number" id="rectangle-width" placeholder="Enter width" step="any" min="0">
+                            <div class="error" id="rectangle-width-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'circle':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="circle-radius">Radius:</label>
+                            <input type="number" id="circle-radius" placeholder="Enter radius" step="any" min="0">
+                            <div class="error" id="circle-radius-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'triangle':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="triangle-base">Base:</label>
+                            <input type="number" id="triangle-base" placeholder="Enter base length" step="any" min="0">
+                            <div class="error" id="triangle-base-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="triangle-height">Height:</label>
+                            <input type="number" id="triangle-height" placeholder="Enter height" step="any" min="0">
+                            <div class="error" id="triangle-height-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'trapezoid':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="trapezoid-a">Base 1:</label>
+                            <input type="number" id="trapezoid-a" placeholder="Enter first base length" step="any" min="0">
+                            <div class="error" id="trapezoid-a-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="trapezoid-b">Base 2:</label>
+                            <input type="number" id="trapezoid-b" placeholder="Enter second base length" step="any" min="0">
+                            <div class="error" id="trapezoid-b-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="trapezoid-height">Height:</label>
+                            <input type="number" id="trapezoid-height" placeholder="Enter height" step="any" min="0">
+                            <div class="error" id="trapezoid-height-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            // Reset result
+            document.getElementById('area-result').style.display = 'none';
+        }
+        
+        // Update volume inputs based on selected shape
+        function updateVolumeInputs() {
+            const shape = document.getElementById('volume-shape').value;
+            const inputContainer = document.getElementById('volume-inputs');
+            
+            // Clear previous inputs
+            inputContainer.innerHTML = '';
+            
+            switch (shape) {
+                case 'cube':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="cube-side">Side Length:</label>
+                            <input type="number" id="cube-side" placeholder="Enter side length" step="any" min="0">
+                            <div class="error" id="cube-side-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'rectangular-prism':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="prism-length">Length:</label>
+                            <input type="number" id="prism-length" placeholder="Enter length" step="any" min="0">
+                            <div class="error" id="prism-length-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="prism-width">Width:</label>
+                            <input type="number" id="prism-width" placeholder="Enter width" step="any" min="0">
+                            <div class="error" id="prism-width-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="prism-height">Height:</label>
+                            <input type="number" id="prism-height" placeholder="Enter height" step="any" min="0">
+                            <div class="error" id="prism-height-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'sphere':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="sphere-radius">Radius:</label>
+                            <input type="number" id="sphere-radius" placeholder="Enter radius" step="any" min="0">
+                            <div class="error" id="sphere-radius-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'cylinder':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="cylinder-radius">Radius:</label>
+                            <input type="number" id="cylinder-radius" placeholder="Enter radius" step="any" min="0">
+                            <div class="error" id="cylinder-radius-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="cylinder-height">Height:</label>
+                            <input type="number" id="cylinder-height" placeholder="Enter height" step="any" min="0">
+                            <div class="error" id="cylinder-height-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'cone':
+                    inputContainer.innerHTML = `
+                        <div class="input-group">
+                            <label for="cone-radius">Radius:</label>
+                            <input type="number" id="cone-radius" placeholder="Enter radius" step="any" min="0">
+                            <div class="error" id="cone-radius-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="cone-height">Height:</label>
+                            <input type="number" id="cone-height" placeholder="Enter height" step="any" min="0">
+                            <div class="error" id="cone-height-error">Please enter a valid number greater than 0.</div>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            // Reset result
+            document.getElementById('volume-result').style.display = 'none';
+        }
+        
+        // Validate input and show error
+        function validateInput(inputId) {
+            const input = document.getElementById(inputId);
+            const errorElement = document.getElementById(inputId + '-error');
+            
+            if (!input.value || isNaN(input.value) || parseFloat(input.value) <= 0) {
+                errorElement.style.display = 'block';
+                return false;
+            } else {
+                errorElement.style.display = 'none';
+                return true;
+            }
+        }
+        
+        // Calculate area
+        function calculateArea() {
+            const shape = document.getElementById('area-shape').value;
+            const resultElement = document.getElementById('area-result');
+            let isValid = true;
+            let area = 0;
+            
+            switch (shape) {
+                case 'square':
+                    if (!validateInput('square-side')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const side = parseFloat(document.getElementById('square-side').value);
+                    area = side * side;
+                    break;
+                    
+                case 'rectangle':
+                    if (!validateInput('rectangle-length') || !validateInput('rectangle-width')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const length = parseFloat(document.getElementById('rectangle-length').value);
+                    const width = parseFloat(document.getElementById('rectangle-width').value);
+                    area = length * width;
+                    break;
+                    
+                case 'circle':
+                    if (!validateInput('circle-radius')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const radius = parseFloat(document.getElementById('circle-radius').value);
+                    area = Math.PI * radius * radius;
+                    break;
+                    
+                case 'triangle':
+                    if (!validateInput('triangle-base') || !validateInput('triangle-height')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const base = parseFloat(document.getElementById('triangle-base').value);
+                    const height = parseFloat(document.getElementById('triangle-height').value);
+                    area = 0.5 * base * height;
+                    break;
+                    
+                case 'trapezoid':
+                    if (!validateInput('trapezoid-a') || !validateInput('trapezoid-b') || !validateInput('trapezoid-height')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const a = parseFloat(document.getElementById('trapezoid-a').value);
+                    const b = parseFloat(document.getElementById('trapezoid-b').value);
+                    const h = parseFloat(document.getElementById('trapezoid-height').value);
+                    area = 0.5 * (a + b) * h;
+                    break;
+            }
+            
+            if (isValid) {
+                resultElement.textContent = `Area: ${area.toFixed(2)} square units`;
+                resultElement.style.display = 'block';
+            } else {
+                resultElement.style.display = 'none';
+            }
+        }
+        
+        // Calculate volume
+        function calculateVolume() {
+            const shape = document.getElementById('volume-shape').value;
+            const resultElement = document.getElementById('volume-result');
+            let isValid = true;
+            let volume = 0;
+            
+            switch (shape) {
+                case 'cube':
+                    if (!validateInput('cube-side')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const side = parseFloat(document.getElementById('cube-side').value);
+                    volume = side * side * side;
+                    break;
+                    
+                case 'rectangular-prism':
+                    if (!validateInput('prism-length') || !validateInput('prism-width') || !validateInput('prism-height')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const length = parseFloat(document.getElementById('prism-length').value);
+                    const width = parseFloat(document.getElementById('prism-width').value);
+                    const height = parseFloat(document.getElementById('prism-height').value);
+                    volume = length * width * height;
+                    break;
+                    
+                case 'sphere':
+                    if (!validateInput('sphere-radius')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const radius = parseFloat(document.getElementById('sphere-radius').value);
+                    volume = (4/3) * Math.PI * Math.pow(radius, 3);
+                    break;
+                    
+                case 'cylinder':
+                    if (!validateInput('cylinder-radius') || !validateInput('cylinder-height')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const r = parseFloat(document.getElementById('cylinder-radius').value);
+                    const h = parseFloat(document.getElementById('cylinder-height').value);
+                    volume = Math.PI * r * r * h;
+                    break;
+                    
+                case 'cone':
+                    if (!validateInput('cone-radius') || !validateInput('cone-height')) {
+                        isValid = false;
+                        break;
+                    }
+                    
+                    const rad = parseFloat(document.getElementById('cone-radius').value);
+                    const hgt = parseFloat(document.getElementById('cone-height').value);
+                    volume = (1/3) * Math.PI * rad * rad * hgt;
+                    break;
+            }
+            
+            if (isValid) {
+                resultElement.textContent = `Volume: ${volume.toFixed(2)} cubic units`;
+                resultElement.style.display = 'block';
+            } else {
+                resultElement.style.display = 'none';
+            }
+        }
+        
+        // Initialize inputs on page load
+        window.onload = function() {
+            updateAreaInputs();
+            updateVolumeInputs();
+        };
+    </script>
+</body>
+</html>

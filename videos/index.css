@@ -1,0 +1,104 @@
+.bg-container {
+    background-size: auto;
+}
+.headingy {
+    background: rgb(238, 174, 202);
+    background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(45, 115, 253, 1) 100%);
+    font-family: "Roboto";
+    font-weight: bold;
+}
+.button1y {
+    background-color: #dae2ec;
+    font-family: "Roboto";
+    font-size: 18px;
+    width: 33%;
+    border-width: 0;
+    border-radius: 8px;
+}
+.tab-contenty {
+    text-align: center;
+}
+.tabs-containery {
+    background-color: white;
+    border-radius: 8px;
+}
+
+.buttony {
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    width: 30%;
+    background: tomato;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(10, 10, 10, 20);
+    margin: 8px;
+}
+
+.buttony1 {
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    width: 30%;
+    background: tomato;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(10, 10, 10, 20);
+    margin: 8px;
+    
+  left: 50%;
+ 
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #35424a;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    background: #ffffff;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color:white;
+}
+h2{
+  color:#333;
+}
+
+h3 {
+    color: #555;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+footer {
+    background: #35424a;
+    color: #ffffff;
+   
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

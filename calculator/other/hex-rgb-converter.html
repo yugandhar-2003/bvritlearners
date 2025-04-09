@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEX-RGB Color Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #080808;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid #4285f4;
+            color: #4285f4;
+        }
+        
+        .converter {
+            display: none;
+        }
+        
+        .converter.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        
+        .error {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #4285f4;
+            font-size: 18px;
+        }
+        
+        .rgb-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .rgb-inputs .input-group {
+            flex: 1;
+        }
+        
+        .color-preview {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .color-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-value {
+            flex: 1;
+        }
+        
+        .history {
+            margin-top: 30px;
+        }
+        
+        .history h3 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HEX-RGB Color Converter</h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-target="hex-to-rgb">HEX to RGB</div>
+            <div class="tab" data-target="rgb-to-hex">RGB to HEX</div>
+        </div>
+        
+        <div id="hex-to-rgb" class="converter active">
+            <div class="input-group">
+                <label for="hex-input">Enter HEX Color:</label>
+                <input type="text" id="hex-input" placeholder="e.g. #1a2b3c or 1a2b3c">
+                <div class="error" id="hex-error">Please enter a valid HEX color (e.g., #1a2b3c or 1a2b3c)</div>
+            </div>
+            <button id="convert-to-rgb">Convert to RGB</button>
+            <div class="result" id="rgb-result">RGB result will appear here</div>
+            
+            <div class="color-preview">
+                <div class="color-box" id="hex-preview"></div>
+                <div class="color-value">
+                    <p>Preview</p>
+                    <p id="hex-preview-value"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="rgb-to-hex" class="converter">
+            <div class="rgb-inputs">
+                <div class="input-group">
+                    <label for="r-input">R:</label>
+                    <input type="number" id="r-input" min="0" max="255" placeholder="0-255">
+                </div>
+                <div class="input-group">
+                    <label for="g-input">G:</label>
+                    <input type="number" id="g-input" min="0" max="255" placeholder="0-255">
+                </div>
+                <div class="input-group">
+                    <label for="b-input">B:</label>
+                    <input type="number" id="b-input" min="0" max="255" placeholder="0-255">
+                </div>
+            </div>
+            <div class="error" id="rgb-error">Please enter valid RGB values (0-255)</div>
+            
+            <button id="convert-to-hex">Convert to HEX</button>
+            <div class="result" id="hex-result">HEX result will appear here</div>
+            
+            <div class="color-preview">
+                <div class="color-box" id="rgb-preview"></div>
+                <div class="color-value">
+                    <p>Preview</p>
+                    <p id="rgb-preview-value"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history">
+            <h3>Conversion History</h3>
+            <div class="history-list" id="history-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const hexToRgbTab = document.querySelector('[data-target="hex-to-rgb"]');
+        const rgbToHexTab = document.querySelector('[data-target="rgb-to-hex"]');
+        const hexToRgbConverter = document.getElementById('hex-to-rgb');
+        const rgbToHexConverter = document.getElementById('rgb-to-hex');
+        
+        const hexInput = document.getElementById('hex-input');
+        const rInput = document.getElementById('r-input');
+        const gInput = document.getElementById('g-input');
+        const bInput = document.getElementById('b-input');
+        
+        const convertToRgbBtn = document.getElementById('convert-to-rgb');
+        const convertToHexBtn = document.getElementById('convert-to-hex');
+        
+        const rgbResult = document.getElementById('rgb-result');
+        const hexResult = document.getElementById('hex-result');
+        
+        const hexError = document.getElementById('hex-error');
+        const rgbError = document.getElementById('rgb-error');
+        
+        const hexPreview = document.getElementById('hex-preview');
+        const hexPreviewValue = document.getElementById('hex-preview-value');
+        const rgbPreview = document.getElementById('rgb-preview');
+        const rgbPreviewValue = document.getElementById('rgb-preview-value');
+        
+        const historyList = document.getElementById('history-list');
+
+        // Conversion history array
+        let conversionHistory = [];
+
+        // Tab switching functionality
+        hexToRgbTab.addEventListener('click', () => {
+            hexToRgbTab.classList.add('active');
+            rgbToHexTab.classList.remove('active');
+            hexToRgbConverter.classList.add('active');
+            rgbToHexConverter.classList.remove('active');
+        });
+
+        rgbToHexTab.addEventListener('click', () => {
+            rgbToHexTab.classList.add('active');
+            hexToRgbTab.classList.remove('active');
+            rgbToHexConverter.classList.add('active');
+            hexToRgbConverter.classList.remove('active');
+        });
+
+        // Live preview for HEX input
+        hexInput.addEventListener('input', () => {
+            let hex = hexInput.value.trim();
+            if (!hex.startsWith('#')) {
+                hex = '#' + hex;
+            }
+            
+            if (isValidHex(hex)) {
+                hexError.style.display = 'none';
+                updateHexPreview(hex);
+            } else {
+                hexPreview.style.backgroundColor = '';
+                hexPreviewValue.textContent = '';
+            }
+        });
+
+        // Live preview for RGB inputs
+        function updateRgbPreviewFromInputs() {
+            const r = parseInt(rInput.value) || 0;
+            const g = parseInt(gInput.value) || 0;
+            const b = parseInt(bInput.value) || 0;
+            
+            if (isValidRgb(r) && isValidRgb(g) && isValidRgb(b)) {
+                rgbError.style.display = 'none';
+                const rgb = `rgb(${r}, ${g}, ${b})`;
+                updateRgbPreview(r, g, b);
+            } else {
+                rgbPreview.style.backgroundColor = '';
+                rgbPreviewValue.textContent = '';
+            }
+        }
+
+        rInput.addEventListener('input', updateRgbPreviewFromInputs);
+        gInput.addEventListener('input', updateRgbPreviewFromInputs);
+        bInput.addEventListener('input', updateRgbPreviewFromInputs);
+
+        // HEX to RGB conversion
+        convertToRgbBtn.addEventListener('click', () => {
+            let hex = hexInput.value.trim();
+            
+            if (!hex.startsWith('#')) {
+                hex = '#' + hex;
+            }
+            
+            // Validate HEX input
+            if (!isValidHex(hex)) {
+                hexError.style.display = 'block';
+                return;
+            } else {
+                hexError.style.display = 'none';
+            }
+            
+            // Convert HEX to RGB
+            const rgb = hexToRgb(hex);
+            
+            // Display result
+            rgbResult.textContent = `RGB: rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            
+            // Update preview
+            updateHexPreview(hex);
+            
+            // Add to history
+            addToHistory(hex, `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`);
+        });
+
+        // RGB to HEX conversion
+        convertToHexBtn.addEventListener('click', () => {
+            const r = parseInt(rInput.value) || 0;
+            const g = parseInt(gInput.value) || 0;
+            const b = parseInt(bInput.value) || 0;
+            
+            // Validate RGB inputs
+            if (!isValidRgb(r) || !isValidRgb(g) || !isValidRgb(b)) {
+                rgbError.style.display = 'block';
+                return;
+            } else {
+                rgbError.style.display = 'none';
+            }
+            
+            // Convert RGB to HEX
+            const hex = rgbToHex(r, g, b);
+            
+            // Display result
+            hexResult.textContent = `HEX: ${hex}`;
+            
+            // Update preview
+            updateRgbPreview(r, g, b);
+            
+            // Add to history
+            addToHistory(hex, `rgb(${r}, ${g}, ${b})`);
+        });
+
+        // Conversion functions
+        function hexToRgb(hex) {
+            // Remove # if present
+            hex = hex.replace(/^#/, '');
+            
+            // Handle shorthand form (e.g. "FFF")
+            if (hex.length === 3) {
+                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+            }
+            
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            
+            return { r, g, b };
+        }
+
+        function rgbToHex(r, g, b) {
+            return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+        }
+
+        // Validation functions
+        function isValidHex(hex) {
+            return /^#?([0-9A-F]{3}|[0-9A-F]{6})$/i.test(hex);
+        }
+
+        function isValidRgb(value) {
+            return !isNaN(value) && value >= 0 && value <= 255;
+        }
+
+        // Update color previews
+        function updateHexPreview(hex) {
+            hexPreview.style.backgroundColor = hex;
+            hexPreviewValue.textContent = hex.toUpperCase();
+            
+            const rgb = hexToRgb(hex);
+            hexPreviewValue.textContent += ` | RGB(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+        }
+
+        function updateRgbPreview(r, g, b) {
+            const rgb = `rgb(${r}, ${g}, ${b})`;
+            rgbPreview.style.backgroundColor = rgb;
+            
+            const hex = rgbToHex(r, g, b);
+            rgbPreviewValue.textContent = `${hex} | ${rgb}`;
+        }
+
+        // Add conversion to history
+        function addToHistory(hex, rgb) {
+            // Format hex with # if needed
+            if (!hex.startsWith('#')) {
+                hex = '#' + hex;
+            }
+            hex = hex.toUpperCase();
+            
+            // Add to array (limit to 10 entries)
+            conversionHistory.unshift({ hex, rgb });
+            if (conversionHistory.length > 10) {
+                conversionHistory.pop();
+            }
+            
+            // Update DOM
+            updateHistoryDisplay();
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            conversionHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'history-color';
+                colorBox.style.backgroundColor = item.hex;
+                
+                const text = document.createElement('span');
+                text.textContent = `${item.hex} ↔ ${item.rgb}`;
+                
+                historyItem.appendChild(colorBox);
+                historyItem.appendChild(text);
+                historyList.appendChild(historyItem);
+            });
+        }
+    </script>
+</body>
+</html>

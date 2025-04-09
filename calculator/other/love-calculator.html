@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #fd297b, #ff5864, #ff655b);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    h1 {
+      color: #fd297b;
+      margin-bottom: 20px;
+      font-size: 28px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    h1::after {
+      content: "❤";
+      font-size: 24px;
+      position: absolute;
+      top: -5px;
+      right: -30px;
+      animation: heartBeat 1.5s infinite;
+    }
+    
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      15% { transform: scale(1.3); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.3); }
+      60% { transform: scale(1); }
+      100% { transform: scale(1); }
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s;
+      background-color: #f9f9f9;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #fd297b;
+      box-shadow: 0 0 8px rgba(253, 41, 123, 0.4);
+      background-color: #fff;
+    }
+    
+    button {
+      background: linear-gradient(135deg, #fd297b, #ff5864);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s;
+      margin-top: 10px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(253, 41, 123, 0.3);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(253, 41, 123, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s;
+      transform: scale(0);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+    }
+    
+    .result.show {
+      transform: scale(1);
+      opacity: 1;
+      max-height: 500px;
+    }
+    
+    .percentage {
+      font-size: 48px;
+      font-weight: bold;
+      color: #fd297b;
+      margin: 20px 0;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .percentage::after {
+      content: "%";
+      font-size: 24px;
+      position: absolute;
+      top: 8px;
+      right: -20px;
+    }
+    
+    .message {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    
+    .description {
+      color: #666;
+      line-height: 1.6;
+      padding: 0 10px;
+    }
+    
+    .hearts {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      opacity: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fd297b' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center center;
+      animation: flyHearts 4s linear infinite;
+    }
+    
+    @keyframes flyHearts {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(0.5);
+      }
+    }
+    
+    .loading {
+      display: none;
+      margin: 20px auto;
+      text-align: center;
+    }
+    
+    .loading span {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: #fd297b;
+      margin: 0 5px;
+      animation: loadingDots 1.4s infinite ease-in-out both;
+    }
+    
+    .loading span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+    
+    .loading span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+    
+    @keyframes loadingDots {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+    
+    .history {
+      margin-top: 30px;
+      text-align: left;
+      display: none;
+    }
+    
+    .history h3 {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 5px;
+    }
+    
+    .history-item {
+      font-size: 14px;
+      color: #333;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #fd297b;
+      transition: all 0.3s;
+    }
+    
+    .theme-toggle:hover {
+      transform: scale(1.2);
+    }
+    
+    .dark-theme {
+      background: linear-gradient(135deg, #2b5876, #4e4376);
+    }
+    
+    .dark-theme .container {
+      background-color: rgba(40, 44, 52, 0.95);
+    }
+    
+    .dark-theme h1,
+    .dark-theme .percentage {
+      color: #ff5864;
+    }
+    
+    .dark-theme label,
+    .dark-theme .message {
+      color: #ddd;
+    }
+    
+    .dark-theme .description {
+      color: #bbb;
+    }
+    
+    .dark-theme input {
+      background-color: #383c44;
+      border-color: #555;
+      color: #fff;
+    }
+    
+    .dark-theme input:focus {
+      border-color: #ff5864;
+    }
+    
+    .dark-theme .result {
+      background-color: #383c44;
+    }
+    
+    .dark-theme .theme-toggle {
+      color: #ff5864;
+    }
+    
+    .dark-theme .history h3 {
+      color: #bbb;
+      border-bottom-color: #555;
+    }
+    
+    .dark-theme .history-item {
+      color: #ddd;
+      border-bottom-color: #444;
+    }
+    
+    .reset {
+      background: transparent;
+      color: #fd297b;
+      border: 2px solid #fd297b;
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    
+    .reset:hover {
+      background-color: rgba(253, 41, 123, 0.1);
+    }
+    
+    .dark-theme .reset {
+      color: #ff5864;
+      border-color: #ff5864;
+    }
+    
+    .dark-theme .reset:hover {
+      background-color: rgba(255, 88, 100, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="theme-toggle" id="themeToggle">💡</div>
+    <h1>Love Calculator</h1>
+    
+    <div class="input-group">
+      <label for="name1">Your Name:</label>
+      <input type="text" id="name1" placeholder="Enter your name" autocomplete="off">
+    </div>
+    
+    <div class="input-group">
+      <label for="name2">Your Crush's Name:</label>
+      <input type="text" id="name2" placeholder="Enter your crush's name" autocomplete="off">
+    </div>
+    
+    <button id="calculateBtn">Calculate Love</button>
+    
+    <div class="loading" id="loading">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <div class="result" id="result">
+      <div class="percentage" id="lovePercentage">0</div>
+      <div class="message" id="loveMessage">Perfect Match!</div>
+      <p class="description" id="loveDescription">
+        You two are made for each other! Your compatibility is off the charts!
+      </p>
+      <button class="reset" id="resetBtn">Try Again</button>
+    </div>
+    
+    <div class="history" id="history">
+      <h3>Recent Calculations</h3>
+      <div id="historyItems"></div>
+    </div>
+    
+    <div class="hearts" id="hearts"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get DOM elements
+      const name1Input = document.getElementById('name1');
+      const name2Input = document.getElementById('name2');
+      const calculateBtn = document.getElementById('calculateBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const lovePercentage = document.getElementById('lovePercentage');
+      const loveMessage = document.getElementById('loveMessage');
+      const loveDescription = document.getElementById('loveDescription');
+      const resultDiv = document.getElementById('result');
+      const loadingDiv = document.getElementById('loading');
+      const heartsContainer = document.getElementById('hearts');
+      const themeToggle = document.getElementById('themeToggle');
+      const historyDiv = document.getElementById('history');
+      const historyItems = document.getElementById('historyItems');
+      
+      // Love message data
+      const loveMessages = [
+        {
+          range: [0, 20],
+          message: "Not Compatible",
+          description: "Your connection might need some work. Perhaps you're better as friends or need more time to develop your relationship."
+        },
+        {
+          range: [21, 40],
+          message: "Friends Zone",
+          description: "There's a foundation of friendship here, but romantic compatibility might be challenging. Still, friendships can evolve over time."
+        },
+        {
+          range: [41, 60],
+          message: "There's Potential",
+          description: "You have a decent connection with room to grow. With effort and understanding, your relationship could blossom into something beautiful."
+        },
+        {
+          range: [61, 80],
+          message: "Great Match!",
+          description: "You two have a strong connection! Your relationship has great potential for lasting happiness and mutual understanding."
+        },
+        {
+          range: [81, 100],
+          message: "Perfect Match!",
+          description: "Wow! The stars have aligned for you two. Your compatibility is exceptional, suggesting a deep and meaningful connection."
+        }
+      ];
+      
+      // History data
+      let calculationHistory = [];
+      
+      // Set up event listeners
+      calculateBtn.addEventListener('click', calculateLove);
+      resetBtn.addEventListener('click', resetCalculator);
+      themeToggle.addEventListener('click', toggleTheme);
+      
+      // Create hearts animation
+      createHearts();
+      
+      // Functions
+      function calculateLove() {
+        const name1 = name1Input.value.trim();
+        const name2 = name2Input.value.trim();
+        
+        if (!name1 || !name2) {
+          alert("Please enter both names");
+          return;
+        }
+        
+        // Show loading animation
+        loadingDiv.style.display = 'block';
+        calculateBtn.disabled = true;
+        
+        // Hide previous results
+        resultDiv.classList.remove('show');
+        
+        // Simulate calculation delay
+        setTimeout(() => {
+          // Calculate love percentage (pseudo-science algorithm for fun)
+          const percentage = calculateLovePercentage(name1, name2);
+          
+          // Update the result
+          lovePercentage.textContent = percentage;
+          
+          // Set message based on percentage
+          const messageData = getLoveMessage(percentage);
+          loveMessage.textContent = messageData.message;
+          loveDescription.textContent = messageData.description;
+          
+          // Hide loading animation
+          loadingDiv.style.display = 'none';
+          calculateBtn.disabled = false;
+          
+          // Show result with animation
+          resultDiv.classList.add('show');
+          
+          // Create heart animation effect
+          showHeartAnimation();
+          
+          // Add to history
+          addToHistory(name1, name2, percentage);
+          
+        }, 1500); // 1.5 second delay for dramatic effect
+      }
+      
+      function calculateLovePercentage(name1, name2) {
+        // This is a fun pseudo-scientific algorithm
+        // In reality, it's a deterministic but unpredictable calculation
+        
+        // Combine the names and convert to lowercase
+        const combinedNames = (name1 + name2).toLowerCase();
+        
+        // Get the sum of character codes
+        let sum = 0;
+        for (let i = 0; i < combinedNames.length; i++) {
+          sum += combinedNames.charCodeAt(i);
+        }
+        
+        // Use the length of both names in the calculation
+        const nameProduct = name1.length * name2.length;
+        
+        // Mix in some prime numbers for unpredictability
+        const prime1 = 17;
+        const prime2 = 31;
+        
+        // Calculate a seemingly random but deterministic value
+        let value = (sum * prime1 + nameProduct * prime2) % 101;
+        
+        // Ensure the value is between 0 and 100
+        return Math.max(Math.min(value, 100), 0);
+      }
+      
+      function getLoveMessage(percentage) {
+        for (const msgData of loveMessages) {
+          if (percentage >= msgData.range[0] && percentage <= msgData.range[1]) {
+            return msgData;
+          }
+        }
+        
+        // Default message if somehow percentage is out of range
+        return {
+          message: "Interesting Match",
+          description: "Your connection is unique and difficult to categorize."
+        };
+      }
+      
+      function resetCalculator() {
+        name1Input.value = '';
+        name2Input.value = '';
+        resultDiv.classList.remove('show');
+        name1Input.focus();
+      }
+      
+      function createHearts() {
+        // Create 15 heart elements for animation
+        for (let i = 0; i < 15; i++) {
+          const heart = document.createElement('div');
+          heart.classList.add('heart');
+          
+          // Randomize heart sizes
+          const size = Math.floor(Math.random() * 15) + 10; // 10px to 25px
+          heart.style.width = `${size}px`;
+          heart.style.height = `${size}px`;
+          
+          // Set initial positions (will be updated in the animation)
+          heart.style.left = `-100px`;
+          heart.style.bottom = `-100px`;
+          
+          heartsContainer.appendChild(heart);
+        }
+      }
+      
+      function showHeartAnimation() {
+        const hearts = document.querySelectorAll('.heart');
+        
+        hearts.forEach((heart, index) => {
+          // Reset animation
+          heart.style.animation = 'none';
+          
+          // Random position at the bottom
+          const leftPos = Math.random() * 80 + 10; // 10% to 90% of container width
+          heart.style.left = `${leftPos}%`;
+          heart.style.bottom = '0';
+          
+          // Random delays for each heart
+          const delay = Math.random() * 2;
+          
+          // Random animation duration
+          const duration = Math.random() * 3 + 3; // 3 to 6 seconds
+          
+          // Apply animation with random properties
+          setTimeout(() => {
+            heart.style.animation = `flyHearts ${duration}s linear ${delay}s`;
+          }, 100);
+        });
+      }
+      
+      function toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        
+        // Update toggle icon
+        if (document.body.classList.contains('dark-theme')) {
+          themeToggle.textContent = '🌙';
+        } else {
+          themeToggle.textContent = '💡';
+        }
+      }
+      
+      function addToHistory(name1, name2, percentage) {
+        // Create history object
+        const historyItem = {
+          name1,
+          name2,
+          percentage,
+          timestamp: new Date()
+        };
+        
+        // Add to history array (max 5 items)
+        calculationHistory.unshift(historyItem);
+        if (calculationHistory.length > 5) {
+          calculationHistory.pop();
+        }
+        
+        // Update history display
+        updateHistoryDisplay();
+        
+        // Show history section
+        historyDiv.style.display = 'block';
+      }
+      
+      function updateHistoryDisplay() {
+        historyItems.innerHTML = '';
+        
+        calculationHistory.forEach(item => {
+          const historyElement = document.createElement('div');
+          historyElement.className = 'history-item';
+          historyElement.textContent = `${item.name1} + ${item.name2} = ${item.percentage}%`;
+          historyItems.appendChild(historyElement);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

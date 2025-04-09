@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Programming Quizzes</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern Quiz Styles -->
+    <link rel="stylesheet" href="../modern-quiz-styles.css">
+    <!-- Custom Styles (if needed) -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../../tutorials/index.html" class="back-button" style="position: absolute; top: 20px; left: 20px; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+        <i class="fas fa-arrow-left"></i> Back to Tutorials
+    </a>
+    
+    <div class="container">
+        <h1>C Programming Quizzes</h1>
+        <p style="margin-bottom: 2rem;">Test your C programming knowledge with these interactive quizzes</p>
+        
+        <div class="quiz-grid">
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C Basics</h3>
+                    <p class="quiz-card-description">Test your knowledge of C programming basics including syntax, data types, and operators.</p>
+                    <a href="..\c\c basics\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Control Flow in C</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions about C's control flow statements including if-else, loops, and switch statements.</p>
+                    <a href="..\c\c control\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Functions in C</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of C functions, parameters, return values, and function pointers.</p>
+                    <a href="..\c\c functions\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Arrays and Pointers</h3>
+                    <p class="quiz-card-description">Test your knowledge of C arrays, pointers, and memory management concepts.</p>
+                    <a href="..\c\c arrays\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Structures and Unions</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions about C structures, unions, and user-defined data types.</p>
+                    <a href="..\c\c structures\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">File I/O in C</h3>
+                    <p class="quiz-card-description">Test your knowledge of C file input/output operations and working with different file formats.</p>
+                    <a href="..\c\c file io\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add a script to handle the active tab state -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make the first quiz card active by default
+            const firstCard = document.querySelector('.quiz-card');
+            if (firstCard) {
+                firstCard.classList.add('active');
+            }
+            
+            // Add hover effects
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    cards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

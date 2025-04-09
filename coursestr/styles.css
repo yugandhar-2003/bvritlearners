@@ -1,0 +1,288 @@
+/* Dark Theme Variables */
+:root {
+    --dark-bg: #121212;
+    --dark-surface: #1e1e1e;
+    --dark-surface-2: #2d2d2d;
+    --dark-border: #333333;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --primary-color: #4dabf7;
+    --primary-dark: #1e88e5;
+    --primary-light: #8ccfff;
+    --accent-color: #ab47bc;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.4);
+    --transition: 0.3s ease;
+    --border-radius: 8px; /* Added */
+    --border-radius-lg: 12px; /* Added */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+/* Container Adjustment */
+.main-content-container {
+    max-width: 1200px; /* Or your preferred width */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 60px 0 30px;
+}
+
+.header h1 {
+    color: var(--text-primary);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+.header h1::after {
+     content: '';
+     position: absolute;
+     bottom: 0;
+     left: 50%;
+     transform: translateX(-50%);
+     width: 70px;
+     height: 3px;
+     background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+     border-radius: 2px;
+ }
+
+/* Filter Section */
+.filter-section {
+    background-color: var(--dark-surface);
+    padding: 25px;
+    border-radius: var(--border-radius-lg); /* Use variable */
+    margin-bottom: 40px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--dark-border);
+}
+
+.filter-title {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filter-title i {
+    color: var(--primary-color);
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* --- Styling Filter Buttons --- */
+.filter-button { /* Targeting the class we added */
+    background-color: var(--dark-surface-2);
+    color: var(--text-secondary);
+    border: 1px solid var(--dark-border) !important; /* Override Bootstrap border */
+    border-radius: var(--border-radius) !important; /* Override Bootstrap radius */
+    padding: 8px 16px !important; /* Override Bootstrap padding */
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 500;
+    line-height: 1.5; /* Ensure consistent line height */
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    user-select: none;
+}
+/* Remove Bootstrap's default blue button focus outline */
+.filter-button:focus {
+    box-shadow: none !important;
+}
+
+.filter-button:hover {
+    background-color: rgba(77, 171, 247, 0.15);
+    color: var(--primary-light) !important; /* Ensure hover color */
+    transform: translateY(-2px);
+    border-color: rgba(77, 171, 247, 0.3) !important;
+}
+
+.filter-button.active { /* Style for the active filter button */
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-color)) !important; /* Override Bootstrap */
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 5px rgba(77, 171, 247, 0.2);
+    transform: translateY(-1px);
+}
+
+/* --- Styling Cards --- */
+
+/* Apply gap using Bootstrap's gy-4 on the row, or add margin to cols */
+.cards-grid {
+   /* No display:grid needed if using Bootstrap row/col */
+}
+
+.card-item {
+    /* Add transition for filter show/hide if script.js adds/removes classes */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Card Styles - targeting .card within .card-item */
+.card-item .card {
+    background-color: var(--dark-surface);
+    border: 1px solid var(--dark-border) !important; /* Override Bootstrap */
+    border-radius: var(--border-radius-lg) !important; /* Use variable */
+    overflow: hidden;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+    height: 100%; /* Ensure card fills the col height (using h-100 in HTML) */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-item .card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color) !important;
+    box-shadow: var(--shadow-hover);
+}
+
+.card-item .card-body {
+    padding: 20px;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-item .card-title {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    word-break: break-word; /* Prevent long titles overflowing */
+}
+
+.card-item .card-link-wrapper {
+    color: var(--primary-light);
+    text-decoration: none !important;
+    transition: color var(--transition);
+    font-weight: 500;
+    display: flex;
+    flex-direction: column; /* Stack title and link text */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%; /* Make link wrapper fill */
+}
+
+.card-item .card-link-wrapper:hover,
+.card-item .card-link-wrapper:hover .card-title,
+.card-item .card-link-wrapper:hover .view-syllabus-text {
+    color: #ffffff !important; /* White on hover */
+}
+
+.card-item .view-syllabus-text {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 0.9rem;
+}
+
+
+/* --- Back Button --- */
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    background-color: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--border-radius);
+    transition: all var(--transition);
+    z-index: 1000; /* Ensure it's above other content */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.back-button:hover {
+    color: var(--primary-light);
+    background-color: var(--dark-surface-2);
+    transform: translateX(-3px);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    /* Bootstrap columns handle grid changes */
+}
+
+@media (max-width: 576px) {
+     .filter-buttons {
+        gap: 8px;
+    }
+    .filter-button {
+        padding: 6px 12px !important;
+        font-size: 0.9rem;
+    }
+    .header {
+        padding-top: 70px; /* More space below back button */
+    }
+    .back-button {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+    .card-item .card-title {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-button {
+        width: 100%;
+    }
+    .header h1 {
+        font-size: 1.6rem;
+    }
+     .back-button {
+        top: 15px;
+        left: 15px;
+    }
+    /* Bootstrap cols might stack to 1 column automatically */
+}
+
+/* Style for hidden cards (if script.js adds/removes 'hide' class) */
+.card-item.hide {
+  display: none;
+}

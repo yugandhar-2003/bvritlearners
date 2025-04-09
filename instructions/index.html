@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BVRIT Learning - Instructions</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Dark Theme Variables */
+        :root {
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-surface-2: #2d2d2d;
+            --dark-border: #333333;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --primary-color: #2196f3;
+            --accent-color: #7e57c2;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            --transition: 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 0 20px;
+        }
+        
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Accordion */
+        .accordion {
+            margin-bottom: 40px;
+        }
+        
+        .accordion-item {
+            background-color: var(--dark-surface);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+        }
+        
+        .accordion-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .accordion-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all var(--transition);
+        }
+        
+        .accordion-header:hover {
+            background-color: var(--dark-surface-2);
+        }
+        
+        .accordion-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .accordion-icon {
+            font-size: 1.2rem;
+            transition: transform var(--transition);
+        }
+        
+        .accordion-content {
+            background-color: var(--dark-surface-2);
+            border-top: 1px solid var(--dark-border);
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-body {
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+        
+        /* List Styles */
+        .instruction-list {
+            list-style-type: none;
+        }
+        
+        .instruction-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .instruction-list li::before {
+            content: "•";
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 1.2rem;
+        }
+        
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            background-color: var(--dark-surface);
+            border-radius: 5px;
+            transition: all var(--transition);
+            z-index: 100;
+        }
+        
+        .back-button:hover {
+            color: var(--primary-color);
+            background-color: var(--dark-surface-2);
+            transform: translateX(-5px);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .accordion-title {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .accordion-header {
+                padding: 12px 15px;
+            }
+            
+            .accordion-body {
+                padding: 15px;
+            }
+            
+            .instruction-list li {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+    
+    <!-- Header -->
+    <header class="header">
+        <h1>Instructions</h1>
+        <p>Click on each section to learn more</p>
+    </header>
+    
+    <div class="container">
+        <div class="accordion" id="instructionsAccordion">
+            <!-- Video Tutorial Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-video"></i>
+                        <span>About Video Tutorial</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the video tutorial button</li>
+                            <li>You can find many programming related video tutorial cards</li>
+                            <li>Select the programming language which you are willing to earn</li>
+                            <li>Click on the explore button on card. You will be directed to a video page</li>
+                            <li>You can see the videos in 3 languages. Click on the language which you are willing to learn</li>
+                            <li>At top right corner of the video you can see the playlist button. You can listen to the whole tutorial by clicking on playlist</li>
+                            <li>At bottom you can find the resources. You can see and download the PDF of tutorial here</li>
+                            <li>You can see the PDF by BVRIT mail only (You cannot access through other mails)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Academic Videos Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Academic Videos</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the Academic videos</li>
+                            <li>You can see all the branches in BVRIT</li>
+                            <li>Allied branch and CSE students should see CSE session</li>
+                            <li>Select the playlist</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Programming Quiz Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Programming Quiz</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the Programming Quiz button</li>
+                            <li>You can see the quizzes</li>
+                            <li>After completion of every quiz you can see number of attempts with score</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Road Map Generator Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-map-signs"></i>
+                        <span>Road Map Generator</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the Road Map Generator button</li>
+                            <li>Select the programming language and enter the number between 1 to 24</li>
+                            <li>You will get a schedule</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question Papers Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-file-alt"></i>
+                        <span>About Question Papers</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the Question Papers button</li>
+                            <li>You can see all year Question papers</li>
+                            <li>Select the year. You can find the question papers on particular year</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Course Structure Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-book"></i>
+                        <span>About Course Structure</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the Course Structure button</li>
+                            <li>You can see all regulations</li>
+                            <li>Select the regulation (R20/R20A/R22)</li>
+                            <li>Find your branch and get the PDF</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BVRIT PDFs Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>About BVRIT PDFs</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the BVRIT PDFs button</li>
+                            <li>You can see all PDFs of each semester</li>
+                            <li>Select the semester and branch</li>
+                            <li>You can find PDFs of all units</li>
+                            <li>You can see the PDF by BVRIT mail only (You cannot access through other mails)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Text Books Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-book-open"></i>
+                        <span>About Text Books</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>Click on the Text Books button</li>
+                            <li>You can see different cards of individual branches</li>
+                            <li>Select the card (Select Your branch)</li>
+                            <li>You can find common subject PDF on common Subjects card</li>
+                            <li>You can see the PDF by BVRIT mail only (You cannot access through other mails)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- About Website Section -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Website</span>
+                    </div>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <ul class="instruction-list">
+                            <li>You can access the resources (PDFs) only through BVRIT mail ID</li>
+                            <li>You cannot access the resources through personal mail</li>
+                            <li>All the PDFs are gathered from the subject teachers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simple accordion toggle function
+        function toggleAccordion(element) {
+            // Get the parent accordion item
+            const accordionItem = element.parentElement;
+            
+            // Get the content element
+            const content = accordionItem.querySelector('.accordion-content');
+            
+            // Toggle active class
+            const isActive = accordionItem.classList.toggle('active');
+            
+            // Toggle icon rotation
+            const icon = element.querySelector('.accordion-icon');
+            icon.style.transform = isActive ? 'rotate(180deg)' : 'rotate(0)';
+            
+            // Toggle content visibility
+            if (isActive) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                element.style.backgroundColor = 'var(--dark-surface-2)';
+            } else {
+                content.style.maxHeight = '0';
+                element.style.backgroundColor = '';
+            }
+        }
+    </script>
+</body>
+</html>

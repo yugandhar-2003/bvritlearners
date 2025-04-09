@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Calculator</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2980b9;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #070808;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .matrix-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .matrix-dimensions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .matrix-dimensions label {
+            font-weight: bold;
+        }
+        
+        .matrix-dimensions input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .matrix-operations {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 8px 16px;
+            background-color: gray;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        button.danger {
+            background-color: var(--accent);
+        }
+        
+        button.danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .matrices {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .matrix {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .matrix-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .matrix-grid {
+            display: grid;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .matrix-grid input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .result-section {
+            margin-top: 30px;
+        }
+        
+        .result-matrix {
+            margin-top: 15px;
+        }
+        
+        .result-grid {
+            display: grid;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .result-cell {
+            padding: 8px;
+            background-color: var(--light);
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: var(--accent);
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .matrices {
+                flex-direction: column;
+            }
+            
+            .matrix {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Matrix Calculator</h1>
+        
+        <div class="matrix-controls">
+            <div class="matrix-dimensions">
+                <label for="rows-a">Matrix A:</label>
+                <input type="number" id="rows-a" min="1" max="10" value="3" placeholder="Rows">
+                <span>×</span>
+                <input type="number" id="cols-a" min="1" max="10" value="3" placeholder="Columns">
+                
+                <label for="rows-b" style="margin-left: 20px;">Matrix B:</label>
+                <input type="number" id="rows-b" min="1" max="10" value="3" placeholder="Rows">
+                <span>×</span>
+                <input type="number" id="cols-b" min="1" max="10" value="3" placeholder="Columns">
+                
+                <button id="create-matrices">Create Matrices</button>
+            </div>
+        </div>
+        
+        <div class="matrices">
+            <div class="matrix" id="matrix-a">
+                <div class="matrix-title">Matrix A</div>
+                <div class="matrix-grid" id="grid-a"></div>
+            </div>
+            
+            <div class="matrix" id="matrix-b">
+                <div class="matrix-title">Matrix B</div>
+                <div class="matrix-grid" id="grid-b"></div>
+            </div>
+        </div>
+        
+        <div class="matrix-operations">
+            <button id="add">A + B</button>
+            <button id="subtract">A - B</button>
+            <button id="multiply">A × B</button>
+            <button id="transpose-a">Transpose A</button>
+            <button id="transpose-b">Transpose B</button>
+            <button id="determinant-a">Det(A)</button>
+            <button id="determinant-b">Det(B)</button>
+            <button id="inverse-a">Inverse A</button>
+            <button id="inverse-b">Inverse B</button>
+            <button id="clear" class="danger">Clear All</button>
+        </div>
+        
+        <div class="result-section">
+            <div class="matrix-title">Result</div>
+            <div id="result-display"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rowsAInput = document.getElementById('rows-a');
+            const colsAInput = document.getElementById('cols-a');
+            const rowsBInput = document.getElementById('rows-b');
+            const colsBInput = document.getElementById('cols-b');
+            const createMatricesBtn = document.getElementById('create-matrices');
+            const gridA = document.getElementById('grid-a');
+            const gridB = document.getElementById('grid-b');
+            const resultDisplay = document.getElementById('result-display');
+            
+            // Operation buttons
+            const addBtn = document.getElementById('add');
+            const subtractBtn = document.getElementById('subtract');
+            const multiplyBtn = document.getElementById('multiply');
+            const transposeABtn = document.getElementById('transpose-a');
+            const transposeBBtn = document.getElementById('transpose-b');
+            const determinantABtn = document.getElementById('determinant-a');
+            const determinantBBtn = document.getElementById('determinant-b');
+            const inverseABtn = document.getElementById('inverse-a');
+            const inverseBBtn = document.getElementById('inverse-b');
+            const clearBtn = document.getElementById('clear');
+            
+            // Initialize matrices
+            createMatrices();
+            
+            // Event listeners
+            createMatricesBtn.addEventListener('click', createMatrices);
+            addBtn.addEventListener('click', addMatrices);
+            subtractBtn.addEventListener('click', subtractMatrices);
+            multiplyBtn.addEventListener('click', multiplyMatrices);
+            transposeABtn.addEventListener('click', () => transposeMatrix('A'));
+            transposeBBtn.addEventListener('click', () => transposeMatrix('B'));
+            determinantABtn.addEventListener('click', () => calculateDeterminant('A'));
+            determinantBBtn.addEventListener('click', () => calculateDeterminant('B'));
+            inverseABtn.addEventListener('click', () => calculateInverse('A'));
+            inverseBBtn.addEventListener('click', () => calculateInverse('B'));
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Function to create matrix input grids
+            function createMatrices() {
+                const rowsA = parseInt(rowsAInput.value);
+                const colsA = parseInt(colsAInput.value);
+                const rowsB = parseInt(rowsBInput.value);
+                const colsB = parseInt(colsBInput.value);
+                
+                if (isNaN(rowsA) || isNaN(colsA) || isNaN(rowsB) || isNaN(colsB) ||
+                    rowsA < 1 || colsA < 1 || rowsB < 1 || colsB < 1 ||
+                    rowsA > 10 || colsA > 10 || rowsB > 10 || colsB > 10) {
+                    showError("Matrix dimensions must be between 1 and 10");
+                    return;
+                }
+                
+                // Create Matrix A
+                gridA.innerHTML = '';
+                gridA.style.gridTemplateColumns = `repeat(${colsA}, 1fr)`;
+                
+                for (let i = 0; i < rowsA; i++) {
+                    for (let j = 0; j < colsA; j++) {
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.step = 'any';
+                        input.value = '0';
+                        input.dataset.row = i;
+                        input.dataset.col = j;
+                        gridA.appendChild(input);
+                    }
+                }
+                
+                // Create Matrix B
+                gridB.innerHTML = '';
+                gridB.style.gridTemplateColumns = `repeat(${colsB}, 1fr)`;
+                
+                for (let i = 0; i < rowsB; i++) {
+                    for (let j = 0; j < colsB; j++) {
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.step = 'any';
+                        input.value = '0';
+                        input.dataset.row = i;
+                        input.dataset.col = j;
+                        gridB.appendChild(input);
+                    }
+                }
+                
+                // Clear result
+                resultDisplay.innerHTML = '';
+            }
+            
+            // Function to get matrix values
+            function getMatrixValues(grid, rows, cols) {
+                const matrix = [];
+                
+                for (let i = 0; i < rows; i++) {
+                    const row = [];
+                    for (let j = 0; j < cols; j++) {
+                        const input = grid.querySelector(`input[data-row="${i}"][data-col="${j}"]`);
+                        row.push(parseFloat(input.value) || 0);
+                    }
+                    matrix.push(row);
+                }
+                
+                return matrix;
+            }
+            
+            // Function to display result matrix
+            function displayResultMatrix(matrix) {
+                resultDisplay.innerHTML = '';
+                
+                const resultMatrix = document.createElement('div');
+                resultMatrix.className = 'result-matrix';
+                
+                const resultGrid = document.createElement('div');
+                resultGrid.className = 'result-grid';
+                resultGrid.style.gridTemplateColumns = `repeat(${matrix[0].length}, 1fr)`;
+                
+                for (let i = 0; i < matrix.length; i++) {
+                    for (let j = 0; j < matrix[i].length; j++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'result-cell';
+                        cell.textContent = matrix[i][j].toFixed(2).replace(/\.00$/, '');
+                        resultGrid.appendChild(cell);
+                    }
+                }
+                
+                resultMatrix.appendChild(resultGrid);
+                resultDisplay.appendChild(resultMatrix);
+            }
+            
+            // Function to display scalar result
+            function displayScalarResult(value) {
+                resultDisplay.innerHTML = '';
+                
+                const resultText = document.createElement('div');
+                resultText.className = 'result-cell';
+                resultText.style.width = 'fit-content';
+                resultText.style.margin = '0 auto';
+                resultText.textContent = value.toFixed(4).replace(/\.0+$/, '');
+                
+                resultDisplay.appendChild(resultText);
+            }
+            
+            // Function to show error
+            function showError(message) {
+                resultDisplay.innerHTML = '';
+                
+                const errorText = document.createElement('div');
+                errorText.className = 'error';
+                errorText.textContent = message;
+                
+                resultDisplay.appendChild(errorText);
+            }
+            
+            // Matrix Operations
+            function addMatrices() {
+                const rowsA = parseInt(rowsAInput.value);
+                const colsA = parseInt(colsAInput.value);
+                const rowsB = parseInt(rowsBInput.value);
+                const colsB = parseInt(colsBInput.value);
+                
+                if (rowsA !== rowsB || colsA !== colsB) {
+                    showError("Matrix dimensions must be equal for addition");
+                    return;
+                }
+                
+                const matrixA = getMatrixValues(gridA, rowsA, colsA);
+                const matrixB = getMatrixValues(gridB, rowsB, colsB);
+                
+                const result = [];
+                for (let i = 0; i < rowsA; i++) {
+                    const row = [];
+                    for (let j = 0; j < colsA; j++) {
+                        row.push(matrixA[i][j] + matrixB[i][j]);
+                    }
+                    result.push(row);
+                }
+                
+                displayResultMatrix(result);
+            }
+            
+            function subtractMatrices() {
+                const rowsA = parseInt(rowsAInput.value);
+                const colsA = parseInt(colsAInput.value);
+                const rowsB = parseInt(rowsBInput.value);
+                const colsB = parseInt(colsBInput.value);
+                
+                if (rowsA !== rowsB || colsA !== colsB) {
+                    showError("Matrix dimensions must be equal for subtraction");
+                    return;
+                }
+                
+                const matrixA = getMatrixValues(gridA, rowsA, colsA);
+                const matrixB = getMatrixValues(gridB, rowsB, colsB);
+                
+                const result = [];
+                for (let i = 0; i < rowsA; i++) {
+                    const row = [];
+                    for (let j = 0; j < colsA; j++) {
+                        row.push(matrixA[i][j] - matrixB[i][j]);
+                    }
+                    result.push(row);
+                }
+                
+                displayResultMatrix(result);
+            }
+            
+            function multiplyMatrices() {
+                const rowsA = parseInt(rowsAInput.value);
+                const colsA = parseInt(colsAInput.value);
+                const rowsB = parseInt(rowsBInput.value);
+                const colsB = parseInt(colsBInput.value);
+                
+                if (colsA !== rowsB) {
+                    showError("Number of columns in A must equal number of rows in B");
+                    return;
+                }
+                
+                const matrixA = getMatrixValues(gridA, rowsA, colsA);
+                const matrixB = getMatrixValues(gridB, rowsB, colsB);
+                
+                const result = [];
+                for (let i = 0; i < rowsA; i++) {
+                    const row = [];
+                    for (let j = 0; j < colsB; j++) {
+                        let sum = 0;
+                        for (let k = 0; k < colsA; k++) {
+                            sum += matrixA[i][k] * matrixB[k][j];
+                        }
+                        row.push(sum);
+                    }
+                    result.push(row);
+                }
+                
+                displayResultMatrix(result);
+            }
+            
+            function transposeMatrix(matrixName) {
+                const grid = matrixName === 'A' ? gridA : gridB;
+                const rows = parseInt(matrixName === 'A' ? rowsAInput.value : rowsBInput.value);
+                const cols = parseInt(matrixName === 'A' ? colsAInput.value : colsBInput.value);
+                
+                const matrix = getMatrixValues(grid, rows, cols);
+                
+                const result = [];
+                for (let j = 0; j < cols; j++) {
+                    const row = [];
+                    for (let i = 0; i < rows; i++) {
+                        row.push(matrix[i][j]);
+                    }
+                    result.push(row);
+                }
+                
+                displayResultMatrix(result);
+            }
+            
+            function calculateDeterminant(matrixName) {
+                const grid = matrixName === 'A' ? gridA : gridB;
+                const rows = parseInt(matrixName === 'A' ? rowsAInput.value : rowsBInput.value);
+                const cols = parseInt(matrixName === 'A' ? colsAInput.value : colsBInput.value);
+                
+                if (rows !== cols) {
+                    showError("Matrix must be square to calculate determinant");
+                    return;
+                }
+                
+                const matrix = getMatrixValues(grid, rows, cols);
+                const det = determinant(matrix);
+                
+                displayScalarResult(det);
+            }
+            
+            function determinant(matrix) {
+                const n = matrix.length;
+                
+                if (n === 1) {
+                    return matrix[0][0];
+                }
+                
+                if (n === 2) {
+                    return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+                }
+                
+                let det = 0;
+                for (let j = 0; j < n; j++) {
+                    const minor = [];
+                    for (let i = 1; i < n; i++) {
+                        const row = [];
+                        for (let k = 0; k < n; k++) {
+                            if (k !== j) {
+                                row.push(matrix[i][k]);
+                            }
+                        }
+                        minor.push(row);
+                    }
+                    det += matrix[0][j] * Math.pow(-1, j) * determinant(minor);
+                }
+                
+                return det;
+            }
+            
+            function calculateInverse(matrixName) {
+                const grid = matrixName === 'A' ? gridA : gridB;
+                const rows = parseInt(matrixName === 'A' ? rowsAInput.value : rowsBInput.value);
+                const cols = parseInt(matrixName === 'A' ? colsAInput.value : colsBInput.value);
+                
+                if (rows !== cols) {
+                    showError("Matrix must be square to calculate inverse");
+                    return;
+                }
+                
+                const matrix = getMatrixValues(grid, rows, cols);
+                const det = determinant(matrix);
+                
+                if (Math.abs(det) < 1e-10) {
+                    showError("Matrix is singular, cannot calculate inverse");
+                    return;
+                }
+                
+                if (rows === 1) {
+                    displayResultMatrix([[1 / matrix[0][0]]]);
+                    return;
+                }
+                
+                const adjugate = [];
+                for (let i = 0; i < rows; i++) {
+                    const row = [];
+                    for (let j = 0; j < cols; j++) {
+                        const minor = [];
+                        for (let k = 0; k < rows; k++) {
+                            if (k !== i) {
+                                const minorRow = [];
+                                for (let l = 0; l < cols; l++) {
+                                    if (l !== j) {
+                                        minorRow.push(matrix[k][l]);
+                                    }
+                                }
+                                minor.push(minorRow);
+                            }
+                        }
+                        const cofactor = Math.pow(-1, i + j) * determinant(minor);
+                        row.push(cofactor / det);
+                    }
+                    adjugate.push(row);
+                }
+                
+                // Transpose the adjugate
+                const inverse = [];
+                for (let j = 0; j < cols; j++) {
+                    const row = [];
+                    for (let i = 0; i < rows; i++) {
+                        row.push(adjugate[i][j]);
+                    }
+                    inverse.push(row);
+                }
+                
+                displayResultMatrix(inverse);
+            }
+            
+            function clearAll() {
+                rowsAInput.value = 3;
+                colsAInput.value = 3;
+                rowsBInput.value = 3;
+                colsBInput.value = 3;
+                
+                createMatrices();
+                resultDisplay.innerHTML = '';
+            }
+            
+            // Helper for filling matrices with random values
+            function fillRandomValues() {
+                const inputs = document.querySelectorAll('.matrix-grid input');
+                inputs.forEach(input => {
+                    input.value = Math.floor(Math.random() * 10) - 5;
+                });
+            }
+            
+            // Add random button
+            const randomBtn = document.createElement('button');
+            randomBtn.textContent = 'Random Values';
+            randomBtn.addEventListener('click', fillRandomValues);
+            document.querySelector('.matrix-operations').appendChild(randomBtn);
+        });
+    </script>
+</body>
+</html>

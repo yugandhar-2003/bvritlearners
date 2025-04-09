@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator Hub - BVRIT Learning</title> <!-- Updated Title -->
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- Global Styles & Dark Theme Variables --- */
+        :root {
+            /* Dark Theme Colors */
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-surface-2: #2a2a2e;
+            --dark-border: #383838; /* Slightly darker border */
+            --text-light: #e0e0e0; /* Main light text */
+            --text-muted: #a0a0a0; /* Muted light text */
+
+            /* Accent Colors (Brighter for dark bg) */
+            --primary-color: #4dabf7; /* Brighter blue */
+            --primary-dark: #1e88e5; /* Still a strong blue */
+            --primary-light: #8ccfff;
+            --secondary-color: #ab47bc; /* Brighter purple */
+
+            /* Common Styles */
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.5); /* Darker hover shadow */
+            --transition: 0.3s ease;
+            --font-primary: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 16px;
+            padding-top: 80px; /* Space for back button and header margin */
+            padding-bottom: 60px; /* Space before footer */
+        }
+
+        /* --- Back Button --- */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--text-muted); /* Use muted color */
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            background-color: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius);
+            transition: all var(--transition);
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .back-button:hover {
+            color: var(--primary-light);
+            background-color: var(--dark-surface-2);
+            transform: translateX(-3px);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* --- Header --- */
+        .header {
+            /* Removed gradient background */
+            background-color: var(--dark-surface);
+            color: var(--text-light);
+            padding: 2rem 0; /* Adjusted padding */
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25); /* Subtle shadow */
+            position: relative;
+            border-bottom: 1px solid var(--dark-border);
+            margin-bottom: 40px; /* Space below header */
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        .page-title {
+            font-size: 2.2rem; /* Consistent title size */
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .page-title i {
+            color: var(--primary-light); /* Color the icon */
+            font-size: 2rem; /* Slightly smaller icon */
+        }
+        .page-title::after { /* Underline effect */
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+            border-radius: 2px;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--text-muted); /* Use muted color */
+        }
+
+        /* --- Container --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .main-content-container {
+             margin-top: 40px;
+        }
+
+        /* --- Search Bar --- */
+        .search-container {
+            margin: 0 auto 50px auto; /* Center and add bottom margin */
+            max-width: 700px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 60px 16px 25px; /* Adjusted padding */
+            font-size: 1rem;
+            border: 1px solid var(--dark-border);
+            border-radius: 50px; /* Pill shape */
+            background-color: var(--dark-surface-2); /* Darker input bg */
+            color: var(--text-light);
+            outline: none;
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+
+        .search-input::placeholder {
+             color: var(--text-muted);
+             opacity: 0.7;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2); /* Focus ring */
+        }
+
+        .search-button {
+            position: absolute;
+            right: 6px; top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+            border: none; cursor: pointer;
+            font-size: 1.1rem; color: var(--text-light);
+            border-radius: 50%; width: 44px; height: 44px; /* Adjusted size */
+            display: flex; justify-content: center; align-items: center;
+            transition: background var(--transition), transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .search-button:hover {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* --- Card Grid --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Adjusted minmax */
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        /* --- Card Styling (Applied to .calculator-category) --- */
+        .card.calculator-category { /* Increased specificity */
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), opacity 0.3s ease, height 0.3s ease, padding 0.3s ease, margin 0.3s ease; /* Added transition for filtering */
+            display: flex; /* Keep flex for internal layout */
+            flex-direction: column;
+            border: 1px solid var(--dark-border);
+            opacity: 1; /* Ensure visible by default */
+            transform: translateY(0); /* Reset transform */
+        }
+
+        .card.calculator-category:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
+        }
+
+        .card-header.category-header {
+            padding: 20px 25px; /* Adjusted padding */
+            background-color: var(--dark-surface-2); /* Use surface 2 color */
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Adjusted gap */
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .card-header-icon {
+            font-size: 1.8rem; /* Adjusted size */
+            color: var(--primary-light); /* Use theme color */
+            width: 35px;
+            text-align: center;
+        }
+
+        .card-title.category-title {
+            font-size: 1.3rem; /* Adjusted size */
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 0; /* Remove default margin */
+        }
+
+        .card-body.category-content {
+            padding: 20px 25px 25px 25px; /* Consistent padding */
+            flex-grow: 1;
+        }
+
+        .calc-list { list-style: none; padding: 0; margin: 0;}
+        .calc-item { margin-bottom: 8px; transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease, padding 0.3s ease, margin 0.3s ease; } /* Add transition */
+
+        .calc-item a {
+            display: block;
+            padding: 12px 15px; /* Adjusted padding */
+            color: var(--text-secondary); /* Muted color */
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: background-color var(--transition), color var(--transition), transform 0.2s ease;
+            position: relative;
+            font-weight: 400;
+            border-left: 4px solid transparent; /* Add left border for hover */
+        }
+
+        .calc-item a:hover {
+            background-color: var(--dark-surface-2); /* Subtle hover bg */
+            color: var(--primary-light); /* Brighter text on hover */
+            transform: translateX(5px);
+            border-left-color: var(--primary-color); /* Highlight border */
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: #0a0a0a; /* Even darker footer */
+            color: var(--text-muted);
+            text-align: center;
+            padding: 30px 20px 15px; /* Adjusted padding */
+            margin-top: 60px;
+            border-top: 1px solid var(--dark-border); /* Add border top */
+        }
+        .footer-content { font-size: 0.9rem; }
+        .footer-bottom { /* Optional bottom section if needed */
+            margin-top: 15px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        /* --- Utility for Filtering --- */
+        .hide {
+            /* Using class for smooth hide/show */
+            opacity: 0 !important;
+            transform: scale(0.95) !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            border-width: 0 !important;
+            /* transition duration should match the transition on the element itself */
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            body { padding-top: 70px; } /* Adjust for smaller back button */
+            .page-title { font-size: 1.9rem; }
+            .page-title i { font-size: 1.7rem; }
+            .page-subtitle { font-size: 1rem; }
+            .card-grid { grid-template-columns: 1fr; gap: 25px; } /* Stack cards */
+            .search-input { padding: 14px 55px 14px 20px; }
+            .search-button { width: 40px; height: 40px; font-size: 1rem; }
+            .card-title.category-title { font-size: 1.2rem; }
+            .calc-item a { padding: 10px 12px; }
+        }
+
+         @media (max-width: 480px) {
+             .back-button { top: 15px; left: 15px; padding: 6px 12px; font-size: 0.8rem; }
+             body { padding-top: 65px; }
+             .header { padding: 1.5rem 0; }
+             .page-title { font-size: 1.7rem; gap: 10px;}
+             .page-title i { font-size: 1.5rem;}
+             .page-subtitle { font-size: 0.9rem; }
+             .main-content-container { margin-top: 30px; }
+             .search-container { margin-bottom: 40px; }
+             .search-input { padding: 12px 50px 12px 18px; font-size: 0.9rem;}
+             .search-button { width: 36px; height: 36px; font-size: 0.9rem; right: 5px;}
+             .card-grid { gap: 20px; }
+             .card-header.category-header { padding: 15px 20px; gap: 10px;}
+             .card-header-icon { font-size: 1.5rem; width: 30px; }
+             .card-title.category-title { font-size: 1.1rem; }
+             .card-body.category-content { padding: 15px 20px 20px 20px; }
+             .calc-item a { padding: 9px 10px; font-size: 0.9rem; }
+             .footer { padding: 25px 15px 10px; margin-top: 50px;}
+         }
+    </style>
+
+</head>
+<body>
+    <!-- Back Button -->
+    <!-- Ensure this path points correctly back to your main index -->
+    <a href="../index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <!-- Updated class and structure -->
+            <div class="header-content">
+                 <h1 class="page-title"><i class="fas fa-calculator"></i> Calculator Hub</h1>
+                 <p class="page-subtitle">Your Central Hub for Every Calculation</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container main-content-container"> <!-- Main wrapper -->
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search calculators (e.g., BMI, Loan, Percentage...)">
+            <button class="search-button" id="searchButton" aria-label="Search">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <!-- Renamed categories to card-grid for consistency -->
+        <div class="card-grid" id="categoriesList">
+
+            <!-- Category 1: Basic & Math -->
+            <!-- Renamed category to card -->
+            <div class="card calculator-category" data-category="basic math algebra equation matrix unit converter percentage">
+                <div class="card-header category-header"> <!-- Added category-header -->
+                    <i class="fas fa-square-root-alt card-header-icon"></i> <!-- Added card-header-icon -->
+                    <h3 class="card-title category-title">Basic & Math</h3> <!-- Added category-title -->
+                </div>
+                <div class="card-body category-content"> <!-- Added category-content -->
+                    <ul class="calc-list">
+                        <li class="calc-item" data-keywords="basic simple add subtract multiply divide"><a href="basic/basic-calculator.html">Basic Calculator</a></li>
+                        <li class="calc-item" data-keywords="scientific functions log sin cos tan"><a href="basic/scientific-calculator.html">Scientific Calculator</a></li>
+                        <li class="calc-item" data-keywords="graph plot function equation"><a href="basic/graphing-calculator.html">Graphing Calculator</a></li>
+                        <li class="calc-item" data-keywords="fraction numerator denominator"><a href="basic/fraction-calculator.html">Fraction Calculator</a></li>
+                        <li class="calc-item" data-keywords="percentage percent discount increase decrease"><a href="basic/percentage-calculator.html">Percentage Calculator</a></li>
+                        <li class="calc-item" data-keywords="algebra equation solver solve variable"><a href="basic/algebra-solver.html">Algebra/Equation Solver</a></li>
+                        <li class="calc-item" data-keywords="matrix determinant inverse linear algebra"><a href="basic/matrix-calculator.html">Matrix Calculator</a></li>
+                        <li class="calc-item" data-keywords="unit converter length weight temperature volume speed time"><a href="basic/unit-converter.html">Unit Converter</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category 2: Finance -->
+            <div class="card calculator-category" data-category="finance loan mortgage interest tax budget currency investment retirement emi">
+                <div class="card-header category-header">
+                    <i class="fas fa-coins card-header-icon"></i>
+                    <h3 class="card-title category-title">Finance</h3>
+                </div>
+                <div class="card-body category-content">
+                    <ul class="calc-list">
+                        <li class="calc-item" data-keywords="loan emi payment installment"><a href="finance/loan-calculator.html">Loan EMI Calculator</a></li>
+                        <li class="calc-item" data-keywords="mortgage home loan property payment"><a href="finance/mortgage-calculator.html">Mortgage Calculator</a></li>
+                        <li class="calc-item" data-keywords="interest simple compound rate principal"><a href="finance/interest-calculator.html">Interest Calculator</a></li>
+                        <li class="calc-item" data-keywords="tax income sales vat gst"><a href="finance/tax-calculator.html">Tax Calculator</a></li>
+                        <li class="calc-item" data-keywords="budget expense spending money management"><a href="finance/budget-calculator.html">Budget Calculator</a></li>
+                        <li class="calc-item" data-keywords="currency exchange rate converter money foreign"><a href="finance/currency-converter.html">Currency Converter</a></li>
+                        <li class="calc-item" data-keywords="investment roi return growth stocks mutual fund"><a href="finance/investment.html">Investment Calculator</a></li>
+                        <li class="calc-item" data-keywords="retirement savings pension 401k planning"><a href="finance/retirement-calculator.html">Retirement Calculator</a></li>
+                    </ul>
+                </div>
+            </div>
+
+             <!-- Category 3: Health & Fitness -->
+            <div class="card calculator-category" data-category="health fitness bmi bmr calorie weight fat pregnancy water">
+                <div class="card-header category-header">
+                    <i class="fas fa-heartbeat card-header-icon"></i>
+                    <h3 class="card-title category-title">Health & Fitness</h3>
+                </div>
+                <div class="card-body category-content">
+                    <ul class="calc-list">
+                        <li class="calc-item" data-keywords="bmi body mass index weight height health"><a href="health/bmi-calculator.html">BMI Calculator</a></li>
+                        <li class="calc-item" data-keywords="bmr basal metabolic rate metabolism calories"><a href="health/bmr-calculator.html">BMR Calculator</a></li>
+                        <li class="calc-item" data-keywords="calorie counter food intake diet nutrition"><a href="health/calorie-calculator.html">Calorie Calculator</a></li>
+                        <li class="calc-item" data-keywords="ideal weight healthy weight goal"><a href="health/ideal-weight-calculator.html">Ideal Weight Calculator</a></li>
+                        <li class="calc-item" data-keywords="body fat percentage fitness health composition"><a href="health/body-fat-calculator.html">Body Fat Calculator</a></li>
+                        <li class="calc-item" data-keywords="water intake hydration h2o daily needs"><a href="health/water-intake-calculator.html">Water Intake Calculator</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category 4: Time & Date -->
+            <div class="card calculator-category" data-category="time date age difference countdown clock zone">
+                <div class="card-header category-header">
+                    <i class="fas fa-clock card-header-icon"></i>
+                    <h3 class="card-title category-title">Time & Date</h3>
+                </div>
+                <div class="card-body category-content">
+                    <ul class="calc-list">
+                        <li class="calc-item" data-keywords="age calculator birthday years months days"><a href="time/age-calculator.html">Age Calculator</a></li>
+                        <li class="calc-item" data-keywords="date difference duration between dates days weeks"><a href="time/date-difference-calculator.html">Date Difference Calculator</a></li>
+                        <li class="calc-item" data-keywords="countdown timer stopwatch event deadline"><a href="time/countdown-timer.html">Countdown Timer</a></li>
+                        <li class="calc-item" data-keywords="world clock time zone converter international time"><a href="time/world-clock.html">World Clock / Time Zone Converter</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category 5: Education -->
+            <div class="card calculator-category" data-category="education exam gpa cgpa grade score percentage">
+                <div class="card-header category-header">
+                    <i class="fas fa-user-graduate card-header-icon"></i>
+                    <h3 class="card-title category-title">Education & Exams</h3>
+                </div>
+                <div class="card-body category-content">
+                     <ul class="calc-list">
+                        <li class="calc-item" data-keywords="gpa cgpa grade point average calculator university college"><a href="education/gpa-calculator.html">GPA / CGPA Calculator</a></li>
+                        <li class="calc-item" data-keywords="percentage marks score calculation exam results"><a href="education/percentage-calculator.html">Percentage Calculator (Academic)</a></li>
+                        <li class="calc-item" data-keywords="grade calculator course final score assignment weight"><a href="education/grade-calculator.html">Grade Calculator</a></li>
+                        <li class="calc-item" data-keywords="exam score predictor estimate test results"><a href="education/score-predictor.html">Exam Score Predictor</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category 6: Shopping & Lifestyle -->
+            <div class="card calculator-category" data-category="shopping lifestyle discount tip split bill fuel cost">
+                <div class="card-header category-header">
+                    <i class="fas fa-shopping-cart card-header-icon"></i>
+                    <h3 class="card-title category-title">Shopping & Lifestyle</h3>
+                </div>
+                <div class="card-body category-content">
+                     <ul class="calc-list">
+                        <li class="calc-item" data-keywords="discount sale offer price reduction percentage off"><a href="shopping/discount-calculator.html">Discount Calculator</a></li>
+                        <li class="calc-item" data-keywords="tip gratuity service charge restaurant bill"><a href="shopping/tip-calculator.html">Tip Calculator</a></li>
+                        <li class="calc-item" data-keywords="split bill share cost group expense restaurant dinner"><a href="shopping/split-bill-calculator.html">Split Bill Calculator</a></li>
+                        <li class="calc-item" data-keywords="fuel cost gas mileage consumption travel trip car"><a href="shopping/fuel-cost-calculator.html">Fuel Cost Calculator</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Category 7: Other Tools -->
+            <div class="card calculator-category" data-category="other tools utility love hex rgb binary decimal converter speed distance time area volume geometry">
+                 <div class="card-header category-header">
+                    <i class="fas fa-tools card-header-icon"></i>
+                    <h3 class="card-title category-title">Other Useful Tools</h3>
+                </div>
+               <div class="card-body category-content">
+                  <ul class="calc-list">
+                     <li class="calc-item" data-keywords="hex rgb color code converter web design css"><a href="other/hex-rgb-converter.html">Hex to RGB Converter</a></li>
+                    <li class="calc-item" data-keywords="binary decimal number system converter base 2 base 10"><a href="other/binary-decimal-converter.html">Binary/Decimal Converter</a></li>
+                    <li class="calc-item" data-keywords="speed distance time calculator velocity travel rate"><a href="other/speed-calculator.html">Speed/Distance/Time Calculator</a></li>
+                    <li class="calc-item" data-keywords="area volume geometry shape calculator square circle cube sphere"><a href="other/area-volume-calculator.html">Area/Volume Calculators</a></li>
+                  </ul>
+                </div>
+            </div>
+
+        </div> <!-- End card-grid -->
+
+    </div> <!-- End Container -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+             <!-- Keep original footer content or adapt -->
+            <p>© 2024 BVRIT Calculator Hub. All Rights Reserved.</p>
+            <!-- <div class="footer-links">
+                <a href="#" class="footer-link">About</a>
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div> -->
+        </div>
+         <div class="footer-bottom"> <!-- Optional: Add consistent bottom border -->
+            <!-- Can add copyright specific to BVRIT -->
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const categoriesList = document.getElementById('categoriesList');
+            // Ensure we select the cards correctly
+            const categoryCards = categoriesList ? categoriesList.querySelectorAll('.calculator-category') : [];
+            const calcItems = document.querySelectorAll('.calc-item');
+
+            // --- Search Functionality ---
+            function filterCalculators() {
+                const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+                let visibleInCategory = {}; // Track visibility within each category
+
+                // Filter individual calculator links
+                calcItems.forEach(item => {
+                    const linkText = item.textContent.toLowerCase();
+                    const keywords = item.dataset.keywords ? item.dataset.keywords.toLowerCase() : '';
+                    const categoryCard = item.closest('.calculator-category'); // Find parent category card
+                    if (!categoryCard) return;
+
+                    const categoryId = categoryCard.dataset.category || 'unknown';
+
+                    if (visibleInCategory[categoryId] === undefined) { // Check if undefined instead of falsey
+                        visibleInCategory[categoryId] = false; // Initialize only if not set
+                    }
+
+                    const isVisible = query === '' || linkText.includes(query) || keywords.includes(query);
+
+                    // Use classList to toggle visibility
+                    if (isVisible) {
+                        item.classList.remove('hide');
+                        visibleInCategory[categoryId] = true; // Mark category as having visible items
+                    } else {
+                        item.classList.add('hide');
+                    }
+                });
+
+                // Show/hide entire category blocks based on content visibility or keyword match
+                categoryCards.forEach(category => {
+                    const categoryKeywords = category.dataset.category ? category.dataset.category.toLowerCase() : '';
+                    const categoryId = category.dataset.category || 'unknown';
+
+                    // Show category if search is empty, matches category keywords, or has visible items inside
+                    const showCategory = query === '' || categoryKeywords.includes(query) || visibleInCategory[categoryId];
+
+                    // Use a class to hide/show category card
+                     if (showCategory) {
+                        category.classList.remove('hide');
+                    } else {
+                        category.classList.add('hide');
+                    }
+                });
+            }
+
+            // Event Listeners for Search
+            if (searchButton) {
+                searchButton.addEventListener('click', filterCalculators);
+            }
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                         filterCalculators();
+                         e.preventDefault(); // Prevent potential form submission if inside a form
+                    }
+                });
+                // Live search on input change
+                searchInput.addEventListener('input', filterCalculators);
+            }
+
+
+            // Initial filter call when page loads
+            if (categoriesList) { // Only call if the list exists
+                filterCalculators();
+            } else {
+                console.error("Categories list container '#categoriesList' not found.");
+            }
+        });
+      </script>
+
+</body>
+</html>

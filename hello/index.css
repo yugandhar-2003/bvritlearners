@@ -1,0 +1,334 @@
+/* Futuristic Neon Glow Theme */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Base Colors */
+  --bg-dark: #0a0a1a; /* Deep space blue/purple */
+  --bg-surface: #1a1a2e; /* Slightly lighter surface */
+  --bg-surface-hover: #2a2a3e;
+  --border-color: rgba(0, 240, 255, 0.15); /* Subtle cyan border */
+
+  /* Text Colors */
+  --text-primary: #e0e0ff; /* Soft lavender white */
+  --text-secondary: #a0a0c0; /* Dimmer lavender gray */
+  --text-title: #ffffff;
+
+  /* Neon Accents */
+  --accent-cyan: #00f0ff;
+  --accent-magenta: #ff00ff;
+  --accent-lime: #39ff14;
+  --accent-blue: #4d9fff;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+  --gradient-button: linear-gradient(90deg, var(--accent-blue), var(--accent-magenta));
+  --gradient-button-hover: linear-gradient(90deg, var(--accent-magenta), var(--accent-cyan));
+
+  /* Shadows */
+  --shadow-base: 0 6px 12px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 12px 24px rgba(0, 240, 255, 0.2), 0 0 30px rgba(255, 0, 255, 0.15); /* Main neon glow */
+  --shadow-inset: inset 0 0 10px rgba(0, 0, 0, 0.5);
+
+  /* Transitions & Radii */
+  --transition-smooth: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --border-radius: 12px;
+}
+
+/* Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-dark);
+  background-image: radial-gradient(circle at top left, rgba(77, 159, 255, 0.1) 0%, transparent 30%),
+                    radial-gradient(circle at bottom right, rgba(255, 0, 255, 0.1) 0%, transparent 30%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Container Styles */
+.container-modern {
+  max-width: 1300px; /* Wider for potentially more columns */
+  width: 90%; /* Use percentage for better responsiveness */
+  margin: 80px auto 60px auto; /* More top margin */
+  padding: 0 15px;
+}
+
+/* Page Title Styles */
+.page-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem); /* Responsive font size */
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3), 0 0 20px rgba(255, 0, 255, 0.2);
+  letter-spacing: 1px;
+}
+
+.page-subtitle {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 4rem; /* More space before cards */
+  font-weight: 300;
+}
+
+/* Projects Grid */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); /* Slightly larger min-width */
+  gap: 2rem; /* Increase gap slightly */
+}
+
+/* Project Card Styles */
+.project-card {
+  background-color: var(--bg-surface);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-base), var(--shadow-inset);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  border: 1px solid var(--border-color);
+  display: flex; /* Ensure content flexes */
+  flex-direction: column; /* Stack content vertically */
+  position: relative; /* For pseudo-elements and shine */
+  cursor: default; /* Change cursor as whole card isn't strictly clickable */
+}
+
+/* Optional: Add a subtle top border glow effect */
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    opacity: 0.6;
+    transition: opacity var(--transition-smooth);
+}
+
+.project-card:hover::before {
+    opacity: 1;
+}
+
+.project-card:hover {
+    /* Hover effects handled by GSAP */
+}
+
+.project-card-content {
+  padding: 2rem 1.5rem; /* More vertical padding */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Push button to bottom */
+  z-index: 2; /* Above shine effect */
+}
+
+/* Icon Styling */
+.project-icon-wrapper {
+    margin-bottom: 1.5rem;
+    display: flex; /* Center icon */
+    justify-content: center;
+}
+
+.project-icon {
+  font-size: 2.5rem;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, var(--bg-surface), var(--bg-dark));
+  color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3), inset 0 0 8px rgba(0,0,0,0.5);
+  transition: all var(--transition-smooth);
+}
+
+.project-card:hover .project-icon {
+    color: var(--accent-magenta);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.4), inset 0 0 10px rgba(0,0,0,0.6);
+    transform: rotateY(180deg); /* Fun little flip */
+}
+
+
+.project-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: var(--text-title);
+  text-align: center; /* Center title */
+  min-height: 2.8em; /* Roughly 2 lines */
+  display: flex;
+  align-items: center; /* Vertically center if single line */
+  justify-content: center;
+}
+
+.project-description {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  flex-grow: 1; /* Take available space */
+  text-align: center; /* Center description */
+  line-height: 1.5;
+}
+
+.project-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--gradient-button);
+  color: white;
+  text-decoration: none;
+  padding: 12px 25px; /* Larger padding */
+  border-radius: 50px; /* Pill shape */
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background var(--transition-smooth), transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  margin: 1rem auto 0 auto; /* Center button */
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.project-button:hover {
+  background: var(--gradient-button-hover);
+  box-shadow: 0 6px 15px rgba(0, 240, 255, 0.2), 0 0 15px rgba(255, 0, 255, 0.1);
+  /* Scale handled by GSAP */
+}
+
+.project-button i {
+    transition: transform 0.3s ease;
+}
+.project-button:hover i {
+    transform: translateX(3px);
+}
+
+/* Back Button */
+.back-button {
+  position: fixed;
+  top: 25px;
+  left: 25px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  padding: 10px 20px;
+  background-color: rgba(26, 26, 46, 0.8); /* Semi-transparent surface */
+  backdrop-filter: blur(5px); /* Frosted glass */
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 50px; /* Pill shape */
+  transition: all var(--transition-smooth);
+  z-index: 100;
+  border: 1px solid var(--border-color);
+}
+
+.back-button:hover {
+  color: var(--accent-cyan);
+  background-color: rgba(42, 42, 62, 0.9);
+  transform: translateX(-5px);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+.back-button:hover i {
+    transform: scale(1.1) translateX(-2px);
+}
+
+/* Shine Effect (for card hover) */
+.shine-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px; /* Adjust size as needed */
+    height: 100px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none; /* Ignore mouse events */
+    opacity: 0;
+    z-index: 1;
+    mix-blend-mode: overlay; /* Or screen/soft-light */
+    transform: translate(-50%, -50%); /* Center on origin */
+}
+
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 1.5rem;
+    }
+    .container-modern {
+        width: 95%;
+    }
+}
+
+
+@media (max-width: 768px) {
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem; /* Keep gap reasonable */
+  }
+  .page-title {
+      letter-spacing: 0.5px;
+  }
+  .project-card-content {
+      padding: 1.5rem 1.2rem;
+  }
+   .project-title {
+       font-size: 1.3rem;
+       min-height: 0; /* Allow natural height */
+   }
+   .project-description {
+       font-size: 0.9rem;
+   }
+}
+
+@media (max-width: 480px) {
+  .projects-grid {
+    grid-template-columns: 1fr; /* Single column */
+    gap: 1.5rem;
+  }
+  .container-modern {
+      margin-top: 60px; /* Less top margin on mobile */
+      width: 90%;
+  }
+  .page-title {
+      margin-bottom: 0.8rem;
+  }
+   .page-subtitle {
+       margin-bottom: 2.5rem;
+   }
+   .back-button {
+       top: 15px;
+       left: 15px;
+       padding: 8px 15px;
+       font-size: 0.8rem;
+   }
+   .project-card-content {
+      padding: 1.2rem;
+   }
+    .project-button {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+}

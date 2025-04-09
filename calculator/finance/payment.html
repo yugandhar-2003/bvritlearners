@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Calculator - Modern Interface</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <style>
+        /* === CSS Styles Start === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #00A99D; /* Teal */
+            --secondary-color: #4A90E2; /* Blue */
+            --light-grey: #f8f9fa;
+            --medium-grey: #e9ecef;
+            --dark-grey: #ced4da;
+            --text-dark: #343a40;
+            --text-medium: #495057;
+            --text-light: #6c757d;
+            --border-color: #e2e8f0;
+            --success-color: #28a745;
+            --error-color: #e53e3e; /* Brighter Red */
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%); /* Softer BG */
+            --card-bg: #ffffff;
+            --principal-color: var(--secondary-color); /* Blue for principal */
+            --interest-color: #f5a623; /* Orange/Yellow for interest */
+            --shadow-soft: 0 5px 15px rgba(0, 169, 157, 0.08);
+            --shadow-medium: 0 8px 25px rgba(0, 169, 157, 0.1);
+            --focus-ring: 0 0 0 3px rgba(0, 169, 157, 0.15);
+            --border-radius-main: 14px;
+            --border-radius-inner: 8px;
+            --transition-speed: 0.3s;
+            --transition-ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-medium);
+            line-height: 1.7;
+            padding: 25px;
+            font-size: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px; /* Adjusted width */
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        header {
+            padding: 25px 35px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); /* Light header gradient */
+        }
+        header h1 {
+            font-weight: 600;
+            font-size: 1.9rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        header p {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .tabs-container { /* Wrapper for padding */
+             padding: 8px;
+             background-color: #f1f5f9; /* Background for the tab area */
+             border-bottom: 1px solid var(--border-color);
+        }
+        .tabs {
+            display: flex;
+            background-color: #e9ecef; /* Inner background */
+            border-radius: var(--border-radius-inner);
+            padding: 4px; /* Space around buttons */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .tab-button {
+            flex: 1;
+            padding: 12px 10px;
+            text-align: center;
+            background-color: transparent;
+            border: none;
+            border-radius: 6px; /* Rounded corners for each button */
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all var(--transition-speed) var(--transition-ease);
+            position: relative;
+            z-index: 1;
+        }
+        .tab-button.active {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: var(--shadow-soft);
+            transform: scale(1.01); /* Subtle lift */
+        }
+        .tab-button:not(.active):hover {
+            background-color: rgba(0, 0, 0, 0.04);
+            color: var(--text-medium);
+        }
+
+
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            gap: 0;
+        }
+
+        .input-section,
+        .results-section {
+            padding: 35px; /* Increased padding */
+        }
+
+        .input-section {
+            border-right: 1px solid var(--border-color);
+            background-color: #fdfdff; /* Slightly off-white input area */
+        }
+
+        /* Stack columns on smaller screens */
+        @media (max-width: 850px) {
+            .calculator-content { grid-template-columns: 1fr; }
+            .input-section { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+
+        .mode-content { /* Wrapper for mode-specific inputs/results */
+             animation: fadeIn 0.4s var(--transition-ease);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 1.25rem; /* Slightly larger */
+            color: var(--text-dark);
+            margin-bottom: 30px; /* More space */
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 22px; /* More space */
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .input-group label {
+            flex-basis: 130px; /* Adjusted label width */
+            padding-right: 15px;
+            font-weight: 500;
+            font-size: 0.95rem; /* Slightly larger */
+            color: var(--text-medium); /* Softer label color */
+            text-align: right;
+        }
+        .input-group .input-field-area {
+             flex: 1; min-width: 160px; position: relative;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px; /* More padding */
+            border: 1px solid var(--dark-grey); /* Slightly darker border */
+            border-radius: var(--border-radius-inner);
+            font-size: 1rem;
+            transition: border-color var(--transition-speed) var(--transition-ease),
+                        box-shadow var(--transition-speed) var(--transition-ease);
+            background-color: var(--card-bg); /* White input bg */
+            color: var(--text-dark);
+        }
+        input[type="number"]::placeholder { color: #adb5bd; }
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: var(--focus-ring);
+        }
+        /* Style number inputs */
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .input-adornment {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--text-light); font-size: 0.9rem; opacity: 0.8; pointer-events: none;
+        }
+        input[type="number"].has-adornment,
+        input[type="text"].has-adornment { padding-right: 40px; } /* More space for adornment */
+
+
+        .calculate-button-container { text-align: center; margin-top: 35px; }
+        .calculate-button {
+            padding: 14px 35px; /* Larger button */
+            background: linear-gradient(135deg, var(--primary-color), #008a80); /* Teal gradient */
+            color: white; border: none; border-radius: var(--border-radius-inner);
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: all var(--transition-speed) var(--transition-ease);
+            display: inline-flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 169, 157, 0.25);
+        }
+        .calculate-button:hover { opacity: 0.9; transform: translateY(-3px); box-shadow: 0 7px 18px rgba(0, 169, 157, 0.3); }
+        .calculate-button:active { transform: translateY(0); box-shadow: 0 4px 12px rgba(0, 169, 157, 0.25); }
+
+        .error-message {
+            color: var(--error-color); font-size: 0.9rem; margin-top: 18px;
+            text-align: center; min-height: 1.3em; font-weight: 500;
+        }
+
+        /* --- Results Section Styling --- */
+        .results-section { background-color: var(--light-grey); }
+        .results-summary { margin-bottom: 30px; }
+
+        .result-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid var(--medium-grey); font-size: 1rem;
+        }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { color: var(--text-light); font-weight: 400; }
+        .result-value { color: var(--text-dark); font-weight: 600; }
+
+        .primary-result {
+             background-color: #e6fffd; /* Light teal background */
+             padding: 20px; border-radius: var(--border-radius-inner);
+             margin-bottom: 20px; border: 1px solid #b3f0eb;
+             box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .primary-result .result-label {
+            font-weight: 500; color: var(--primary-color); font-size: 1.1rem; display: block; margin-bottom: 5px;
+        }
+        .primary-result .result-value {
+            font-size: 1.8rem; font-weight: 700; color: var(--primary-color); display: block;
+        }
+         .save-calculation { font-size: 0.85rem; color: var(--primary-color); text-decoration: none; margin-left: 10px; display: inline-block; vertical-align: middle;}
+         .save-calculation:hover { text-decoration: underline; }
+
+         .result-description { font-size: 0.95rem; color: var(--text-medium); margin-top: 10px; }
+
+         /* Breakdown Styling */
+         .breakdown-container { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+         .breakdown-title { font-weight: 600; color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;}
+         .breakdown-percentages { display: flex; justify-content: space-around; align-items: center; margin-top: 10px; }
+         .breakdown-item { text-align: center; font-size: 0.95rem; }
+         .breakdown-value { display: block; font-size: 1.6rem; font-weight: 700; margin-bottom: 5px; }
+         .breakdown-principal .breakdown-value { color: var(--principal-color); }
+         .breakdown-interest .breakdown-value { color: var(--interest-color); }
+         .breakdown-label { font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--text-medium); }
+         .color-swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; }
+         .principal-swatch { background-color: var(--principal-color); }
+         .interest-swatch { background-color: var(--interest-color); }
+
+
+        /* Amortization Table */
+        .amortization-section { margin-top: 35px; }
+        .amortization-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .amortization-title { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin: 0;}
+        .schedule-controls button {
+             padding: 7px 14px; margin-left: 8px; font-size: 0.9rem;
+             border: 1px solid var(--dark-grey); background-color: var(--card-bg);
+             border-radius: 6px; cursor: pointer; font-weight: 500; color: var(--text-medium);
+             transition: all var(--transition-speed) var(--transition-ease);
+        }
+        .schedule-controls button.active {
+             background-color: var(--secondary-color); color: white; border-color: var(--secondary-color); box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .schedule-controls button:hover:not(.active) { border-color: var(--secondary-color); color: var(--secondary-color);}
+
+        .amortization-table-container {
+            max-height: 450px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-inner);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+        }
+        table.amortization-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .amortization-table th, .amortization-table td {
+            padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border-color);
+        }
+        .amortization-table th {
+            background-color: var(--light-grey); font-weight: 600; color: var(--text-dark);
+            position: sticky; top: 0; z-index: 1; border-bottom-width: 2px; border-bottom-color: var(--dark-grey);
+        }
+        .amortization-table td:first-child, .amortization-table th:first-child { text-align: center; font-weight: 500; }
+        .amortization-table tr:last-child td { border-bottom: none; }
+        .amortization-table tr:nth-child(even) { background-color: #fcfdff; }
+        .amortization-table tr:hover { background-color: #f1f9f8; } /* Subtle hover */
+        .amortization-table td { color: var(--text-medium); }
+
+
+        .info-section { padding: 35px; font-size: 0.95rem; border-top: 1px solid var(--border-color); background-color: #fdfdff; }
+        .info-section h3 { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 12px; margin-top: 25px; }
+        .info-section h3:first-child { margin-top: 0; }
+        .info-section p { margin-bottom: 18px; color: var(--text-medium); }
+        .related-links { margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border-color); }
+        .related-links a { margin-right: 18px; color: var(--primary-color); text-decoration: none; font-weight: 500;}
+        .related-links a:hover { text-decoration: underline; }
+
+        footer {
+             background-color: var(--text-dark); color: var(--light-grey); text-align: center;
+             padding: 25px 35px; font-size: 0.9rem; opacity: 0.95; margin-top: 0; /* Footer connected */
+        }
+
+        /* Responsive adjustments */
+         @media (max-width: 650px) {
+             .input-group { flex-direction: column; align-items: stretch; }
+             .input-group label { flex-basis: auto; text-align: left; margin-bottom: 6px; }
+             .primary-result .result-value { font-size: 1.6rem; }
+             header h1 { font-size: 1.6rem;}
+             .tabs-container { padding: 5px;}
+             .tabs { flex-direction: column; padding: 0; border-radius: 0;}
+             .tab-button { border-radius: 0; border-bottom: 1px solid var(--border-color);}
+             .tab-button.active { border-bottom: none; border-radius: var(--border-radius-inner); margin: 4px;}
+             .tab-button:last-child { border-bottom: none;}
+             .amortization-header { flex-direction: column; align-items: flex-start; gap: 10px;}
+             .schedule-controls { align-self: flex-end; }
+             body { padding: 15px;}
+             .input-section, .results-section, .info-section { padding: 25px;}
+        }
+
+        /* Utility */
+        .hidden { display: none; }
+        /* === CSS Styles End === */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Payment Calculator</h1>
+            <p>Determine the monthly payment or loan term for a fixed interest loan.</p>
+        </header>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-button active" data-mode="fixedTerm">Fixed Term</button>
+                <button class="tab-button" data-mode="fixedPayments">Fixed Payments</button>
+            </div>
+        </div>
+
+        <main class="calculator-content">
+            <section class="input-section">
+                 <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 25px;">Modify the values and click the calculate button to use</p>
+
+                <!-- Fixed Term Inputs -->
+                <div class="mode-content mode-inputs" id="fixedTermInputs">
+                     <h2 class="section-title">Loan Details</h2>
+                    <div class="input-group">
+                        <label for="loanAmountFT">Loan Amount</label>
+                        <div class="input-field-area">
+                            <input type="number" id="loanAmountFT" class="has-adornment" placeholder="e.g., 200000" value="200000" min="0">
+                            <span class="input-adornment">$</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="loanTermFT">Loan Term</label>
+                        <div class="input-field-area">
+                            <input type="number" id="loanTermFT" class="has-adornment" placeholder="e.g., 15" value="15" min="0.1" step="0.1">
+                            <span class="input-adornment">years</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="interestRateFT">Interest Rate</label>
+                        <div class="input-field-area">
+                            <input type="number" id="interestRateFT" class="has-adornment" placeholder="e.g., 6" value="6" min="0" step="0.01">
+                            <span class="input-adornment">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fixed Payments Inputs -->
+                <div class="mode-content mode-inputs hidden" id="fixedPaymentsInputs">
+                     <h2 class="section-title">Loan Details</h2>
+                    <div class="input-group">
+                        <label for="loanAmountFP">Loan Amount</label>
+                        <div class="input-field-area">
+                            <input type="number" id="loanAmountFP" class="has-adornment" placeholder="e.g., 50000" value="50000" min="0">
+                            <span class="input-adornment">$</span>
+                        </div>
+                    </div>
+                     <div class="input-group">
+                        <label for="monthlyPaymentFP">Monthly Payment</label>
+                        <div class="input-field-area">
+                             <input type="number" id="monthlyPaymentFP" class="has-adornment" placeholder="e.g., 500" value="500" min="0.01">
+                             <span class="input-adornment">$</span>
+                         </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="interestRateFP">Interest Rate</label>
+                        <div class="input-field-area">
+                            <input type="number" id="interestRateFP" class="has-adornment" placeholder="e.g., 5" value="5" min="0" step="0.01">
+                            <span class="input-adornment">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="calculate-button-container">
+                    <button id="calculateBtn" class="calculate-button">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                 </div>
+                <div id="error-message" class="error-message"></div>
+            </section>
+
+            <section class="results-section">
+                 <h2 class="section-title">Results</h2>
+
+                 <!-- Fixed Term Results -->
+                 <div class="mode-content mode-results" id="fixedTermResults">
+                    <div class="results-summary">
+                        <div class="result-item primary-result">
+                            <div>
+                                <span class="result-label">Monthly Payment:</span>
+                                <span class="result-value" id="monthlyPaymentResultFT">$0.00</span>
+                                <!-- <a href="#" class="save-calculation">Save this calculation</a> -->
+                            </div>
+                        </div>
+                         <p class="result-description" id="resultDescriptionFT">Calculate to see the details.</p>
+                        <div class="result-item">
+                            <span class="result-label"><span id="totalPaymentsLabelFT">Total of 0 Payments</span></span>
+                            <span class="result-value" id="totalPaymentsResultFT">$0.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Total Interest</span>
+                            <span class="result-value" id="totalInterestResultFT">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-container">
+                        <h3 class="breakdown-title">Loan Breakdown</h3>
+                         <div class="breakdown-percentages">
+                            <div class="breakdown-item breakdown-principal">
+                                <span class="breakdown-value" id="principalPercentFT">--%</span>
+                                <span class="breakdown-label"><span class="color-swatch principal-swatch"></span>Principal</span>
+                            </div>
+                            <div class="breakdown-item breakdown-interest">
+                                <span class="breakdown-value" id="interestPercentFT">--%</span>
+                                 <span class="breakdown-label"><span class="color-swatch interest-swatch"></span>Interest</span>
+                            </div>
+                         </div>
+                    </div>
+                 </div>
+
+                <!-- Fixed Payments Results -->
+                <div class="mode-content mode-results hidden" id="fixedPaymentsResults">
+                    <div class="results-summary">
+                         <div class="result-item primary-result">
+                             <div>
+                                <span class="result-label">Loan Payoff Term:</span>
+                                <span class="result-value" id="loanTermResultFP">-- Years, -- Months</span>
+                             </div>
+                        </div>
+                        <p class="result-description" id="resultDescriptionFP">Calculate to see the details.</p>
+                        <div class="result-item">
+                            <span class="result-label"><span id="totalPaymentsLabelFP">Total of 0 Payments</span></span>
+                            <span class="result-value" id="totalPaymentsResultFP">$0.00</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Total Interest</span>
+                            <span class="result-value" id="totalInterestResultFP">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-container">
+                        <h3 class="breakdown-title">Loan Breakdown</h3>
+                         <div class="breakdown-percentages">
+                            <div class="breakdown-item breakdown-principal">
+                                <span class="breakdown-value" id="principalPercentFP">--%</span>
+                                <span class="breakdown-label"><span class="color-swatch principal-swatch"></span>Principal</span>
+                            </div>
+                            <div class="breakdown-item breakdown-interest">
+                                <span class="breakdown-value" id="interestPercentFP">--%</span>
+                                 <span class="breakdown-label"><span class="color-swatch interest-swatch"></span>Interest</span>
+                            </div>
+                         </div>
+                    </div>
+                 </div>
+
+
+                 <!-- Amortization Section (Common to both modes) -->
+                 <div class="amortization-section">
+                     <div class="amortization-header">
+                         <h3 class="amortization-title">Amortization Schedule</h3>
+                        <div class="schedule-controls">
+                            <button id="annualBtn" class="active">Annual</button>
+                            <button id="monthlyBtn">Monthly</button>
+                        </div>
+                    </div>
+                     <div class="amortization-table-container">
+                         <table class="amortization-table" id="amortizationTable">
+                             <thead>
+                                 <tr id="amortizationTableHeader">
+                                     <th>Year</th>
+                                     <th>Interest</th>
+                                     <th>Principal</th>
+                                     <th>Ending Balance</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr><td colspan="5">Calculate to see the schedule.</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+
+            </section>
+        </main>
+
+         <section class="info-section">
+            <!-- Paste the informational text from the example here -->
+            <h3>Related</h3>
+            <div class="related-links">
+                 <a href="#">Loan Calculator</a> |
+                 <a href="#">Auto Loan Calculator</a>
+            </div>
+
+            <h3>Fixed Term</h3>
+            <p>Mortgages, auto, and many other loans tend to use the time limit approach to the repayment of loans. For mortgages, in particular, choosing to have routine monthly payments between 30 years or 15 years or other terms can be a very important decision because how long a debt obligation lasts can affect a person's long-term financial goals...</p>
+             <p>The Payment Calculator can help sort out the fine details of such considerations. It can also be used when deciding between financing options for a car... Car buyers should experiment with the variables to see which term is best accommodated by their budget and situation. For additional information about or to do calculations involving mortgages or auto loans, please visit the Mortgage Calculator or Auto Loan Calculator.</p>
+
+            <h3>Fixed Monthly Payment Amount</h3>
+            <p>This method helps determine the time required to pay off a loan and is often used to find how fast the debt on a credit card can be repaid. This calculator can also estimate how early a person who has some extra money at the end of each month can pay off their loan. Simply add the extra into the "Monthly Pay" section of the calculator.</p>
+            <p>It is possible that a calculation may result in a certain monthly payment that is not enough to repay the principal and interest on a loan... If so, simply adjust one of the three inputs until a viable result is calculated. Either "Loan Amount" needs to be lower, "Monthly Pay" needs to be higher, or "Interest Rate" needs to be lower.</p>
+
+            <h3>Interest Rate (APR)</h3>
+            <p>When using a figure for this input, it is important to make the distinction between interest rate and annual percentage rate (APR)... By definition, the interest rate is simply the cost of borrowing the principal loan amount. On the other hand, APR is a broader measure of the cost of a loan... If there are no fees associated with a loan, then the interest rate equals the APR...</p>
+
+            <h3>Variable vs. Fixed</h3>
+            <p>When it comes to loans, there are generally two available interest options to choose from: variable (sometimes called adjustable or floating) or fixed. The majority of loans have fixed interest rates... Examples of variable loans include adjustable-rate mortgages, home equity lines of credit (HELOC), and some personal and student loans...</p>
+            <p>In variable rate loans, the interest rate may change based on indices such as inflation or the central bank rate... Because rates of variable loans vary over time, fluctuations in rates will alter routine payment amounts...</p>
+            <p>Credit card rates can be fixed or variable... It is possible for borrowers with excellent credit to request more favorable rates on their variable loans or credit cards...</p>
+            <!-- End of informational text -->
+         </section>
+
+        <footer>
+            <p>© <span id="currentYear"></span> Your Website Name. All Rights Reserved.</p>
+            <!-- Replace "Your Website Name" -->
+        </footer>
+    </div>
+
+    <script>
+        // === JavaScript Logic Start ===
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Get DOM Elements ---
+            const tabs = document.querySelectorAll('.tab-button');
+            const modeContentsInputs = document.querySelectorAll('.mode-inputs');
+            const modeContentsResults = document.querySelectorAll('.mode-results');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const errorMessageDiv = document.getElementById('error-message');
+            const annualBtn = document.getElementById('annualBtn');
+            const monthlyBtn = document.getElementById('monthlyBtn');
+            const amortizationTableBody = document.querySelector('#amortizationTable tbody');
+            const amortizationTableHeader = document.getElementById('amortizationTableHeader');
+
+            // Fixed Term Elements
+            const loanAmountFTInput = document.getElementById('loanAmountFT');
+            const loanTermFTInput = document.getElementById('loanTermFT');
+            const interestRateFTInput = document.getElementById('interestRateFT');
+            const monthlyPaymentResultFT = document.getElementById('monthlyPaymentResultFT');
+            const totalPaymentsLabelFT = document.getElementById('totalPaymentsLabelFT');
+            const totalPaymentsResultFT = document.getElementById('totalPaymentsResultFT');
+            const totalInterestResultFT = document.getElementById('totalInterestResultFT');
+            const principalPercentFT = document.getElementById('principalPercentFT');
+            const interestPercentFT = document.getElementById('interestPercentFT');
+            const resultDescriptionFT = document.getElementById('resultDescriptionFT');
+
+            // Fixed Payments Elements
+            const loanAmountFPInput = document.getElementById('loanAmountFP');
+            const monthlyPaymentFPInput = document.getElementById('monthlyPaymentFP');
+            const interestRateFPInput = document.getElementById('interestRateFP');
+            const loanTermResultFP = document.getElementById('loanTermResultFP');
+            const totalPaymentsLabelFP = document.getElementById('totalPaymentsLabelFP');
+            const totalPaymentsResultFP = document.getElementById('totalPaymentsResultFP');
+            const totalInterestResultFP = document.getElementById('totalInterestResultFP');
+            const principalPercentFP = document.getElementById('principalPercentFP');
+            const interestPercentFP = document.getElementById('interestPercentFP');
+            const resultDescriptionFP = document.getElementById('resultDescriptionFP');
+
+
+            // Footer Year
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+
+            // --- State ---
+            let currentMode = 'fixedTerm';
+            let currentScheduleView = 'annual';
+            let lastCalculationData = null;
+
+            // --- Event Listeners ---
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => switchMode(tab.dataset.mode));
+            });
+
+            calculateBtn.addEventListener('click', handleCalculation);
+
+            annualBtn.addEventListener('click', () => switchScheduleView('annual'));
+            monthlyBtn.addEventListener('click', () => switchScheduleView('monthly'));
+
+            const allInputs = document.querySelectorAll('.input-section input');
+             allInputs.forEach(input => {
+                input.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        handleCalculation();
+                    }
+                });
+             });
+
+            // --- Mode Switching ---
+            function switchMode(newMode) {
+                if (newMode === currentMode) return;
+                currentMode = newMode;
+
+                tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === newMode));
+
+                modeContentsInputs.forEach(content => content.classList.toggle('hidden', content.id !== `${newMode}Inputs`));
+                modeContentsResults.forEach(content => content.classList.toggle('hidden', content.id !== `${newMode}Results`));
+
+                clearError();
+                clearResults();
+                lastCalculationData = null;
+            }
+
+            // --- Schedule View Switching ---
+            function switchScheduleView(newView) {
+                if (newView === currentScheduleView || !lastCalculationData) return;
+                currentScheduleView = newView;
+
+                annualBtn.classList.toggle('active', newView === 'annual');
+                monthlyBtn.classList.toggle('active', newView === 'monthly');
+
+                generateAmortizationSchedule(
+                    lastCalculationData.principal,
+                    lastCalculationData.annualRate,
+                    lastCalculationData.termMonths,
+                    lastCalculationData.monthlyPayment,
+                    currentScheduleView
+                );
+            }
+
+            // --- Calculation Handling ---
+            function handleCalculation() {
+                clearError();
+                lastCalculationData = null;
+
+                if (currentMode === 'fixedTerm') {
+                    calculateFixedTerm();
+                } else {
+                    calculateFixedPayment();
+                }
+            }
+
+            // --- Fixed Term Calculation ---
+            function calculateFixedTerm() {
+                const principal = parseFloat(loanAmountFTInput.value) || 0;
+                const termYears = parseFloat(loanTermFTInput.value) || 0;
+                const annualRate = parseFloat(interestRateFTInput.value) || 0;
+
+                if (principal <= 0) return showError('Please enter a valid Loan Amount.');
+                if (termYears <= 0) return showError('Please enter a valid Loan Term in years.');
+                if (annualRate < 0) return showError('Interest Rate cannot be negative.');
+
+                const termMonths = Math.round(termYears * 12);
+                let monthlyPayment = 0, totalPayments = 0, totalInterest = 0;
+
+                if (termMonths === 0) {
+                     showError('Loan term results in 0 months.');
+                     clearResults('fixedTerm'); return;
+                 }
+
+                if (annualRate === 0) {
+                    monthlyPayment = principal / termMonths;
+                    totalPayments = principal;
+                    totalInterest = 0;
+                } else {
+                    const monthlyRate = annualRate / 100 / 12;
+                    const n = termMonths;
+                    const factor = Math.pow(1 + monthlyRate, n);
+                    if (!isFinite(factor) || Math.abs(factor - 1) < 1e-9) {
+                        showError('Calculation error (term/rate).');
+                        clearResults('fixedTerm'); return;
+                    }
+                    monthlyPayment = (principal * monthlyRate * factor) / (factor - 1);
+                    totalPayments = monthlyPayment * termMonths;
+                    totalInterest = totalPayments - principal;
+                }
+
+                if (!isFinite(monthlyPayment)) {
+                    showError('Could not calculate payment.');
+                    clearResults('fixedTerm'); return;
+                }
+
+                 // Display Results
+                 monthlyPaymentResultFT.textContent = formatCurrency(monthlyPayment);
+                 totalPaymentsLabelFT.textContent = `Total of ${termMonths} Payments`;
+                 totalPaymentsResultFT.textContent = formatCurrency(totalPayments);
+                 totalInterestResultFT.textContent = formatCurrency(totalInterest);
+                 resultDescriptionFT.textContent = `You will need to pay ${formatCurrency(monthlyPayment)} every month for ${termYears} years (${termMonths} months) to pay off the debt.`;
+
+                 const totalPaid = principal + totalInterest;
+                 const principalPerc = totalPaid > 0 ? Math.round((principal / totalPaid) * 100) : 0;
+                 const interestPerc = totalPaid > 0 ? Math.round((totalInterest / totalPaid) * 100) : 0;
+                 principalPercentFT.textContent = `${principalPerc}%`;
+                 interestPercentFT.textContent = `${interestPerc}%`;
+
+                 lastCalculationData = { principal, annualRate, termMonths, monthlyPayment };
+                 generateAmortizationSchedule(principal, annualRate, termMonths, monthlyPayment, currentScheduleView);
+            }
+
+             // --- Fixed Payments Calculation ---
+            function calculateFixedPayment() {
+                const principal = parseFloat(loanAmountFPInput.value) || 0;
+                const monthlyPayment = parseFloat(monthlyPaymentFPInput.value) || 0;
+                const annualRate = parseFloat(interestRateFPInput.value) || 0;
+
+                if (principal <= 0) return showError('Please enter a valid Loan Amount.');
+                if (monthlyPayment <= 0) return showError('Please enter a valid Monthly Payment.');
+                if (annualRate < 0) return showError('Interest Rate cannot be negative.');
+
+                let termMonths = 0, totalPayments = 0, totalInterest = 0, termFormatted = "-- Years, -- Months";
+
+                if (annualRate === 0) {
+                    if (monthlyPayment <= 0) { showError("Payment must be positive for 0% interest."); clearResults('fixedPayments'); return; }
+                    termMonths = Math.ceil(principal / monthlyPayment);
+                    totalPayments = principal; totalInterest = 0;
+                    termFormatted = formatYearsMonths(termMonths);
+                } else {
+                    const monthlyRate = annualRate / 100 / 12;
+                    if (monthlyPayment <= principal * monthlyRate) { showError('Monthly payment is too low to cover interest.'); clearResults('fixedPayments'); return; }
+
+                    const numerator = Math.log(1 - (principal * monthlyRate) / monthlyPayment);
+                    const denominator = Math.log(1 + monthlyRate);
+                    if (!isFinite(numerator) || !isFinite(denominator) || denominator === 0) { showError("Calculation error."); clearResults('fixedPayments'); return; }
+
+                    termMonths = Math.ceil(-numerator / denominator);
+                    totalPayments = monthlyPayment * termMonths;
+                    totalInterest = totalPayments - principal; // Simplified total interest
+                    termFormatted = formatYearsMonths(termMonths);
+                }
+
+                if (!isFinite(termMonths) || termMonths <= 0) { showError('Could not calculate term.'); clearResults('fixedPayments'); return; }
+
+                // Display Results
+                loanTermResultFP.textContent = termFormatted;
+                totalPaymentsLabelFP.textContent = `Total of ${termMonths} Payments`;
+                totalPaymentsResultFP.textContent = formatCurrency(totalPayments);
+                totalInterestResultFP.textContent = formatCurrency(totalInterest);
+                resultDescriptionFP.textContent = `It will take approximately ${termFormatted} to pay off the loan with a monthly payment of ${formatCurrency(monthlyPayment)}.`;
+
+                const totalPaid = principal + totalInterest;
+                const principalPerc = totalPaid > 0 ? Math.round((principal / totalPaid) * 100) : 0;
+                const interestPerc = totalPaid > 0 ? Math.round((totalInterest / totalPaid) * 100) : 0;
+                principalPercentFP.textContent = `${principalPerc}%`;
+                interestPercentFP.textContent = `${interestPerc}%`;
+
+                lastCalculationData = { principal, annualRate, termMonths, monthlyPayment };
+                generateAmortizationSchedule(principal, annualRate, termMonths, monthlyPayment, currentScheduleView);
+            }
+
+            // --- Amortization Schedule Generation ---
+            function generateAmortizationSchedule(principal, annualRate, termMonths, monthlyPayment, viewType) {
+                 amortizationTableBody.innerHTML = '';
+                 updateAmortizationHeader(viewType); // Set header first
+
+                 if (principal <= 0 || termMonths <= 0 || !isFinite(monthlyPayment) || monthlyPayment <= 0 || !lastCalculationData) {
+                    amortizationTableBody.innerHTML = `<tr><td colspan="${viewType === 'monthly' ? 5 : 4}">No data to display schedule.</td></tr>`;
+                    return;
+                 }
+
+                 let balance = principal;
+                 const monthlyRate = annualRate / 100 / 12;
+                 let yearlyInterest = 0, yearlyPrincipal = 0;
+
+                 for (let month = 1; month <= termMonths; month++) {
+                     const interestForMonth = (annualRate === 0) ? 0 : balance * monthlyRate;
+                     let principalForMonth = monthlyPayment - interestForMonth;
+                     let actualPayment = monthlyPayment; // Store payment used for this month
+
+                    // Adjust last payment precisely
+                    if (month === termMonths || balance + interestForMonth <= monthlyPayment) {
+                         actualPayment = balance + interestForMonth;
+                         principalForMonth = balance;
+                         balance = 0;
+                     } else {
+                         balance -= principalForMonth;
+                     }
+                     if (balance < 0) balance = 0; // Prevent negative balance
+
+                     yearlyInterest += interestForMonth;
+                     yearlyPrincipal += principalForMonth;
+
+                     if (viewType === 'monthly') {
+                         const row = document.createElement('tr');
+                         row.innerHTML = `
+                             <td>${month}</td>
+                             <td>${formatCurrency(actualPayment)}</td>
+                             <td>${formatCurrency(interestForMonth)}</td>
+                             <td>${formatCurrency(principalForMonth)}</td>
+                             <td>${formatCurrency(balance)}</td>
+                         `;
+                         amortizationTableBody.appendChild(row);
+                     } else if (month % 12 === 0 || month === termMonths) { // Annual aggregation
+                         const year = Math.ceil(month / 12);
+                         const row = document.createElement('tr');
+                         row.innerHTML = `
+                             <td>${year}</td>
+                             <td>${formatCurrency(yearlyInterest)}</td>
+                             <td>${formatCurrency(yearlyPrincipal)}</td>
+                             <td>${formatCurrency(balance)}</td>
+                         `;
+                         amortizationTableBody.appendChild(row);
+                         yearlyInterest = 0; yearlyPrincipal = 0; // Reset for next year
+                     }
+                 }
+                 if (amortizationTableBody.children.length === 0) {
+                     amortizationTableBody.innerHTML = `<tr><td colspan="${viewType === 'monthly' ? 5 : 4}">No schedule generated.</td></tr>`;
+                 }
+            }
+
+            // --- Update Amortization Header ---
+            function updateAmortizationHeader(viewType) {
+                 const columns = viewType === 'monthly'
+                    ? ['Month', 'Payment', 'Interest', 'Principal', 'Balance']
+                    : ['Year', 'Interest', 'Principal', 'Ending Balance'];
+                amortizationTableHeader.innerHTML = columns.map(col => `<th>${col}</th>`).join('');
+            }
+
+
+            // --- Helper Functions ---
+            function showError(message) { errorMessageDiv.textContent = message; errorMessageDiv.style.display = 'block'; }
+            function clearError() { errorMessageDiv.textContent = ''; errorMessageDiv.style.display = 'none'; }
+            function clearResults(mode = null) {
+                 const fieldsToClear = [
+                    monthlyPaymentResultFT, totalPaymentsResultFT, totalInterestResultFT,
+                    principalPercentFT, interestPercentFT, loanTermResultFP,
+                    totalPaymentsResultFP, totalInterestResultFP, principalPercentFP, interestPercentFP
+                 ];
+                 fieldsToClear.forEach(el => {
+                     if(el) el.textContent = el.id.includes('Percent') ? '--%' : (el.id.includes('TermResult') ? '-- Years, -- Months' : '$0.00');
+                 });
+                 if(resultDescriptionFT) resultDescriptionFT.textContent = 'Calculate to see the details.';
+                 if(resultDescriptionFP) resultDescriptionFP.textContent = 'Calculate to see the details.';
+                 amortizationTableBody.innerHTML = `<tr><td colspan="${currentScheduleView === 'monthly' ? 5 : 4}">Calculate to see the schedule.</td></tr>`;
+             }
+             function formatCurrency(value) {
+                 if (typeof value !== 'number' || !isFinite(value)) { return '$ --'; }
+                 return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+             }
+             function formatYearsMonths(totalMonths) {
+                 if (!isFinite(totalMonths) || totalMonths <= 0) return "-- Years, -- Months";
+                 const years = Math.floor(totalMonths / 12);
+                 const months = totalMonths % 12;
+                 return `${years} Year${years !== 1 ? 's' : ''}, ${months} Month${months !== 1 ? 's' : ''}`;
+             }
+
+            // --- Initial Setup ---
+            switchMode('fixedTerm');
+            clearError();
+            clearResults();
+            updateAmortizationHeader(currentScheduleView); // Set initial header
+
+            // Set default values visually (optional, but good UX)
+             if (loanAmountFTInput.value === "200000" && loanTermFTInput.value === "15" && interestRateFTInput.value === "6") {
+                 handleCalculation(); // Calculate with defaults if they match example
+             }
+
+        });
+        // === JavaScript Logic End ===
+    </script>
+
+</body>
+</html>

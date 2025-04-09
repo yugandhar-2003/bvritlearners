@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Basics Quiz</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern Quiz Styles -->
+    <link rel="stylesheet" href="../../modern-quiz-styles.css">
+    <!-- Custom Styles (if needed) -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../../html interface/index.html" class="back-button" style="position: absolute; top: 20px; left: 20px; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+        <i class="fas fa-arrow-left"></i> Back to Quizzes
+    </a>
+
+    <div class="container">
+        <h1>HTML Basics Quiz</h1>
+        <p id="progress">Question <span id="current-question">1</span> of 40</p>
+        <div id="question-container">
+            <p id="question"></p>
+            <ul id="choices"></ul>
+        </div>
+        <button id="next-btn"><i class="fas fa-arrow-right"></i> Next Question</button>
+        <p id="result"></p>
+        <div id="score-container">
+            <h2>Scores:</h2>
+            <ul id="scores-list"></ul>
+        </div>
+        <button id="reattempt-btn" style="display: none;"><i class="fas fa-redo"></i> Reattempt</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

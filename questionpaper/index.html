@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Papers - BVRIT</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Dark Theme Variables */
+        :root {
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-surface-2: #2d2d2d;
+            --dark-border: #333333; /* Slightly lighter border */
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --primary-color: #4dabf7; /* Adjusted to match main page */
+            --primary-dark: #1e88e5;
+            --primary-light: #8ccfff;
+            --accent-color: #ab47bc; /* Adjusted to match main page */
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.4);
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 50px; /* Space at bottom */
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 0 30px; /* Adjusted padding */
+        }
+
+        .header h1 {
+            color: var(--text-primary); /* White title */
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        .header h1::after {
+             content: '';
+             position: absolute;
+             bottom: 0;
+             left: 50%;
+             transform: translateX(-50%);
+             width: 70px;
+             height: 3px;
+             background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+             border-radius: 2px;
+         }
+
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background-color: var(--dark-surface);
+            padding: 25px; /* Increased padding */
+            border-radius: 10px;
+            margin-bottom: 40px; /* Increased margin */
+            box-shadow: var(--shadow);
+            border: 1px solid var(--dark-border);
+        }
+
+        .filter-title {
+            color: var(--text-primary);
+            margin-bottom: 20px; /* Increased margin */
+            font-size: 1.3rem; /* Slightly larger */
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filter-title i {
+            color: var(--primary-color);
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px; /* Slightly increased gap */
+        }
+
+        .filter-button {
+            background-color: var(--dark-surface-2);
+            color: var(--text-secondary);
+            border: 1px solid var(--dark-border);
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-button:hover {
+            background-color: rgba(77, 171, 247, 0.15); /* Use primary color rgba */
+            color: var(--primary-light); /* Lighter blue text */
+            transform: translateY(-2px);
+            border-color: rgba(77, 171, 247, 0.3);
+        }
+
+        .filter-button.active {
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 5px rgba(77, 171, 247, 0.2);
+            transform: translateY(-1px); /* Slight lift when active */
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px; /* Increased gap */
+        }
+
+        /* Card */
+        .card {
+            background-color: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            display: flex; /* Ensure consistent height handling */
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-body {
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1; /* Allow body to grow */
+            display: flex; /* Center content vertically too */
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Card title - applies to h3 and h6 */
+        .card-title {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin-bottom: 15px; /* Increased margin */
+            font-weight: 600;
+        }
+
+        .card a {
+            color: var(--primary-light); /* Lighter link color */
+            text-decoration: none;
+            transition: color var(--transition);
+            font-weight: 500; /* Slightly bolder link text */
+            display: flex; /* Align icon and text */
+            align-items: center;
+            justify-content: center; /* Center link content */
+            gap: 8px;
+        }
+
+        .card a:hover {
+            color: #ffffff; /* White on hover */
+        }
+        .card a:hover .card-title { /* Make title white on link hover */
+            color: #ffffff;
+        }
+
+         /* Style the link wrapper */
+        .card-link-wrapper {
+            display: block; /* Make the whole area clickable */
+            text-decoration: none;
+            color: inherit; /* Inherit text color */
+        }
+        .card-link-wrapper:hover .card-title {
+             color: var(--primary-color); /* Change title color on hover */
+        }
+        .card-link-wrapper:hover .view-papers-text {
+             color: var(--primary-color);
+        }
+
+
+        /* Year Section */
+        .year-section {
+            margin-bottom: 50px; /* Increased spacing */
+        }
+
+        .year-title {
+            color: var(--primary-light); /* Brighter year title */
+            font-size: 1.5rem; /* Larger year title */
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--dark-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .year-title i {
+             color: var(--primary-light);
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex; /* Use inline-flex */
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            background-color: var(--dark-surface);
+            border: 1px solid var(--dark-border);
+            border-radius: 5px;
+            transition: all var(--transition);
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .back-button:hover {
+            color: var(--primary-light);
+            background-color: var(--dark-surface-2);
+            transform: translateX(-3px);
+             border-color: var(--primary-color);
+             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjust minmax */
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .year-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+             .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 15px;
+            }
+             .filter-buttons {
+                gap: 8px;
+            }
+            .filter-button {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .header {
+                padding-top: 70px; /* More space below back button */
+            }
+            .back-button {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cards-grid {
+                grid-template-columns: 1fr; /* Single column */
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+                align-items: stretch; /* Make buttons full width */
+            }
+
+            .filter-button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+             .year-title {
+                font-size: 1.2rem;
+            }
+             .back-button {
+                top: 15px;
+                left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../index.html" class="back-button"> <!-- Make sure this path is correct -->
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>Question Papers</h1>
+    </header>
+
+    <div class="container">
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h2 class="filter-title">
+                <i class="fas fa-filter"></i> Filter by Year
+            </h2>
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-button active" data-target="all">Show All</button>
+                <button class="filter-button" data-target="2018">2018</button>
+                <button class="filter-button" data-target="2019">2019</button>
+                <button class="filter-button" data-target="2020">2020</button>
+                <button class="filter-button" data-target="2021">2021</button>
+                <button class="filter-button" data-target="2022">2022</button>
+                <button class="filter-button" data-target="2023">2023</button>
+                <button class="filter-button" data-target="2024">2024</button>
+            </div>
+        </div>
+
+        <!-- 2018 Papers -->
+        <div class="year-section" id="2018">
+            <h2 class="year-title">
+                <i class="fas fa-calendar-alt"></i> 2018 Papers
+            </h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1guvkGDDPbXzHtEJvL-2SGRVWoi4kXu5x" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-1 (2018)</h3>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1AiTgi_WikGhchcZrYPbwr6-FP4yHrdzV" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-2 (2018)</h3>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                     </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1W3E85Qhby011AX39CP1ADMyh27wekiEk" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-3 (2018)</h3>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                     </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1zHj8BAzITPXuN8H9SwiNfddTuaJuvo15" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-4 (2018)</h3>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2019 Papers -->
+        <div class="year-section" id="2019">
+            <h2 class="year-title">
+                <i class="fas fa-calendar-alt"></i> 2019 Papers
+            </h2>
+            <div class="cards-grid">
+                 <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-1 (2019)</h3>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-2 (2019)</h3>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-3 (2019)</h3>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-4 (2019)</h3>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2020 Papers -->
+        <div class="year-section" id="2020">
+            <h2 class="year-title">
+                <i class="fas fa-calendar-alt"></i> 2020 Papers
+            </h2>
+            <div class="cards-grid">
+                 <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-1 (2020)</h3>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-2 (2020)</h3>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-3 (2020)</h3>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1Yd-Yx-Jgvw-Gu-Vu-Vu-Vu-Vu-Vu-Vu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h3 class="card-title">B.Tech-4 (2020)</h3>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2021 Papers -->
+        <div class="year-section" id="2021">
+            <h2 class="year-title">
+                <i class="fas fa-calendar-alt"></i> 2021 Papers
+            </h2>
+            <div class="cards-grid">
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1339Cd4-3al882kuafvk6jI5VeZnJjEWr" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                           <h6 class="card-title">B.Tech-1 (2021)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1gSGs76n-FbqtEfNEpxPgnHsnVa2pbBNB" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                           <h6 class="card-title">B.Tech-2 (2021)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1MoBrNrhk97DAllU3_J7we0er7cJL5H9L" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-3 (2021)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/13pTkJj6ltEWWHTOMf2t16TuvLTFUn1F9" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-4 (2021)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1b8izUg1DjtJBGP2T3E6_wUcblaohI99N" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">M.Tech (2021)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/19IgOYfo_84G65SIjh6naS-RogzS8S084" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">MBA (2021)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2022 Papers -->
+        <div class="year-section" id="2022">
+            <h2 class="year-title">
+                <i class="fas fa-calendar-alt"></i> 2022 Papers
+            </h2>
+            <div class="cards-grid">
+                 <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1dNFoODaf5zA04xqTOVc1yny1EP5imnnk" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-1 (2022)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1qFibPWCLrpmZSHiwJPRXGkaag4qgqHym" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-2 (2022)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1zW-hDtZVQigatX0EREL2_s22v3wH_Pb6" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-3 (2022)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1ynOWB03yacK9m1U-3eip02Ph1oEs94VU" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-4 (2022)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1rW95isFZSwYBXPZzbcSSb5HySQXWUqv_" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">M.Tech (2022)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1W44RWcWbtnm6k2e3nMW6IZf_I2Q7GJyl" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">MBA (2022)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2023 Papers -->
+        <div class="year-section" id="2023">
+            <h2 class="year-title">
+                <i class="fas fa-calendar-alt"></i> 2023 Papers
+            </h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/164Iek7-M0lQGBdWXNwY0dpEilKdOuSJM" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-1 (2023)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1en-1upIW13VY2zRGfP1KqvYI8xDuxk3p" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-2 (2023)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/13yWZzsSufhU-T3FnxE8qCV6IFMEIHbzc" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-3 (2023)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/19KWJ17zmb7esqWdgGtWbqb50pv0dbXOu" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-4 (2023)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1LOOdbmAYjMmCWfVZfbpZrtCw9iqcMQu7" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                           <h6 class="card-title">M.Tech (2023)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/102w7ENE_OxDmZlpjm4D7V7081pgDwo5k" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">MBA (2023)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2024 Papers -->
+        <div class="year-section" id="2024">
+            <h2 class="year-title">
+                <i class="fas fa-calendar-alt"></i> 2024 Papers
+            </h2>
+            <div class="cards-grid">
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1fE4hw4KASBChn4Mi4ZpZQ4C9xO0iwqlI" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-1 (2024)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/15CJqOZNqujRuLIKeCMITaCvC95ywDQac" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                           <h6 class="card-title">B.Tech-2 (2024)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/1nhH6UFukiwXl160YctA7kczGdbQqB1Jh" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-3 (2024)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://drive.google.com/drive/folders/18-91Bwf-r5KnAhr_OFmP6wg3AIork7Xi" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">B.Tech-4 (2024)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1-5Hm6ATpIDIs2jOq0rWeiJq-zCupL-iA" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                            <h6 class="card-title">M.Tech (2024)</h6>
+                            <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="card">
+                     <a href="https://drive.google.com/drive/folders/1v4aPOyLwG6a3w-ZdIbe3xESp0a4tRsFN" target="_blank" class="card-link-wrapper">
+                        <div class="card-body">
+                             <h6 class="card-title">MBA (2024)</h6>
+                           <span class="view-papers-text"><i class="fas fa-external-link-alt"></i> View Papers</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- End 2024 Papers -->
+
+    </div> <!-- End Container -->
+
+    <script>
+        // Simple filtering script
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('#filterButtons .filter-button');
+            const yearSections = document.querySelectorAll('.year-section');
+
+            // Add click event to filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    // Get target value
+                    const target = this.getAttribute('data-target');
+
+                    // Show/hide sections based on target
+                    yearSections.forEach(section => {
+                        // Use requestAnimationFrame for smoother visual update
+                        requestAnimationFrame(() => {
+                            if (target === 'all' || section.id === target) {
+                                section.style.display = 'block';
+                            } else {
+                                section.style.display = 'none';
+                            }
+                        });
+                    });
+                });
+            });
+
+             // Smooth scroll to section if URL hash matches
+             if (window.location.hash) {
+                const targetId = window.location.hash.substring(1); // Remove #
+                const targetButton = document.querySelector(`.filter-button[data-target="${targetId}"]`);
+                if (targetButton) {
+                    // Deactivate default 'all' button and activate target button
+                    document.querySelector('.filter-button.active').classList.remove('active');
+                    targetButton.classList.add('active');
+                    // Trigger click to filter
+                    targetButton.click();
+                    // Optional: Smooth scroll to the section
+                    const targetElement = document.getElementById(targetId);
+                     if (targetElement) {
+                        // Adjust for fixed header/filter height if necessary
+                         const offsetTop = targetElement.offsetTop - 150; // Example offset
+                         window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                     }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

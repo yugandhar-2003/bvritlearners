@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React.js for Beginners - BVRIT Learning Platform</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="modern-course-styles.css">
+
+    <!-- Critical styles to ensure navigation is always visible -->
+    <style>
+        /* Force navbar menu to always be visible */
+        .navbar-menu,
+        #navbarMenu,
+        .navbar-modern .navbar-menu,
+        nav.navbar-modern .navbar-menu,
+        .navbar-container .navbar-menu,
+        div#navbarMenu {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            margin: 0 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Spacer removed since header is no longer present */
+
+        /* Resource button styles */
+        .resource-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, var(--accent-600) 0%, var(--accent-500) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(190, 75, 219, 0.3);
+        }
+
+        .resource-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(190, 75, 219, 0.4);
+        }
+
+        .resource-button i {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header removed as requested -->
+
+    <div class="container-modern">
+        <!-- Back Button -->
+        <a href="../tutorials/index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Tutorials
+        </a>
+
+        <!-- Course Header -->
+        <div class="course-header">
+            <h1 class="course-title">React.js for Beginners</h1>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button" data-tab="english">
+                <i class="fas fa-language"></i> English Tutorial
+            </button>
+            <button class="tab-button" data-tab="hindi">
+                <i class="fas fa-language"></i> Hindi Tutorial
+            </button>
+            <button class="tab-button" data-tab="telugu">
+                <i class="fas fa-language"></i> Telugu Tutorial
+            </button>
+        </div>
+
+        <!-- Tab Container -->
+        <div class="tab-container">
+            <!-- English Tab -->
+            <div class="tab-content" id="english-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/QFaFIcGhPoM?list=PLC3y8-rFHvwgg3vaYJgHGnModB54rxOk3" title="ReactJS Tutorial - 1 - Introduction" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Hindi Tab -->
+            <div class="tab-content" id="hindi-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/-mJFZp84TIY?list=PLu0W_9lII9agx66oZnT6IyhcMIbUMNMdt" title="Introduction to React Js + Installation | Complete React Course in Hindi #1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Telugu Tab -->
+            <div class="tab-content" id="telugu-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/rF5Yor08uGw?list=PLWnZ0qt0PImVaDkDbF96dnRGO0_lXVLKf" title="what is ReactJs in telugu - 1 - ReactJs in telugu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Button -->
+        <div style="text-align: center;">
+            <a href="https://drive.google.com/drive/folders/1WW4voJH5QxzCpNevrU5WwTe7L3uM9tT8?usp=sharing" class="resource-button">
+                <i class="fas fa-download"></i> Get Resources
+            </a>
+        </div>
+        <!-- Topics Section -->
+        <div class="topics-section">
+            <h2>React.js Tutorial Topics</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem;">
+                <!-- Basics Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-code" style="margin-right: 0.5rem;"></i> Basics
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Introduction to React</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                What is React?
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Setting up a React environment
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                JSX syntax and structure
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">State and Props</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Understanding state
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Props and passing data
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Managing state with hooks
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Hooks and Events</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                useState and useEffect
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                useContext
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Handling events in React
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Intermediate Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-laptop-code" style="margin-right: 0.5rem;"></i> Intermediate
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Component Lifecycle</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Understanding the lifecycle of a component
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Class components vs. functional components
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Using lifecycle methods
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Forms and Routing</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Controlled and uncontrolled components
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Setting up React Router
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Using Link and NavLink
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Context API</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Creating a context
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Provider and Consumer
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                useContext hook
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Advanced Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Advanced
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Advanced Hooks</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                useReducer
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                useMemo and useCallback
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Custom hooks
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">State Management</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Using Redux
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Redux Toolkit
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                React-Redux and MobX
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Performance and Testing</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Code splitting and lazy loading
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Jest and React Testing Library
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Unit and integration testing
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Course JavaScript -->
+    <script src="modern-course.js"></script>
+</body>
+</html>

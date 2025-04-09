@@ -1,0 +1,217 @@
+/* --- CSS Variables (Ensure these are at the top) --- */
+:root {
+    /* Dark Theme Colors */
+    --dark-bg: #121212;
+    --dark-surface: #1e1e1e; /* Card background */
+    --dark-surface-2: #2a2a2e;
+    --dark-border: #383838;
+    --text-light: #e0e0e0; /* Main light text */
+    --text-muted: #a0a0a0; /* Muted light text */
+
+    /* Accent Colors (Brighter for dark bg) */
+    --primary-color: #4dabf7; /* Brighter blue */
+    --primary-dark: #1e88e5; /* Still a strong blue */
+    --primary-light: #8ccfff;
+    --secondary-color: #ab47bc; /* Brighter purple */
+    --warning-color: #ffa726; /* Java orange */
+    --error-color: #e34f26; /* HTML5 orange/red */
+    --python-blue: #3776AB;
+    --python-yellow: #FFD43B;
+
+
+    /* Common Styles */
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+    --transition-fast: 0.2s ease-out;
+    --transition-normal: 0.3s ease-out;
+    --font-primary: 'Poppins', sans-serif;
+}
+
+/* --- Base Styles --- */
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    font-family: var(--font-primary);
+    padding-top: 30px;
+    padding-bottom: 50px;
+}
+
+.quiz-main-container {
+    max-width: 1140px; /* Limit container width */
+    padding: 30px 15px;
+    text-align: center;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--text-light);
+    position: relative;
+    display: inline-block; /* Allows underline to fit content */
+    padding-bottom: 10px;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px; /* Underline width */
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+    border-radius: 2px;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Quiz Card Styles --- */
+.quiz-card {
+    transition: transform var(--transition-normal);
+    /* h-100 class from Bootstrap handles height */
+}
+
+.quiz-card:hover {
+    transform: translateY(-8px); /* More noticeable lift */
+}
+
+.quiz-card-inner {
+    background-color: var(--dark-surface);
+    border-radius: var(--border-radius-lg);
+    padding: 30px 25px; /* Increased padding */
+    height: 100%; /* Fill the .quiz-card */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    text-align: center;
+    border: 1px solid var(--dark-border);
+    box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.quiz-card:hover .quiz-card-inner {
+    border-color: var(--primary-light); /* Highlight border on hover */
+    box-shadow: 0 8px 25px rgba(77, 171, 247, 0.15); /* Subtle blue glow */
+}
+
+/* --- Icon Styles --- */
+.quiz-icon {
+    font-size: 3.5rem; /* Larger icons */
+    margin-bottom: 20px;
+    line-height: 1;
+    /* Optional: Add background circle */
+    /* width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.05); */
+    /* border: 1px solid var(--dark-border); */
+}
+
+/* Specific Icon Colors (using Font Awesome classes) */
+.quiz-icon .fa-python { color: var(--python-yellow); }
+.quiz-icon .fa-java { color: var(--warning-color); } /* Using warning orange */
+.quiz-icon .fa-html5 { color: var(--error-color); }  /* Using error orange/red */
+.quiz-icon .fa-code { color: var(--text-muted); } /* Muted for generic C */
+/* Or use specific classes if you prefer */
+/* .python-icon i { color: var(--python-blue); } */
+
+
+/* --- Title Styles --- */
+.quiz-title {
+    font-family: var(--font-primary); /* Could use secondary if defined */
+    font-size: 1.4rem; /* Slightly larger title */
+    font-weight: 600;
+    margin-bottom: 25px; /* More space before button */
+    color: var(--text-light);
+}
+
+/* --- Button Styles (Adapted from main page) --- */
+.quiz-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Gradient Background */
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+    color: #ffffff !important; /* Ensure text is white and override link color */
+    padding: 12px 25px; /* Slightly larger padding */
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 0.9rem;
+    /* Transition */
+    transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+    /* Shadow */
+    box-shadow: 0 4px 10px rgba(77, 171, 247, 0.2);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none !important; /* No underline */
+    min-width: 150px; /* Ensure minimum width */
+    align-self: center; /* Center button if card height varies */
+}
+
+.quiz-button:hover {
+    /* Brighter gradient */
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+    color: #fff !important;
+    /* Enhanced lift and scale */
+    transform: translateY(-3px) scale(1.03);
+    /* Stronger shadow */
+    box-shadow: 0 7px 18px rgba(77, 171, 247, 0.35);
+    text-decoration: none !important;
+}
+
+.quiz-button:active {
+    /* Feedback on click */
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 4px 10px rgba(77, 171, 247, 0.3);
+    background: linear-gradient(45deg, var(--primary-dark), #1e88e5);
+}
+
+.quiz-button i {
+    margin-left: 8px;
+    transition: transform 0.2s ease;
+}
+
+.quiz-button:hover i {
+    transform: translateX(4px);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 767px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    .page-subtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+    .quiz-card-inner {
+        padding: 25px 20px;
+    }
+    .quiz-icon {
+        font-size: 3rem;
+    }
+    .quiz-title {
+        font-size: 1.25rem;
+    }
+    .quiz-button {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        min-width: 130px;
+    }
+}

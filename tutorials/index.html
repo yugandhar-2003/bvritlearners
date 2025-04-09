@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Tutorials - BVRIT Learning Platform</title>
+
+    <!-- Bootstrap CSS (keeping for compatibility) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+
+    <!-- Original CSS (for compatibility) -->
+    <link rel="stylesheet" href="index.css"> <!-- Make sure this path is correct -->
+
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="modern-styles.css"> <!-- Make sure this path is correct -->
+
+    <!-- Corrected Search Script -->
+    <script>
+        function searchTutorials() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            // Use the correct class name for modern tutorial cards
+            const tutorialCards = document.getElementsByClassName('tutorial-card-modern');
+            // Use the correct class name for category headings
+            const headings = document.getElementsByClassName('category-heading');
+
+            // Determine if headings should be shown or hidden
+            const showHeadings = !input; // Show headings only if input is empty
+
+            // Loop through headings and set their display style
+            for (let i = 0; i < headings.length; i++) {
+                headings[i].style.display = showHeadings ? 'block' : 'none';
+            }
+
+            // Loop through tutorial cards to filter them
+            for (let i = 0; i < tutorialCards.length; i++) {
+                const card = tutorialCards[i];
+                // Find the title element within the card using its specific class
+                const titleElement = card.querySelector('.card-title');
+
+                // Check if a title element exists within the card
+                if (titleElement) {
+                    const title = titleElement.innerText.toLowerCase();
+                    // Check if the title includes the search input
+                    if (title.includes(input)) {
+                        card.style.display = 'block'; // Show card if it matches
+                    } else {
+                        card.style.display = 'none';  // Hide card if it doesn't match
+                    }
+                } else {
+                    // Optionally hide cards that don't have a title element if needed
+                    card.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Back Button -->
+    <div class="container-modern" style="padding-top: 20px; text-align: left;">
+        <!-- Make sure this path is correct relative to your file structure -->
+        <a href="../index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Home
+        </a>
+    </div>
+
+    <!-- Search Section -->
+    <div class="container-modern">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search tutorials..." onkeyup="searchTutorials()">
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <section class="section-modern">
+        <div class="container-modern">
+            <h2 class="section-title">Video Tutorials</h2>
+
+            <!-- Programming Languages Section -->
+            <h3 class="category-heading">Programming Languages</h3>
+            <div class="tutorial-grid">
+                <!-- Python Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.1s;">
+                    <div class="card-image-container">
+                        <!-- Make sure image paths are correct -->
+                        <img class="card-image" src="python.png" alt="Python Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Python for Beginners</h3>
+                        <!-- Make sure link paths are correct -->
+                        <a href="..\videos\python.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- C Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.2s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="c.png" alt="C Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">C for Beginners</h3>
+                        <a href="..\videos\c.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Java Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.3s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="java.png" alt="Java Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Java for Beginners</h3>
+                        <a href="..\videos\java.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- C++ Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.4s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="c++.png" alt="C++ Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">C++ for Beginners</h3>
+                        <a href="..\videos\c++.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kotlin Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.5s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="kotlin.png" alt="Kotlin Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Kotlin for Beginners</h3>
+                        <a href="..\videos\Kotlin.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- R Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.6s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="r.png" alt="R Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">R for Beginners</h3>
+                        <a href="..\videos\r.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- DSA Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.7s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="dsa.png" alt="Data Structures Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Data Structures</h3>
+                        <a href="..\videos\ds.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div> <!-- End tutorial-grid for Programming Languages -->
+
+            <!-- FullStack Development Section -->
+            <h3 class="category-heading">FullStack Development</h3>
+            <div class="tutorial-grid">
+                <!-- HTML Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.1s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="html.png" alt="HTML Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">HTML for Beginners</h3>
+                        <a href="..\videos\html.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- CSS Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.2s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="css.png" alt="CSS Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">CSS for Beginners</h3>
+                        <a href="..\videos\css.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- JavaScript Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.3s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="js.png" alt="JavaScript Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">JavaScript for Beginners</h3>
+                        <a href="..\videos\jas.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- React Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.4s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="react.png" alt="React Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">ReactJs for Beginners</h3>
+                        <a href="..\videos\react.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- SQL Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.5s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="sql.png" alt="SQL Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">SQL for Beginners</h3>
+                        <a href="..\videos\sql.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Node.js Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.6s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="nodejs.png" alt="Node.js Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Node Js for Beginners</h3>
+                        <a href="..\videos\node.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div> <!-- End tutorial-grid for FullStack -->
+        </div> <!-- End container-modern for first two sections -->
+
+        <!-- Extra Tutorials Section -->
+        <div class="container-modern">
+            <h3 class="category-heading">Extra Tutorials</h3>
+            <div class="tutorial-grid">
+
+                <!-- Git Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.1s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="git.png" alt="Git Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Git</h3>
+                        <a href="..\videos\git.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Figma Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.2s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="figma.png" alt="Figma Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Figma</h3>
+                        <a href="..\videos\figma.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- PowerBI Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.3s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="power.png" alt="PowerBI Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">PowerBi</h3>
+                        <a href="..\videos\power.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- DevOps Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.4s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="devops.png" alt="DevOps Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">DevOps</h3>
+                        <a href="..\videos\devops.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- MySQL Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.5s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="mysql.png" alt="MySQL Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">MySQL</h3>
+                        <a href="..\videos\my.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- MongoDB Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.6s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="mongo.png" alt="MongoDB Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">MongoDB</h3>
+                        <a href="..\videos\mongo.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- GenAI Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.7s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="Genai.png" alt="Generative AI Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Generative AI</h3>
+                        <a href="..\videos\gen.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Docker Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.8s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="docker.png" alt="Docker Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Docker</h3>
+                        <a href="..\videos\docker.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kubernetes Tutorial Card -->
+                <div class="tutorial-card-modern fade-in" style="animation-delay: 0.9s;">
+                    <div class="card-image-container">
+                        <img class="card-image" src="kubernetes.png" alt="Kubernetes Course Image">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Kubernetes</h3>
+                        <a href="..\videos\kubernetes.html" class="explore-button">
+                            <span>EXPLORE</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="explore-button-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div> <!-- End tutorial-grid for Extra Tutorials -->
+        </div> <!-- End container-modern for Extra Tutorials -->
+    </section>
+
+    <!-- Animation Script (Basic Fade-in) -->
+    <script>
+        // This script is very basic. You might want to enhance it with GSAP later.
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select all cards with the modern class
+            const cards = document.querySelectorAll('.tutorial-card-modern');
+
+            // Add fade-in class for simple animation on load
+            // The actual animation is defined in your CSS (e.g., modern-styles.css)
+            // under the .fade-in selector.
+            cards.forEach(card => {
+                // Check if the fade-in class is already present from the HTML style attribute
+                if (!card.classList.contains('fade-in')) {
+                     card.classList.add('fade-in');
+                }
+            });
+
+            // Example using GSAP for scroll-triggered animations (more advanced)
+            // Uncomment and adapt if you want GSAP animations
+            /*
+            gsap.registerPlugin(ScrollTrigger);
+            cards.forEach((card, index) => {
+                gsap.from(card, {
+                    opacity: 0,
+                    y: 50,
+                    duration: 0.6,
+                    delay: (index % 3) * 0.1, // Stagger animation based on grid column
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 90%", // Start animation when card is 90% in view
+                        toggleActions: "play none none none", // Play animation once
+                        // markers: true // Uncomment for debugging scroll trigger points
+                    }
+                });
+            });
+            */
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #9f4494;
+            --secondary: #f8f9fa;
+            --text: #2d3436;
+            --border-radius: 8px;
+            --success: #00b894;
+            --error: #d63031;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0d0d0e;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .calculator-header {
+            background-color:grey;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .calculator-title {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .calculator-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .calculator-tabs {
+            display: flex;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab.active {
+            background-color: white;
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .tab:not(.active):hover {
+            background-color: #eee;
+        }
+
+        .calculator-body {
+            padding: 20px;
+        }
+
+        .calculator-section {
+            display: none;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+        }
+
+        .input-field.error {
+            border-color: var(--error);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .input-hint {
+            color: #666;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .calculate-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .calculate-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .result-container {
+            background-color: var(--secondary);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .result-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .result-explanation {
+            font-size: 15px;
+            color: #666;
+            margin-top: 10px;
+            text-align: left;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .calculator-tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .tab.active {
+                border-bottom: 3px solid var(--primary);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="calculator-header">
+            <h1 class="calculator-title">Percentage Calculator</h1>
+            <p class="calculator-subtitle">Calculate percentages easily with multiple options</p>
+        </div>
+
+        <div class="calculator-tabs">
+            <div class="tab active" data-tab="percentage-of">Percentage of Value</div>
+            <div class="tab" data-tab="percentage-change">Percentage Change</div>
+            <div class="tab" data-tab="percentage-calculator">Percentage Calculator</div>
+        </div>
+
+        <div class="calculator-body">
+            <!-- Percentage of Value Section -->
+            <div class="calculator-section active" id="percentage-of">
+                <div class="input-group">
+                    <label class="input-label">What is</label>
+                    <input type="number" id="percentage-value" class="input-field" placeholder="e.g. 25">
+                    <div id="percentage-value-error" class="error-message">Please enter a valid number</div>
+                    <div class="input-hint">Enter percentage</div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">of</label>
+                    <input type="number" id="total-value" class="input-field" placeholder="e.g. 80">
+                    <div id="total-value-error" class="error-message">Please enter a valid number</div>
+                    <div class="input-hint">Enter the total value</div>
+                </div>
+
+                <div class="button-container">
+                    <button id="calculate-percentage-of" class="calculate-btn">Calculate</button>
+                </div>
+
+                <div class="result-container">
+                    <div class="result-title">Result</div>
+                    <div id="percentage-of-result" class="result-value">0</div>
+                    <div id="percentage-of-explanation" class="result-explanation">
+                        Enter values above to calculate a percentage of a number.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Percentage Change Section -->
+            <div class="calculator-section" id="percentage-change">
+                <div class="input-group">
+                    <label class="input-label">Original Value</label>
+                    <input type="number" id="original-value" class="input-field" placeholder="e.g. 100">
+                    <div id="original-value-error" class="error-message">Please enter a valid number</div>
+                    <div class="input-hint">Enter the starting value</div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">New Value</label>
+                    <input type="number" id="new-value" class="input-field" placeholder="e.g. 125">
+                    <div id="new-value-error" class="error-message">Please enter a valid number</div>
+                    <div class="input-hint">Enter the final value</div>
+                </div>
+
+                <div class="button-container">
+                    <button id="calculate-percentage-change" class="calculate-btn">Calculate</button>
+                </div>
+
+                <div class="result-container">
+                    <div class="result-title">Percentage Change</div>
+                    <div id="percentage-change-result" class="result-value">0%</div>
+                    <div id="percentage-change-explanation" class="result-explanation">
+                        Enter values above to calculate percentage change.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Percentage Calculator Section -->
+            <div class="calculator-section" id="percentage-calculator">
+                <div class="input-group">
+                    <label class="input-label">Value</label>
+                    <input type="number" id="calc-value" class="input-field" placeholder="e.g. 20">
+                    <div id="calc-value-error" class="error-message">Please enter a valid number</div>
+                    <div class="input-hint">Enter the value</div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Total</label>
+                    <input type="number" id="calc-total" class="input-field" placeholder="e.g. 80">
+                    <div id="calc-total-error" class="error-message">Please enter a valid number</div>
+                    <div class="input-hint">Enter the total</div>
+                </div>
+
+                <div class="button-container">
+                    <button id="calculate-percentage" class="calculate-btn">Calculate</button>
+                </div>
+
+                <div class="result-container">
+                    <div class="result-title">Result</div>
+                    <div id="percentage-result" class="result-value">0%</div>
+                    <div id="percentage-explanation" class="result-explanation">
+                        Enter values above to calculate what percentage one value is of another.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabs = document.querySelectorAll('.tab');
+            const sections = document.querySelectorAll('.calculator-section');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and sections
+                    tabs.forEach(t => t.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding section
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Functionality for "Percentage of Value" calculator
+            const calculatePercentageOfBtn = document.getElementById('calculate-percentage-of');
+            calculatePercentageOfBtn.addEventListener('click', calculatePercentageOf);
+
+            // Functionality for "Percentage Change" calculator
+            const calculatePercentageChangeBtn = document.getElementById('calculate-percentage-change');
+            calculatePercentageChangeBtn.addEventListener('click', calculatePercentageChange);
+
+            // Functionality for "Percentage Calculator" calculator
+            const calculatePercentageBtn = document.getElementById('calculate-percentage');
+            calculatePercentageBtn.addEventListener('click', calculatePercentage);
+
+            // Calculate on Enter key press
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const activeSection = document.querySelector('.calculator-section.active');
+                    if (activeSection.id === 'percentage-of') {
+                        calculatePercentageOf();
+                    } else if (activeSection.id === 'percentage-change') {
+                        calculatePercentageChange();
+                    } else if (activeSection.id === 'percentage-calculator') {
+                        calculatePercentage();
+                    }
+                }
+            });
+
+            // Function to calculate percentage of a value
+            function calculatePercentageOf() {
+                resetErrors();
+                
+                const percentageValue = parseFloat(document.getElementById('percentage-value').value);
+                const totalValue = parseFloat(document.getElementById('total-value').value);
+                const resultElement = document.getElementById('percentage-of-result');
+                const explanationElement = document.getElementById('percentage-of-explanation');
+                
+                let isValid = true;
+                
+                if (isNaN(percentageValue)) {
+                    showError('percentage-value-error');
+                    isValid = false;
+                }
+                
+                if (isNaN(totalValue)) {
+                    showError('total-value-error');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    resultElement.textContent = '0';
+                    explanationElement.textContent = 'Please fix the errors above.';
+                    return;
+                }
+                
+                const result = (percentageValue / 100) * totalValue;
+                
+                resultElement.textContent = formatNumber(result);
+                explanationElement.textContent = `${percentageValue}% of ${formatNumber(totalValue)} is ${formatNumber(result)}`;
+                
+                // Animation effect
+                animateResult(resultElement);
+            }
+
+            // Function to calculate percentage change
+            function calculatePercentageChange() {
+                resetErrors();
+                
+                const originalValue = parseFloat(document.getElementById('original-value').value);
+                const newValue = parseFloat(document.getElementById('new-value').value);
+                const resultElement = document.getElementById('percentage-change-result');
+                const explanationElement = document.getElementById('percentage-change-explanation');
+                
+                let isValid = true;
+                
+                if (isNaN(originalValue)) {
+                    showError('original-value-error');
+                    isValid = false;
+                }
+                
+                if (isNaN(newValue)) {
+                    showError('new-value-error');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    resultElement.textContent = '0%';
+                    explanationElement.textContent = 'Please fix the errors above.';
+                    return;
+                }
+                
+                if (originalValue === 0) {
+                    resultElement.textContent = 'Undefined';
+                    explanationElement.textContent = 'Cannot calculate percentage change when the original value is zero.';
+                    return;
+                }
+                
+                const percentageChange = ((newValue - originalValue) / Math.abs(originalValue)) * 100;
+                const isIncrease = percentageChange >= 0;
+                
+                resultElement.textContent = `${formatNumber(percentageChange)}%`;
+                resultElement.style.color = isIncrease ? '#00b894' : '#d63031';
+                
+                const changeType = isIncrease ? 'increase' : 'decrease';
+                explanationElement.textContent = `The change from ${formatNumber(originalValue)} to ${formatNumber(newValue)} is a ${changeType} of ${formatNumber(Math.abs(percentageChange))}%.`;
+                
+                // Animation effect
+                animateResult(resultElement);
+            }
+
+            // Function to calculate what percentage one value is of another
+            function calculatePercentage() {
+                resetErrors();
+                
+                const value = parseFloat(document.getElementById('calc-value').value);
+                const total = parseFloat(document.getElementById('calc-total').value);
+                const resultElement = document.getElementById('percentage-result');
+                const explanationElement = document.getElementById('percentage-explanation');
+                
+                let isValid = true;
+                
+                if (isNaN(value)) {
+                    showError('calc-value-error');
+                    isValid = false;
+                }
+                
+                if (isNaN(total)) {
+                    showError('calc-total-error');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    resultElement.textContent = '0%';
+                    explanationElement.textContent = 'Please fix the errors above.';
+                    return;
+                }
+                
+                if (total === 0) {
+                    resultElement.textContent = 'Undefined';
+                    explanationElement.textContent = 'Cannot calculate percentage when the total is zero.';
+                    return;
+                }
+                
+                const percentage = (value / total) * 100;
+                
+                resultElement.textContent = `${formatNumber(percentage)}%`;
+                explanationElement.textContent = `${formatNumber(value)} is ${formatNumber(percentage)}% of ${formatNumber(total)}.`;
+                
+                // Animation effect
+                animateResult(resultElement);
+            }
+
+            // Helper functions
+            function resetErrors() {
+                const errorMessages = document.querySelectorAll('.error-message');
+                const inputFields = document.querySelectorAll('.input-field');
+                
+                errorMessages.forEach(error => {
+                    error.classList.remove('visible');
+                });
+                
+                inputFields.forEach(field => {
+                    field.classList.remove('error');
+                });
+            }
+
+            function showError(errorId) {
+                const errorElement = document.getElementById(errorId);
+                const inputId = errorId.replace('-error', '');
+                const inputElement = document.getElementById(inputId);
+                
+                errorElement.classList.add('visible');
+                inputElement.classList.add('error');
+            }
+
+            function formatNumber(number) {
+                // Check if the number has decimal places
+                if (Math.round(number) !== number) {
+                    // For decimal numbers, limit to 2 decimal places
+                    return number.toFixed(2).replace(/\.00$/, '');
+                } else {
+                    // For whole numbers, return as is
+                    return number.toString();
+                }
+            }
+
+            function animateResult(element) {
+                element.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                }, 200);
+            }
+        });
+    </script>
+</body>
+</html>

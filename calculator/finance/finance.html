@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Calculator - TVM</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <style>
+        /* === CSS Styles Start === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #007bff;    /* Blue */
+            --secondary-color: #17a2b8;  /* Teal */
+            --accent-color: #fd7e14;   /* Orange */
+            --light-grey: #f8f9fa;
+            --medium-grey: #e9ecef;
+            --dark-grey: #ced4da;
+            --text-dark: #212529;
+            --text-medium: #495057;
+            --text-light: #6c757d;
+            --border-color: #e2e8f0;
+            --success-color: #28a745;
+            --error-color: #e53e3e;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+            --card-bg: #ffffff;
+            --shadow-soft: 0 4px 15px rgba(0, 123, 255, 0.06);
+            --shadow-medium: 0 8px 25px rgba(0, 123, 255, 0.09);
+            --focus-ring: 0 0 0 3px rgba(0, 123, 255, 0.15);
+            --border-radius-main: 14px;
+            --border-radius-inner: 8px;
+            --transition-speed: 0.3s;
+            --transition-ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-medium);
+            line-height: 1.7;
+            padding: 25px;
+            font-size: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px; /* Wider layout */
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .page-header {
+            padding: 15px 35px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fcfdff;
+        }
+        .breadcrumb { font-size: 0.85rem; color: var(--text-light); }
+        .breadcrumb a { color: var(--primary-color); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .print-button {
+            padding: 8px 15px; background-color: var(--text-light); color: white;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+            transition: background-color var(--transition-speed) var(--transition-ease);
+        }
+        .print-button:hover { background-color: #5a6268; }
+        .print-button i { margin-right: 5px; }
+
+        header { padding: 25px 35px; border-bottom: 1px solid var(--border-color); }
+        header h1 { font-weight: 600; font-size: 1.8rem; color: var(--text-dark); margin-bottom: 8px; }
+        header p { font-size: 0.95rem; color: var(--text-light); }
+
+        .tabs-container { /* Wrapper for padding */
+             padding: 8px; background-color: var(--medium-grey); border-bottom: 1px solid var(--border-color);
+        }
+        .tabs {
+            display: flex; flex-wrap: wrap; /* Allow wrapping on small screens */
+            background-color: var(--medium-grey); border-radius: var(--border-radius-inner);
+            padding: 4px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .tab-button {
+            flex: 1; min-width: 80px; /* Minimum width per tab */
+            padding: 11px 10px; text-align: center; background-color: transparent;
+            border: none; border-radius: 6px; cursor: pointer; font-weight: 500;
+            color: var(--text-light); font-size: 0.95rem;
+            transition: all var(--transition-speed) var(--transition-ease);
+            position: relative; z-index: 1; margin: 2px; /* Small gap */
+        }
+        .tab-button.active {
+            background-color: var(--card-bg); color: var(--primary-color); font-weight: 600;
+            box-shadow: var(--shadow-soft); transform: scale(1.01);
+        }
+        .tab-button:not(.active):hover { background-color: rgba(0, 0, 0, 0.04); color: var(--text-medium); }
+
+        .calculator-content {
+            display: grid; grid-template-columns: 38% 62%; gap: 0;
+        }
+        .input-section, .results-section { padding: 35px; }
+        .input-section { border-right: 1px solid var(--border-color); background-color: var(--light-grey); }
+        @media (max-width: 900px) {
+            .calculator-content { grid-template-columns: 1fr; }
+            .input-section { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+
+        .section-title {
+            font-weight: 600; font-size: 1.25rem; color: var(--text-dark);
+            margin-bottom: 30px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+            display: block;
+        }
+        .input-section .section-title { margin-top: 0;}
+
+        .input-group {
+            margin-bottom: 20px; display: flex; align-items: center; flex-wrap: wrap;
+        }
+        .input-group label {
+            flex-basis: 150px; /* Wider label */ padding-right: 15px; font-weight: 500;
+            font-size: 0.95rem; color: var(--text-medium); text-align: right;
+        }
+        .input-group .input-field-area { flex: 1; min-width: 150px; position: relative; }
+
+        /* Input styling */
+        input[type="number"], select {
+            width: 100%; padding: 11px 14px; border: 1px solid var(--dark-grey);
+            border-radius: var(--border-radius-inner); font-size: 1rem;
+            transition: border-color var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease);
+            background-color: var(--card-bg); color: var(--text-dark);
+        }
+        select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px 12px; padding-right: 2.5rem;}
+        input[type="number"]::placeholder { color: #adb5bd; }
+        input[type="number"]:focus, select:focus {
+            outline: none; border-color: var(--primary-color); box-shadow: var(--focus-ring);
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .input-adornment { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 0.9rem; opacity: 0.8; pointer-events: none; }
+        input[type="number"].has-adornment { padding-right: 40px; }
+        input:disabled { background-color: var(--medium-grey); color: var(--text-light); cursor: not-allowed; opacity: 0.7;}
+
+        /* Settings Toggle */
+        .settings-toggle {
+            display: inline-block; margin-top: 15px; margin-bottom: 15px;
+            font-size: 0.95rem; color: var(--primary-color); cursor: pointer; font-weight: 500;
+        }
+        .settings-toggle:hover { text-decoration: underline;}
+        .settings-toggle i { margin-left: 5px; transition: transform var(--transition-speed) var(--transition-ease); }
+        .settings-toggle.open i { transform: rotate(90deg); }
+        .settings-content {
+            padding: 15px; border: 1px solid var(--border-color); border-radius: var(--border-radius-inner);
+            background-color: #fcfdff; margin-bottom: 20px;
+            max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out, border 0.4s ease-out; border-width: 0; padding-top: 0; padding-bottom: 0;
+        }
+        .settings-content.open {
+            max-height: 300px; /* Adjust as needed */
+            padding: 15px;
+            border-width: 1px;
+        }
+         .settings-content .input-group label { flex-basis: 160px;} /* Adjust label in settings */
+
+
+        .calculate-button-container { text-align: center; margin-top: 30px; }
+        .calculate-button {
+             padding: 14px 35px; background: linear-gradient(135deg, var(--primary-color), #0056b3);
+             color: white; border: none; border-radius: var(--border-radius-inner);
+             font-size: 1.1rem; font-weight: 600; cursor: pointer;
+             transition: all var(--transition-speed) var(--transition-ease); display: inline-flex;
+             align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+        }
+        .calculate-button:hover { opacity: 0.9; transform: translateY(-3px); box-shadow: 0 7px 18px rgba(0, 123, 255, 0.3); }
+        .calculate-button:active { transform: translateY(0); box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2); }
+
+        .error-message { color: var(--error-color); font-size: 0.9rem; margin-top: 18px; text-align: center; min-height: 1.3em; font-weight: 500; }
+
+        /* --- Results Section Styling --- */
+        .results-section { background-color: var(--light-grey); }
+        .results-summary { margin-bottom: 30px; }
+        .result-item {
+             display: flex; justify-content: space-between; align-items: center;
+             padding: 10px 0; border-bottom: 1px solid var(--medium-grey); font-size: 1rem;
+        }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { color: var(--text-light); font-weight: 400; }
+        .result-value { color: var(--text-dark); font-weight: 600; }
+
+        .primary-result {
+             background-color: #e7f3ff; padding: 20px; border-radius: var(--border-radius-inner);
+             margin-bottom: 20px; border: 1px solid #b3d7ff; box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+        }
+        .primary-result-details { flex-grow: 1; }
+        .primary-result .result-label {
+             font-weight: 600; color: var(--primary-color); font-size: 1.1rem; display: block; margin-bottom: 3px;
+        }
+        .primary-result .result-value { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); display: block; }
+        .save-calculation { font-size: 0.85rem; color: var(--primary-color); text-decoration: none; white-space: nowrap; margin-left: 15px;}
+        .save-calculation:hover { text-decoration: underline; }
+
+        /* Amortization Table */
+        .amortization-section { margin-top: 35px; }
+        .amortization-title { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 18px;}
+        .amortization-table-container {
+             max-height: 450px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-inner);
+             box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+        }
+        table.amortization-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .amortization-table th, .amortization-table td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border-color); }
+        .amortization-table th {
+             background-color: var(--light-grey); font-weight: 600; color: var(--text-dark);
+             position: sticky; top: 0; z-index: 1; border-bottom-width: 2px; border-bottom-color: var(--dark-grey);
+        }
+        .amortization-table td:first-child, .amortization-table th:first-child { text-align: center; font-weight: 500; } /* Period */
+        .amortization-table tr:last-child td { border-bottom: none; }
+        .amortization-table tr:nth-child(even) { background-color: #f8fafd; }
+        .amortization-table tr:hover { background-color: #eef7ff; }
+        .amortization-table td { color: var(--text-medium); }
+
+        .info-section { padding: 35px; font-size: 0.95rem; border-top: 1px solid var(--border-color); background-color: #fcfdff; }
+        .info-section h3 { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 12px; margin-top: 25px; }
+        .info-section h3:first-child { margin-top: 0; }
+        .info-section p { margin-bottom: 18px; color: var(--text-medium); }
+        .related-links { margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border-color); }
+        .related-links a { margin-right: 18px; color: var(--primary-color); text-decoration: none; font-weight: 500;}
+        .related-links a:hover { text-decoration: underline; }
+
+        footer {
+             background-color: var(--text-dark); color: var(--light-grey); text-align: center;
+             padding: 25px 35px; font-size: 0.9rem; opacity: 0.95; margin-top: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 650px) {
+             .input-group { flex-direction: column; align-items: stretch; }
+             .input-group label { flex-basis: auto; text-align: left; margin-bottom: 6px; padding-top: 0; }
+             .primary-result .result-value { font-size: 1.6rem; }
+             header h1 { font-size: 1.6rem;}
+             .tabs { flex-wrap: wrap; justify-content: center;} /* Allow tabs to wrap */
+             .tab-button { flex-grow: 0; flex-basis: calc(33.33% - 8px); } /* Roughly 3 tabs per row */
+             .page-header { flex-direction: column; gap: 10px; }
+             body { padding: 15px;}
+             .input-section, .results-section, .info-section { padding: 25px;}
+             .settings-content .input-group label { flex-basis: auto;}
+        }
+        @media (max-width: 450px) {
+            .tab-button { flex-basis: calc(50% - 8px); } /* 2 tabs per row */
+        }
+
+        /* Utility */
+        .hidden { display: none; }
+        /* === CSS Styles End === */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            
+            <button class="print-button" onclick="window.print();"><i class="fas fa-print"></i> Print</button>
+        </header>
+        <header> <!-- Reusing header element for title/description styling -->
+            <h1>Finance Calculator</h1>
+            <p>Calculate FV, PMT, I/Y, N, or PV for time value of money problems.</p>
+        </header>
+
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-button active" data-mode="FV">FV</button>
+                <button class="tab-button" data-mode="PMT">PMT</button>
+                <button class="tab-button" data-mode="IY">I/Y</button>
+                <button class="tab-button" data-mode="N">N</button>
+                <button class="tab-button" data-mode="PV">PV</button>
+            </div>
+        </div>
+
+        <main class="calculator-content">
+            <section class="input-section">
+                <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 25px;">Modify the values and click the calculate button to use</p>
+
+                 <h2 class="section-title">Inputs</h2>
+                 <!-- Input fields will have 'disabled' attribute toggled by JS -->
+                 <div class="input-group">
+                    <label for="nPeriods">N (# of periods)</label>
+                    <div class="input-field-area">
+                        <input type="number" id="nPeriods" placeholder="e.g., 10" value="10" min="0" step="1">
+                    </div>
+                 </div>
+                 <div class="input-group">
+                    <label for="interestRateYear">I/Y (Interest per year)</label>
+                    <div class="input-field-area">
+                        <input type="number" id="interestRateYear" class="has-adornment" placeholder="e.g., 6" value="6" min="0" step="0.01">
+                        <span class="input-adornment">%</span>
+                    </div>
+                 </div>
+                  <div class="input-group">
+                    <label for="presentValue">PV (Present Value)</label>
+                    <div class="input-field-area">
+                        <input type="number" id="presentValue" class="has-adornment" placeholder="e.g., 20000" value="20000">
+                         <span class="input-adornment">$</span>
+                    </div>
+                 </div>
+                 <div class="input-group">
+                    <label for="periodicPayment">PMT (Periodic Payment)</label>
+                     <div class="input-field-area">
+                        <input type="number" id="periodicPayment" class="has-adornment" placeholder="e.g., -2000" value="-2000">
+                         <span class="input-adornment">$</span>
+                    </div>
+                 </div>
+                 <div class="input-group"> <!-- Placeholder for FV input, enabled when not calculating FV -->
+                    <label for="futureValue">FV (Future Value)</label>
+                     <div class="input-field-area">
+                         <input type="number" id="futureValue" class="has-adornment" placeholder="e.g., 0" value="0" disabled> <!-- Start disabled as FV is default calc -->
+                         <span class="input-adornment">$</span>
+                    </div>
+                 </div>
+
+                <div class="settings-toggle" id="settingsToggle">
+                    <i class="fas fa-chevron-right"></i> Settings
+                </div>
+                <div class="settings-content" id="settingsContent">
+                    <div class="input-group">
+                        <label for="compounding">Compounding</label>
+                        <div class="input-field-area">
+                             <select id="compounding">
+                                <option value="12" selected>Monthly (12/yr)</option>
+                                <option value="1">Annually (1/yr)</option>
+                                <option value="2">Semi-annually (2/yr)</option>
+                                <option value="4">Quarterly (4/yr)</option>
+                                <option value="26">Bi-Weekly (26/yr)</option>
+                                <option value="52">Weekly (52/yr)</option>
+                                <option value="365">Daily (365/yr)</option>
+                                <!-- <option value="continuous">Continuous</option> -->
+                             </select>
+                        </div>
+                    </div>
+                     <div class="input-group">
+                        <label for="paymentTiming">Payment Timing</label>
+                         <div class="input-field-area">
+                             <select id="paymentTiming">
+                                <option value="end" selected>End of Period</option>
+                                <option value="begin">Beginning of Period</option>
+                             </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                 <div class="calculate-button-container">
+                    <button id="calculateBtn" class="calculate-button">
+                        <i class="fas fa-calculator"></i> Calculate <span id="calculateTarget">FV</span>
+                    </button>
+                 </div>
+                <div id="error-message" class="error-message"></div>
+            </section>
+
+            <section class="results-section">
+                 <h2 class="section-title">Results</h2>
+
+                 <div class="results-summary">
+                    <div class="result-item primary-result">
+                        <div class="primary-result-details">
+                            <span class="result-label" id="primaryResultLabel">FV =</span>
+                            <span class="result-value" id="primaryResultValue">$0.00</span>
+                        </div>
+                        <!-- <a href="#" class="save-calculation">Save this calculation</a> -->
+                    </div>
+                     <div class="result-item">
+                        <span class="result-label">Sum of all periodic payments</span>
+                        <span class="result-value" id="sumPaymentsResult">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Interest</span>
+                        <span class="result-value" id="totalInterestResult">$0.00</span>
+                    </div>
+                 </div>
+
+                 <!-- Placeholder for Chart -->
+                 <!-- <div class="chart-container"> ... </div> -->
+
+                 <!-- Amortization Section -->
+                 <div class="amortization-section">
+                     <h3 class="amortization-title">Schedule</h3>
+                     <div class="amortization-table-container">
+                         <table class="amortization-table" id="amortizationTable">
+                             <thead>
+                                 <tr>
+                                     <th>Period</th>
+                                     <th>Beginning Balance</th>
+                                     <th>Payment</th>
+                                     <th>Interest</th>
+                                     <th>Ending Balance</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr><td colspan="5">Calculate to see the schedule.</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+
+            </section>
+        </main>
+
+         <section class="info-section">
+            <!-- Paste the informational text from the example here -->
+            <div class="related-links">
+                 <strong>Related:</strong>
+                 <a href="#">Loan Calculator</a> |
+                 <a href="#">Interest Calculator</a> |
+                 <a href="#">Investment Calculator</a>
+            </div>
+
+            <h3>The Time Value of Money (TVM)</h3>
+            <p>Suppose someone owes you $500. Would you rather have this money repaid to you right away... According to a concept that economists call the "time value of money," you will probably want all the money right away... The "time value of money" refers to the fact that a dollar in hand today is worth more than a dollar promised at some future time.</p>
+            <p>This is the basis of the concept of interest payments... This increased value in money at the end of a period of collecting interest is called future value in finance... Also, the PV in finance is what the FV will be worth given a discount rate...</p>
+
+            <h3>PMT</h3>
+            <p>PMT or periodic payment is an inflow or outflow amount that occurs at each period of a financial stream... For these questions, the payment formula is quite complex, so it is best left in the hands of our Finance Calculator... Don't forget to choose the correct input for whether payments are made at the beginning or end of compounding periods...</p>
+
+            <h3>Finance Class</h3>
+            <p>For any business student, it is an immensely difficult task to navigate finance courses without a handy financial calculator... Our web-based financial calculator can serve as a good tool to have during lectures or homework... The inclusion of a graph and a schedule... can be more visually helpful for learning purposes.</p>
+
+            <h3>The Importance of the Finance Calculator</h3>
+            <p>In essence, our Finance Calculator is the foundation for most of our Financial Calculators... There can be no Mortgage Calculator, or Credit Card Calculator, or Auto Loan Calculator without the concept of the time value of money... As a matter of fact, our Investment Calculator is simply a rebranding of the Finance Calculator...</p>
+            <!-- End of informational text -->
+         </section>
+
+        
+    </div>
+
+    <script>
+        // === JavaScript Logic Start ===
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Get DOM Elements ---
+            const tabs = document.querySelectorAll('.tab-button');
+            const nInput = document.getElementById('nPeriods');
+            const iyInput = document.getElementById('interestRateYear');
+            const pvInput = document.getElementById('presentValue');
+            const pmtInput = document.getElementById('periodicPayment');
+            const fvInput = document.getElementById('futureValue');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const calculateTargetSpan = document.getElementById('calculateTarget');
+            const errorMessageDiv = document.getElementById('error-message');
+            const compoundingSelect = document.getElementById('compounding');
+            const paymentTimingSelect = document.getElementById('paymentTiming');
+            const settingsToggle = document.getElementById('settingsToggle');
+            const settingsContent = document.getElementById('settingsContent');
+
+            // Result Display Elements
+            const primaryResultLabel = document.getElementById('primaryResultLabel');
+            const primaryResultValue = document.getElementById('primaryResultValue');
+            const sumPaymentsResult = document.getElementById('sumPaymentsResult');
+            const totalInterestResult = document.getElementById('totalInterestResult');
+            const amortizationTableBody = document.querySelector('#amortizationTable tbody');
+
+            // Input Fields Array (for easy enable/disable)
+            const inputFields = {
+                N: nInput,
+                IY: iyInput,
+                PV: pvInput,
+                PMT: pmtInput,
+                FV: fvInput
+            };
+
+            // Footer Year
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
+
+            // --- State ---
+            let currentMode = 'FV'; // Default calculation mode
+
+            // --- Event Listeners ---
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => switchMode(tab.dataset.mode));
+            });
+
+            calculateBtn.addEventListener('click', handleCalculation);
+
+            settingsToggle.addEventListener('click', () => {
+                settingsContent.classList.toggle('open');
+                settingsToggle.classList.toggle('open');
+            });
+
+            const allInputs = Object.values(inputFields);
+             allInputs.forEach(input => {
+                 if(input) { // Ensure element exists
+                     input.addEventListener('keypress', (event) => {
+                         if (event.key === 'Enter') { event.preventDefault(); handleCalculation(); }
+                     });
+                 }
+             });
+
+
+            // --- Mode Switching ---
+            function switchMode(newMode) {
+                if (newMode === currentMode) return;
+                currentMode = newMode;
+                calculateTargetSpan.textContent = newMode; // Update button text
+
+                // Update Tab UI
+                tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === newMode));
+
+                // Enable/Disable Inputs
+                for (const key in inputFields) {
+                    if (inputFields[key]) { // Check if element exists
+                        inputFields[key].disabled = (key === newMode); // Disable the one being calculated
+                        inputFields[key].style.fontWeight = (key === newMode) ? 'normal' : 'bold'; // Optional: visual cue
+                         if (key === newMode) {
+                            inputFields[key].value = ''; // Clear the input being calculated
+                         }
+                    }
+                }
+
+                primaryResultLabel.textContent = `${newMode} =`; // Update result label
+                clearError();
+                clearResults(); // Clear previous results
+            }
+
+            // --- Calculation Handling ---
+            function handleCalculation() {
+                clearError();
+                clearResults();
+
+                // Get Settings
+                const compoundsPerYear = parseFloat(compoundingSelect.value) || 12;
+                const isBeginning = paymentTimingSelect.value === 'begin';
+
+                // Get Input Values (or NaN if disabled/empty)
+                const N = !inputFields.N.disabled ? parseFloat(nInput.value) : NaN;
+                const iy = !inputFields.IY.disabled ? parseFloat(iyInput.value) : NaN;
+                const pv = !inputFields.PV.disabled ? parseFloat(pvInput.value) : 0; // Default PV to 0 if empty
+                const pmt = !inputFields.PMT.disabled ? parseFloat(pmtInput.value) : 0; // Default PMT to 0 if empty
+                const fv = !inputFields.FV.disabled ? parseFloat(fvInput.value) : 0; // Default FV to 0 if empty
+
+                // Basic Validation (more specific validation happens in calculation functions)
+                 if ((currentMode !== 'N' && isNaN(N)) ||
+                     (currentMode !== 'IY' && isNaN(iy)) ||
+                     (currentMode !== 'PV' && isNaN(pv)) ||
+                     (currentMode !== 'PMT' && isNaN(pmt)) ||
+                     (currentMode !== 'FV' && isNaN(fv))) {
+                     // If any *required* input is invalid
+                     return showError('Please enter valid numbers for all input fields.');
+                 }
+
+                 // Calculate Periodic Rate
+                 const periodicRate = (iy / 100) / compoundsPerYear;
+
+                let calculatedValue = NaN;
+                let scheduleData = []; // Array to hold {period, startPV, pmt, interest, endPV}
+
+                try {
+                    switch (currentMode) {
+                        case 'FV':
+                            calculatedValue = calculateFV(N, periodicRate, pv, pmt, isBeginning);
+                            if (isFinite(calculatedValue)) {
+                                inputFields.FV.value = calculatedValue.toFixed(2); // Display in disabled input
+                                scheduleData = generateSchedule(N, periodicRate, pv, pmt, calculatedValue, isBeginning, currentMode);
+                            }
+                            break;
+                        case 'PMT':
+                             calculatedValue = calculatePMT(N, periodicRate, pv, fv, isBeginning);
+                             if (isFinite(calculatedValue)) {
+                                inputFields.PMT.value = calculatedValue.toFixed(2);
+                                scheduleData = generateSchedule(N, periodicRate, pv, calculatedValue, fv, isBeginning, currentMode);
+                            }
+                            break;
+                        case 'IY':
+                            // I/Y calculation often needs iteration
+                             calculatedValue = calculateIY(N, pv, pmt, fv, isBeginning, compoundsPerYear); // Returns annual rate
+                             if (isFinite(calculatedValue)) {
+                                inputFields.IY.value = calculatedValue.toFixed(4); // More precision for rate
+                                const calculatedPeriodicRate = (calculatedValue / 100) / compoundsPerYear;
+                                scheduleData = generateSchedule(N, calculatedPeriodicRate, pv, pmt, fv, isBeginning, currentMode);
+                            }
+                            break;
+                        case 'N':
+                             // N calculation is tricky with PMT != 0 using logs, best with iteration or simple cases
+                             calculatedValue = calculateN(periodicRate, pv, pmt, fv, isBeginning);
+                             if (isFinite(calculatedValue) && calculatedValue >= 0) {
+                                 inputFields.N.value = calculatedValue.toFixed(2); // N can be fractional
+                                 // Schedule generation needs integer N, use rounded N?
+                                 scheduleData = generateSchedule(Math.round(calculatedValue), periodicRate, pv, pmt, fv, isBeginning, currentMode);
+                             } else if (calculatedValue < 0) {
+                                 showError('Calculation resulted in negative N (check inputs).');
+                             }
+                            break;
+                        case 'PV':
+                            calculatedValue = calculatePV(N, periodicRate, pmt, fv, isBeginning);
+                             if (isFinite(calculatedValue)) {
+                                inputFields.PV.value = calculatedValue.toFixed(2);
+                                scheduleData = generateSchedule(N, periodicRate, calculatedValue, pmt, fv, isBeginning, currentMode);
+                             }
+                            break;
+                    }
+
+                    if (!isFinite(calculatedValue)) {
+                       throw new Error("Calculation failed. Check inputs or parameters.");
+                    }
+
+                    // Display Primary Result
+                    primaryResultValue.textContent = formatCurrency(calculatedValue, currentMode);
+
+                    // Display Secondary Results & Schedule (if calculation was successful)
+                     if (scheduleData.length > 0) {
+                         const finalData = scheduleData[scheduleData.length - 1];
+                         sumPaymentsResult.textContent = formatCurrency(finalData.totalPMT);
+                         totalInterestResult.textContent = formatCurrency(finalData.totalInterest);
+                         displaySchedule(scheduleData);
+                     } else {
+                          clearResults(true); // Clear secondary if no schedule
+                     }
+
+
+                } catch (error) {
+                    console.error("Calculation Error:", error);
+                    showError(error.message || "An error occurred during calculation.");
+                     clearResults(true); // Clear secondary on error
+                }
+            }
+
+            // --- TVM Calculation Functions ---
+             // Note: These use standard formulas. I/Y needs iteration for accuracy with PMT. N is complex with PMT.
+
+            function calculateFV(n, i, pv, pmt, isBeginning) {
+                 if (i === 0) { return -(pv + pmt * n); }
+                 const factor = Math.pow(1 + i, n);
+                 const fv_pv = -pv * factor;
+                 const fv_pmt = -pmt * (factor - 1) / i * (isBeginning ? (1 + i) : 1);
+                 return fv_pv + fv_pmt;
+             }
+
+             function calculatePV(n, i, pmt, fv, isBeginning) {
+                 if (i === 0) { return -(fv + pmt * n); }
+                 const factor = Math.pow(1 + i, -n); // Use negative exponent for PV
+                 const pv_fv = -fv * factor;
+                 const pv_pmt = -pmt * (1 - factor) / i * (isBeginning ? (1 + i) : 1);
+                 return pv_fv + pv_pmt;
+             }
+
+             function calculatePMT(n, i, pv, fv, isBeginning) {
+                if (n === 0) return 0; // Or handle as error?
+                 if (i === 0) { return -(fv + pv) / n; }
+                 const factor = Math.pow(1 + i, n);
+                 const pmt_pv_fv = -(fv + pv * factor);
+                 const pmt_denominator = (factor - 1) / i * (isBeginning ? (1 + i) : 1);
+                 if (Math.abs(pmt_denominator) < 1e-9) return NaN; // Avoid division by zero
+                 return pmt_pv_fv / pmt_denominator;
+             }
+
+             function calculateN(i, pv, pmt, fv, isBeginning) {
+                 if (i === 0) {
+                    if (pmt === 0) return NaN; // Cannot solve if no payment and no interest
+                    return -(fv + pv) / pmt;
+                 }
+                 const pmtFactor = pmt / i * (isBeginning ? (1 + i) : 1);
+                 const numerator = Math.log((-fv + pmtFactor) / (pv + pmtFactor));
+                 const denominator = Math.log(1 + i);
+                 if (!isFinite(numerator) || !isFinite(denominator) || denominator === 0 || ((-fv + pmtFactor) / (pv + pmtFactor)) <= 0) {
+                     return NaN; // Invalid inputs for log or division
+                 }
+                 return numerator / denominator;
+             }
+
+             function calculateIY(n, pv, pmt, fv, isBeginning, compoundsPerYear) {
+                // Needs an iterative solver (like Newton-Raphson) for accuracy when PMT != 0.
+                // This is a simplified iterative approach (may not always converge or be precise).
+                 const MAX_ITERATIONS = 100;
+                 const PRECISION = 1e-7;
+                 let rate = 0.1 / compoundsPerYear; // Initial guess for periodic rate (10% annual)
+                 let count = 0;
+
+                // Handle edge case where pv + fv + pmt*n is close to zero (rate is likely 0)
+                 if (Math.abs(pv + fv + pmt * n) < 1e-9) return 0;
+
+                 // Check if rate should be positive or negative based on cash flows
+                 const cashFlowSign = pv + fv + pmt * n;
+                 if (pmt === 0) {
+                     // Simplified case without PMT
+                     if (pv === 0 || fv === 0 || n === 0 || Math.sign(-fv) === Math.sign(pv)) return NaN; // Cannot solve
+                     rate = Math.pow(-fv / pv, 1/n) - 1;
+                     return rate * compoundsPerYear * 100;
+                 }
+
+
+                 while(count < MAX_ITERATIONS) {
+                     const factor = Math.pow(1 + rate, n);
+                     const calculated_fv_pv = -pv * factor;
+                     const calculated_fv_pmt = -pmt * (factor - 1) / rate * (isBeginning ? (1 + rate) : 1);
+                     const f = calculated_fv_pv + calculated_fv_pmt - fv; // Equation: calculated_FV - target_FV = 0
+
+                     // Derivative (complex to derive, using numerical approximation or simplifying)
+                     // Simplified derivative approach - may impact convergence
+                     const f_prime_approx = n * pv * factor / (1 + rate) + pmt * (factor - 1) / (rate * rate) * (isBeginning ? (1+rate) : 1) - n * pmt * factor / rate * (isBeginning ? (1+rate):1) ; // Approximation
+
+                    if (Math.abs(f) < PRECISION) break; // Converged
+                    if (Math.abs(f_prime_approx) < 1e-9) { rate += (f>0 ? -0.0001 : 0.0001); } // Adjust if derivative is zero
+                    else { rate = rate - f / f_prime_approx; } // Newton's step
+
+                     count++;
+                 }
+
+                 if (count === MAX_ITERATIONS) {
+                     console.warn("I/Y iteration did not converge fully.");
+                     // Fallback or return NaN? Returning current rate for now.
+                 }
+
+                 return rate * compoundsPerYear * 100; // Return annual rate %
+             }
+
+
+            // --- Amortization Schedule Generation ---
+            function generateSchedule(nPeriods, periodicRate, startPV, pmt, endFV, isBeginning, mode) {
+                 const schedule = [];
+                 let currentPV = startPV;
+                 let totalInterest = 0;
+                 let totalPMT = 0;
+                 const numPeriods = Math.round(nPeriods); // Use integer periods for schedule
+
+                  if (!isFinite(numPeriods) || numPeriods <= 0 || !isFinite(periodicRate) || !isFinite(startPV) || !isFinite(pmt)) {
+                    console.warn("Cannot generate schedule due to invalid inputs");
+                    return []; // Return empty if inputs are bad
+                  }
+
+                 for (let period = 1; period <= numPeriods; period++) {
+                     const beginningBalance = currentPV;
+                     const interest = beginningBalance * periodicRate * (isBeginning && period === 1 ? 0 : 1); // No interest on first period if begin
+
+                      // If payment happens at beginning, interest is on (balance + payment) for previous period
+                      // But simpler to calculate interest on *start* balance for the period display
+                     const interestPayment = (annualRate === 0) ? 0 : beginningBalance * periodicRate;
+
+
+                     // Determine effective payment for this period's calculation
+                     let currentPmt = pmt;
+                     // Adjust last payment? This can get complex if N wasn't exact.
+                     // Let's assume the calculated PMT (or input PMT) is constant for simplicity here.
+
+                     totalInterest += interestPayment;
+                     totalPMT += currentPmt;
+
+                     // Update balance based on timing
+                     if (isBeginning) {
+                         currentPV += currentPmt; // Payment first
+                         currentPV = currentPV * (1 + periodicRate); // Then interest accrues
+                     } else {
+                         currentPV = currentPV * (1 + periodicRate); // Interest first
+                         currentPV += currentPmt; // Then payment
+                     }
+
+                    // Ensure end balance matches target FV closely for the last period
+                     if (period === numPeriods && mode !== 'FV') {
+                        // This adjustment is tricky. Let's skip for now and rely on TVM formulas being accurate.
+                        // A better schedule often calculates principal = pmt - interest, then balance = start_balance - principal.
+                        // Recalculating schedule based on this approach:
+                        let corrected_interest = beginningBalance * periodicRate;
+                        let corrected_principal = 0;
+                        let corrected_ending_balance = 0;
+
+                        if (isBeginning) {
+                             corrected_interest = (beginningBalance + pmt) * periodicRate; // Interest accrues after payment
+                             corrected_principal = -pmt - corrected_interest; // This formula is complex for beginning
+                             // Sticking to simpler display:
+                             corrected_ending_balance = beginningBalance * (1 + periodicRate) + pmt * (1 + periodicRate); // FV after 1 period begin
+
+                         } else {
+                            corrected_principal = -pmt - corrected_interest; // Principal is payment + interest (since PMT is usually negative outflow)
+                             corrected_ending_balance = beginningBalance + corrected_principal;
+                             // Let's use the standard Amortization approach: Principal = PMT - Interest
+                             corrected_interest = beginningBalance * periodicRate;
+                             corrected_principal = pmt - corrected_interest; // Assuming PMT is payment *amount*, interest calculated on BB
+                             corrected_ending_balance = beginningBalance + corrected_principal; // This assumes pmt has correct sign convention
+                             // Let's stick to the FV calculation approach for consistency with TVM
+
+                         }
+                         // Simpler: Use the calculated next period's PV
+                          corrected_ending_balance = currentPV; // Use the value calculated earlier
+
+
+                         schedule.push({
+                             period: period,
+                             startPV: beginningBalance,
+                             pmt: currentPmt, // Use the actual pmt for the period
+                             interest: corrected_interest,
+                             endPV: corrected_ending_balance, // The balance *after* payment and interest for the period
+                             totalInterest: totalInterest,
+                             totalPMT: totalPMT
+                         });
+
+
+                     } else {
+                         schedule.push({
+                             period: period,
+                             startPV: beginningBalance,
+                             pmt: currentPmt,
+                             interest: interestPayment,
+                             endPV: currentPV,
+                             totalInterest: totalInterest,
+                             totalPMT: totalPMT
+                         });
+                     }
+
+                 }
+                 return schedule;
+            }
+
+            // --- Display Schedule ---
+            function displaySchedule(scheduleData) {
+                amortizationTableBody.innerHTML = ''; // Clear previous
+                if (!scheduleData || scheduleData.length === 0) {
+                     amortizationTableBody.innerHTML = '<tr><td colspan="5">No schedule data generated.</td></tr>';
+                     return;
+                }
+                scheduleData.forEach(row => {
+                     const tr = document.createElement('tr');
+                     tr.innerHTML = `
+                         <td>${row.period}</td>
+                         <td>${formatCurrency(row.startPV)}</td>
+                         <td>${formatCurrency(row.pmt)}</td>
+                         <td>${formatCurrency(row.interest)}</td>
+                         <td>${formatCurrency(row.endPV)}</td>
+                     `;
+                     amortizationTableBody.appendChild(tr);
+                 });
+            }
+
+
+            // --- Helper Functions ---
+            function showError(message) { errorMessageDiv.textContent = message; errorMessageDiv.style.display = 'block'; }
+            function clearError() { errorMessageDiv.textContent = ''; errorMessageDiv.style.display = 'none'; }
+            function clearResults(clearSecondaryOnly = false) {
+                if (!clearSecondaryOnly) {
+                    primaryResultValue.textContent = '$0.00'; // Or appropriate default
+                    // Clear the disabled input field as well
+                    if (inputFields[currentMode]) inputFields[currentMode].value = '';
+                }
+                 sumPaymentsResult.textContent = '$0.00';
+                 totalInterestResult.textContent = '$0.00';
+                 amortizationTableBody.innerHTML = `<tr><td colspan="5">Calculate to see the schedule.</td></tr>`;
+             }
+            function formatCurrency(value, mode = null) {
+                 if (typeof value !== 'number' || !isFinite(value)) { return '--'; } // Indicate non-numeric result
+
+                 // Don't format N or IY as currency
+                 if (mode === 'N' || mode === 'IY') {
+                     // Format N with maybe 2 decimal places, IY with 4
+                     const decimals = (mode === 'N') ? 2 : 4;
+                      return value.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+                 }
+
+                 // Format others as currency
+                 return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+             }
+
+            // --- Initial Setup ---
+            switchMode('FV'); // Start in FV mode
+            clearError();
+            clearResults();
+            // Trigger calculation with default values on load
+            handleCalculation();
+
+        });
+        // === JavaScript Logic End ===
+    </script>
+
+</body>
+</html>

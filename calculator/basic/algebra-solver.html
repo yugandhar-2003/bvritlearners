@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0c0c0c;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .calculator {
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: #873a7d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .input-area {
+            padding: 20px;
+        }
+        
+        .mode-selector {
+            margin-bottom: 15px;
+            width: 100%;
+            display: flex;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        
+        .mode-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-option:not(:last-child) {
+            border-right: 1px solid #ddd;
+        }
+        
+        .mode-option.active {
+            background-color: #4a6fa5;
+            color: white;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4a6fa5;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3a5a8c;
+        }
+        
+        .result-area {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+        }
+        
+        .result-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .result-value {
+            font-size: 18px;
+            color: #4a6fa5;
+            word-break: break-word;
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .steps {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+        
+        .steps-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        .step {
+            margin-bottom: 5px;
+            padding-left: 10px;
+            border-left: 2px solid #4a6fa5;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="header">
+            <h1>Algebra Calculator</h1>
+        </div>
+        <div class="input-area">
+            <div class="mode-selector">
+                <div class="mode-option active" data-mode="equation">Solve Equation</div>
+                <div class="mode-option" data-mode="quadratic">Quadratic Formula</div>
+                <div class="mode-option" data-mode="system">System of Equations</div>
+            </div>
+            
+            <!-- Equation Solver -->
+            <div class="mode-content" id="equation-content">
+                <div class="input-group">
+                    <label for="equation">Enter Equation (e.g., 2x + 3 = 7)</label>
+                    <input type="text" id="equation" placeholder="e.g., 2x + 3 = 7">
+                </div>
+                <div class="input-group">
+                    <label for="variable">Variable</label>
+                    <input type="text" id="variable" placeholder="e.g., x" value="x">
+                </div>
+                <button id="solve-equation">Solve Equation</button>
+            </div>
+            
+            <!-- Quadratic Formula -->
+            <div class="mode-content hidden" id="quadratic-content">
+                <div class="input-group">
+                    <label>Enter coefficients for ax² + bx + c = 0</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="quad-a" placeholder="a" step="any">
+                        <input type="number" id="quad-b" placeholder="b" step="any">
+                        <input type="number" id="quad-c" placeholder="c" step="any">
+                    </div>
+                </div>
+                <button id="solve-quadratic">Solve Quadratic</button>
+            </div>
+            
+            <!-- System of Equations -->
+            <div class="mode-content hidden" id="system-content">
+                <div class="input-group">
+                    <label>Enter coefficients for system:</label>
+                    <div style="margin-bottom: 10px;">
+                        <p>a₁x + b₁y = c₁</p>
+                        <p>a₂x + b₂y = c₂</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px;">
+                        <input type="number" id="sys-a1" placeholder="a₁" step="any">
+                        <input type="number" id="sys-b1" placeholder="b₁" step="any">
+                        <input type="number" id="sys-c1" placeholder="c₁" step="any">
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <input type="number" id="sys-a2" placeholder="a₂" step="any">
+                        <input type="number" id="sys-b2" placeholder="b₂" step="any">
+                        <input type="number" id="sys-c2" placeholder="c₂" step="any">
+                    </div>
+                </div>
+                <button id="solve-system">Solve System</button>
+            </div>
+        </div>
+        
+        <div class="result-area">
+            <div class="result-box">
+                <div class="result-title">Result:</div>
+                <div class="result-value" id="result">Waiting for input...</div>
+                <div class="steps hidden" id="steps-area">
+                    <div class="steps-title">Steps:</div>
+                    <div id="steps-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mode switching
+        const modeOptions = document.querySelectorAll('.mode-option');
+        const modeContents = document.querySelectorAll('.mode-content');
+        
+        modeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const mode = option.getAttribute('data-mode');
+                
+                // Update active mode
+                modeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                // Show relevant content
+                modeContents.forEach(content => content.classList.add('hidden'));
+                document.getElementById(`${mode}-content`).classList.remove('hidden');
+                
+                // Reset result area
+                document.getElementById('result').textContent = 'Waiting for input...';
+                document.getElementById('steps-area').classList.add('hidden');
+            });
+        });
+        
+        // Equation Solver
+        document.getElementById('solve-equation').addEventListener('click', () => {
+            const equation = document.getElementById('equation').value.trim();
+            const variable = document.getElementById('variable').value.trim() || 'x';
+            
+            if (!equation) {
+                showError('Please enter an equation');
+                return;
+            }
+            
+            try {
+                const result = solveEquation(equation, variable);
+                document.getElementById('result').textContent = `${variable} = ${result.value}`;
+                
+                // Show steps
+                const stepsArea = document.getElementById('steps-area');
+                const stepsContent = document.getElementById('steps-content');
+                stepsContent.innerHTML = '';
+                
+                result.steps.forEach(step => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = 'step';
+                    stepElement.textContent = step;
+                    stepsContent.appendChild(stepElement);
+                });
+                
+                stepsArea.classList.remove('hidden');
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+        
+        // Quadratic Formula Solver
+        document.getElementById('solve-quadratic').addEventListener('click', () => {
+            const a = parseFloat(document.getElementById('quad-a').value);
+            const b = parseFloat(document.getElementById('quad-b').value);
+            const c = parseFloat(document.getElementById('quad-c').value);
+            
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                showError('Please enter valid coefficients');
+                return;
+            }
+            
+            if (a === 0) {
+                showError('Coefficient a cannot be zero. This is not a quadratic equation.');
+                return;
+            }
+            
+            try {
+                const result = solveQuadratic(a, b, c);
+                document.getElementById('result').textContent = result.value;
+                
+                // Show steps
+                const stepsArea = document.getElementById('steps-area');
+                const stepsContent = document.getElementById('steps-content');
+                stepsContent.innerHTML = '';
+                
+                result.steps.forEach(step => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = 'step';
+                    stepElement.textContent = step;
+                    stepsContent.appendChild(stepElement);
+                });
+                
+                stepsArea.classList.remove('hidden');
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+        
+        // System of Equations Solver
+        document.getElementById('solve-system').addEventListener('click', () => {
+            const a1 = parseFloat(document.getElementById('sys-a1').value);
+            const b1 = parseFloat(document.getElementById('sys-b1').value);
+            const c1 = parseFloat(document.getElementById('sys-c1').value);
+            const a2 = parseFloat(document.getElementById('sys-a2').value);
+            const b2 = parseFloat(document.getElementById('sys-b2').value);
+            const c2 = parseFloat(document.getElementById('sys-c2').value);
+            
+            if ([a1, b1, c1, a2, b2, c2].some(isNaN)) {
+                showError('Please enter valid coefficients for all fields');
+                return;
+            }
+            
+            try {
+                const result = solveSystem(a1, b1, c1, a2, b2, c2);
+                document.getElementById('result').textContent = result.value;
+                
+                // Show steps
+                const stepsArea = document.getElementById('steps-area');
+                const stepsContent = document.getElementById('steps-content');
+                stepsContent.innerHTML = '';
+                
+                result.steps.forEach(step => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = 'step';
+                    stepElement.textContent = step;
+                    stepsContent.appendChild(stepElement);
+                });
+                
+                stepsArea.classList.remove('hidden');
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+        
+        // Helper function to display error
+        function showError(message) {
+            document.getElementById('result').textContent = `Error: ${message}`;
+            document.getElementById('steps-area').classList.add('hidden');
+        }
+        
+        // ===== Solver Functions =====
+        
+        // Linear Equation Solver
+        function solveEquation(equation, variable) {
+            const steps = [];
+            
+            // Check if equation contains equals sign
+            if (!equation.includes('=')) {
+                throw new Error('Equation must contain an equals sign (=)');
+            }
+            
+            steps.push(`Original equation: ${equation}`);
+            
+            // Split equation by equals sign
+            const sides = equation.split('=');
+            if (sides.length !== 2) {
+                throw new Error('Equation must have exactly one equals sign');
+            }
+            
+            let leftSide = sides[0].trim();
+            let rightSide = sides[1].trim();
+            
+            steps.push(`Move all terms with ${variable} to the left side and all other terms to the right side`);
+            
+            // Parse and rearrange the equation
+            const leftTerms = parseExpressionTerms(leftSide, variable);
+            const rightTerms = parseExpressionTerms(rightSide, variable);
+            
+            // Move variable terms to left, constants to right
+            let leftCoefficient = leftTerms.coefficient - rightTerms.coefficient;
+            let rightConstant = rightTerms.constant - leftTerms.constant;
+            
+            steps.push(`Simplified equation: ${formatCoefficient(leftCoefficient)}${variable} = ${rightConstant}`);
+            
+            // Solve for the variable
+            if (leftCoefficient === 0) {
+                if (rightConstant === 0) {
+                    return {
+                        value: "Infinite solutions",
+                        steps
+                    };
+                } else {
+                    return {
+                        value: "No solution",
+                        steps
+                    };
+                }
+            }
+            
+            const solution = rightConstant / leftCoefficient;
+            steps.push(`Divide both sides by ${leftCoefficient}`);
+            steps.push(`${variable} = ${rightConstant} / ${leftCoefficient} = ${solution}`);
+            
+            return {
+                value: formatNumber(solution),
+                steps
+            };
+        }
+        
+        // Helper to parse expression terms
+        function parseExpressionTerms(expression, variable) {
+            let coefficient = 0;
+            let constant = 0;
+            
+            // Replace - with +- for easier splitting
+            expression = expression.replace(/\s/g, '').replace(/-/g, '+-');
+            if (expression.startsWith('+')) {
+                expression = expression.substring(1);
+            }
+            
+            // Split by +
+            const terms = expression ? expression.split('+') : [];
+            
+            for (let term of terms) {
+                if (!term) continue;
+                
+                if (term.includes(variable)) {
+                    // Variable term
+                    const parts = term.split(variable);
+                    const coef = parts[0] === '' ? 1 : 
+                                parts[0] === '-' ? -1 : 
+                                parseFloat(parts[0]);
+                    coefficient += coef;
+                } else {
+                    // Constant term
+                    constant += parseFloat(term);
+                }
+            }
+            
+            return {
+                coefficient,
+                constant
+            };
+        }
+        
+        // Quadratic Equation Solver
+        function solveQuadratic(a, b, c) {
+            const steps = [];
+            steps.push(`Quadratic equation: ${formatQuadratic(a, b, c)} = 0`);
+            steps.push(`Using the quadratic formula: x = (-b ± √(b² - 4ac)) / 2a`);
+            steps.push(`a = ${a}, b = ${b}, c = ${c}`);
+            
+            // Calculate discriminant
+            const discriminant = b * b - 4 * a * c;
+            steps.push(`Calculate discriminant: b² - 4ac = ${b}² - 4 × ${a} × ${c} = ${discriminant}`);
+            
+            if (discriminant < 0) {
+                // Complex roots
+                const realPart = -b / (2 * a);
+                const imaginaryPart = Math.sqrt(Math.abs(discriminant)) / (2 * a);
+                
+                steps.push(`Since the discriminant is negative, the roots are complex`);
+                steps.push(`x₁ = ${formatNumber(realPart)} + ${formatNumber(imaginaryPart)}i`);
+                steps.push(`x₂ = ${formatNumber(realPart)} - ${formatNumber(imaginaryPart)}i`);
+                
+                return {
+                    value: `x₁ = ${formatNumber(realPart)} + ${formatNumber(imaginaryPart)}i, x₂ = ${formatNumber(realPart)} - ${formatNumber(imaginaryPart)}i`,
+                    steps
+                };
+            } else if (discriminant === 0) {
+                // One real root (repeated)
+                const root = -b / (2 * a);
+                
+                steps.push(`Since the discriminant is zero, there is one repeated root`);
+                steps.push(`x = -${b} / (2 × ${a}) = ${root}`);
+                
+                return {
+                    value: `x = ${formatNumber(root)} (repeated root)`,
+                    steps
+                };
+            } else {
+                // Two real roots
+                const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                
+                steps.push(`Since the discriminant is positive, there are two real roots`);
+                steps.push(`x₁ = (-${b} + √${discriminant}) / (2 × ${a}) = ${root1}`);
+                steps.push(`x₂ = (-${b} - √${discriminant}) / (2 × ${a}) = ${root2}`);
+                
+                return {
+                    value: `x₁ = ${formatNumber(root1)}, x₂ = ${formatNumber(root2)}`,
+                    steps
+                };
+            }
+        }
+        
+        // System of Linear Equations Solver (2×2)
+        function solveSystem(a1, b1, c1, a2, b2, c2) {
+            const steps = [];
+            steps.push(`System of equations:`);
+            steps.push(`${formatEquation(a1, b1, c1)}`);
+            steps.push(`${formatEquation(a2, b2, c2)}`);
+            
+            // Calculate determinant
+            const determinant = a1 * b2 - a2 * b1;
+            steps.push(`Calculate determinant: (${a1} × ${b2}) - (${a2} × ${b1}) = ${determinant}`);
+            
+            if (determinant === 0) {
+                // Parallel or coincident lines
+                const ratio1 = a1 / a2;
+                const ratio2 = b1 / b2;
+                const ratio3 = c1 / c2;
+                
+                if (ratio1 === ratio2 && ratio2 === ratio3) {
+                    steps.push(`Since the determinant is zero and equations are equivalent, there are infinitely many solutions.`);
+                    return {
+                        value: "Infinitely many solutions (dependent equations)",
+                        steps
+                    };
+                } else {
+                    steps.push(`Since the determinant is zero but equations are not equivalent, there is no solution.`);
+                    return {
+                        value: "No solution (parallel lines)",
+                        steps
+                    };
+                }
+            }
+            
+            // Solve using Cramer's rule
+            const x = (c1 * b2 - c2 * b1) / determinant;
+            const y = (a1 * c2 - a2 * c1) / determinant;
+            
+            steps.push(`Using Cramer's rule to solve for x and y:`);
+            steps.push(`x = ((${c1} × ${b2}) - (${c2} × ${b1})) / ${determinant} = ${x}`);
+            steps.push(`y = ((${a1} × ${c2}) - (${a2} × ${c1})) / ${determinant} = ${y}`);
+            
+            return {
+                value: `x = ${formatNumber(x)}, y = ${formatNumber(y)}`,
+                steps
+            };
+        }
+        
+        // ===== Formatting Helpers =====
+        
+        function formatNumber(num) {
+            return Math.abs(num - Math.round(num)) < 1e-10 ? 
+                Math.round(num).toString() : 
+                num.toFixed(4).replace(/\.?0+$/, '');
+        }
+        
+        function formatCoefficient(num) {
+            if (num === 0) return '';
+            if (num === 1) return '';
+            if (num === -1) return '-';
+            return num.toString();
+        }
+        
+        function formatQuadratic(a, b, c) {
+            let equation = '';
+            
+            if (a !== 0) {
+                equation += a === 1 ? 'x²' : a === -1 ? '-x²' : a + 'x²';
+            }
+            
+            if (b !== 0) {
+                if (equation !== '' && b > 0) {
+                    equation += ' + ';
+                } else if (equation !== '' && b < 0) {
+                    equation += ' - ';
+                    b = Math.abs(b);
+                }
+                
+                equation += b === 1 ? 'x' : b + 'x';
+            }
+            
+            if (c !== 0) {
+                if (equation !== '' && c > 0) {
+                    equation += ' + ';
+                } else if (equation !== '' && c < 0) {
+                    equation += ' - ';
+                    c = Math.abs(c);
+                }
+                
+                equation += c;
+            }
+            
+            return equation || '0';
+        }
+        
+        function formatEquation(a, b, c) {
+            let equation = '';
+            
+            if (a !== 0) {
+                equation += a === 1 ? 'x' : a === -1 ? '-x' : a + 'x';
+            }
+            
+            if (b !== 0) {
+                if (equation !== '' && b > 0) {
+                    equation += ' + ';
+                } else if (equation !== '' && b < 0) {
+                    equation += ' - ';
+                    b = Math.abs(b);
+                }
+                
+                equation += b === 1 ? 'y' : b + 'y';
+            }
+            
+            equation += ' = ' + c;
+            
+            return equation;
+        }
+    </script>
+</body>
+</html>

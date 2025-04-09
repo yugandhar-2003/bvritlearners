@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphing Calculator</title>
+    <!-- Using math.js for expression parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0e0f10;
+            padding: 20px;
+        }
+        
+        .calculator-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: #984d93;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .graph-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background-color: #f8f9fb;
+            border-bottom: 1px solid #eaeef2;
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 120px;
+            gap: 20px;
+        }
+        
+        .function-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .function-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .color-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .function-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .function-input:focus {
+            outline: none;
+            border-color: #2e813c;
+            box-shadow: 0 0 0 2px rgba(74, 108, 250, 0.2);
+        }
+        
+        .btn-remove {
+            background-color: #ff5757;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-remove:hover {
+            background-color: #ff3838;
+        }
+        
+        .btn-add {
+            background-color: #4a6cfa;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-add:hover {
+            background-color: #3a5cf5;
+        }
+        
+        .graph-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .control-group label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .range-control {
+            display: grid;
+            grid-template-columns: 30px 1fr 30px;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .range-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .btn-zoom {
+            width: 35px;
+            height: 35px;
+            background-color: #f1f3f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-zoom:hover {
+            background-color: #e5e9f5;
+        }
+        
+        .btn-reset {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-reset:hover {
+            background-color: #5a6268;
+        }
+        
+        .footer {
+            padding: 15px;
+            background-color: #f8f9fb;
+            border-top: 1px solid #eaeef2;
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .graph-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>Graphing Calculator</h1>
+            <p>Enter functions to plot (use 'x' as the variable)</p>
+        </div>
+        
+        <div class="graph-container">
+            <canvas id="graphCanvas"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="function-inputs" id="functionInputs">
+                <!-- Function inputs will be added here -->
+            </div>
+            
+            <div class="graph-controls">
+                <div class="control-group">
+                    <label>X Range</label>
+                    <div class="range-control">
+                        <input type="text" id="xMin" class="range-input" value="-10">
+                        <div>to</div>
+                        <input type="text" id="xMax" class="range-input" value="10">
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Y Range</label>
+                    <div class="range-control">
+                        <input type="text" id="yMin" class="range-input" value="-10">
+                        <div>to</div>
+                        <input type="text" id="yMax" class="range-input" value="10">
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label>Zoom</label>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-zoom" id="zoomIn">+</button>
+                        <button class="btn-zoom" id="zoomOut">-</button>
+                    </div>
+                </div>
+                
+                <button class="btn-reset" id="resetView">Reset View</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Type expressions like: sin(x), x^2, x^3-2*x^2+1, cos(x)*sin(x)
+        </div>
+    </div>
+
+    <script>
+        class GraphingCalculator {
+            constructor() {
+                // Canvas setup
+                this.canvas = document.getElementById('graphCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Set canvas dimensions with device pixel ratio for crisp rendering
+                this.setCanvasDimensions();
+                
+                // Graph range
+                this.xMin = -10;
+                this.xMax = 10;
+                this.yMin = -10;
+                this.yMax = 10;
+                
+                // Functions to plot (color, expression)
+                this.functions = [];
+                
+                // Available colors for functions
+                this.colors = [
+                    '#4285F4', // Blue
+                    '#EA4335', // Red
+                    '#FBBC05', // Yellow
+                    '#34A853', // Green
+                    '#8E44AD', // Purple
+                    '#F39C12', // Orange
+                    '#16A085', // Teal
+                    '#E74C3C', // Light Red
+                    '#3498DB', // Light Blue
+                    '#27AE60'  // Light Green
+                ];
+                
+                // Initialize the calculator
+                this.init();
+            }
+            
+            setCanvasDimensions() {
+                const dpr = window.devicePixelRatio || 1;
+                const rect = this.canvas.getBoundingClientRect();
+                
+                this.canvas.width = rect.width * dpr;
+                this.canvas.height = rect.height * dpr;
+                this.ctx.scale(dpr, dpr);
+                
+                this.canvas.style.width = `${rect.width}px`;
+                this.canvas.style.height = `${rect.height}px`;
+            }
+            
+            init() {
+                // Add an initial function input
+                this.addFunctionInput();
+                
+                // Set initial range values
+                document.getElementById('xMin').value = this.xMin;
+                document.getElementById('xMax').value = this.xMax;
+                document.getElementById('yMin').value = this.yMin;
+                document.getElementById('yMax').value = this.yMax;
+                
+                // Add event listeners
+                document.getElementById('functionInputs').addEventListener('input', (e) => {
+                    if (e.target.classList.contains('function-input')) {
+                        this.updateFunction(e.target);
+                    }
+                });
+                
+                // Add "Add Function" button
+                const addBtn = document.createElement('button');
+                addBtn.className = 'btn-add';
+                addBtn.textContent = '+ Add Function';
+                addBtn.addEventListener('click', () => this.addFunctionInput());
+                document.getElementById('functionInputs').appendChild(addBtn);
+                
+                // Range input events
+                document.getElementById('xMin').addEventListener('change', () => this.updateRange());
+                document.getElementById('xMax').addEventListener('change', () => this.updateRange());
+                document.getElementById('yMin').addEventListener('change', () => this.updateRange());
+                document.getElementById('yMax').addEventListener('change', () => this.updateRange());
+                
+                // Zoom buttons
+                document.getElementById('zoomIn').addEventListener('click', () => this.zoom(0.8));
+                document.getElementById('zoomOut').addEventListener('click', () => this.zoom(1.25));
+                
+                // Reset view
+                document.getElementById('resetView').addEventListener('click', () => {
+                    this.xMin = -10;
+                    this.xMax = 10;
+                    this.yMin = -10;
+                    this.yMax = 10;
+                    document.getElementById('xMin').value = this.xMin;
+                    document.getElementById('xMax').value = this.xMax;
+                    document.getElementById('yMin').value = this.yMin;
+                    document.getElementById('yMax').value = this.yMax;
+                    this.drawGraph();
+                });
+                
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    this.setCanvasDimensions();
+                    this.drawGraph();
+                });
+                
+                // Initial draw
+                this.drawGraph();
+            }
+            
+            addFunctionInput() {
+                const index = this.functions.length;
+                const color = this.colors[index % this.colors.length];
+                
+                const functionRow = document.createElement('div');
+                functionRow.className = 'function-row';
+                functionRow.setAttribute('data-index', index);
+                
+                const colorIndicator = document.createElement('div');
+                colorIndicator.className = 'color-indicator';
+                colorIndicator.style.backgroundColor = color;
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'function-input';
+                input.placeholder = `f${index + 1}(x) = `;
+                input.setAttribute('data-index', index);
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'btn-remove';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.addEventListener('click', () => this.removeFunction(functionRow));
+                
+                functionRow.appendChild(colorIndicator);
+                functionRow.appendChild(input);
+                functionRow.appendChild(removeBtn);
+                
+                // Add before the "Add Function" button
+                const addBtn = document.querySelector('.btn-add');
+                document.getElementById('functionInputs').insertBefore(functionRow, addBtn);
+                
+                // Add an empty function to the array
+                this.functions.push({
+                    color: color,
+                    expression: '',
+                    parsed: null
+                });
+                
+                // Focus the new input
+                input.focus();
+            }
+            
+            removeFunction(functionRow) {
+                const index = parseInt(functionRow.getAttribute('data-index'));
+                functionRow.remove();
+                
+                // Remove function from array
+                this.functions.splice(index, 1);
+                
+                // Update indices for remaining function rows
+                document.querySelectorAll('.function-row').forEach((row, i) => {
+                    row.setAttribute('data-index', i);
+                    row.querySelector('.function-input').setAttribute('data-index', i);
+                    row.querySelector('.function-input').placeholder = `f${i + 1}(x) = `;
+                });
+                
+                this.drawGraph();
+            }
+            
+            updateFunction(input) {
+                const index = parseInt(input.getAttribute('data-index'));
+                const expression = input.value.trim();
+                
+                try {
+                    // Try to parse the expression
+                    if (expression) {
+                        // Replace ^ with ** for exponentiation
+                        const parsedExpression = math.parse(expression.replace(/\^/g, '**'));
+                        
+                        // Test if it's a valid function of x
+                        const compiled = parsedExpression.compile();
+                        compiled.evaluate({ x: 0 }); // Test evaluation at x=0
+                        
+                        this.functions[index].expression = expression;
+                        this.functions[index].parsed = parsedExpression;
+                    } else {
+                        this.functions[index].expression = '';
+                        this.functions[index].parsed = null;
+                    }
+                } catch (error) {
+                    // Invalid expression, keep it but don't parse
+                    this.functions[index].expression = expression;
+                    this.functions[index].parsed = null;
+                }
+                
+                this.drawGraph();
+            }
+            
+            updateRange() {
+                try {
+                    this.xMin = parseFloat(document.getElementById('xMin').value);
+                    this.xMax = parseFloat(document.getElementById('xMax').value);
+                    this.yMin = parseFloat(document.getElementById('yMin').value);
+                    this.yMax = parseFloat(document.getElementById('yMax').value);
+                    
+                    if (isNaN(this.xMin)) this.xMin = -10;
+                    if (isNaN(this.xMax)) this.xMax = 10;
+                    if (isNaN(this.yMin)) this.yMin = -10;
+                    if (isNaN(this.yMax)) this.yMax = 10;
+                    
+                    // Ensure min < max
+                    if (this.xMin >= this.xMax) this.xMax = this.xMin + 1;
+                    if (this.yMin >= this.yMax) this.yMax = this.yMin + 1;
+                    
+                    document.getElementById('xMin').value = this.xMin;
+                    document.getElementById('xMax').value = this.xMax;
+                    document.getElementById('yMin').value = this.yMin;
+                    document.getElementById('yMax').value = this.yMax;
+                    
+                    this.drawGraph();
+                } catch (error) {
+                    console.error('Error updating range:', error);
+                }
+            }
+            
+            zoom(factor) {
+                const xCenter = (this.xMin + this.xMax) / 2;
+                const yCenter = (this.yMin + this.yMax) / 2;
+                
+                const xRange = (this.xMax - this.xMin) * factor;
+                const yRange = (this.yMax - this.yMin) * factor;
+                
+                this.xMin = xCenter - xRange / 2;
+                this.xMax = xCenter + xRange / 2;
+                this.yMin = yCenter - yRange / 2;
+                this.yMax = yCenter + yRange / 2;
+                
+                document.getElementById('xMin').value = this.xMin.toFixed(2);
+                document.getElementById('xMax').value = this.xMax.toFixed(2);
+                document.getElementById('yMin').value = this.yMin.toFixed(2);
+                document.getElementById('yMax').value = this.yMax.toFixed(2);
+                
+                this.drawGraph();
+            }
+            
+            drawGraph() {
+                // Clear canvas
+                const width = this.canvas.width / window.devicePixelRatio;
+                const height = this.canvas.height / window.devicePixelRatio;
+                this.ctx.clearRect(0, 0, width, height);
+                
+                // Draw axes and grid
+                this.drawGrid(width, height);
+                
+                // Draw functions
+                this.functions.forEach(func => {
+                    if (func.parsed) {
+                        this.plotFunction(func, width, height);
+                    }
+                });
+            }
+            
+            drawGrid(width, height) {
+                // Calculate step sizes
+                const xStep = width / (this.xMax - this.xMin);
+                const yStep = height / (this.yMax - this.yMin);
+                
+                // Draw grid
+                this.ctx.strokeStyle = '#e0e0e0';
+                this.ctx.lineWidth = 0.5;
+                
+                // Calculate grid spacing based on range
+                const xRange = this.xMax - this.xMin;
+                const yRange = this.yMax - this.yMin;
+                
+                let xGridStep = this.calculateGridStep(xRange, width);
+                let yGridStep = this.calculateGridStep(yRange, height);
+                
+                // Draw vertical grid lines
+                for (let x = Math.ceil(this.xMin / xGridStep) * xGridStep; x <= this.xMax; x += xGridStep) {
+                    const pixelX = (x - this.xMin) * xStep;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(pixelX, 0);
+                    this.ctx.lineTo(pixelX, height);
+                    this.ctx.stroke();
+                    
+                    // Draw x-axis labels
+                    this.ctx.fillStyle = '#666';
+                    this.ctx.font = '10px Arial';
+                    this.ctx.textAlign = 'center';
+                    if (Math.abs(x) > 1e-10) { // Don't label zero twice
+                        this.ctx.fillText(x.toFixed(1), pixelX, height - 5);
+                    }
+                }
+                
+                // Draw horizontal grid lines
+                for (let y = Math.ceil(this.yMin / yGridStep) * yGridStep; y <= this.yMax; y += yGridStep) {
+                    const pixelY = height - (y - this.yMin) * yStep;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, pixelY);
+                    this.ctx.lineTo(width, pixelY);
+                    this.ctx.stroke();
+                    
+                    // Draw y-axis labels
+                    this.ctx.fillStyle = '#666';
+                    this.ctx.font = '10px Arial';
+                    this.ctx.textAlign = 'right';
+                    if (Math.abs(y) > 1e-10) { // Don't label zero twice
+                        this.ctx.fillText(y.toFixed(1), 15, pixelY - 5);
+                    }
+                }
+                
+                // Draw x and y axes
+                this.ctx.strokeStyle = '#333';
+                this.ctx.lineWidth = 1;
+                
+                // x-axis
+                const yZero = height - (-this.yMin) * yStep;
+                if (yZero >= 0 && yZero <= height) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, yZero);
+                    this.ctx.lineTo(width, yZero);
+                    this.ctx.stroke();
+                    
+                    // Draw x-axis label
+                    this.ctx.fillStyle = '#333';
+                    this.ctx.font = '12px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText('x', width - 10, yZero + 15);
+                }
+                
+                // y-axis
+                const xZero = (-this.xMin) * xStep;
+                if (xZero >= 0 && xZero <= width) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(xZero, 0);
+                    this.ctx.lineTo(xZero, height);
+                    this.ctx.stroke();
+                    
+                    // Draw y-axis label
+                    this.ctx.fillStyle = '#333';
+                    this.ctx.font = '12px Arial';
+                    this.ctx.textAlign = 'right';
+                    this.ctx.fillText('y', xZero - 10, 15);
+                }
+                
+                // Draw origin label
+                if (xZero >= 0 && xZero <= width && yZero >= 0 && yZero <= height) {
+                    this.ctx.fillStyle = '#333';
+                    this.ctx.font = '10px Arial';
+                    this.ctx.textAlign = 'right';
+                    this.ctx.fillText('0', xZero - 5, yZero + 15);
+                }
+            }
+            
+            calculateGridStep(range, pixels) {
+                // Aim for roughly 10 grid lines
+                const targetLines = 10;
+                const roughStep = range / targetLines;
+                
+                // Round to a nice number
+                const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
+                const normalized = roughStep / magnitude;
+                
+                if (normalized < 2) return magnitude;
+                if (normalized < 5) return 2 * magnitude;
+                return 5 * magnitude;
+            }
+            
+            plotFunction(func, width, height) {
+                const xStep = width / (this.xMax - this.xMin);
+                const yStep = height / (this.yMax - this.yMin);
+                
+                // Number of points to plot - adjust for smoothness
+                const points = width * 2;
+                const dx = (this.xMax - this.xMin) / points;
+                
+                this.ctx.strokeStyle = func.color;
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                
+                let prevY = null;
+                const compiled = func.parsed.compile();
+                
+                for (let i = 0; i <= points; i++) {
+                    const x = this.xMin + i * dx;
+                    
+                    try {
+                        let y = compiled.evaluate({ x: x });
+                        
+                        // Skip points with undefined values
+                        if (typeof y !== 'number' || isNaN(y) || !isFinite(y)) {
+                            if (i > 0 && prevY !== null) {
+                                // End the current path if we've already started drawing
+                                this.ctx.stroke();
+                                prevY = null;
+                            }
+                            continue;
+                        }
+                        
+                        // Convert to pixel coordinates
+                        const pixelX = (x - this.xMin) * xStep;
+                        const pixelY = height - (y - this.yMin) * yStep;
+                        
+                        // Handle discontinuities
+                        if (i === 0 || prevY === null || Math.abs(pixelY - prevY) > height / 2) {
+                            if (i > 0 && prevY !== null) {
+                                // End the current path
+                                this.ctx.stroke();
+                            }
+                            // Start a new path
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(pixelX, pixelY);
+                        } else {
+                            this.ctx.lineTo(pixelX, pixelY);
+                        }
+                        
+                        prevY = pixelY;
+                    } catch (error) {
+                        // End the current path if there's an error
+                        if (i > 0 && prevY !== null) {
+                            this.ctx.stroke();
+                            prevY = null;
+                        }
+                    }
+                }
+                
+                // Complete the path
+                this.ctx.stroke();
+            }
+        }
+        
+        // Initialize the calculator when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new GraphingCalculator();
+        });
+    </script>
+</body>
+</html>

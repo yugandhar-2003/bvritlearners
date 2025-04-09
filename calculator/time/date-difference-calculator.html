@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Difference Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #0a0909;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .date-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .date-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        input[type="date"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            background-color: #3e8e41;
+        }
+        
+        .result {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .result h2 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .difference-display {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        .difference-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        
+        .unit-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .error {
+            color: #f44336;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Date Difference Calculator</h1>
+        
+        <div class="date-inputs">
+            <div class="date-group">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date">
+            </div>
+            
+            <div class="date-group">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date">
+            </div>
+        </div>
+        
+        <div id="error-message" class="error"></div>
+        
+        <button id="calculate-btn">Calculate Difference</button>
+        
+        <div class="result" id="result">
+            <h2>Difference Between Dates</h2>
+            
+            <div class="difference-display">
+                <div class="difference-unit">
+                    <div id="years" class="value">0</div>
+                    <div class="unit-label">Years</div>
+                </div>
+                
+                <div class="difference-unit">
+                    <div id="months" class="value">0</div>
+                    <div class="unit-label">Months</div>
+                </div>
+                
+                <div class="difference-unit">
+                    <div id="days" class="value">0</div>
+                    <div class="unit-label">Days</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div>Total Days: <span id="total-days">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const errorMessage = document.getElementById('error-message');
+        const yearsElement = document.getElementById('years');
+        const monthsElement = document.getElementById('months');
+        const daysElement = document.getElementById('days');
+        const totalDaysElement = document.getElementById('total-days');
+        
+        // Set default dates (today and tomorrow)
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        startDateInput.valueAsDate = today;
+        endDateInput.valueAsDate = tomorrow;
+        
+        // Calculate button click handler
+        calculateBtn.addEventListener('click', calculateDateDifference);
+        
+        // Calculate date difference
+        function calculateDateDifference() {
+            errorMessage.textContent = '';
+            
+            // Get date values
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            
+            // Validate dates
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                errorMessage.textContent = 'Please enter valid dates';
+                return;
+            }
+            
+            if (startDate > endDate) {
+                errorMessage.textContent = 'Start date cannot be after end date';
+                return;
+            }
+            
+            // Calculate total days difference
+            const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+            
+            // Calculate years, months, and days
+            const yearDiff = endDate.getFullYear() - startDate.getFullYear();
+            const monthDiff = endDate.getMonth() - startDate.getMonth();
+            const dayDiff = endDate.getDate() - startDate.getDate();
+            
+            let years = yearDiff;
+            let months = monthDiff;
+            let days = dayDiff;
+            
+            // Adjust for negative days
+            if (days < 0) {
+                const lastMonthDate = new Date(endDate.getFullYear(), endDate.getMonth(), 0);
+                days = lastMonthDate.getDate() + dayDiff;
+                months--;
+            }
+            
+            // Adjust for negative months
+            if (months < 0) {
+                months += 12;
+                years--;
+            }
+            
+            // Update the display
+            yearsElement.textContent = years;
+            monthsElement.textContent = months;
+            daysElement.textContent = days;
+            totalDaysElement.textContent = totalDays;
+        }
+        
+        // Calculate initial difference
+        calculateDateDifference();
+    </script>
+</body>
+</html>

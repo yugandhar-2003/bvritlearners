@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS for Beginners - BVRIT Learning Platform</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="modern-course-styles.css">
+
+    <!-- Critical styles to ensure navigation is always visible -->
+    <style>
+        /* Force navbar menu to always be visible */
+        .navbar-menu,
+        #navbarMenu,
+        .navbar-modern .navbar-menu,
+        nav.navbar-modern .navbar-menu,
+        .navbar-container .navbar-menu,
+        div#navbarMenu {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            margin: 0 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Spacer removed since header is no longer present */
+
+        /* Resource button styles */
+        .resource-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, var(--accent-600) 0%, var(--accent-500) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(190, 75, 219, 0.3);
+        }
+
+        .resource-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(190, 75, 219, 0.4);
+        }
+
+        .resource-button i {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header removed as requested -->
+
+    <div class="container-modern">
+        <!-- Back Button -->
+        <a href="../tutorials/index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Tutorials
+        </a>
+
+        <!-- Course Header -->
+        <div class="course-header">
+            <h1 class="course-title">CSS for Beginners</h1>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button" data-tab="english">
+                <i class="fas fa-language"></i> English Tutorial
+            </button>
+            <button class="tab-button" data-tab="hindi">
+                <i class="fas fa-language"></i> Hindi Tutorial
+            </button>
+            <button class="tab-button" data-tab="telugu">
+                <i class="fas fa-language"></i> Telugu Tutorial
+            </button>
+        </div>
+
+        <!-- Tab Container -->
+        <div class="tab-container">
+            <!-- English Tab -->
+            <div class="tab-content" id="english-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/OXGznpKZ_sA" title="CSS Tutorial – Full Course for Beginners" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Hindi Tab -->
+            <div class="tab-content" id="hindi-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/Edsxf_NBFrw" title="CSS Tutorial In Hindi (With Notes) 🔥" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Telugu Tab -->
+            <div class="tab-content" id="telugu-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/1gKm9R_5lsE?list=PLzdWZT-ZJD09lGBkH4LIUwqsCWI7QPEXQ" title="CSS tutorial for beginners | CSS course | CSS for beginners in Telugu | CSS tutorial in Telugu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Button -->
+        <div style="text-align: center;">
+            <a href="https://drive.google.com/drive/folders/1-vR1K6tr8K_n1hc2o2Q7WMAyH6xiNdrP?usp=sharing" class="resource-button">
+                <i class="fas fa-download"></i> Get Resources
+            </a>
+        </div>
+        <!-- Topics Section -->
+        <div class="topics-section">
+            <h2>CSS Tutorial Topics</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem;">
+                <!-- Basics Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-code" style="margin-right: 0.5rem;"></i> Basics
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Introduction to CSS</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                What is CSS?
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                CSS syntax and structure
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Including CSS in HTML (inline, internal, external)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Selectors and Properties</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Basic selectors (element, class, ID)
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Attribute selectors
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Combinator selectors (descendant, child, sibling)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Colors and Backgrounds</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Color values (name, HEX, RGB, HSL)
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Background properties (color, image, position, size)
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Gradients (linear, radial)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Intermediate Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-laptop-code" style="margin-right: 0.5rem;"></i> Intermediate
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Box Model</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Understanding the box model
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Margins, borders, padding
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Width and height properties
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Flexbox</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Introduction to Flexbox
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Flex container properties
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Flex item properties
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">CSS Grid</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Introduction to CSS Grid
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Grid container properties
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Grid item properties
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Advanced Section -->
+                <div style="background-color: var(--dark-surface); border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-md);">
+                    <h3 style="color: var(--primary-400); font-size: 1.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dark-border); padding-bottom: 0.5rem;">
+                        <i class="fas fa-brain" style="margin-right: 0.5rem;"></i> Advanced
+                    </h3>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Responsive Design</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Introduction to responsive design
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Media queries
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Responsive units and images
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">Transitions and Animations</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                CSS transitions
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                CSS animations (keyframes, animation properties)
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Transformations (translate, rotate, scale, skew)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--accent-400); font-size: 1.1rem; margin-bottom: 0.75rem;">CSS Variables and Custom Properties</h4>
+                        <ul style="list-style-type: none; padding-left: 1rem;">
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Introduction to CSS variables
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Defining and using custom properties
+                            </li>
+                            <li style="margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem;">
+                                <i class="fas fa-chevron-right" style="color: var(--primary-500); position: absolute; left: 0; top: 0.25rem;"></i>
+                                Variable scope and inheritance
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Course JavaScript -->
+    <script src="modern-course.js"></script>
+</body>
+</html>

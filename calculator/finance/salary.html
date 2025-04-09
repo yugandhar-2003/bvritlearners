@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Conversion Calculator</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <style>
+        /* === CSS Styles Start === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #20c997;  /* Mint Green */
+            --secondary-color: #6f42c1; /* Purple */
+            --light-grey: #f8f9fa;
+            --medium-grey: #e9ecef;
+            --dark-grey: #ced4da;
+            --text-dark: #212529;
+            --text-medium: #495057;
+            --text-light: #6c757d;
+            --border-color: #e2e8f0;
+            --success-color: #198754; /* Darker Green */
+            --error-color: #dc3545;   /* Red */
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+            --card-bg: #ffffff;
+            --shadow-soft: 0 4px 15px rgba(32, 201, 151, 0.08);
+            --shadow-medium: 0 8px 25px rgba(32, 201, 151, 0.12);
+            --focus-ring: 0 0 0 3px rgba(32, 201, 151, 0.2);
+            --border-radius-main: 14px;
+            --border-radius-inner: 8px;
+            --transition-speed: 0.3s;
+            --transition-ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-medium);
+            line-height: 1.7;
+            padding: 25px;
+            font-size: 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px; /* Wider layout */
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .page-header {
+            padding: 20px 35px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: #fcfdff;
+        }
+        .breadcrumb { font-size: 0.85rem; color: var(--text-light); }
+        .breadcrumb a { color: var(--primary-color); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .print-button {
+            padding: 8px 15px; background-color: var(--text-light); color: white;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+            transition: background-color var(--transition-speed) var(--transition-ease);
+        }
+        .print-button:hover { background-color: #5a6268; }
+        .print-button i { margin-right: 5px; }
+
+        header { padding: 25px 35px; border-bottom: 1px solid var(--border-color); }
+        header h1 { font-weight: 600; font-size: 1.8rem; color: var(--text-dark); margin-bottom: 8px; }
+        header p { font-size: 0.95rem; color: var(--text-light); }
+
+        .calculator-content {
+            display: grid; grid-template-columns: 40% 60%; gap: 0;
+        }
+        .input-section, .results-section { padding: 35px; }
+        .input-section { border-right: 1px solid var(--border-color); background-color: var(--light-grey); }
+        @media (max-width: 900px) {
+            .calculator-content { grid-template-columns: 1fr; }
+            .input-section { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+
+        .section-title {
+            font-weight: 600; font-size: 1.25rem; color: var(--text-dark);
+            margin-bottom: 30px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+            display: block;
+        }
+        .input-section .section-title { margin-top: 0;}
+
+        .input-group {
+            margin-bottom: 20px; display: flex; align-items: center; flex-wrap: wrap;
+        }
+        .input-group label {
+            flex-basis: 170px; /* Adjusted label width */ padding-right: 15px; font-weight: 500;
+            font-size: 0.95rem; color: var(--text-medium); text-align: right;
+        }
+        .input-group .input-field-area { flex: 1; min-width: 150px; position: relative; }
+
+        /* Special styling for Salary Amount/Frequency */
+        .salary-input-group {
+             display: flex; gap: 8px; align-items: center;
+        }
+        .salary-input-group input[type="number"] { flex-grow: 1; }
+        .salary-input-group select {
+            flex-basis: 100px; /* Adjust width as needed */
+            padding: 11px 10px; padding-right: 30px; /* Space for arrow */
+        }
+
+        /* Input styling */
+        input[type="number"], select {
+            width: 100%; padding: 11px 14px; border: 1px solid var(--dark-grey);
+            border-radius: var(--border-radius-inner); font-size: 1rem;
+            transition: border-color var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease);
+            background-color: var(--card-bg); color: var(--text-dark);
+        }
+        select {
+             appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+             background-repeat: no-repeat; background-position: right 0.7rem center; background-size: 16px 12px;
+        }
+        input[type="number"]::placeholder { color: #adb5bd; }
+        input[type="number"]:focus, select:focus {
+            outline: none; border-color: var(--primary-color); box-shadow: var(--focus-ring);
+        }
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .input-adornment { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 0.9rem; opacity: 0.8; pointer-events: none; }
+        input[type="number"].has-adornment { padding-right: 40px; }
+
+        .calculate-button-container { text-align: center; margin-top: 35px; }
+        .calculate-button {
+            padding: 14px 35px; background: linear-gradient(135deg, var(--success-color), #157347); /* Darker Green gradient */
+            color: white; border: none; border-radius: var(--border-radius-inner);
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: all var(--transition-speed) var(--transition-ease); display: inline-flex;
+            align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25);
+        }
+        .calculate-button:hover { opacity: 0.9; transform: translateY(-3px); box-shadow: 0 7px 18px rgba(25, 135, 84, 0.3); }
+        .calculate-button:active { transform: translateY(0); box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25); }
+
+        .error-message { color: var(--error-color); font-size: 0.9rem; margin-top: 18px; text-align: center; min-height: 1.3em; font-weight: 500; }
+
+        /* --- Results Section Styling --- */
+        .results-section { background-color: #fcfdff; }
+
+        .results-header {
+             display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+        }
+         .save-calculation { font-size: 0.9rem; color: var(--primary-color); text-decoration: none; font-weight: 500;}
+         .save-calculation:hover { text-decoration: underline; }
+
+        .results-table-container {
+            border: 1px solid var(--border-color); border-radius: var(--border-radius-inner);
+            overflow: hidden; /* Clip corners */
+            box-shadow: var(--shadow-soft);
+        }
+        table.results-table {
+            width: 100%; border-collapse: collapse; font-size: 0.95rem;
+        }
+        .results-table th, .results-table td {
+            padding: 12px 15px; text-align: right; border-bottom: 1px solid var(--border-color);
+        }
+        .results-table th {
+            background-color: var(--light-grey); font-weight: 600; color: var(--text-dark);
+            border-bottom-width: 2px; border-bottom-color: var(--dark-grey);
+        }
+        .results-table td:first-child, .results-table th:first-child { text-align: left; font-weight: 500; } /* Frequency column */
+        .results-table tr:last-child td { border-bottom: none; }
+        .results-table tr:nth-child(even) { background-color: #f8fafd; }
+        .results-table tr:hover { background-color: #f1f9ff; }
+        .results-table td { color: var(--text-medium); }
+        .results-table td:not(:first-child) { font-weight: 500; color: var(--text-dark); } /* Data cells bolder */
+
+
+        .disclaimer {
+            font-size: 0.85rem; color: var(--text-light); margin-top: 25px;
+            padding: 15px; background-color: var(--light-grey); border-radius: var(--border-radius-inner);
+            border: 1px solid var(--medium-grey);
+        }
+
+        .info-section { padding: 35px; font-size: 0.95rem; border-top: 1px solid var(--border-color); background-color: #fcfdff; }
+        .info-section h3 { font-size: 1.2rem; font-weight: 600; color: var(--text-dark); margin-bottom: 12px; margin-top: 25px; }
+        .info-section h3:first-child { margin-top: 0; }
+        .info-section p, .info-section li { margin-bottom: 18px; color: var(--text-medium); }
+        .info-section ul { padding-left: 25px; }
+        .related-links { margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border-color); }
+        .related-links a { margin-right: 18px; color: var(--primary-color); text-decoration: none; font-weight: 500;}
+        .related-links a:hover { text-decoration: underline; }
+
+        table.info-table { /* Table in info section */
+            width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 0.9rem;
+        }
+        .info-table th, .info-table td {
+             border: 1px solid var(--dark-grey); padding: 8px 10px; text-align: left;
+        }
+        .info-table th { background-color: var(--medium-grey); font-weight: 600;}
+
+
+        footer {
+             background-color: var(--text-dark); color: var(--light-grey); text-align: center;
+             padding: 25px 35px; font-size: 0.9rem; opacity: 0.95; margin-top: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+             .input-group { flex-direction: column; align-items: stretch; }
+             .input-group label { flex-basis: auto; text-align: left; margin-bottom: 6px; }
+             .salary-input-group { flex-direction: column; align-items: stretch; gap: 10px;}
+             .salary-input-group select { flex-basis: auto; }
+             .page-header { flex-direction: column; gap: 10px; }
+             header h1 { font-size: 1.6rem;}
+             body { padding: 15px;}
+             .input-section, .results-section, .info-section { padding: 25px;}
+             .results-table th, .results-table td { padding: 10px 8px; font-size: 0.9rem;}
+        }
+
+        /* Utility */
+        .hidden { display: none; }
+        /* === CSS Styles End === */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            
+            <button class="print-button" onclick="window.print();"><i class="fas fa-print"></i> Print</button>
+        </header>
+        <header>
+            <h1>Salary Calculator</h1>
+            <p>Convert salary amounts based on payment frequency, adjusting for time off.</p>
+        </header>
+
+        <main class="calculator-content">
+            <section class="input-section">
+                <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 25px;">Modify the values and click the calculate button to use</p>
+
+                 <h2 class="section-title">Inputs</h2>
+
+                 <div class="input-group">
+                    <label for="salaryAmount">Salary amount</label>
+                    <div class="input-field-area salary-input-group">
+                        <input type="number" id="salaryAmount" placeholder="e.g., 50" value="50" min="0">
+                        <span>per</span>
+                        <select id="salaryFrequency">
+                            <option value="hour" selected>Hour</option>
+                            <option value="day">Day</option>
+                            <option value="week">Week</option>
+                            <option value="bi-week">Bi-Week</option>
+                            <option value="semi-month">Semi-Month</option>
+                            <option value="month">Month</option>
+                            <option value="quarter">Quarter</option>
+                            <option value="year">Year</option>
+                        </select>
+                    </div>
+                 </div>
+
+                 <div class="input-group">
+                    <label for="hoursPerWeek">Hours per week</label>
+                    <div class="input-field-area">
+                         <input type="number" id="hoursPerWeek" placeholder="e.g., 40" value="40" min="0">
+                    </div>
+                 </div>
+                 <div class="input-group">
+                    <label for="daysPerWeek">Days per week</label>
+                    <div class="input-field-area">
+                         <input type="number" id="daysPerWeek" placeholder="e.g., 5" value="5" min="0" max="7">
+                    </div>
+                 </div>
+                 <div class="input-group">
+                    <label for="holidaysPerYear">Holidays per year</label>
+                    <div class="input-field-area">
+                         <input type="number" id="holidaysPerYear" placeholder="e.g., 10" value="10" min="0">
+                    </div>
+                 </div>
+                 <div class="input-group">
+                    <label for="vacationDaysPerYear">Vacation days per year</label>
+                    <div class="input-field-area">
+                         <input type="number" id="vacationDaysPerYear" placeholder="e.g., 15" value="15" min="0">
+                    </div>
+                 </div>
+
+
+                 <div class="calculate-button-container">
+                    <button id="calculateBtn" class="calculate-button">
+                        <i class="fas fa-sync-alt"></i> Convert Salary
+                    </button>
+                 </div>
+                <div id="error-message" class="error-message"></div>
+            </section>
+
+            <section class="results-section">
+                 <div class="results-header">
+                    <h2 class="section-title" style="margin-bottom: 0; border-bottom: none;">Result</h2>
+                     <!-- <a href="#" class="save-calculation">Save this calculation</a> -->
+                </div>
+
+                 <div class="results-table-container">
+                     <table class="results-table" id="resultsTable">
+                         <thead>
+                             <tr>
+                                 <th>Pay Frequency</th>
+                                 <th>Unadjusted</th>
+                                 <th>Holidays & vacation days adjusted</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                            <tr>
+                                <td>Hourly</td>
+                                <td id="hourlyUnadjusted">$0.00</td>
+                                <td id="hourlyAdjusted">$0.00</td>
+                            </tr>
+                            <tr>
+                                <td>Daily</td>
+                                <td id="dailyUnadjusted">$0.00</td>
+                                <td id="dailyAdjusted">$0.00</td>
+                             </tr>
+                             <tr>
+                                <td>Weekly</td>
+                                <td id="weeklyUnadjusted">$0.00</td>
+                                <td id="weeklyAdjusted">$0.00</td>
+                             </tr>
+                             <tr>
+                                <td>Bi-weekly</td>
+                                <td id="biWeeklyUnadjusted">$0.00</td>
+                                <td id="biWeeklyAdjusted">$0.00</td>
+                             </tr>
+                             <tr>
+                                <td>Semi-monthly</td>
+                                <td id="semiMonthlyUnadjusted">$0.00</td>
+                                <td id="semiMonthlyAdjusted">$0.00</td>
+                             </tr>
+                             <tr>
+                                <td>Monthly</td>
+                                <td id="monthlyUnadjusted">$0.00</td>
+                                <td id="monthlyAdjusted">$0.00</td>
+                             </tr>
+                              <tr>
+                                <td>Quarterly</td>
+                                <td id="quarterlyUnadjusted">$0.00</td>
+                                <td id="quarterlyAdjusted">$0.00</td>
+                            </tr>
+                            <tr>
+                                <td>Annual</td>
+                                <td id="annualUnadjusted">$0.00</td>
+                                <td id="annualAdjusted">$0.00</td>
+                            </tr>
+                         </tbody>
+                     </table>
+                 </div>
+                
+
+            </section>
+        </main>
+
+         <section class="info-section">
+            <!-- Paste the informational text from the example here -->
+            <div class="related-links">
+                 <strong>Related:</strong>
+                 <a href="#">Take Home Pay Calculator</a> |
+                 <a href="#">Income Tax Calculator</a>
+            </div>
+
+            <h3>Salary</h3>
+            <p>A salary is normally paid on a regular basis, and the amount normally does not fluctuate based on the quality or quantity of work performed...</p>
+
+            <h3>Wage</h3>
+            <p>There are several technical differences between the terms "wage" and "salary." For starters, while the word "salary" is best associated with employee compensation on an annual basis, the word "wage" is best associated with employee compensation based on the number of hours worked multiplied by an hourly rate of pay...</p>
+             <p>Most salaries and wages are paid periodically, typically monthly, semi-monthly, bi-weekly, weekly, etc. Although it is called a Salary Calculator, wage-earners may still use the calculator to convert amounts.</p>
+
+            <h3>Miscellaneous Employee Benefits</h3>
+            <p>While salary and wages are important, not all financial benefits from employment come in the form of a paycheck... Miscellaneous employee benefits can be worth a significant amount in terms of monetary value...</p>
+
+             <h3>Self-employed Contractors</h3>
+            <p>Self-employed contractors (freelancers who sell their goods and services as sole proprietorships) typically provide their own rates... contractors generally do not have benefits such as paid time off... As a result, their pay rates should generally be higher...</p>
+
+             <h3>How Unadjusted and Adjusted Salaries are calculated?</h3>
+             <p>Using a $30 hourly rate, an average of eight hours worked each day, and 260 working days a year (52 weeks multiplied by 5 working days a week), the annual unadjusted salary can be calculated as: $30 × 8 × (260) = $62,400</p>
+            <p>The adjusted annual salary can be calculated as: $30 × 8 × (260 - 25) = $56,400 (Using 10 holidays and 15 paid vacation days a year...)</p>
+             <p>All bi-weekly, semi-monthly, monthly, and quarterly figures are derived from these annual calculations...</p>
+
+            <h3>Different Pay Frequencies</h3>
+             <p>The calculator contains options to select from a number of periods normally used to express salary amounts... In the U.S., there is no federal law that mandates pay frequency... The most common pay period frequencies tend to be monthly, semi-monthly (twice a month), bi-weekly (every two weeks), weekly, and daily. They are explained in the following chart.</p>
+             <table class="info-table">
+                <thead><tr><th>Frequency</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td>Daily</td><td>Pays every day, usually at the end of the day...</td></tr>
+                    <tr><td>Weekly</td><td>Pays once each week, usually on Fridays...</td></tr>
+                    <tr><td>Bi-Weekly</td><td>Pays every two weeks, which comes out to 26 times a year...</td></tr>
+                    <tr><td>Semi-Monthly</td><td>Pays twice each month, usually on the 15th and the last day...</td></tr>
+                    <tr><td>Monthly</td><td>Pays once per month. Usually the most cost-friendly...</td></tr>
+                </tbody>
+             </table>
+
+            <h3>U.S. Salary Information</h3>
+            <p>In the U.S., salaried employees are also often known as exempt employees... The federal minimum wage rate is $7.25 an hour. However, states may have their own minimum wage rates...</p>
+
+            <h3>Factors that Influence Salary (and Wage) in the U.S.</h3>
+             <p>In the third quarter of 2024, the average salary of a full-time employee in the U.S. is $1,165 per week... The following are only generalizations...</p>
+            <ul>
+                <li>Age—A person closer to their peak income years...</li>
+                <li>Education—The higher the attained level of education...</li>
+                <li>Experience—In general, the further entrenched a person is...</li>
+                <li>Race and Ethnicity—Black men earned a median salary...</li>
+                <li>Gender—Men earned an average salary...</li>
+                <li>Industry—Industry affects wages paid...</li>
+                <li>Location—Different locations will have different supplies...</li>
+                <li>Misc.—Overall performance of companies; dangerous working conditions (hazard pay); unfavorable shift hours...</li>
+            </ul>
+
+            <h3>The 11 Annual Federal Holidays in the U.S.</h3>
+             <p>January (New Year's Day, MLK Jr. Day), February (Washington's Birthday), May (Memorial Day), June (Juneteenth), July (Independence Day), September (Labor Day), October (Columbus Day), November (Veterans Day, Thanksgiving Day), December (Christmas Day)</p>
+             <p>Although there are 11 federal holidays..., companies typically allow time off for 6 to 11 holidays... Remember to adjust the "Holidays per Year" input...</p>
+
+            <h3>Vacation Days, or Paid Time Off (PTO)</h3>
+            <p>Traditionally in the U.S., vacation days were distinctly separate... Today, it is more common to have them all integrated together into a system called paid time off (PTO)...</p>
+            <p>In the U.S., the Fair Labor Standards Act (FLSA) does not require employers to give their employees any vacation time off... the average American gets around 10 days of PTO a year...</p>
+
+            <h3>How to Increase Salary</h3>
+            <p>There are very few people in the world who wouldn't welcome a higher salary... While it is definitely easier said than done, it is certainly possible.</p>
+            <ul>
+                <li>Education—Statistics have shown that the higher the level of education...</li>
+                <li>Experience—The more experience a person has...</li>
+                <li>Network—For many niche professions or industries...</li>
+                <li>Performance Reviews—Most employers give out annual performance reviews...</li>
+                <li>Negotiate—If a performance review was mostly positive...</li>
+                <li>Change jobs—People that are stuck in a career...</li>
+            </ul>
+            <!-- End of informational text -->
+         </section>
+
+       
+    </div>
+
+    <script>
+        // === JavaScript Logic Start ===
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Get DOM Elements ---
+            const salaryAmountInput = document.getElementById('salaryAmount');
+            const salaryFrequencySelect = document.getElementById('salaryFrequency');
+            const hoursPerWeekInput = document.getElementById('hoursPerWeek');
+            const daysPerWeekInput = document.getElementById('daysPerWeek');
+            const holidaysPerYearInput = document.getElementById('holidaysPerYear');
+            const vacationDaysPerYearInput = document.getElementById('vacationDaysPerYear');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const errorMessageDiv = document.getElementById('error-message');
+
+            // Result Table Cells
+            const results = {
+                hourly: { unadj: document.getElementById('hourlyUnadjusted'), adj: document.getElementById('hourlyAdjusted') },
+                daily: { unadj: document.getElementById('dailyUnadjusted'), adj: document.getElementById('dailyAdjusted') },
+                weekly: { unadj: document.getElementById('weeklyUnadjusted'), adj: document.getElementById('weeklyAdjusted') },
+                biWeekly: { unadj: document.getElementById('biWeeklyUnadjusted'), adj: document.getElementById('biWeeklyAdjusted') },
+                semiMonthly: { unadj: document.getElementById('semiMonthlyUnadjusted'), adj: document.getElementById('semiMonthlyAdjusted') },
+                monthly: { unadj: document.getElementById('monthlyUnadjusted'), adj: document.getElementById('monthlyAdjusted') },
+                quarterly: { unadj: document.getElementById('quarterlyUnadjusted'), adj: document.getElementById('quarterlyAdjusted') },
+                annual: { unadj: document.getElementById('annualUnadjusted'), adj: document.getElementById('annualAdjusted') }
+            };
+
+            // Footer Year
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
+
+            // --- Constants ---
+            const WEEKS_PER_YEAR = 52;
+            const MONTHS_PER_YEAR = 12;
+            const QUARTERS_PER_YEAR = 4;
+            const AVG_DAYS_PER_MONTH = 365.25 / MONTHS_PER_YEAR; // More accurate average
+
+            // --- Event Listeners ---
+            calculateBtn.addEventListener('click', handleCalculation);
+
+            const allInputs = document.querySelectorAll('.input-section input, .input-section select');
+             allInputs.forEach(input => {
+                input.addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter') { event.preventDefault(); handleCalculation(); }
+                });
+                // Optional: Recalculate on change
+                // input.addEventListener('input', handleCalculation);
+             });
+
+            // --- Calculation Handling ---
+            function handleCalculation() {
+                clearError();
+                clearResults(); // Clear previous results first
+
+                // 1. Get and Validate Inputs
+                const salaryAmount = parseFloat(salaryAmountInput.value) || 0;
+                const frequency = salaryFrequencySelect.value;
+                const hoursPerWeek = parseFloat(hoursPerWeekInput.value) || 0;
+                const daysPerWeek = parseFloat(daysPerWeekInput.value) || 0;
+                const holidaysPerYear = parseFloat(holidaysPerYearInput.value) || 0;
+                const vacationDaysPerYear = parseFloat(vacationDaysPerYearInput.value) || 0;
+
+                // Basic Validations
+                if (salaryAmount <= 0) return showError('Please enter a valid Salary Amount.');
+                if (hoursPerWeek <= 0) return showError('Please enter valid Hours per week.');
+                if (daysPerWeek <= 0 || daysPerWeek > 7) return showError('Please enter valid Days per week (1-7).');
+                if (holidaysPerYear < 0 || vacationDaysPerYear < 0) return showError('Holidays and Vacation days cannot be negative.');
+
+                const hoursPerDay = hoursPerWeek / daysPerWeek;
+                if (!isFinite(hoursPerDay) || hoursPerDay <= 0) return showError('Calculation resulted in invalid Hours per day.');
+
+                // 2. Calculate Base Annual Salary (using calculator's assumption logic)
+                let baseAnnualSalary = 0;
+                let isInputAdjusted = false; // Flag to know if the *input* value represents an adjusted salary
+
+                 const totalWorkDaysYear = daysPerWeek * WEEKS_PER_YEAR; // e.g., 5 * 52 = 260
+                 const nonWorkDays = holidaysPerYear + vacationDaysPerYear;
+                 const actualWorkDaysYear = totalWorkDaysYear - nonWorkDays;
+
+                 if (actualWorkDaysYear <= 0) return showError('Holidays/Vacation exceed total work days.');
+                 const adjustmentFactor = totalWorkDaysYear / actualWorkDaysYear; // Factor to *increase* salary if input is adjusted
+
+
+                switch (frequency) {
+                    case 'hour':
+                        baseAnnualSalary = salaryAmount * hoursPerDay * totalWorkDaysYear;
+                        isInputAdjusted = false; // Hourly input is assumed unadjusted
+                        break;
+                    case 'day':
+                         baseAnnualSalary = salaryAmount * totalWorkDaysYear;
+                         isInputAdjusted = false; // Daily input is assumed unadjusted
+                         break;
+                    case 'week':
+                        baseAnnualSalary = salaryAmount * WEEKS_PER_YEAR;
+                        isInputAdjusted = true; // Weekly and higher assumed adjusted
+                        break;
+                    case 'bi-week':
+                        baseAnnualSalary = salaryAmount * (WEEKS_PER_YEAR / 2);
+                        isInputAdjusted = true;
+                        break;
+                    case 'semi-month':
+                        baseAnnualSalary = salaryAmount * (MONTHS_PER_YEAR * 2);
+                         isInputAdjusted = true;
+                        break;
+                    case 'month':
+                         baseAnnualSalary = salaryAmount * MONTHS_PER_YEAR;
+                         isInputAdjusted = true;
+                        break;
+                    case 'quarter':
+                         baseAnnualSalary = salaryAmount * QUARTERS_PER_YEAR;
+                         isInputAdjusted = true;
+                        break;
+                    case 'year':
+                         baseAnnualSalary = salaryAmount;
+                         isInputAdjusted = true;
+                        break;
+                    default:
+                        return showError('Invalid salary frequency selected.');
+                }
+
+                 if (!isFinite(baseAnnualSalary)) return showError('Calculation error deriving base salary.');
+
+                 // 3. Determine Unadjusted and Adjusted Annual Salaries
+                 let annualUnadjusted, annualAdjusted;
+
+                 if (isInputAdjusted) {
+                    // The input 'baseAnnualSalary' is actually the *adjusted* salary
+                    annualAdjusted = baseAnnualSalary;
+                    // Calculate the equivalent unadjusted salary
+                    annualUnadjusted = annualAdjusted * adjustmentFactor;
+                 } else {
+                    // The input 'baseAnnualSalary' is the *unadjusted* salary
+                    annualUnadjusted = baseAnnualSalary;
+                    // Calculate the equivalent adjusted salary
+                    annualAdjusted = annualUnadjusted / adjustmentFactor;
+                 }
+
+                 if (!isFinite(annualUnadjusted) || !isFinite(annualAdjusted)) return showError('Calculation error adjusting salary.');
+
+
+                // 4. Calculate All Frequencies
+                const unadjustedValues = calculateFrequencies(annualUnadjusted, hoursPerWeek, daysPerWeek);
+                const adjustedValues = calculateFrequencies(annualAdjusted, hoursPerWeek, daysPerWeek);
+
+
+                // 5. Populate Results Table
+                results.hourly.unadj.textContent = formatNumber(unadjustedValues.hourly, 2);
+                results.hourly.adj.textContent = formatNumber(adjustedValues.hourly, 2);
+
+                results.daily.unadj.textContent = formatCurrency(unadjustedValues.daily);
+                results.daily.adj.textContent = formatCurrency(adjustedValues.daily);
+
+                results.weekly.unadj.textContent = formatCurrency(unadjustedValues.weekly);
+                results.weekly.adj.textContent = formatCurrency(adjustedValues.weekly);
+
+                results.biWeekly.unadj.textContent = formatCurrency(unadjustedValues.biWeekly);
+                results.biWeekly.adj.textContent = formatCurrency(adjustedValues.biWeekly);
+
+                results.semiMonthly.unadj.textContent = formatCurrency(unadjustedValues.semiMonthly);
+                results.semiMonthly.adj.textContent = formatCurrency(adjustedValues.semiMonthly);
+
+                results.monthly.unadj.textContent = formatCurrency(unadjustedValues.monthly);
+                results.monthly.adj.textContent = formatCurrency(adjustedValues.monthly);
+
+                results.quarterly.unadj.textContent = formatCurrency(unadjustedValues.quarterly);
+                results.quarterly.adj.textContent = formatCurrency(adjustedValues.quarterly);
+
+                results.annual.unadj.textContent = formatCurrency(unadjustedValues.annual);
+                results.annual.adj.textContent = formatCurrency(adjustedValues.annual);
+
+            }
+
+             // --- Calculate Frequencies from Annual ---
+             function calculateFrequencies(annualSalary, hoursPerWeek, daysPerWeek) {
+                 if (annualSalary === 0) { // Handle zero salary case
+                    return { hourly: 0, daily: 0, weekly: 0, biWeekly: 0, semiMonthly: 0, monthly: 0, quarterly: 0, annual: 0 };
+                 }
+
+                 const weekly = annualSalary / WEEKS_PER_YEAR;
+                 const daily = weekly / daysPerWeek;
+                 const hourly = weekly / hoursPerWeek; // Assumes hoursPerWeek is constant
+
+                 // Check for division by zero
+                 if (!isFinite(weekly) || !isFinite(daily) || !isFinite(hourly)) {
+                    console.error("Division by zero or invalid number in frequency calculation.");
+                    // Return zeros or throw error? Returning zeros for now.
+                     return { hourly: 0, daily: 0, weekly: 0, biWeekly: 0, semiMonthly: 0, monthly: 0, quarterly: 0, annual: 0 };
+                 }
+
+                 return {
+                    hourly: hourly,
+                    daily: daily,
+                    weekly: weekly,
+                    biWeekly: weekly * 2,
+                    semiMonthly: annualSalary / (MONTHS_PER_YEAR * 2),
+                    monthly: annualSalary / MONTHS_PER_YEAR,
+                    quarterly: annualSalary / QUARTERS_PER_YEAR,
+                    annual: annualSalary
+                 };
+             }
+
+
+            // --- Helper Functions ---
+            function showError(message) { errorMessageDiv.textContent = message; errorMessageDiv.style.display = 'block'; }
+            function clearError() { errorMessageDiv.textContent = ''; errorMessageDiv.style.display = 'none'; }
+            function clearResults() {
+                for (const freq in results) {
+                    if (results[freq].unadj) results[freq].unadj.textContent = '$0.00';
+                    if (results[freq].adj) results[freq].adj.textContent = '$0.00';
+                }
+             }
+            function formatCurrency(value) {
+                 if (typeof value !== 'number' || !isFinite(value)) { return '$ --'; }
+                 return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }); // Format as whole dollars like example
+             }
+             function formatNumber(value, decimals = 2) {
+                  if (typeof value !== 'number' || !isFinite(value)) { return '--'; }
+                  // For hourly, show currency sign and decimals
+                  if (decimals > 0) {
+                      return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+                  } else {
+                       return value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                  }
+             }
+
+            // --- Initial Setup ---
+            clearError();
+            clearResults();
+            // Trigger calculation with default values on load
+            handleCalculation();
+
+        });
+        // === JavaScript Logic End ===
+    </script>
+
+</body>
+</html>

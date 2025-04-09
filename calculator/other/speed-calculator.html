@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #060607;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 550px;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+        
+        .calculation-type {
+            margin-bottom: 25px;
+        }
+        
+        .calculation-type label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .calculation-type select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: white;
+            transition: border-color 0.3s ease;
+        }
+        
+        .calculation-type select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-row {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        
+        .input-group {
+            flex: 1;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: white;
+            transition: border-color 0.3s ease;
+        }
+        
+        .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .disabled-input {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 14px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #444;
+        }
+        
+        .result-value {
+            font-size: 22px;
+            color: #3498db;
+            font-weight: 600;
+        }
+        
+        .result-formula {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .history {
+            margin-top: 30px;
+        }
+        
+        .history h3 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-calc {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 5px;
+        }
+        
+        .history-details {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Speed Calculator</h1>
+        <p class="subtitle">Calculate speed, distance, or time based on the other two values</p>
+
+        <div class="calculation-type">
+            <label for="calc-type">What would you like to calculate?</label>
+            <select id="calc-type">
+                <option value="speed">Speed (distance ÷ time)</option>
+                <option value="distance">Distance (speed × time)</option>
+                <option value="time">Time (distance ÷ speed)</option>
+            </select>
+        </div>
+
+        <div class="input-section">
+            <div class="input-row">
+                <div class="input-group" id="speed-group">
+                    <label for="speed">Speed</label>
+                    <input type="number" id="speed" placeholder="Enter speed">
+                </div>
+                <div class="input-group">
+                    <label for="speed-unit">Unit</label>
+                    <select id="speed-unit">
+                        <option value="km/h">km/h</option>
+                        <option value="m/s">m/s</option>
+                        <option value="mph">mph</option>
+                        <option value="ft/s">ft/s</option>
+                        <option value="knot">knot</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group" id="distance-group">
+                    <label for="distance">Distance</label>
+                    <input type="number" id="distance" placeholder="Enter distance">
+                </div>
+                <div class="input-group">
+                    <label for="distance-unit">Unit</label>
+                    <select id="distance-unit">
+                        <option value="km">kilometers</option>
+                        <option value="m">meters</option>
+                        <option value="mi">miles</option>
+                        <option value="ft">feet</option>
+                        <option value="nm">nautical miles</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group" id="time-group">
+                    <label for="time">Time</label>
+                    <input type="number" id="time" placeholder="Enter time">
+                </div>
+                <div class="input-group">
+                    <label for="time-unit">Unit</label>
+                    <select id="time-unit">
+                        <option value="h">hours</option>
+                        <option value="min">minutes</option>
+                        <option value="s">seconds</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button id="calculate-btn">Calculate</button>
+
+        <div class="result" id="result" style="display: none;">
+            <div class="result-title">Result:</div>
+            <div class="result-value" id="result-value"></div>
+            <div class="result-formula" id="result-formula"></div>
+        </div>
+
+        <div class="history">
+            <h3>Calculation History</h3>
+            <div class="history-list" id="history-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const calcTypeSelect = document.getElementById('calc-type');
+        const speedInput = document.getElementById('speed');
+        const distanceInput = document.getElementById('distance');
+        const timeInput = document.getElementById('time');
+        const speedUnit = document.getElementById('speed-unit');
+        const distanceUnit = document.getElementById('distance-unit');
+        const timeUnit = document.getElementById('time-unit');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resultDiv = document.getElementById('result');
+        const resultValue = document.getElementById('result-value');
+        const resultFormula = document.getElementById('result-formula');
+        const historyList = document.getElementById('history-list');
+        
+        // Calculation history array
+        let calculationHistory = [];
+        
+        // Update input fields based on calculation type
+        calcTypeSelect.addEventListener('change', updateInputFields);
+        
+        function updateInputFields() {
+            const calcType = calcTypeSelect.value;
+            
+            // Reset all inputs
+            speedInput.disabled = false;
+            distanceInput.disabled = false;
+            timeInput.disabled = false;
+            
+            speedInput.classList.remove('disabled-input');
+            distanceInput.classList.remove('disabled-input');
+            timeInput.classList.remove('disabled-input');
+            
+            // Disable the input that will be calculated
+            switch (calcType) {
+                case 'speed':
+                    speedInput.disabled = true;
+                    speedInput.value = '';
+                    speedInput.classList.add('disabled-input');
+                    break;
+                case 'distance':
+                    distanceInput.disabled = true;
+                    distanceInput.value = '';
+                    distanceInput.classList.add('disabled-input');
+                    break;
+                case 'time':
+                    timeInput.disabled = true;
+                    timeInput.value = '';
+                    timeInput.classList.add('disabled-input');
+                    break;
+            }
+        }
+        
+        // Initialize input fields
+        updateInputFields();
+        
+        // Conversion factors to SI units (m/s for speed, m for distance, s for time)
+        const speedConversionFactors = {
+            'km/h': 1/3.6,     // 1 km/h = 0.277778 m/s
+            'm/s': 1,          // Already in m/s
+            'mph': 0.44704,    // 1 mph = 0.44704 m/s
+            'ft/s': 0.3048,    // 1 ft/s = 0.3048 m/s
+            'knot': 0.514444   // 1 knot = 0.514444 m/s
+        };
+        
+        const distanceConversionFactors = {
+            'km': 1000,        // 1 km = 1000 m
+            'm': 1,            // Already in m
+            'mi': 1609.34,     // 1 mile = 1609.34 m
+            'ft': 0.3048,      // 1 ft = 0.3048 m
+            'nm': 1852         // 1 nautical mile = 1852 m
+        };
+        
+        const timeConversionFactors = {
+            'h': 3600,         // 1 hour = 3600 seconds
+            'min': 60,         // 1 minute = 60 seconds
+            's': 1             // Already in seconds
+        };
+        
+        // Inverse conversion factors (from SI to chosen units)
+        const inverseSpeedConversionFactors = {
+            'km/h': 3.6,       // 1 m/s = 3.6 km/h
+            'm/s': 1,          // Already in m/s
+            'mph': 2.23694,    // 1 m/s = 2.23694 mph
+            'ft/s': 3.28084,   // 1 m/s = 3.28084 ft/s
+            'knot': 1.94384    // 1 m/s = 1.94384 knots
+        };
+        
+        const inverseDistanceConversionFactors = {
+            'km': 0.001,       // 1 m = 0.001 km
+            'm': 1,            // Already in m
+            'mi': 0.000621371, // 1 m = 0.000621371 miles
+            'ft': 3.28084,     // 1 m = 3.28084 ft
+            'nm': 0.000539957  // 1 m = 0.000539957 nautical miles
+        };
+        
+        const inverseTimeConversionFactors = {
+            'h': 1/3600,       // 1 second = 1/3600 hours
+            'min': 1/60,       // 1 second = 1/60 minutes
+            's': 1             // Already in seconds
+        };
+        
+        // Calculate button click handler
+        calculateBtn.addEventListener('click', calculate);
+        
+        function calculate() {
+            const calcType = calcTypeSelect.value;
+            let speed, distance, time;
+            let speedUnitValue = speedUnit.value;
+            let distanceUnitValue = distanceUnit.value;
+            let timeUnitValue = timeUnit.value;
+            
+            let inputsAreValid = true;
+            
+            // Get values and convert to SI units
+            if (calcType !== 'speed') {
+                if (!speedInput.value) {
+                    inputsAreValid = false;
+                } else {
+                    speed = parseFloat(speedInput.value) * speedConversionFactors[speedUnitValue];
+                }
+            }
+            
+            if (calcType !== 'distance') {
+                if (!distanceInput.value) {
+                    inputsAreValid = false;
+                } else {
+                    distance = parseFloat(distanceInput.value) * distanceConversionFactors[distanceUnitValue];
+                }
+            }
+            
+            if (calcType !== 'time') {
+                if (!timeInput.value) {
+                    inputsAreValid = false;
+                } else {
+                    time = parseFloat(timeInput.value) * timeConversionFactors[timeUnitValue];
+                }
+            }
+            
+            if (!inputsAreValid) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            let result, formula;
+            
+            // Perform calculation based on type
+            switch (calcType) {
+                case 'speed':
+                    result = distance / time;
+                    // Convert back to selected unit
+                    result = result * inverseSpeedConversionFactors[speedUnitValue];
+                    formula = `Speed = Distance ÷ Time = ${formatNumber(distanceInput.value)} ${distanceUnitValue} ÷ ${formatNumber(timeInput.value)} ${timeUnitValue} = ${formatNumber(result)} ${speedUnitValue}`;
+                    break;
+                    
+                case 'distance':
+                    result = speed * time;
+                    // Convert back to selected unit
+                    result = result * inverseDistanceConversionFactors[distanceUnitValue];
+                    formula = `Distance = Speed × Time = ${formatNumber(speedInput.value)} ${speedUnitValue} × ${formatNumber(timeInput.value)} ${timeUnitValue} = ${formatNumber(result)} ${distanceUnitValue}`;
+                    break;
+                    
+                case 'time':
+                    result = distance / speed;
+                    // Convert back to selected unit
+                    result = result * inverseTimeConversionFactors[timeUnitValue];
+                    formula = `Time = Distance ÷ Speed = ${formatNumber(distanceInput.value)} ${distanceUnitValue} ÷ ${formatNumber(speedInput.value)} ${speedUnitValue} = ${formatNumber(result)} ${timeUnitValue}`;
+                    break;
+            }
+            
+            // Display result
+            resultValue.textContent = `${formatNumber(result)} ${calcType === 'speed' ? speedUnitValue : calcType === 'distance' ? distanceUnitValue : timeUnitValue}`;
+            resultFormula.textContent = formula;
+            resultDiv.style.display = 'block';
+            
+            // Add to history
+            addToHistory(calcType, result, formula);
+        }
+        
+        // Format number to 4 decimal places if needed
+        function formatNumber(num) {
+            num = parseFloat(num);
+            if (Number.isInteger(num)) {
+                return num.toString();
+            } else {
+                return num.toFixed(4).replace(/\.?0+$/, '');
+            }
+        }
+        
+        // Add calculation to history
+        function addToHistory(calcType, result, formula) {
+            // Add to array (limit to 10 entries)
+            calculationHistory.unshift({
+                type: calcType.charAt(0).toUpperCase() + calcType.slice(1),
+                formula: formula
+            });
+            
+            if (calculationHistory.length > 10) {
+                calculationHistory.pop();
+            }
+            
+            // Update DOM
+            updateHistoryDisplay();
+        }
+        
+        // Update history display
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            calculationHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const calcType = document.createElement('div');
+                calcType.className = 'history-calc';
+                calcType.textContent = `${item.type} Calculation`;
+                
+                const details = document.createElement('div');
+                details.className = 'history-details';
+                details.textContent = item.formula;
+                
+                historyItem.appendChild(calcType);
+                historyItem.appendChild(details);
+                historyList.appendChild(historyItem);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Bill Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #010101;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .input-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #34495e;
+      font-weight: 500;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3498db;
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    .results {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    .results h2 {
+      font-size: 20px;
+      color: #2c3e50;
+      margin-bottom: 16px;
+    }
+    
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .person-name {
+      font-weight: 500;
+      color: #34495e;
+    }
+    
+    .amount {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .custom-splits {
+      margin-top: 20px;
+    }
+    
+    .split-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .split-row label {
+      margin-right: 10px;
+      margin-bottom: 0;
+      min-width: 80px;
+    }
+    
+    .split-row input {
+      flex: 1;
+    }
+    
+    .add-person {
+      background-color: #2ecc71;
+      margin-bottom: 16px;
+    }
+    
+    .add-person:hover {
+      background-color: #27ae60;
+    }
+    
+    .remove-person {
+      background-color: #e74c3c;
+      width: auto;
+      padding: 8px 10px;
+      margin-left: 10px;
+      font-size: 14px;
+    }
+    
+    .remove-person:hover {
+      background-color: #c0392b;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .tip-options {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .tip-btn {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+    }
+    
+    #customTipInput {
+      width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Split Bill Calculator</h1>
+    
+    <div class="input-group">
+      <label for="totalBill">Total Bill Amount ($)</label>
+      <input type="number" id="totalBill" min="0" step="0.01" placeholder="Enter total bill amount">
+    </div>
+    
+    <div class="input-group">
+      <label for="tipPercentage">Tip</label>
+      <div class="tip-options">
+        <button class="tip-btn" data-tip="0">No Tip</button>
+        <button class="tip-btn" data-tip="15">15%</button>
+        <button class="tip-btn" data-tip="18">18%</button>
+        <button class="tip-btn" data-tip="20">20%</button>
+        <button class="tip-btn" data-tip="custom">Custom</button>
+      </div>
+      <input type="number" id="customTipInput" class="hidden" min="0" max="100" placeholder="Enter custom tip %">
+    </div>
+    
+    <div class="input-group">
+      <label for="splitMethod">Split Method</label>
+      <select id="splitMethod">
+        <option value="equal">Split Equally</option>
+        <option value="custom">Custom Split</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
+      <label for="numberOfPeople">Number of People</label>
+      <input type="number" id="numberOfPeople" min="1" value="2" placeholder="Enter number of people">
+    </div>
+    
+    <div id="customSplits" class="custom-splits hidden">
+      <h2>Custom Split</h2>
+      <div id="peopleInputs">
+        <!-- Person inputs will be added here -->
+      </div>
+      <button class="add-person" id="addPersonBtn">Add Person</button>
+    </div>
+    
+    <button id="calculateBtn">Calculate Split</button>
+    
+    <div id="results" class="results hidden">
+      <h2>Bill Summary</h2>
+      <div class="result-item">
+        <span>Subtotal:</span>
+        <span id="subtotalAmount" class="amount">$0.00</span>
+      </div>
+      <div class="result-item">
+        <span>Tip Amount:</span>
+        <span id="tipAmount" class="amount">$0.00</span>
+      </div>
+      <div class="result-item">
+        <span>Total Bill:</span>
+        <span id="totalWithTip" class="amount">$0.00</span>
+      </div>
+      
+      <h2>Individual Splits</h2>
+      <div id="splitResults"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get DOM elements
+      const totalBillInput = document.getElementById('totalBill');
+      const customTipInput = document.getElementById('customTipInput');
+      const splitMethodSelect = document.getElementById('splitMethod');
+      const numberOfPeopleInput = document.getElementById('numberOfPeople');
+      const customSplitsDiv = document.getElementById('customSplits');
+      const peopleInputsDiv = document.getElementById('peopleInputs');
+      const addPersonBtn = document.getElementById('addPersonBtn');
+      const calculateBtn = document.getElementById('calculateBtn');
+      const resultsDiv = document.getElementById('results');
+      const subtotalAmountSpan = document.getElementById('subtotalAmount');
+      const tipAmountSpan = document.getElementById('tipAmount');
+      const totalWithTipSpan = document.getElementById('totalWithTip');
+      const splitResultsDiv = document.getElementById('splitResults');
+      const tipButtons = document.querySelectorAll('.tip-btn');
+      
+      // Initialize variables
+      let currentTipPercentage = 0;
+      let people = [];
+      
+      // Set up event listeners
+      tipButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          tipButtons.forEach(b => b.style.backgroundColor = '#3498db');
+          this.style.backgroundColor = '#2980b9';
+          
+          const tipValue = this.dataset.tip;
+          if (tipValue === 'custom') {
+            customTipInput.classList.remove('hidden');
+            currentTipPercentage = parseFloat(customTipInput.value) || 0;
+          } else {
+            customTipInput.classList.add('hidden');
+            currentTipPercentage = parseFloat(tipValue);
+          }
+        });
+      });
+      
+      customTipInput.addEventListener('input', function() {
+        currentTipPercentage = parseFloat(this.value) || 0;
+      });
+      
+      splitMethodSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+          customSplitsDiv.classList.remove('hidden');
+          updatePeopleInputs();
+        } else {
+          customSplitsDiv.classList.add('hidden');
+        }
+      });
+      
+      numberOfPeopleInput.addEventListener('change', function() {
+        if (splitMethodSelect.value === 'custom') {
+          updatePeopleInputs();
+        }
+      });
+      
+      addPersonBtn.addEventListener('click', function() {
+        const numPeople = parseInt(numberOfPeopleInput.value) || 2;
+        numberOfPeopleInput.value = numPeople + 1;
+        updatePeopleInputs();
+      });
+      
+      calculateBtn.addEventListener('click', calculateSplit);
+      
+      // Initialize with 2 people
+      updatePeopleInputs();
+      
+      // Functions
+      function updatePeopleInputs() {
+        peopleInputsDiv.innerHTML = '';
+        people = [];
+        
+        const numPeople = parseInt(numberOfPeopleInput.value) || 2;
+        
+        for (let i = 0; i < numPeople; i++) {
+          const person = {
+            id: `person-${i}`,
+            name: `Person ${i + 1}`,
+            percentage: 100 / numPeople
+          };
+          people.push(person);
+          
+          const rowDiv = document.createElement('div');
+          rowDiv.className = 'split-row';
+          
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.value = person.name;
+          nameInput.placeholder = 'Name';
+          nameInput.dataset.id = person.id;
+          nameInput.className = 'person-name-input';
+          nameInput.addEventListener('input', function() {
+            const personId = this.dataset.id;
+            const personIndex = people.findIndex(p => p.id === personId);
+            if (personIndex !== -1) {
+              people[personIndex].name = this.value;
+            }
+          });
+          
+          const percentInput = document.createElement('input');
+          percentInput.type = 'number';
+          percentInput.value = person.percentage.toFixed(1);
+          percentInput.min = '0';
+          percentInput.max = '100';
+          percentInput.step = '0.1';
+          percentInput.placeholder = 'Percentage';
+          percentInput.dataset.id = person.id;
+          percentInput.className = 'person-percent-input';
+          percentInput.addEventListener('input', function() {
+            const personId = this.dataset.id;
+            const personIndex = people.findIndex(p => p.id === personId);
+            if (personIndex !== -1) {
+              people[personIndex].percentage = parseFloat(this.value) || 0;
+            }
+          });
+          
+          const nameLabel = document.createElement('label');
+          nameLabel.textContent = 'Name:';
+          
+          const percentLabel = document.createElement('label');
+          percentLabel.textContent = '%:';
+          
+          const removeBtn = document.createElement('button');
+          removeBtn.textContent = 'X';
+          removeBtn.className = 'remove-person';
+          removeBtn.dataset.id = person.id;
+          removeBtn.addEventListener('click', function() {
+            const personId = this.dataset.id;
+            const personIndex = people.findIndex(p => p.id === personId);
+            if (personIndex !== -1) {
+              people.splice(personIndex, 1);
+              numberOfPeopleInput.value = people.length;
+              updatePeopleInputs();
+            }
+          });
+          
+          rowDiv.appendChild(nameLabel);
+          rowDiv.appendChild(nameInput);
+          rowDiv.appendChild(percentLabel);
+          rowDiv.appendChild(percentInput);
+          
+          if (numPeople > 1) {
+            rowDiv.appendChild(removeBtn);
+          }
+          
+          peopleInputsDiv.appendChild(rowDiv);
+        }
+      }
+      
+      function calculateSplit() {
+        const totalBill = parseFloat(totalBillInput.value) || 0;
+        const numPeople = parseInt(numberOfPeopleInput.value) || 1;
+        const tipPercentage = currentTipPercentage;
+        const tipAmount = totalBill * (tipPercentage / 100);
+        const totalWithTip = totalBill + tipAmount;
+        
+        // Update bill summary
+        subtotalAmountSpan.textContent = `$${totalBill.toFixed(2)}`;
+        tipAmountSpan.textContent = `$${tipAmount.toFixed(2)} (${tipPercentage}%)`;
+        totalWithTipSpan.textContent = `$${totalWithTip.toFixed(2)}`;
+        
+        // Calculate individual splits
+        splitResultsDiv.innerHTML = '';
+        
+        if (splitMethodSelect.value === 'equal') {
+          const amountPerPerson = totalWithTip / numPeople;
+          
+          for (let i = 0; i < numPeople; i++) {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'person-name';
+            nameSpan.textContent = `Person ${i + 1}`;
+            
+            const amountSpan = document.createElement('span');
+            amountSpan.className = 'amount';
+            amountSpan.textContent = `$${amountPerPerson.toFixed(2)}`;
+            
+            resultItem.appendChild(nameSpan);
+            resultItem.appendChild(amountSpan);
+            splitResultsDiv.appendChild(resultItem);
+          }
+        } else {
+          // Check if percentages add up to 100
+          const totalPercentage = people.reduce((sum, person) => sum + person.percentage, 0);
+          
+          if (Math.abs(totalPercentage - 100) > 1) {
+            alert(`Your percentages add up to ${totalPercentage.toFixed(1)}%, not 100%. Please adjust.`);
+            return;
+          }
+          
+          // Calculate custom splits
+          people.forEach(person => {
+            const personAmount = totalWithTip * (person.percentage / 100);
+            
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'person-name';
+            nameSpan.textContent = person.name;
+            
+            const amountSpan = document.createElement('span');
+            amountSpan.className = 'amount';
+            amountSpan.textContent = `$${personAmount.toFixed(2)} (${person.percentage.toFixed(1)}%)`;
+            
+            resultItem.appendChild(nameSpan);
+            resultItem.appendChild(amountSpan);
+            splitResultsDiv.appendChild(resultItem);
+          });
+        }
+        
+        resultsDiv.classList.remove('hidden');
+      }
+      
+      // Set default tip button
+      tipButtons[0].click();
+    });
+  </script>
+</body>
+</html>

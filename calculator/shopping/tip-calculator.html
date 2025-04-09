@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tip Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0a0a0a;
+            padding: 20px;
+        }
+        
+        .calculator {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .calculator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #4f46e5;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4b5563;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 14px;
+            top: 45px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        
+        .with-symbol {
+            padding-left: 28px;
+        }
+        
+        .tip-presets {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        
+        .tip-preset {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        
+        .tip-preset:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .tip-preset.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        
+        .slider-container {
+            margin-bottom: 24px;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #d1d5db;
+            outline: none;
+            margin: 12px 0;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider-value {
+            font-weight: 700;
+            color: #4f46e5;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .split-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        
+        .split-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #4f46e5;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 700;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .split-btn:disabled {
+            background-color: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .split-value {
+            font-weight: 700;
+            font-size: 20px;
+            color: #4b5563;
+        }
+        
+        .split-label {
+            text-align: center;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+        
+        .results {
+            background-color: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+        
+        .result-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 18px;
+            color: #111827;
+        }
+        
+        .total-per-person {
+            font-size: 22px;
+            color: #4f46e5;
+        }
+        
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 24px;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background-color: #4338ca;
+        }
+        
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        input.error-input {
+            border-color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Tip Calculator</h1>
+        
+        <div class="input-group">
+            <label for="bill-amount">Bill Amount</label>
+            <span class="currency-symbol">$</span>
+            <input type="number" id="bill-amount" class="with-symbol" placeholder="0.00" min="0" step="0.01">
+            <div class="error" id="bill-error">Please enter a valid amount</div>
+        </div>
+        
+        <label>Tip Percentage</label>
+        <div class="tip-presets">
+            <div class="tip-preset" data-percentage="15">15%</div>
+            <div class="tip-preset active" data-percentage="18">18%</div>
+            <div class="tip-preset" data-percentage="20">20%</div>
+            <div class="tip-preset" data-percentage="25">25%</div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="slider-value">18%</div>
+            <input type="range" min="0" max="30" value="18" class="slider" id="tip-slider">
+        </div>
+        
+        <div class="split-label">Split Bill</div>
+        <div class="split-controls">
+            <button class="split-btn" id="decrease-split">−</button>
+            <div class="split-value" id="split-value">1</div>
+            <button class="split-btn" id="increase-split">+</button>
+        </div>
+        
+        <div class="results">
+            <div class="result-row">
+                <div class="result-label">Bill Amount</div>
+                <div class="result-value" id="bill-total">$0.00</div>
+            </div>
+            <div class="result-row">
+                <div class="result-label">Tip Amount</div>
+                <div class="result-value" id="tip-amount">$0.00</div>
+            </div>
+            <div class="result-row">
+                <div class="result-label">Total Amount</div>
+                <div class="result-value" id="total-amount">$0.00</div>
+            </div>
+            <div class="result-row">
+                <div class="result-label">Per Person</div>
+                <div class="result-value total-per-person" id="per-person">$0.00</div>
+            </div>
+        </div>
+        
+        <button class="reset-btn" id="reset-btn">Reset</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const billAmountInput = document.getElementById('bill-amount');
+            const tipSlider = document.getElementById('tip-slider');
+            const tipPresets = document.querySelectorAll('.tip-preset');
+            const sliderValue = document.querySelector('.slider-value');
+            const decreaseSplitBtn = document.getElementById('decrease-split');
+            const increaseSplitBtn = document.getElementById('increase-split');
+            const splitValue = document.getElementById('split-value');
+            const billTotal = document.getElementById('bill-total');
+            const tipAmount = document.getElementById('tip-amount');
+            const totalAmount = document.getElementById('total-amount');
+            const perPerson = document.getElementById('per-person');
+            const resetBtn = document.getElementById('reset-btn');
+            const billError = document.getElementById('bill-error');
+            
+            let tipPercentage = 18;
+            let numberOfPeople = 1;
+            
+            // Format currency
+            function formatCurrency(value) {
+                return '$' + parseFloat(value).toFixed(2);
+            }
+            
+            // Calculate and update results
+            function calculateTip() {
+                // Validate bill amount
+                const billAmount = parseFloat(billAmountInput.value);
+                
+                if (isNaN(billAmount) || billAmount <= 0) {
+                    billError.style.display = 'block';
+                    billAmountInput.classList.add('error-input');
+                    resetResults();
+                    return;
+                } else {
+                    billError.style.display = 'none';
+                    billAmountInput.classList.remove('error-input');
+                }
+                
+                // Calculate values
+                const tipValue = billAmount * (tipPercentage / 100);
+                const totalValue = billAmount + tipValue;
+                const perPersonValue = totalValue / numberOfPeople;
+                
+                // Update display
+                billTotal.textContent = formatCurrency(billAmount);
+                tipAmount.textContent = formatCurrency(tipValue);
+                totalAmount.textContent = formatCurrency(totalValue);
+                perPerson.textContent = formatCurrency(perPersonValue);
+            }
+            
+            function resetResults() {
+                billTotal.textContent = '$0.00';
+                tipAmount.textContent = '$0.00';
+                totalAmount.textContent = '$0.00';
+                perPerson.textContent = '$0.00';
+            }
+            
+            // Event: Bill amount input
+            billAmountInput.addEventListener('input', calculateTip);
+            
+            // Event: Tip preset buttons
+            tipPresets.forEach(preset => {
+                preset.addEventListener('click', function() {
+                    // Remove active class from all presets
+                    tipPresets.forEach(p => p.classList.remove('active'));
+                    
+                    // Add active class to clicked preset
+                    this.classList.add('active');
+                    
+                    // Update tip percentage and slider
+                    tipPercentage = parseInt(this.dataset.percentage);
+                    tipSlider.value = tipPercentage;
+                    sliderValue.textContent = tipPercentage + '%';
+                    
+                    // Recalculate tip
+                    calculateTip();
+                });
+            });
+            
+            // Event: Tip slider
+            tipSlider.addEventListener('input', function() {
+                // Update tip percentage and display
+                tipPercentage = parseInt(this.value);
+                sliderValue.textContent = tipPercentage + '%';
+                
+                // Remove active class from all presets
+                tipPresets.forEach(preset => {
+                    if (parseInt(preset.dataset.percentage) === tipPercentage) {
+                        preset.classList.add('active');
+                    } else {
+                        preset.classList.remove('active');
+                    }
+                });
+                
+                // Recalculate tip
+                calculateTip();
+            });
+            
+            // Event: Decrease split
+            decreaseSplitBtn.addEventListener('click', function() {
+                if (numberOfPeople > 1) {
+                    numberOfPeople--;
+                    splitValue.textContent = numberOfPeople;
+                    
+                    // Enable/disable buttons
+                    if (numberOfPeople === 1) {
+                        decreaseSplitBtn.disabled = true;
+                    }
+                    increaseSplitBtn.disabled = false;
+                    
+                    // Recalculate tip
+                    calculateTip();
+                }
+            });
+            
+            // Event: Increase split
+            increaseSplitBtn.addEventListener('click', function() {
+                if (numberOfPeople < 20) {
+                    numberOfPeople++;
+                    splitValue.textContent = numberOfPeople;
+                    
+                    // Enable/disable buttons
+                    if (numberOfPeople === 20) {
+                        increaseSplitBtn.disabled = true;
+                    }
+                    decreaseSplitBtn.disabled = false;
+                    
+                    // Recalculate tip
+                    calculateTip();
+                }
+            });
+            
+            // Event: Reset button
+            resetBtn.addEventListener('click', function() {
+                // Reset bill amount
+                billAmountInput.value = '';
+                billError.style.display = 'none';
+                billAmountInput.classList.remove('error-input');
+                
+                // Reset tip percentage
+                tipPercentage = 18;
+                tipSlider.value = tipPercentage;
+                sliderValue.textContent = tipPercentage + '%';
+                
+                // Reset tip presets
+                tipPresets.forEach(preset => {
+                    if (parseInt(preset.dataset.percentage) === tipPercentage) {
+                        preset.classList.add('active');
+                    } else {
+                        preset.classList.remove('active');
+                    }
+                });
+                
+                // Reset split
+                numberOfPeople = 1;
+                splitValue.textContent = numberOfPeople;
+                decreaseSplitBtn.disabled = true;
+                increaseSplitBtn.disabled = false;
+                
+                // Reset results
+                resetResults();
+            });
+            
+            // Initialize: Disable decrease button at start
+            decreaseSplitBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraction Calculator</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --primary-dark: #3a8c49;
+            --secondary: #f8f9fa;
+            --text: #343a40;
+            --error: #dc3545;
+            --success: #28a745;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0b;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .calculator {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .calculator-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .calculator-title {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .calculator-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .calculator-body {
+            padding: 20px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .fraction-input {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .fraction-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .fraction-inputs {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fraction-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .fraction-divider {
+            width: 100%;
+            height: 2px;
+            background-color: var(--text);
+            margin: 5px 0;
+        }
+
+        .operator-select {
+            align-self: center;
+            margin-top: 25px;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: var(--secondary);
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .button-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .calculate-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .calculate-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .result-section {
+            background-color: var(--secondary);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-decimal {
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .steps-section {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .steps-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .steps-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #495057;
+        }
+
+        /* For fraction display */
+        .fraction-display {
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+
+        .fraction-display-numerator, 
+        .fraction-display-denominator {
+            display: block;
+        }
+
+        .fraction-display-line {
+            display: block;
+            border-top: 2px solid black;
+            margin: 2px 0;
+        }
+
+        @media (max-width: 480px) {
+            .input-section {
+                flex-direction: column;
+            }
+            
+            .operator-select {
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="calculator-header">
+            <h1 class="calculator-title">Fraction Calculator</h1>
+            <p class="calculator-subtitle">Perform operations with fractions easily</p>
+        </div>
+        
+        <div class="calculator-body">
+            <div class="input-section">
+                <div class="fraction-input">
+                    <span class="fraction-label">First Fraction</span>
+                    <div class="fraction-inputs">
+                        <input type="number" id="numerator1" class="fraction-field" placeholder="Numerator" required>
+                        <div class="fraction-divider"></div>
+                        <input type="number" id="denominator1" class="fraction-field" placeholder="Denominator" required>
+                    </div>
+                    <p id="error1" class="error-message"></p>
+                </div>
+                
+                <select id="operator" class="operator-select">
+                    <option value="add">+</option>
+                    <option value="subtract">−</option>
+                    <option value="multiply">×</option>
+                    <option value="divide">÷</option>
+                </select>
+                
+                <div class="fraction-input">
+                    <span class="fraction-label">Second Fraction</span>
+                    <div class="fraction-inputs">
+                        <input type="number" id="numerator2" class="fraction-field" placeholder="Numerator" required>
+                        <div class="fraction-divider"></div>
+                        <input type="number" id="denominator2" class="fraction-field" placeholder="Denominator" required>
+                    </div>
+                    <p id="error2" class="error-message"></p>
+                </div>
+            </div>
+            
+            <div class="button-section">
+                <button id="calculate" class="calculate-btn">Calculate</button>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="result-title">Result</h2>
+                <div id="result-container">
+                    <p class="result-value" id="result">Enter fractions to calculate</p>
+                    <p class="result-decimal" id="decimal-result"></p>
+                </div>
+            </div>
+            
+            <div class="steps-section" id="steps-container" style="display: none;">
+                <h3 class="steps-title">Calculation Steps:</h3>
+                <div class="steps-content" id="steps"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculate');
+            const resultElement = document.getElementById('result');
+            const decimalResultElement = document.getElementById('decimal-result');
+            const stepsContainer = document.getElementById('steps-container');
+            const stepsElement = document.getElementById('steps');
+            
+            // Prevent default form submission
+            document.querySelector('.calculator').addEventListener('submit', (e) => {
+                e.preventDefault();
+            });
+            
+            // Calculate button click event
+            calculateBtn.addEventListener('click', calculate);
+            
+            // Also calculate when Enter key is pressed
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculate();
+                }
+            });
+            
+            function clearErrors() {
+                document.getElementById('error1').textContent = '';
+                document.getElementById('error2').textContent = '';
+            }
+            
+            function showError(id, message) {
+                document.getElementById(id).textContent = message;
+            }
+            
+            function gcd(a, b) {
+                a = Math.abs(a);
+                b = Math.abs(b);
+                while (b) {
+                    const temp = b;
+                    b = a % b;
+                    a = temp;
+                }
+                return a;
+            }
+            
+            function lcm(a, b) {
+                return Math.abs(a * b) / gcd(a, b);
+            }
+            
+            function simplifyFraction(numerator, denominator) {
+                if (numerator === 0) {
+                    return { numerator: 0, denominator: 1 };
+                }
+                
+                const divisor = gcd(numerator, denominator);
+                numerator = numerator / divisor;
+                denominator = denominator / divisor;
+                
+                // Move negative sign to numerator
+                if (denominator < 0) {
+                    numerator = -numerator;
+                    denominator = -denominator;
+                }
+                
+                return { numerator, denominator };
+            }
+            
+            function fractionToString(numerator, denominator) {
+                if (denominator === 1) {
+                    return numerator.toString();
+                } else {
+                    return createFractionHTML(numerator, denominator);
+                }
+            }
+            
+            function createFractionHTML(numerator, denominator) {
+                if (denominator === 1) {
+                    return `${numerator}`;
+                }
+                
+                return `<div class="fraction-display">
+                    <span class="fraction-display-numerator">${numerator}</span>
+                    <span class="fraction-display-line"></span>
+                    <span class="fraction-display-denominator">${denominator}</span>
+                </div>`;
+            }
+            
+            function calculate() {
+                clearErrors();
+                stepsContainer.style.display = 'none';
+                
+                // Get input values
+                const num1 = parseInt(document.getElementById('numerator1').value);
+                const den1 = parseInt(document.getElementById('denominator1').value);
+                const num2 = parseInt(document.getElementById('numerator2').value);
+                const den2 = parseInt(document.getElementById('denominator2').value);
+                const operator = document.getElementById('operator').value;
+                
+                // Validate inputs
+                let hasError = false;
+                
+                if (isNaN(num1) || isNaN(den1)) {
+                    showError('error1', 'Please enter valid numbers');
+                    hasError = true;
+                }
+                
+                if (den1 === 0) {
+                    showError('error1', 'Denominator cannot be zero');
+                    hasError = true;
+                }
+                
+                if (isNaN(num2) || isNaN(den2)) {
+                    showError('error2', 'Please enter valid numbers');
+                    hasError = true;
+                }
+                
+                if (den2 === 0) {
+                    showError('error2', 'Denominator cannot be zero');
+                    hasError = true;
+                }
+                
+                if (operator === 'divide' && num2 === 0) {
+                    showError('error2', 'Cannot divide by zero');
+                    hasError = true;
+                }
+                
+                if (hasError) {
+                    resultElement.innerHTML = 'Error in calculation';
+                    decimalResultElement.textContent = '';
+                    return;
+                }
+                
+                // Perform calculation
+                let resultNum, resultDen, steps = [];
+                
+                switch (operator) {
+                    case 'add':
+                        steps.push(`Step 1: Find the least common multiple (LCM) of the denominators: ${den1} and ${den2}`);
+                        const addLcm = lcm(den1, den2);
+                        steps.push(`LCM = ${addLcm}`);
+                        
+                        steps.push(`Step 2: Convert fractions to equivalent fractions with the LCM as denominator`);
+                        const addFactor1 = addLcm / den1;
+                        const addFactor2 = addLcm / den2;
+                        steps.push(`First fraction: ${createFractionHTML(num1, den1)} = ${createFractionHTML(num1 * addFactor1, addLcm)}`);
+                        steps.push(`Second fraction: ${createFractionHTML(num2, den2)} = ${createFractionHTML(num2 * addFactor2, addLcm)}`);
+                        
+                        steps.push(`Step 3: Add the numerators with the common denominator`);
+                        resultNum = num1 * addFactor1 + num2 * addFactor2;
+                        resultDen = addLcm;
+                        steps.push(`${createFractionHTML(num1 * addFactor1, addLcm)} + ${createFractionHTML(num2 * addFactor2, addLcm)} = ${createFractionHTML(resultNum, resultDen)}`);
+                        break;
+                        
+                    case 'subtract':
+                        steps.push(`Step 1: Find the least common multiple (LCM) of the denominators: ${den1} and ${den2}`);
+                        const subLcm = lcm(den1, den2);
+                        steps.push(`LCM = ${subLcm}`);
+                        
+                        steps.push(`Step 2: Convert fractions to equivalent fractions with the LCM as denominator`);
+                        const subFactor1 = subLcm / den1;
+                        const subFactor2 = subLcm / den2;
+                        steps.push(`First fraction: ${createFractionHTML(num1, den1)} = ${createFractionHTML(num1 * subFactor1, subLcm)}`);
+                        steps.push(`Second fraction: ${createFractionHTML(num2, den2)} = ${createFractionHTML(num2 * subFactor2, subLcm)}`);
+                        
+                        steps.push(`Step 3: Subtract the numerators with the common denominator`);
+                        resultNum = num1 * subFactor1 - num2 * subFactor2;
+                        resultDen = subLcm;
+                        steps.push(`${createFractionHTML(num1 * subFactor1, subLcm)} - ${createFractionHTML(num2 * subFactor2, subLcm)} = ${createFractionHTML(resultNum, resultDen)}`);
+                        break;
+                        
+                    case 'multiply':
+                        steps.push(`Step 1: Multiply the numerators and denominators separately`);
+                        steps.push(`Numerator: ${num1} × ${num2} = ${num1 * num2}`);
+                        steps.push(`Denominator: ${den1} × ${den2} = ${den1 * den2}`);
+                        
+                        resultNum = num1 * num2;
+                        resultDen = den1 * den2;
+                        steps.push(`${createFractionHTML(num1, den1)} × ${createFractionHTML(num2, den2)} = ${createFractionHTML(resultNum, resultDen)}`);
+                        break;
+                        
+                    case 'divide':
+                        steps.push(`Step 1: Multiply the first fraction by the reciprocal of the second fraction`);
+                        steps.push(`Reciprocal of second fraction: ${createFractionHTML(num2, den2)} → ${createFractionHTML(den2, num2)}`);
+                        
+                        steps.push(`Step 2: Multiply the numerators and denominators`);
+                        steps.push(`Numerator: ${num1} × ${den2} = ${num1 * den2}`);
+                        steps.push(`Denominator: ${den1} × ${num2} = ${den1 * num2}`);
+                        
+                        resultNum = num1 * den2;
+                        resultDen = den1 * num2;
+                        steps.push(`${createFractionHTML(num1, den1)} ÷ ${createFractionHTML(num2, den2)} = ${createFractionHTML(num1, den1)} × ${createFractionHTML(den2, num2)} = ${createFractionHTML(resultNum, resultDen)}`);
+                        break;
+                }
+                
+                // Simplify the result
+                if (resultDen !== 0) {
+                    steps.push(`Step 4: Simplify the fraction if possible`);
+                    const divisor = gcd(Math.abs(resultNum), Math.abs(resultDen));
+                    
+                    if (divisor > 1) {
+                        steps.push(`Find the greatest common divisor (GCD): ${divisor}`);
+                        steps.push(`Divide both numerator and denominator by GCD: ${resultNum} ÷ ${divisor} = ${resultNum/divisor}, ${resultDen} ÷ ${divisor} = ${resultDen/divisor}`);
+                    } else {
+                        steps.push(`The fraction is already in its simplest form.`);
+                    }
+                    
+                    const simplified = simplifyFraction(resultNum, resultDen);
+                    resultNum = simplified.numerator;
+                    resultDen = simplified.denominator;
+                    
+                    // Calculate decimal representation
+                    const decimalValue = resultNum / resultDen;
+                    
+                    // Display results
+                    resultElement.innerHTML = fractionToString(resultNum, resultDen);
+                    decimalResultElement.textContent = `Decimal: ${decimalValue.toFixed(4)}`;
+                    
+                    // Display steps
+                    stepsElement.innerHTML = steps.join('<br>');
+                    stepsContainer.style.display = 'block';
+                } else {
+                    resultElement.textContent = 'Error: Division by zero';
+                    decimalResultElement.textContent = '';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

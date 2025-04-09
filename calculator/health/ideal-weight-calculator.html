@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideal Weight Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #090a0a;
+            color: #333;
+        }
+        
+        .calculator {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .weight-range {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Ideal Weight Calculator</h1>
+        
+        <div class="tab-container">
+            <div class="tab active" id="tab-metric">Metric (cm, kg)</div>
+            <div class="tab" id="tab-imperial">Imperial (ft, in, lbs)</div>
+        </div>
+        
+        <div class="input-group" id="height-metric">
+            <label for="height-cm">Height (cm)</label>
+            <input type="number" id="height-cm" min="100" max="250" placeholder="Enter height in centimeters">
+            <div class="error" id="height-cm-error"></div>
+        </div>
+        
+        <div class="input-group" id="height-imperial" style="display: none;">
+            <label>Height</label>
+            <div style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <input type="number" id="height-ft" min="3" max="8" placeholder="Feet">
+                </div>
+                <div style="flex: 1;">
+                    <input type="number" id="height-in" min="0" max="11" placeholder="Inches">
+                </div>
+            </div>
+            <div class="error" id="height-imperial-error"></div>
+        </div>
+        
+        <div class="input-group">
+            <label>Gender</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="gender-male" name="gender" value="male" checked>
+                    <label for="gender-male">Male</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="gender-female" name="gender" value="female">
+                    <label for="gender-female">Female</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label for="body-frame">Body Frame</label>
+            <select id="body-frame">
+                <option value="small">Small</option>
+                <option value="medium" selected>Medium</option>
+                <option value="large">Large</option>
+            </select>
+        </div>
+        
+        <button id="calculate-btn">Calculate Ideal Weight</button>
+        
+        <div class="results" id="results">
+            <h2>Your Results</h2>
+            
+            <p>Based on your height, gender, and frame size:</p>
+            
+            <div class="result-value" id="ideal-weight">--</div>
+            
+            <p>Ideal weight range:</p>
+            <div class="weight-range">
+                <span id="weight-min">--</span>
+                <span id="weight-max">--</span>
+            </div>
+            
+            <p><strong>Note:</strong> This is an estimate based on standard formulas. Actual healthy weight can vary based on many factors including muscle mass, bone density, and overall health.</p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>This calculator uses several formulas including the Devine, Robinson, and Miller formulas adjusted for body frame.</p>
+    </div>
+
+    <script>
+        // Get elements
+        const tabMetric = document.getElementById('tab-metric');
+        const tabImperial = document.getElementById('tab-imperial');
+        const heightMetric = document.getElementById('height-metric');
+        const heightImperial = document.getElementById('height-imperial');
+        const heightCm = document.getElementById('height-cm');
+        const heightFt = document.getElementById('height-ft');
+        const heightIn = document.getElementById('height-in');
+        const maleRadio = document.getElementById('gender-male');
+        const femaleRadio = document.getElementById('gender-female');
+        const bodyFrame = document.getElementById('body-frame');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const results = document.getElementById('results');
+        const idealWeightEl = document.getElementById('ideal-weight');
+        const weightMin = document.getElementById('weight-min');
+        const weightMax = document.getElementById('weight-max');
+        
+        // Error elements
+        const heightCmError = document.getElementById('height-cm-error');
+        const heightImperialError = document.getElementById('height-imperial-error');
+        
+        // Current unit system
+        let isMetric = true;
+        
+        // Tab switching
+        tabMetric.addEventListener('click', () => {
+            isMetric = true;
+            tabMetric.classList.add('active');
+            tabImperial.classList.remove('active');
+            heightMetric.style.display = 'block';
+            heightImperial.style.display = 'none';
+        });
+        
+        tabImperial.addEventListener('click', () => {
+            isMetric = false;
+            tabImperial.classList.add('active');
+            tabMetric.classList.remove('active');
+            heightImperial.style.display = 'block';
+            heightMetric.style.display = 'none';
+        });
+        
+        // Calculate button
+        calculateBtn.addEventListener('click', () => {
+            // Reset errors
+            heightCmError.textContent = '';
+            heightImperialError.textContent = '';
+            
+            let heightInCm;
+            let isValid = true;
+            
+            // Validate input
+            if (isMetric) {
+                if (!heightCm.value || heightCm.value < 100 || heightCm.value > 250) {
+                    heightCmError.textContent = 'Please enter a valid height between 100cm and 250cm';
+                    isValid = false;
+                } else {
+                    heightInCm = parseFloat(heightCm.value);
+                }
+            } else {
+                if (!heightFt.value || heightFt.value < 3 || heightFt.value > 8) {
+                    heightImperialError.textContent = 'Please enter a valid height (feet between 3 and 8)';
+                    isValid = false;
+                } else if (!heightIn.value && heightIn.value !== 0 && heightIn.value !== '0') {
+                    heightIn.value = 0;
+                } else if (heightIn.value < 0 || heightIn.value > 11) {
+                    heightImperialError.textContent = 'Inches must be between 0 and 11';
+                    isValid = false;
+                } else {
+                    // Convert to cm
+                    heightInCm = (parseFloat(heightFt.value) * 30.48) + (parseFloat(heightIn.value) * 2.54);
+                }
+            }
+            
+            if (!isValid) {
+                return;
+            }
+            
+            // Calculate ideal weight
+            const gender = maleRadio.checked ? 'male' : 'female';
+            const frame = bodyFrame.value;
+            
+            const idealWeight = calculateIdealWeight(heightInCm, gender, frame);
+            const range = calculateWeightRange(idealWeight, frame);
+            
+            // Display results
+            if (isMetric) {
+                idealWeightEl.textContent = `${idealWeight.toFixed(1)} kg`;
+                weightMin.textContent = `${range.min.toFixed(1)} kg`;
+                weightMax.textContent = `${range.max.toFixed(1)} kg`;
+            } else {
+                const idealLbs = idealWeight * 2.20462;
+                const minLbs = range.min * 2.20462;
+                const maxLbs = range.max * 2.20462;
+                idealWeightEl.textContent = `${idealLbs.toFixed(1)} lbs`;
+                weightMin.textContent = `${minLbs.toFixed(1)} lbs`;
+                weightMax.textContent = `${maxLbs.toFixed(1)} lbs`;
+            }
+            
+            // Show results
+            results.classList.add('show');
+        });
+        
+        // Calculate ideal weight in kg
+        function calculateIdealWeight(heightInCm, gender, frame) {
+            let baseWeight;
+            
+            // Calculate base weight using various formulas
+            if (gender === 'male') {
+                // Devine formula adjusted: 50 kg + 2.3 kg per inch over 5 feet
+                const heightInInches = heightInCm / 2.54;
+                const inchesOver5Feet = heightInInches - 60;
+                baseWeight = 50 + (2.3 * inchesOver5Feet);
+            } else {
+                // Robinson formula adjusted: 49 kg + 1.7 kg per inch over 5 feet
+                const heightInInches = heightInCm / 2.54;
+                const inchesOver5Feet = heightInInches - 60;
+                baseWeight = 49 + (1.7 * inchesOver5Feet);
+            }
+            
+            // Adjust for frame size
+            if (frame === 'small') {
+                baseWeight *= 0.9;
+            } else if (frame === 'large') {
+                baseWeight *= 1.1;
+            }
+            
+            return baseWeight;
+        }
+        
+        // Calculate weight range
+        function calculateWeightRange(idealWeight, frame) {
+            let rangePercent;
+            
+            switch (frame) {
+                case 'small':
+                    rangePercent = 0.05; // 5% range for small frame
+                    break;
+                case 'medium':
+                    rangePercent = 0.075; // 7.5% range for medium frame
+                    break;
+                case 'large':
+                    rangePercent = 0.1; // 10% range for large frame
+                    break;
+                default:
+                    rangePercent = 0.075;
+            }
+            
+            return {
+                min: idealWeight * (1 - rangePercent),
+                max: idealWeight * (1 + rangePercent)
+            };
+        }
+    </script>
+</body>
+</html>

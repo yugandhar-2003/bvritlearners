@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R for Beginners - BVRIT Learning Platform</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="modern-course-styles.css">
+
+    <!-- Critical styles to ensure navigation is always visible -->
+    <style>
+        /* Force navbar menu to always be visible */
+        .navbar-menu,
+        #navbarMenu,
+        .navbar-modern .navbar-menu,
+        nav.navbar-modern .navbar-menu,
+        .navbar-container .navbar-menu,
+        div#navbarMenu {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            margin: 0 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Spacer removed since header is no longer present */
+
+        /* Resource button styles */
+        .resource-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(45deg, var(--accent-600) 0%, var(--accent-500) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(190, 75, 219, 0.3);
+        }
+
+        .resource-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(190, 75, 219, 0.4);
+        }
+
+        .resource-button i {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header removed as requested -->
+
+    <div class="container-modern">
+        <!-- Back Button -->
+        <a href="../tutorials/index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Tutorials
+        </a>
+
+        <!-- Course Header -->
+        <div class="course-header">
+            <h1 class="course-title">R for Beginners</h1>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button" data-tab="english">
+                <i class="fas fa-language"></i> English Tutorial
+            </button>
+            <button class="tab-button" data-tab="hindi">
+                <i class="fas fa-language"></i> Hindi Tutorial
+            </button>
+            <button class="tab-button" data-tab="telugu">
+                <i class="fas fa-language"></i> Telugu Tutorial
+            </button>
+        </div>
+
+        <!-- Tab Container -->
+        <div class="tab-container">
+            <!-- English Tab -->
+            <div class="tab-content" id="english-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/videoseries?si=R_d-xERHFYVspzvZ&amp;list=PLEiEAq2VkUUKAw0aAJ1W4jpZ1q9LpX4yG" title="R Programming Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Hindi Tab -->
+            <div class="tab-content" id="hindi-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/videoseries?si=ahd6V_oFOoHnjT6c&amp;list=PLjVLYmrlmjGdmPrz0Lx7smkd0qIKHInOF" title="R Programming in Hindi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Telugu Tab -->
+            <div class="tab-content" id="telugu-tab">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/videoseries?si=l1TLRLRXq-W-PiRU&amp;list=PLXx2-0oYp1LO9H8ciGQaTr6SN80dteTlc" title="R Programming in Telugu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resource Button -->
+        <div style="text-align: center;">
+            <a href="https://drive.google.com/drive/folders/1bsJU7YCJsujf63OKZT-CZYb5JalZTk6H?usp=sharing" class="resource-button">
+                <i class="fas fa-download"></i> Get Resources
+            </a>
+        </div>
+ <header>
+    <h1>R Programming Tutorial Topics</h1>
+</header>
+<main>
+    <section>
+        <h2>Basics</h2>
+        <h3>Introduction to R</h3>
+        <ul>
+            <li>What is R?</li>
+            <li>Setting up R environment</li>
+            <li>Basic syntax and structure</li>
+            <li>Basic data types and structures</li>
+        </ul>
+        <h3>Data Manipulation</h3>
+        <ul>
+            <li>Vectors and lists</li>
+            <li>Data frames and matrices</li>
+            <li>Factors</li>
+            <li>Subsetting data</li>
+        </ul>
+        <h3>Basic Functions</h3>
+        <ul>
+            <li>Creating and using functions</li>
+            <li>Control structures (if, else, for, while)</li>
+            <li>Apply family of functions</li>
+        </ul>
+        <h3>Data Visualization</h3>
+        <ul>
+            <li>Base graphics</li>
+            <li>ggplot2 basics</li>
+            <li>Creating plots</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Intermediate</h2>
+        <h3>Data Cleaning</h3>
+        <ul>
+            <li>Handling missing values</li>
+            <li>Data transformation with dplyr</li>
+            <li>String manipulation with stringr</li>
+        </ul>
+        <h3>Data Import and Export</h3>
+        <ul>
+            <li>Reading data from files</li>
+            <li>Writing data to files</li>
+            <li>Working with databases</li>
+        </ul>
+        <h3>Statistical Analysis</h3>
+        <ul>
+            <li>Descriptive statistics</li>
+            <li>Hypothesis testing</li>
+            <li>Linear regression</li>
+            <li>ANOVA</li>
+        </ul>
+        <h3>Working with Dates and Times</h3>
+        <ul>
+            <li>Date and time classes</li>
+            <li>Formatting dates and times</li>
+            <li>Calculating differences</li>
+        </ul>
+    </section>
+    <section>
+        <h2>Advanced</h2>
+        <h3>Advanced Data Visualization</h3>
+        <ul>
+            <li>Advanced ggplot2 techniques</li>
+            <li>Interactive plots with plotly</li>
+            <li>Creating dashboards with Shiny</li>
+        </ul>
+        <h3>Machine Learning</h3>
+        <ul>
+            <li>Introduction to machine learning in R</li>
+            <li>Supervised learning</li>
+            <li>Unsupervised learning</li>
+            <li>Model evaluation</li>
+        </ul>
+        <h3>Parallel Computing</h3>
+        <ul>
+            <li>Introduction to parallel computing</li>
+            <li>Using parallel package</li>
+            <li>Optimizing code for parallel execution</li>
+        </ul>
+        <h3>Package Development</h3>
+        <ul>
+            <li>Creating your own package</li>
+            <li>Documenting your package</li>
+            <li>Submitting to CRAN</li>
+        </ul>
+    </section>
+</main>
+
+        <script src="r.js"></script>
+
+      </body></html>

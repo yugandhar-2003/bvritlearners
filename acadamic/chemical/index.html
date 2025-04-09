@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Videos</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #294161;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            transition: all 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .card {
+            background: grey;
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+             
+        }
+        .card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+             text-overflow:none;
+           
+        }
+        .card.expanded {
+            grid-column: 1 / -1;
+            transition: all 0.3s ease;
+        }
+        .card.expanded h2,
+        .card.expanded p {
+            display: none;
+        }
+        .exit-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background:orange;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            width:50px;
+        }
+        .exit-button:hover {
+            background: darkred;
+        }
+        .expanded iframe {
+            border-radius: 15px;
+            max-width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Chemical Academic Video's</h1>
+        <p>Click on the cards you will get playlist</p>
+        <div class="grid" id="video-grid">
+            <div class="card" data-video-id="videoseries?si=WiWXZ2UHD7UgMXRx&amp;list=PLfMyF1rjOOM7Ht-4czxnojof0U6I_4paF">
+                <h2>Plant Design and Economics</h2>
+               
+            </div>
+            <div class="card" data-video-id="videoseries?si=_D4mbp7UNgPFOycK&amp;list=PLfMyF1rjOOM7uZJb4H7WXz6gmzbAtFK76">
+                <h2>Chemical Reaction Engineering - I</h2>
+               
+            </div>
+            <div class="card" data-video-id="videoseries?si=QM5oydIBD6RpymSn&amp;list=PLfMyF1rjOOM5nQ68MAR2lB1ebbFXHlnFY">
+                <h2>Bioprocess Engineering</h2>
+               
+            </div>
+            <div class="card" data-video-id="videoseries?si=Zv-_fh4wEu8oe2sr&amp;list=PLfMyF1rjOOM5VBsE9uqOXA5KaiahnhmVF">
+                <h2>Green Chemical Technology</h2>
+                
+            </div>
+            <div class="card" data-video-id="videoseries?si=MeslLvq9T9-og9bt&amp;list=PLfMyF1rjOOM5njG1srxIP0qECzsmOugiG">
+                <h2>Fundamentals of Nanotechnology</h2>
+              
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const grid = document.getElementById('video-grid');
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.addEventListener('click', function () {
+                    if (!card.classList.contains('expanded')) {
+                        // Collapse any expanded card first
+                        cards.forEach(c => {
+                            c.classList.remove('expanded');
+                            const exitButton = c.querySelector('.exit-button');
+                            if (exitButton) exitButton.remove();
+                            // Remove any existing iframe
+                            const iframe = c.querySelector('iframe');
+                            if (iframe) iframe.remove();
+                        });
+
+                        // Move the clicked card to the top
+                        grid.insertBefore(card, grid.firstChild);
+                        card.classList.add('expanded');
+
+                        // Add YouTube iframe to the clicked card
+                        const videoId = card.getAttribute('data-video-id');
+                        const iframe = document.createElement('iframe');
+                        iframe.width = "560";
+                        iframe.height = "315";
+                        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                        iframe.frameBorder = "0";
+                        iframe.allow = " accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                        iframe.referrerpolicy="strict-origin-when-cross-origin"
+                        iframe.allowFullscreen = true;
+                        iframe.style.borderRadius = "15px";
+                        card.appendChild(iframe);
+
+                        // Add exit button to the clicked card
+                        const exitButton = document.createElement('button');
+                        exitButton.textContent = 'Exit';
+                        exitButton.className = 'exit-button';
+                        card.appendChild(exitButton);
+
+                        exitButton.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            card.classList.remove('expanded');
+                            iframe.remove();
+                            exitButton.remove();
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

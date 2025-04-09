@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- *** UPDATED TITLE *** -->
+    <title>C Functions Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* --- CSS styles (using same base colors as previous example) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Keeping Gradient: Blue/Cyan Theme */
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        body::before { /* Subtle pattern */
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+        /* Dark Mode Gradient: Darker Blue/Teal */
+        html.dark body { background: linear-gradient(135deg, #1e40af 0%, #155e75 100%); }
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        html.dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; }
+
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; }
+        /* Hover/Selected Color: Blue Theme */
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(59, 130, 246, 0.5); } /* Blue hover */
+        .option.selected { border-color: #3b82f6; background: linear-gradient(to right, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15)); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); } /* Blue selected */
+        .option.correct { background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important; border-color: #10b981 !important; color: #047857 !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: #ef4444 !important; color: #b91c1c !important; cursor: default; }
+        .option.disabled { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
+        .option .feedback-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; opacity: 0; transition: opacity 0.3s ease; }
+        .option .feedback-icon .icon-correct { color: #10b981; }
+        .option .feedback-icon .icon-incorrect { color: #ef4444; }
+        .option.correct .feedback-icon .icon-correct, .option.incorrect .feedback-icon .icon-incorrect { opacity: 1; }
+        .option.correct:not(.selected) .feedback-icon .icon-correct { opacity: 1; }
+
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark .progress-container { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+        /* Progress Bar Gradient: Blue/Cyan */
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #60a5fa, #22d3ee); box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1; }
+        /* Score Circle Gradients: Green/Yellow/Red (Keep standard for performance indication) */
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        /* Primary Button Gradient: Blue/Cyan */
+        .btn-primary { background: linear-gradient(to right, #3b82f6, #0ea5e9); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #2563eb, #0284c7); }
+        .btn-secondary { background-color: #e5e7eb; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover:not(:disabled) { background-color: #d1d5db; }
+        /* Submit Button Gradient: Green/Teal (Keep for contrast) */
+        .btn-submit { background: linear-gradient(to right, #10b981, #2dd4bf); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #059669, #14b8a6); }
+
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #60a5fa; } /* Blue border */
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+        html.dark .explanation { background-color: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-left-color: #93c5fd; } /* Lighter blue border dark */
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #272822; border: 1px solid #444; font-size: 0.9em; }
+        html.dark .code-snippet-container { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        /* Consider adding a C logo if desired */
+        /* .c-logo img, .c-logo svg { animation: pulseLogo 2.5s infinite ease-in-out; } */
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3)); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; }
+
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #facc15 !important; border-color: #facc15 !important; }
+        html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        /* Focus Color: Blue Theme */
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #2563eb; outline-offset: 2px; } /* Blue focus */
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #60a5fa; } /* Lighter Blue focus dark */
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #6b7280; }
+        html.dark .history-date { color: #9ca3af; }
+
+        /* Text Color Adjustments for Blue Theme */
+        html.dark .text-blue-900 { color: #bfdbfe; }
+        html.dark .text-blue-800 { color: #93c5fd; }
+        html.dark .text-blue-700 { color: #60a5fa; }
+        html.dark .text-blue-600 { color: #3b82f6; }
+        html.dark .text-blue-500 { color: #0ea5e9; } /* Adjusted for Cyan part */
+        html.dark .text-blue-300 { color: #bfdbfe; }
+        html.dark .text-blue-200 { color: #dbeafe; }
+        html.dark .text-indigo-900 { color: #bfdbfe; } /* Re-using blue shades */
+        html.dark .text-indigo-800 { color: #93c5fd; }
+        html.dark .text-indigo-700 { color: #60a5fa; }
+        html.dark .text-indigo-500 { color: #0ea5e9; }
+        html.dark .text-indigo-300 { color: #bfdbfe; }
+        html.dark .text-red-600 { color: #f87171; }
+        html.dark .text-red-400 { color: #fb7185; }
+
+        /* Background/Border Adjustments for Blue Theme */
+        html.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1); }
+        html.dark .bg-blue-900\/30 { background-color: rgba(30, 64, 175, 0.3); }
+        html.dark .border-blue-100 { border-color: #93c5fd; }
+        html.dark .border-blue-700\/50 { border-color: rgba(29, 78, 216, 0.5); }
+        html.dark .bg-indigo-50 { background-color: rgba(59, 130, 246, 0.1); } /* Use blue */
+        html.dark .bg-indigo-900\/30 { background-color: rgba(30, 64, 175, 0.3); } /* Use blue */
+        html.dark .border-indigo-100 { border-color: #93c5fd; } /* Use blue */
+        html.dark .border-indigo-700\/50 { border-color: rgba(29, 78, 216, 0.5); } /* Use blue */
+
+
+        /* General Dark Mode Text/BG */
+        html.dark .text-gray-500 { color: #9ca3af; }
+        html.dark .text-gray-600 { color: #cbd5e1; }
+        html.dark .text-gray-700 { color: #e2e8f0; }
+        html.dark .text-gray-800 { color: #f1f5f9; }
+        html.dark .bg-gray-200 { background-color: #4b5563;}
+        html.dark .text-green-700 { color: #a7f3d0; }
+        html.dark .text-green-500 { color: #34d399; }
+        html.dark .text-red-700 { color: #fda4af; }
+        html.dark .text-red-500 { color: #f87171; }
+        html.dark .bg-green-50 { background-color: rgba(16, 185, 129, 0.1); }
+        html.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.1); }
+        html.dark .bg-green-100 { background-color: rgba(5, 150, 105, 0.2); }
+        html.dark .dark\:ring-green-600 { --tw-ring-color: #10b981; }
+        html.dark .dark\:bg-green-800\/50 { background-color: rgba(6, 95, 70, 0.5); }
+        html.dark .dark\:bg-green-900\/30 { background-color: rgba(6, 78, 59, 0.3); }
+        html.dark .dark\:bg-red-900\/30 { background-color: rgba(159, 18, 57, 0.3); }
+        html.dark .dark\:text-gray-100 { color: #f1f5f9; }
+        html.dark .dark\:text-gray-300 { color: #d1d5db; }
+        html.dark .dark\:text-gray-400 { color: #9ca3af; }
+        html.dark .dark\:border-gray-700 { border-color: #374151; }
+        html.dark .dark\:text-indigo-300 { color: #93c5fd; } /* Explanation title */
+        html.dark .option.selected { color: #e0f2fe; } /* Adjusted for blue theme */
+        html.dark .option.correct { color: #d1fae5 !important; }
+        html.dark .option.incorrect { color: #fee2e2 !important; }
+        html.dark .option.incorrect.selected { color: #fee2e2 !important; }
+
+        /* --- End of CSS --- */
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- *** UPDATED HEADER *** -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">C Functions Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Declaration, Definition, Calling, Parameters & Return Types</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- *** UPDATED START SCREEN TEXT *** -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-blue-900 dark:text-blue-200">Test Your C Function Skills!</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Check your understanding of how to declare, define, and call functions in C, including parameters and return types.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- *** UPDATED HISTORY TITLE *** -->
+                <h3 class="text-lg font-semibold mb-3 text-blue-800 dark:text-blue-300">Recent Attempts (C Functions)</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <!-- Status Badges -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/15</span> <!-- Will adjust dynamically -->
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-gray-100 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4"></div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;"></div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden"><i class="fas fa-arrow-left mr-2"></i> Prev</button>
+                <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i></button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>Submit <i class="fas fa-check-circle ml-2"></i></button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+             <canvas id="confetti-canvas"></canvas>
+             <!-- *** UPDATED RESULTS TITLE *** -->
+             <h2 class="text-3xl font-bold mb-6 text-center text-blue-900 dark:text-blue-200">Quiz Results: C Functions</h2>
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-blue-700 dark:text-blue-300">0/15</span> <!-- Will adjust dynamically -->
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Stats -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <!-- *** UPDATED Performance Message Area *** -->
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center"><i class="fas fa-search mr-2"></i> Review Answers</button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center"><i class="fas fa-redo mr-2"></i> Restart Quiz</button>
+            </div>
+             <!-- *** UPDATED Share Button *** -->
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm"><i class="fas fa-share-alt mr-2"></i> Share Score</button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- *** UPDATED REVIEW TITLE *** -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-blue-900 dark:text-blue-200">Review Answers: C Functions</h2>
+                <div id="review-questions" class="space-y-8"></div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center"><i class="fas fa-arrow-left mr-2"></i> Back to Results</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script> <!-- Maintain C highlighting -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // --- *** UPDATED quizData for C Functions *** ---
+        const quizData = [
+            { question: "What is the primary purpose of a function declaration (prototype) in C?", options: ["To define the function's logic", "To allocate memory for the function", "To inform the compiler about the function's signature before it's used", "To execute the function"], correctAnswer: 2, explanation: "A function declaration (or prototype) tells the compiler the function's name, return type, and the types of its parameters. This allows the compiler to check for errors when the function is called before its full definition is encountered." },
+            { question: "Which part of a function contains the actual code that performs the task?", options: ["Declaration", "Call", "Signature", "Definition"], correctAnswer: 3, explanation: "The function definition includes the function header (return type, name, parameters) and the function body (the code block enclosed in curly braces `{}`) where the logic resides." },
+            { question: "What is the correct syntax to call a function named `calculate_sum` that takes two integers and returns an integer?", options: ["call calculate_sum(5, 10);", "calculate_sum[5, 10];", "int result = calculate_sum(5, 10);", "calculate_sum { int 5, int 10 };"], correctAnswer: 2, explanation: "To call a function, use its name followed by parentheses containing the arguments (values) passed to it. If the function returns a value, you typically assign it to a variable of the matching type." },
+            { question: "What does the `void` keyword indicate when used as a function's return type?", options: ["The function returns any type", "The function returns nothing", "The function returns an integer by default", "It indicates an error"], correctAnswer: 1, explanation: "`void` as a return type signifies that the function does not return any value to the caller." },
+            { question: "In the function definition `int process_data(int count, float value);`, what are `count` and `value` called?", options: ["Arguments", "Return values", "Formal parameters", "Local variables"], correctAnswer: 2, explanation: "Variables listed in the function definition's parentheses are called formal parameters. They act as placeholders for the values that will be passed in when the function is called." },
+            { question: "When you call a function like `my_func(x);`, what is `x` referred to?", options: ["Formal parameter", "Actual argument", "Local variable", "Return type"], correctAnswer: 1, explanation: "The value or variable (`x`) passed to a function during a call is known as an actual argument (or simply argument)." },
+            { question: "What keyword is used to send a value back from a function to the point where it was called?", options: ["send", "exit", "return", "yield"], correctAnswer: 2, explanation: "The `return` statement terminates the execution of the current function and optionally sends a specified value back to the caller." },
+            { question: "If a function is declared as `void print_message(void);`, what does this mean?", options: ["It takes no arguments and returns nothing", "It takes void pointers as arguments", "It returns a void pointer", "It takes any type of argument"], correctAnswer: 0, explanation: "`void` in the parameter list explicitly indicates that the function takes no arguments. `void` as the return type indicates it returns no value." },
+            { question: "In C, arguments are typically passed to functions by which method?", options: ["By reference", "By pointer", "By value", "By address"], correctAnswer: 2, explanation: "By default, C uses 'pass-by-value'. This means a copy of the argument's value is passed to the function. Changes made to the parameter inside the function do *not* affect the original argument in the caller." },
+            { question: "What is the standard return type for the `main` function in C?", options: ["void", "int", "char*", "Depends on the compiler"], correctAnswer: 1, explanation: "The standard signature for the `main` function is `int main(void)` or `int main(int argc, char *argv[])`. Returning an `int` (typically 0 for success) indicates the program's exit status to the operating system." },
+            { question: "Consider the code: `int add(int a, int b) { return a + b; }`. What is `int` before `add`?", options: ["Parameter type", "Argument type", "Return type", "Function identifier"], correctAnswer: 2, explanation: "The type specified before the function name in its declaration or definition indicates the type of the value the function will return." },
+            { question: "What is a potential issue with calling a function in C before its declaration or definition?", options: ["It's impossible", "The compiler might make incorrect assumptions about the function", "It always results in a runtime error", "It improves performance"], correctAnswer: 1, explanation: "If the compiler encounters a function call before seeing its declaration (prototype) or definition, it might assume a default return type (often `int`) and parameter types, leading to compilation errors or unexpected behavior if the assumptions are wrong." },
+            { question: "What is the output of this C code snippet?", code: "#include <stdio.h>\n\nvoid modify(int val) {\n    val = val * 2;\n}\n\nint main() {\n    int num = 5;\n    modify(num);\n    printf(\"%d\", num);\n    return 0;\n}", options: ["10", "5", "0", "Compilation Error"], correctAnswer: 1, explanation: "C uses pass-by-value. The `modify` function receives a copy of `num`. Changing `val` inside `modify` does not affect the original `num` in `main`. Therefore, `num` remains 5." },
+            { question: "Which is a valid function prototype for a function that takes a character pointer and returns no value?", options: ["function(char*);", "void my_func(char*);", "my_func(char*) void;", "char* my_func(void);"], correctAnswer: 1, explanation: "A prototype includes the return type (`void`), the function name (`my_func`), and the types of parameters in parentheses (`char*`). It ends with a semicolon." },
+            { question: "If a function is defined as `int calculate(int x);` but inside its body it doesn't have a `return` statement, what happens?", options: ["It returns 0 automatically", "It returns a random garbage value", "It causes a compilation error", "It returns void"], correctAnswer: 1, explanation: "If a non-`void` function finishes execution without encountering a `return` statement that provides a value of the declared return type, the behavior is undefined. It often results in returning an unpredictable 'garbage' value." }
+        ];
+
+
+        const TIME_LIMIT_SECONDS = 10 * 60; // 10 minutes for C Functions
+        const MAX_HISTORY_ITEMS = 5;
+        // --- *** UPDATED *** localStorage Keys for C Functions Quiz ---
+        const QUIZ_STATE_KEY = 'cQuizState_Functions';         // Unique key for C Functions state
+        const SCORE_HISTORY_KEY = 'cQuizScoreHistory_Functions'; // Unique key for C Functions history
+
+        // --- DOM Elements (IDs remain unchanged) ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables (Structure remains unchanged) ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions (Unchanged) ---
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } }
+        function formatTime(seconds) { const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
+
+        // --- Dark Mode (Unchanged) ---
+        function applyDarkMode(isDark) { const icon = darkModeToggle.querySelector('i'); if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); } else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); } if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 0); } }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // *** Uses the specific QUIZ_STATE_KEY for C Functions ***
+        function saveState() {
+             if (!quizActive) return; try { const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true }; localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); /* console.log(`State saved for ${QUIZ_STATE_KEY}`); */ } catch (e) { console.error(`Failed to save quiz state for ${QUIZ_STATE_KEY}:`, e); }
+        }
+        function loadState() {
+             const savedState = localStorage.getItem(QUIZ_STATE_KEY); if (savedState) { try { const state = JSON.parse(savedState); if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) { currentQuestionIndex = state.currentQuestionIndex || 0; userAnswers = state.userAnswers; timeElapsed = state.timeElapsed || 0; questionsOrder = state.questionsOrder; quizActive = true; console.log(`In-progress state loaded for ${QUIZ_STATE_KEY}.`); return true; } else { console.warn(`Saved state for ${QUIZ_STATE_KEY} is invalid or incomplete.`); clearState(); return false; } } catch (e) { console.error(`Failed to parse saved state for ${QUIZ_STATE_KEY}:`, e); clearState(); return false; } } return false;
+        }
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY); console.log(`In-progress state cleared for ${QUIZ_STATE_KEY}.`);
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        // *** Uses the specific SCORE_HISTORY_KEY for C Functions ***
+        function loadScoreHistory() {
+            try { const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); scoreHistory = historyJson ? JSON.parse(historyJson) : []; if (!Array.isArray(scoreHistory)) scoreHistory = []; /* console.log(`Score history loaded for ${SCORE_HISTORY_KEY}`); */ } catch (e) { console.error(`Failed to load score history for ${SCORE_HISTORY_KEY}:`, e); scoreHistory = []; }
+        }
+        function saveScoreHistory() {
+            try { const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); /* console.log(`Score history saved for ${SCORE_HISTORY_KEY}`); */ } catch (e) { console.error(`Failed to save score history for ${SCORE_HISTORY_KEY}:`, e); }
+        }
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData); saveScoreHistory(); displayScoreHistory();
+        }
+        function clearScoreHistory() {
+             // *** UPDATED *** Confirmation Message
+             if (confirm("Are you sure you want to clear the C Functions quiz history? This cannot be undone.")) {
+                 scoreHistory = []; localStorage.removeItem(SCORE_HISTORY_KEY); displayScoreHistory(); console.log(`Score history cleared for ${SCORE_HISTORY_KEY}.`);
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; if (scoreHistory.length === 0) { // *** UPDATED *** Empty Message
+                 scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous C Functions attempts recorded.</p>`; clearHistoryBtn.classList.add('hidden');
+             } else { const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); sortedHistory.forEach(attempt => { const item = document.createElement('div'); item.className = 'history-item'; const date = new Date(attempt.timestamp); const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }); item.innerHTML = ` <div class="flex-grow pr-4"> <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span> <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span> </div> <div class="history-date text-right"> ${formattedDate}<br>${formattedTime} </div> `; scoreHistoryList.appendChild(item); }); clearHistoryBtn.classList.remove('hidden'); }
+        }
+
+        // --- Quiz Logic (Mostly unchanged, uses updated keys via helpers) ---
+        function startQuiz() {
+             if (loadState()) { console.log(`Resuming ${QUIZ_STATE_KEY}.`); startTime = Date.now() - timeElapsed * 1000; } else { console.log(`Starting new ${QUIZ_STATE_KEY}.`); currentQuestionIndex = 0; score = 0; userAnswers = Array(quizData.length).fill(null); timeElapsed = 0; questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder); startTime = Date.now(); } startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; quizContainer.style.display = 'block'; quizActive = true; loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); saveState();
+        }
+
+        function loadQuestion(index) {
+             if (index < 0 || index >= quizData.length) return;
+             const questionIndexInOriginalData = questionsOrder[index];
+             const question = quizData[questionIndexInOriginalData];
+             if (!question) return;
+
+             // Update question counter and score display with correct total
+             const totalQuestions = quizData.length;
+             questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+             scoreValue.textContent = `${score}/${totalQuestions}`; // Update score display total here too
+
+             questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+             void questionCard.offsetWidth; // Trigger reflow
+             questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+             questionText.textContent = `${index + 1}. ${question.question}`;
+             feedbackMessage.textContent = '';
+             codeSnippetArea.innerHTML = ''; // Clear previous snippet
+
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 // Ensure language-c is used if code exists
+                 code.className = 'language-c'; // Use C language class
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                     // Use highlightElement for specific targeting
+                     setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+             optionsContainer.innerHTML = '';
+             const selectedAnswerIndex = userAnswers[index];
+
+             question.options.forEach((optionText, optionIndex) => {
+                 const optionElement = document.createElement('div');
+                 optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                 optionElement.setAttribute('role', 'radio');
+                 optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                 optionElement.tabIndex = 0; // Make it focusable
+
+                 const label = document.createElement('span');
+                 label.className = 'flex-grow mr-4';
+                 // Use innerHTML to correctly render potential formatting in option text
+                 label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                 const feedbackIconContainer = document.createElement('span');
+                 feedbackIconContainer.className = 'feedback-icon text-xl';
+                 feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>`;
+
+                 optionElement.appendChild(label);
+                 optionElement.appendChild(feedbackIconContainer);
+
+                 const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+
+                 optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                     if (e.key === 'Enter' || e.key === ' ') {
+                         e.preventDefault();
+                         handleSelection();
+                     }
+                 });
+
+                 optionsContainer.appendChild(optionElement);
+             });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 // Ensure next/submit is enabled if answer already exists
+                 nextBtn.disabled = false;
+                 if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+
+             updateProgress(index);
+             updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+             if (userAnswers[displayIndex] !== null) return; // Prevent re-answering
+             userAnswers[displayIndex] = selectedOptionIndex;
+             showFeedback(displayIndex, selectedOptionIndex);
+             nextBtn.disabled = false;
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+             saveState(); // Save state after selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+            const originalQuestionIndex = questionsOrder[displayIndex];
+            const question = quizData[originalQuestionIndex];
+            const isCorrect = selectedOptionIndex === question.correctAnswer;
+            const options = optionsContainer.querySelectorAll('.option');
+
+            options.forEach((optElement, currentOptionIndex) => {
+                optElement.classList.add('disabled'); // Disable all options
+                optElement.style.cursor = 'default';
+                optElement.tabIndex = -1; // Remove from tab order
+
+                const iconCorrect = optElement.querySelector('.icon-correct');
+                const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                if (iconCorrect) iconCorrect.style.opacity = '0'; // Reset icons
+                if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                if (currentOptionIndex === selectedOptionIndex) {
+                    optElement.classList.add('selected');
+                    optElement.setAttribute('aria-checked', 'true');
+                    if (isCorrect) {
+                        optElement.classList.add('correct');
+                        if (iconCorrect) iconCorrect.style.opacity = '1';
+                        feedbackMessage.textContent = "Correct!";
+                        feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                    } else {
+                        optElement.classList.add('incorrect');
+                        if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                        feedbackMessage.textContent = "Incorrect!";
+                        feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                        // Highlight the correct answer as well if the selection was wrong
+                        const correctOptionElement = options[question.correctAnswer];
+                        if (correctOptionElement) {
+                            correctOptionElement.classList.add('correct'); // Show correct answer visually
+                            const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark on correct one
+                        }
+                    }
+                } else {
+                     optElement.setAttribute('aria-checked', 'false');
+                     // Only highlight the actual correct answer if the user was wrong AND this isn't the user's wrong selection
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                    }
+                }
+            });
+
+             // Remove animation classes after a delay
+             setTimeout(() => {
+                 feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+             }, 1000);
+        }
+
+
+        function updateProgress(index) {
+             const totalQuestions = quizData.length;
+             const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+             progressBar.style.width = `${progress}%`;
+             // Counter text already updated in loadQuestion
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer only when prevBtn is visible
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Enable/disable based on whether the current question has been answered
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when navigating
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when navigating
+            }
+        }
+
+        // --- Timer (Logic remains unchanged, uses state helpers) ---
+        function startTimer() {
+             clearInterval(timerInterval); // Clear any existing interval
+             if (!quizActive) return;
+
+             const updateTimerDisplay = () => {
+                 const now = Date.now();
+                 timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); // Ensure timeElapsed doesn't go negative
+                 const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                 if (timeRemaining <= 0) {
+                     timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                     timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); // Make it red immediately
+                     clearInterval(timerInterval);
+                     if(quizActive) { // Avoid submitting again if already submitted
+                       submitQuiz(true); // Auto-submit when time is up
+                     }
+                     return;
+                 }
+
+                 timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                 // Add warning class only when <= 60 seconds remaining
+                 timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                 // Ensure red color is removed if time goes above 60 (unlikely, but safe)
+                 if (timeRemaining > 60) {
+                     timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+                 }
+
+                 // Save state periodically (e.g., every 10 seconds)
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                     saveState();
+                 }
+             };
+
+             updateTimerDisplay(); // Initial display
+             timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+             if (!quizActive && !timeUp) return; // Prevent double submission unless forced by timeUp
+             quizActive = false; // Mark quiz as inactive
+             clearInterval(timerInterval); // Stop the timer
+
+             // Calculate score
+             score = 0;
+             userAnswers.forEach((answerIndex, displayIdx) => {
+                 if (answerIndex !== null) {
+                     const originalQuestionIndex = questionsOrder[displayIdx];
+                     if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                         score++;
+                     }
+                 }
+             });
+
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+             // Add to history (uses updated SCORE_HISTORY_KEY for C Functions)
+             addScoreToHistory({
+                 score: score,
+                 totalQuestions: totalQuestions,
+                 accuracy: parseFloat(accuracy.toFixed(1)),
+                 timestamp: Date.now(),
+                 timeTaken: finalTime
+             });
+
+             // Display results screen
+             quizContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             resultsContainer.style.display = 'block';
+             resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void resultsContainer.offsetWidth; // Trigger reflow
+             resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+             // Update results display elements
+             scoreValue.textContent = `${score}/${totalQuestions}`; // Ensure total is correct
+             accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+             accuracyBar.style.width = `${accuracy}%`;
+             timeTaken.textContent = formatTime(finalTime);
+
+             // *** UPDATED *** Performance Message Text (C Functions themed)
+             let performanceText = "";
+             let scoreLevel = 'low'; // Default to low
+
+             if (timeUp) {
+                 performanceText = "Time's up! Let's review how you did with C functions.";
+                 // Determine level based on accuracy even if time ran out
+                 if (accuracy >= 85) scoreLevel = 'high';
+                 else if (accuracy >= 60) scoreLevel = 'medium';
+             } else {
+                 if (accuracy >= 95) { performanceText = "Excellent! You're a C function master!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Great job! You have a strong grasp of C function declaration, definition, and calling."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Good work! You understand the basics of C functions, parameters, and return types."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Not bad! Focus on understanding prototypes and pass-by-value."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Review function syntax, return statements, and parameter passing in C."; scoreLevel = 'low'; }
+             }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel); // Set score circle color
+
+             if (scoreLevel === 'high' && !timeUp) {
+                 triggerConfetti();
+             }
+
+             clearState(); // Clears the in-progress state for this specific quiz (C Functions)
+        }
+
+
+        // --- Confetti (Unchanged) ---
+        function triggerConfetti() { if (typeof confetti !== 'function') return; const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true }); myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 }); setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200); }
+
+        // --- Review Screen (Unchanged logic, relies on correct state) ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth; // Trigger reflow
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review items
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                const question = quizData[originalQuestionIndex];
+                const userAnswerIndex = userAnswers[displayIndex];
+                const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                const reviewItem = document.createElement('div');
+                // Apply appropriate background/border based on correctness
+                reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                    isCorrect
+                        ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
+                        : 'border-red-500 bg-red-50 dark:bg-red-900/30'
+                }`;
+
+                let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                // Add code snippet if it exists
+                if (question.code) {
+                    // Basic escaping for HTML display within <pre><code>
+                    const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                    // Use language-c class
+                    reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-c">${escapedCode}</code></pre>`;
+                }
+
+                reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                question.options.forEach((optionText, i) => {
+                    let liClass = "text-gray-700 dark:text-gray-300";
+                    let iconHTML = "";
+
+                    // Style the correct answer
+                    if (i === question.correctAnswer) {
+                        liClass = "font-semibold text-green-700 dark:text-green-400";
+                        iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; // Correct answer icon
+                    }
+
+                    // Style the user's selected answer
+                    if (i === userAnswerIndex) {
+                        if (isCorrect) {
+                            // User selected the correct answer
+                            liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                            // Icon already set above
+                        } else {
+                            // User selected the wrong answer
+                            liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; // Strike through wrong answer
+                            iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; // Incorrect answer icon
+                        }
+                    }
+
+                    reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                     <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                     <span class="flex-grow">${optionText}</span>
+                                     ${iconHTML}
+                                   </li>`;
+                });
+
+                reviewHTML += `</ul>`;
+
+                // Add explanation if it exists
+                if (question.explanation) {
+                    // Use appropriate border color based on overall correctness for the explanation box
+                    const explanationBorderColor = isCorrect ? 'border-green-500' : 'border-red-500';
+                    // Explanation styling uses theme color by default, overridden by correctness in CSS now.
+                    reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                     <strong class="block mb-1 text-sm text-blue-800 dark:text-blue-300">Explanation:</strong>
+                                     <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                   </div>`;
+                 }
+
+
+                reviewItem.innerHTML = reviewHTML;
+                reviewQuestions.appendChild(reviewItem);
+            });
+
+            // Re-run Prism highlighting for the review section
+            if (typeof Prism !== 'undefined') {
+                setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+            }
+        }
+
+        function showResultsScreen() {
+             reviewContainer.style.display = 'none';
+             resultsContainer.style.display = 'block';
+             // Optional: Re-add animation if desired when coming back from review
+             resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void resultsContainer.offsetWidth; // Trigger reflow
+             resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+
+        // --- Restart (Unchanged logic, uses updated keys via helpers) ---
+        function restartQuiz() {
+             // Reset all state variables
+             currentQuestionIndex = 0;
+             score = 0;
+             userAnswers = []; // Important: Clear previous answers
+             questionsOrder = []; // Will be repopulated on start
+             timeElapsed = 0;
+             quizActive = false;
+             clearInterval(timerInterval); // Stop any running timer
+
+             // Reset UI elements
+             progressBar.style.width = '0%';
+             timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+             timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+             feedbackMessage.textContent = ''; // Clear feedback message area
+
+             // Hide quiz, results, review screens; show start screen
+             resultsContainer.style.display = 'none';
+             quizContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             startScreen.style.display = 'block';
+
+             // Re-apply start screen animation
+             startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+             void startScreen.offsetWidth; // Trigger reflow
+             startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+             // Reset button states
+             nextBtn.disabled = true;
+             submitBtn.disabled = true;
+             prevBtn.classList.add('hidden'); // Hide prev button initially
+             navSpacer.classList.remove('hidden'); // Show spacer initially (may be hidden later by updateNavigation)
+
+             // Refresh score history display on start screen
+             displayScoreHistory(); // Ensure C Functions history is shown
+
+             // *** UPDATED *** log message
+             console.log(`C Functions quiz reset for ${QUIZ_STATE_KEY}.`);
+        }
+
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // *** UPDATED *** Share Text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the C Functions Quiz! How well do you know C function syntax and concepts?`;
+             const shareUrl = window.location.href; // Share the current page URL
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My C Functions Quiz Result!', // Title for the share dialog
+                         text: shareText,
+                         url: shareUrl
+                     });
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Optional: Fallback to copy if sharing fails?
+                     // copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 // Fallback for browsers that don't support navigator.share
+                 copyToClipboard(`${shareText} Check it out: ${shareUrl}`);
+             }
+         }
+
+        // --- Clipboard Copy ---
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Use a more subtle notification if possible, alert is blocking
+                alert("Results copied to clipboard!");
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                alert("Failed to copy results."); // Inform user of failure
+            });
+        }
+
+
+        // --- Event Listeners (Setup remains unchanged) ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Submit manually (not timed out)
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Setup remains unchanged) ---
+        // Add basic keyboard navigation for buttons and options
+         document.addEventListener('keydown', (e) => {
+             // Check if quiz container or results/review is visible to avoid conflicts
+             const isQuizActive = quizContainer.style.display === 'block';
+             const isResultsActive = resultsContainer.style.display === 'block';
+             const isReviewActive = reviewContainer.style.display === 'block';
+             const isStartActive = startScreen.style.display === 'block';
+
+             if (isQuizActive) {
+                // Navigate options with arrow keys (basic example)
+                 if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                     const focusableOptions = Array.from(optionsContainer.querySelectorAll('.option:not(.disabled)'));
+                     const currentFocusIndex = focusableOptions.findIndex(opt => opt === document.activeElement);
+
+                     if (focusableOptions.length > 0) {
+                         e.preventDefault();
+                         let nextFocusIndex = currentFocusIndex;
+                         if (e.key === 'ArrowDown') {
+                             nextFocusIndex = (currentFocusIndex + 1) % focusableOptions.length;
+                         } else { // ArrowUp
+                             nextFocusIndex = (currentFocusIndex - 1 + focusableOptions.length) % focusableOptions.length;
+                         }
+                         focusableOptions[nextFocusIndex].focus();
+                     }
+                 }
+                 // Existing button navigation checks
+                 else if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+
+             } else if (isStartActive) {
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+
+             } else if (isResultsActive) {
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+
+             } else if (isReviewActive) {
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Set dark mode based on preference
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            // Load score history specific to C Functions
+            loadScoreHistory(); // Loads using SCORE_HISTORY_KEY (C Functions)
+            displayScoreHistory(); // Displays loaded C Functions history
+
+            // Set initial screen visibility
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block'; // Show start screen initially
+
+            // Initialize button states
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden'); // Hide prev button on start
+
+            // *** UPDATED *** log message
+            console.log("C Functions Quiz application initialized.");
+        }
+
+        // Run initialization when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

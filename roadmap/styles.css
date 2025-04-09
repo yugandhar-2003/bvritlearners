@@ -1,0 +1,433 @@
+:root {
+    --primary-color: #4a6cf7;
+    --primary-dark: #3a56d4;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --background-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --border-radius: 10px;
+    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--card-bg);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: center;
+}
+
+h1 i {
+    margin-right: 10px;
+    animation: bounce 2s infinite;
+}
+
+.subtitle {
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+
+.form-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    transition: transform var(--transition-speed);
+}
+
+.form-card:hover {
+    transform: translateY(-5px);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+label i {
+    margin-right: 8px;
+    color: var(--primary-color);
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+}
+
+.generate-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 108, 247, 0.3);
+    margin-top: 10px;
+}
+
+.generate-btn span {
+    margin-right: 10px;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(74, 108, 247, 0.4);
+}
+
+.generate-btn:active {
+    transform: translateY(1px);
+}
+
+.roadmap-container {
+    margin-top: 30px;
+}
+
+#roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.roadmap-item {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    padding: 16px 20px;
+    margin: 5px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.roadmap-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.roadmap-item:after {
+    content: '\f107';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+}
+
+.roadmap-item.active:after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.details {
+    display: none;
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-top: -5px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.5s ease-out;
+    border-left: 4px solid var(--primary-color);
+}
+
+.details div {
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    color: var(--dark-color);
+    transition: transform 0.2s ease;
+}
+
+.details div:last-child {
+    border-bottom: none;
+}
+
+.details div:hover {
+    transform: translateX(5px);
+    color: var(--primary-color);
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+/* Additional Roadmap Styling */
+.roadmap-heading {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin: 20px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.roadmap-heading i {
+    margin-right: 10px;
+}
+
+.timeline-wrapper {
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline-wrapper::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(to bottom, var(--primary-color), var(--success-color));
+    border-radius: 4px;
+    opacity: 0.7;
+}
+
+.roadmap-days {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.roadmap-topic {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.roadmap-topic i {
+    margin-right: 8px;
+}
+
+.details-header {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.detail-item i {
+    color: var(--success-color);
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.details {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    max-height: 0;
+}
+
+.completion-message {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    background: linear-gradient(45deg, #f6d365 0%, #fda085 100%);
+    border-radius: 10px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.completion-message i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #fff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: bounce 2s infinite;
+}
+
+.completion-message p {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+}
+
+.loading i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+/* Container loaded animation */
+.container {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.container.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .roadmap-heading {
+        font-size: 1.5rem;
+    }
+
+    .roadmap-topic {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .form-card {
+        padding: 15px;
+    }
+
+    .generate-btn {
+        padding: 12px 15px;
+    }
+
+    .roadmap-days {
+        font-size: 0.8rem;
+    }
+
+    .roadmap-topic {
+        font-size: 0.95rem;
+    }
+
+    .completion-message i {
+        font-size: 2rem;
+    }
+
+    .completion-message p {
+        font-size: 1rem;
+    }
+}

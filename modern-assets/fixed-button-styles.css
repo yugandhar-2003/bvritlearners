@@ -1,0 +1,94 @@
+/* Fixed Button Styles to ensure text visibility */
+.fixed-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(45deg, #0073f5, #0D99E6);
+  color: white !important;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-top: auto;
+  text-decoration: none !important;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.fixed-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 115, 245, 0.3);
+  background: linear-gradient(45deg, #0D99E6, #0073f5);
+}
+
+.fixed-button:active {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 115, 245, 0.2);
+}
+
+.fixed-button-text {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: white !important;
+  position: relative;
+  z-index: 10;
+}
+
+.fixed-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  z-index: 10;
+  transition: transform 0.3s ease;
+}
+
+.fixed-button:hover .fixed-button-icon {
+  transform: translateX(5px);
+}
+
+/* Glow effect */
+.fixed-button::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  background: linear-gradient(45deg, #0073f5, #0D99E6, #0073f5);
+  background-size: 200% 200%;
+  border-radius: 8px;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: gradientMove 3s ease infinite;
+}
+
+.fixed-button:hover::after {
+  opacity: 1;
+}
+
+.fixed-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #0073f5, #0D99E6);
+  z-index: 2;
+  border-radius: 8px;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

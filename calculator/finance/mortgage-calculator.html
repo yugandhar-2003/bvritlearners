@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #0f0e0e;
+        }
+        .calculator {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: none;
+        }
+        .results h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .results-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .results-label {
+            font-weight: bold;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .slider-container {
+            margin-top: 10px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Mortgage Calculator</h1>
+        
+        <div class="input-group">
+            <label for="loan-amount">Loan Amount ($)</label>
+            <input type="number" id="loan-amount" min="1000" value="250000">
+            <div class="slider-container">
+                <input type="range" id="loan-amount-slider" min="10000" max="1000000" step="10000" value="250000">
+            </div>
+            <div id="loan-amount-error" class="error">Please enter a valid loan amount.</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="interest-rate">Interest Rate (%)</label>
+            <input type="number" id="interest-rate" min="0.1" max="25" step="0.1" value="4.5">
+            <div class="slider-container">
+                <input type="range" id="interest-rate-slider" min="0.1" max="15" step="0.1" value="4.5">
+            </div>
+            <div id="interest-rate-error" class="error">Please enter a valid interest rate.</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="loan-term">Loan Term</label>
+            <select id="loan-term">
+                <option value="10">10 years</option>
+                <option value="15">15 years</option>
+                <option value="20">20 years</option>
+                <option value="25">25 years</option>
+                <option value="30" selected>30 years</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="payment-frequency">Payment Frequency</label>
+            <select id="payment-frequency">
+                <option value="12" selected>Monthly</option>
+                <option value="26">Bi-weekly</option>
+                <option value="52">Weekly</option>
+            </select>
+        </div>
+        
+        <button id="calculate-btn">Calculate</button>
+        
+        <div id="results" class="results">
+            <h2>Mortgage Details</h2>
+            <div class="results-row">
+                <span class="results-label">Monthly Payment:</span>
+                <span id="monthly-payment"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Total Payment:</span>
+                <span id="total-payment"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Total Interest:</span>
+                <span id="total-interest"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Payment Frequency:</span>
+                <span id="payment-type"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Number of Payments:</span>
+                <span id="number-of-payments"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const loanAmountInput = document.getElementById('loan-amount');
+        const loanAmountSlider = document.getElementById('loan-amount-slider');
+        const interestRateInput = document.getElementById('interest-rate');
+        const interestRateSlider = document.getElementById('interest-rate-slider');
+        const loanTermSelect = document.getElementById('loan-term');
+        const paymentFrequencySelect = document.getElementById('payment-frequency');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resultsDiv = document.getElementById('results');
+        const monthlyPaymentSpan = document.getElementById('monthly-payment');
+        const totalPaymentSpan = document.getElementById('total-payment');
+        const totalInterestSpan = document.getElementById('total-interest');
+        const paymentTypeSpan = document.getElementById('payment-type');
+        const numberOfPaymentsSpan = document.getElementById('number-of-payments');
+        
+        // Error elements
+        const loanAmountError = document.getElementById('loan-amount-error');
+        const interestRateError = document.getElementById('interest-rate-error');
+        
+        // Sync sliders with input fields
+        loanAmountInput.addEventListener('input', () => {
+            loanAmountSlider.value = loanAmountInput.value;
+        });
+        
+        loanAmountSlider.addEventListener('input', () => {
+            loanAmountInput.value = loanAmountSlider.value;
+        });
+        
+        interestRateInput.addEventListener('input', () => {
+            interestRateSlider.value = interestRateInput.value;
+        });
+        
+        interestRateSlider.addEventListener('input', () => {
+            interestRateInput.value = interestRateSlider.value;
+        });
+        
+        // Calculate button click handler
+        calculateBtn.addEventListener('click', calculateMortgage);
+        
+        function calculateMortgage() {
+            // Reset error messages
+            loanAmountError.style.display = 'none';
+            interestRateError.style.display = 'none';
+            
+            // Get input values
+            const loanAmount = parseFloat(loanAmountInput.value);
+            const annualInterestRate = parseFloat(interestRateInput.value) / 100;
+            const loanTermYears = parseInt(loanTermSelect.value);
+            const paymentsPerYear = parseInt(paymentFrequencySelect.value);
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (isNaN(loanAmount) || loanAmount <= 0) {
+                loanAmountError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isNaN(annualInterestRate) || annualInterestRate <= 0) {
+                interestRateError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+            
+            // Calculate monthly interest rate
+            const periodicInterestRate = annualInterestRate / paymentsPerYear;
+            
+            // Calculate total number of payments
+            const totalPayments = loanTermYears * paymentsPerYear;
+            
+            // Calculate monthly payment
+            const x = Math.pow(1 + periodicInterestRate, totalPayments);
+            const monthlyPayment = (loanAmount * x * periodicInterestRate) / (x - 1);
+            
+            // Calculate total payment and total interest
+            const totalPayment = monthlyPayment * totalPayments;
+            const totalInterest = totalPayment - loanAmount;
+            
+            // Display results
+            let frequencyText = "";
+            if (paymentsPerYear === 12) {
+                frequencyText = "Monthly";
+            } else if (paymentsPerYear === 26) {
+                frequencyText = "Bi-weekly";
+            } else if (paymentsPerYear === 52) {
+                frequencyText = "Weekly";
+            }
+            
+            monthlyPaymentSpan.textContent = formatCurrency(monthlyPayment);
+            totalPaymentSpan.textContent = formatCurrency(totalPayment);
+            totalInterestSpan.textContent = formatCurrency(totalInterest);
+            paymentTypeSpan.textContent = frequencyText;
+            numberOfPaymentsSpan.textContent = totalPayments;
+            
+            resultsDiv.style.display = 'block';
+        }
+        
+        // Format number as currency
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(number);
+        }
+    </script>
+</body>
+</html>

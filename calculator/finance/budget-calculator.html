@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Budget Calculator</title>
+  <style>
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #080808;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .tab.active {
+            color: #2c7be5;
+            border-bottom: 3px solid #2c7be5;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        .action-btn {
+            background-color: #2c7be5;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #1a68d1;
+        }
+
+        .delete-btn {
+            background-color: #e63946;
+            margin-left: 10px;
+        }
+
+        .delete-btn:hover {
+            background-color: #c1121f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .summary h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-value {
+            font-weight: 600;
+        }
+
+        .total-income {
+            color: #28a745;
+        }
+
+        .total-expense {
+            color: #dc3545;
+        }
+
+        .net-balance {
+            color: #2c7be5;
+            font-size: 18px;
+        }
+
+        .category-select {
+            margin-top: 10px;
+        }
+
+        #summaryChart {
+            margin-top: 20px;
+            height: 200px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .tab {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+        }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Budget Calculator</h1>
+    <div class="tabs">
+      <button class="tab active" data-tab="income">Income</button>
+      <button class="tab" data-tab="expenses">Expenses</button>
+      <button class="tab" data-tab="summary">Summary</button>
+    </div>
+
+    <!-- Income Section -->
+    <div id="income" class="tab-content">
+      <h2>Income</h2>
+      <form id="income-form">
+        <div class="form-group">
+          <label for="income-name">Description</label>
+          <input type="text" id="income-name" placeholder="e.g., Salary, Freelance" required />
+        </div>
+        <div class="form-group">
+          <label for="income-amount">Amount ($)</label>
+          <input type="number" id="income-amount" min="0" step="0.01" required />
+        </div>
+        <div class="form-group">
+          <label for="income-frequency">Frequency</label>
+          <select id="income-frequency">
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+            <option value="bi-weekly">Bi-weekly</option>
+            <option value="annually">Annually</option>
+            <option value="one-time">One-time</option>
+          </select>
+        </div>
+        <button type="submit" class="action-btn">Add Income</button>
+      </form>
+
+      <table id="income-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Frequency</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Expenses Section -->
+    <div id="expenses" class="tab-content" style="display:none;">
+      <h2>Expenses</h2>
+      <form id="expense-form">
+        <div class="form-group">
+          <label for="expense-name">Description</label>
+          <input type="text" id="expense-name" required />
+        </div>
+        <div class="form-group">
+          <label for="expense-category">Category</label>
+          <select id="expense-category">
+            <option value="housing">Housing</option>
+            <option value="transportation">Transportation</option>
+            <option value="food">Food</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="health">Health</option>
+            <option value="education">Education</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="expense-amount">Amount ($)</label>
+          <input type="number" id="expense-amount" min="0" step="0.01" required />
+        </div>
+        <div class="form-group">
+          <label for="expense-frequency">Frequency</label>
+          <select id="expense-frequency">
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+            <option value="bi-weekly">Bi-weekly</option>
+            <option value="annually">Annually</option>
+            <option value="one-time">One-time</option>
+          </select>
+        </div>
+        <button type="submit" class="action-btn">Add Expense</button>
+      </form>
+
+      <table id="expense-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Frequency</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Summary Section -->
+    <div id="summary" class="tab-content" style="display:none;">
+      <h2>Budget Summary</h2>
+      <div class="summary">
+        <div class="summary-item">
+          <div>Total Monthly Income:</div>
+          <div class="summary-value total-income" id="total-income">$0.00</div>
+        </div>
+        <div class="summary-item">
+          <div>Total Monthly Expenses:</div>
+          <div class="summary-value total-expense" id="total-expenses">$0.00</div>
+        </div>
+        <div class="summary-item">
+          <div>Net Balance:</div>
+          <div class="summary-value net-balance" id="net-balance">$0.00</div>
+        </div>
+      </div>
+      <h3 style="margin-top:20px;">Expense Breakdown by Category</h3>
+      <div id="category-breakdown"></div>
+    </div>
+  </div>
+
+  <script>
+    let incomes = JSON.parse(localStorage.getItem('incomes')) || [];
+    let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const incomeForm = document.getElementById('income-form');
+    const expenseForm = document.getElementById('expense-form');
+    const incomeTable = document.querySelector('#income-table tbody');
+    const expenseTable = document.querySelector('#expense-table tbody');
+
+    const frequencyMultipliers = {
+      'monthly': 1,
+      'weekly': 4.33,
+      'bi-weekly': 2.17,
+      'annually': 1 / 12,
+      'one-time': 1
+    };
+
+    // Switch tabs
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const tabName = tab.getAttribute('data-tab');
+        tabContents.forEach(content => {
+          content.style.display = content.id === tabName ? 'block' : 'none';
+        });
+
+        if (tabName === 'summary') updateSummary();
+      });
+    });
+
+    // Add Income
+    incomeForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('income-name').value;
+      const amount = parseFloat(document.getElementById('income-amount').value);
+      const frequency = document.getElementById('income-frequency').value;
+
+      incomes.push({ id: Date.now(), name, amount, frequency });
+      saveIncome();
+      renderIncomes();
+      incomeForm.reset();
+    });
+
+    // Add Expense
+    expenseForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('expense-name').value;
+      const category = document.getElementById('expense-category').value;
+      const amount = parseFloat(document.getElementById('expense-amount').value);
+      const frequency = document.getElementById('expense-frequency').value;
+
+      expenses.push({ id: Date.now(), name, category, amount, frequency });
+      saveExpense();
+      renderExpenses();
+      expenseForm.reset();
+    });
+
+    function saveIncome() {
+      localStorage.setItem('incomes', JSON.stringify(incomes));
+    }
+
+    function saveExpense() {
+      localStorage.setItem('expenses', JSON.stringify(expenses));
+    }
+
+    function deleteIncome(id) {
+      incomes = incomes.filter(i => i.id !== id);
+      saveIncome();
+      renderIncomes();
+    }
+
+    function deleteExpense(id) {
+      expenses = expenses.filter(e => e.id !== id);
+      saveExpense();
+      renderExpenses();
+    }
+
+    function renderIncomes() {
+      incomeTable.innerHTML = '';
+      incomes.forEach(income => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${income.name}</td>
+          <td>$${income.amount.toFixed(2)}</td>
+          <td>${income.frequency}</td>
+          <td><button class="action-btn delete-btn" onclick="deleteIncome(${income.id})">Delete</button></td>
+        `;
+        incomeTable.appendChild(tr);
+      });
+    }
+
+    function renderExpenses() {
+      expenseTable.innerHTML = '';
+      expenses.forEach(expense => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${expense.name}</td>
+          <td>${expense.category}</td>
+          <td>$${expense.amount.toFixed(2)}</td>
+          <td>${expense.frequency}</td>
+          <td><button class="action-btn delete-btn" onclick="deleteExpense(${expense.id})">Delete</button></td>
+        `;
+        expenseTable.appendChild(tr);
+      });
+    }
+
+    function updateSummary() {
+      const totalIncome = incomes.reduce((sum, i) => sum + i.amount * frequencyMultipliers[i.frequency], 0);
+      const totalExpenses = expenses.reduce((sum, e) => sum + e.amount * frequencyMultipliers[e.frequency], 0);
+      const net = totalIncome - totalExpenses;
+
+      document.getElementById('total-income').textContent = `$${totalIncome.toFixed(2)}`;
+      document.getElementById('total-expenses').textContent = `$${totalExpenses.toFixed(2)}`;
+      document.getElementById('net-balance').textContent = `$${net.toFixed(2)}`;
+
+      const categoryData = {};
+      expenses.forEach(e => {
+        const monthlyAmount = e.amount * frequencyMultipliers[e.frequency];
+        categoryData[e.category] = (categoryData[e.category] || 0) + monthlyAmount;
+      });
+
+      const breakdown = document.getElementById('category-breakdown');
+      breakdown.innerHTML = Object.entries(categoryData).map(([cat, val]) =>
+        `<div>${cat}: $${val.toFixed(2)}</div>`).join('');
+    }
+
+    // Initial render
+    renderIncomes();
+    renderExpenses();
+  </script>
+</body>
+</html>

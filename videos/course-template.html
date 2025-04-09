@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COURSE_TITLE - BVRIT Learning Platform</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+    <!-- Modern Styles -->
+    <link rel="stylesheet" href="modern-course-styles.css">
+
+    <!-- Critical styles to ensure navigation is always visible -->
+    <style>
+        /* Force navbar to always be visible - with highest priority */
+        .navbar-modern,
+        nav.navbar-modern,
+        body > nav.navbar-modern,
+        html body nav.navbar-modern {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 2147483647 !important; /* Maximum possible z-index value */
+            background-color: rgba(18, 18, 18, 0.98) !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: none !important;
+            pointer-events: auto !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
+            min-height: 60px !important;
+        }
+
+        /* Force navbar menu to always be visible */
+        .navbar-menu,
+        #navbarMenu,
+        .navbar-modern .navbar-menu,
+        nav.navbar-modern .navbar-menu,
+        .navbar-container .navbar-menu,
+        div#navbarMenu {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 5px !important;
+            margin: 0 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Spacer removed since header is no longer present */
+    </style>
+</head>
+<body>
+    <!-- Header removed as requested -->
+
+    <div class="container-modern">
+        <!-- Back Button -->
+        <a href="../tutorials/index.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Back to Tutorials
+        </a>
+
+        <!-- Course Header -->
+        <div class="course-header">
+            <h1 class="course-title">COURSE_TITLE</h1>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button" data-tab="english">
+                <i class="fas fa-language"></i> English Tutorial
+            </button>
+            <button class="tab-button" data-tab="hindi">
+                <i class="fas fa-language"></i> Hindi Tutorial
+            </button>
+            <button class="tab-button" data-tab="telugu">
+                <i class="fas fa-language"></i> Telugu Tutorial
+            </button>
+        </div>
+
+        <!-- Tab Container -->
+        <div class="tab-container">
+            <!-- English Tab -->
+            <div class="tab-content" id="english-tab">
+                <div class="video-container">
+                    ENGLISH_VIDEO_EMBED
+                </div>
+            </div>
+
+            <!-- Hindi Tab -->
+            <div class="tab-content" id="hindi-tab">
+                <div class="video-container">
+                    HINDI_VIDEO_EMBED
+                </div>
+            </div>
+
+            <!-- Telugu Tab -->
+            <div class="tab-content" id="telugu-tab">
+                <div class="video-container">
+                    TELUGU_VIDEO_EMBED
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Course JavaScript -->
+    <script src="modern-course.js"></script>
+</body>
+</html>

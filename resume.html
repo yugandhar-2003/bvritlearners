@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analyzer - AI-Powered Resume Feedback</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script src="https://npmcdn.com/pdfjs-dist@2.9.359/web/pdf_viewer.js"></script>
+    <link rel="stylesheet" href="https://npmcdn.com/pdfjs-dist@2.9.359/web/pdf_viewer.css">
+    <style>
+        :root {
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-surface-2: #2d2d2d;
+            --dark-border: #333333;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --primary-color: #2196f3;
+            --primary-dark: #1976d2;
+            --primary-light: #64b5f6;
+            --accent-color: #7e57c2;
+            --accent-dark: #5e35b1;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --border-radius-sm: 4px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            overflow: hidden;
+        }
+
+        .bg-animation .square {
+            position: absolute;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            animation: float 25s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100%) rotate(0deg);
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-1000%) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--dark-border);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+        }
+
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .upload-title i {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+
+        .upload-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .file-upload-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+            background-color: rgba(33, 150, 243, 0.1);
+            border: 3px dashed var(--primary-color);
+            border-radius: var(--border-radius-md);
+            padding: 2rem;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+            text-align: center;
+        }
+
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4);
+                border-color: var(--primary-color);
+            }
+            50% {
+                box-shadow: 0 0 0 15px rgba(33, 150, 243, 0);
+                border-color: var(--accent-color);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+                border-color: var(--primary-color);
+            }
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(33, 150, 243, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .file-upload-label.dragover {
+            border-color: var(--accent-color);
+            background-color: rgba(33, 150, 243, 0.15);
+            transform: scale(1.02);
+        }
+
+        .file-upload-input {
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: var(--dark-surface-2);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .file-upload-text {
+            margin-top: 1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .file-name {
+            margin-top: 0.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .analyze-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            width: 100%;
+        }
+
+        .analyze-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .analyze-button:active {
+            transform: translateY(1px);
+        }
+
+        .analyze-button i {
+            margin-right: 0.5rem;
+        }
+
+        .analyze-button:disabled {
+            background: linear-gradient(45deg, #666, #888);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--dark-border);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .preview-title i {
+            margin-right: 0.75rem;
+            color: var(--accent-color);
+        }
+
+        .pdf-preview {
+            background-color: var(--dark-surface-2);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--dark-border);
+            flex-grow: 1;
+            min-height: 400px;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pdf-preview canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .preview-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-button {
+            background-color: var(--dark-surface-2);
+            color: var(--text-primary);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-button:hover:not(:disabled) {
+            background-color: var(--dark-surface);
+            border-color: var(--primary-color);
+        }
+
+        .preview-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preview-button i {
+            margin-right: 0.5rem;
+        }
+
+        .page-info {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Results Section */
+        .results-section {
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--dark-border);
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .results-title i {
+            margin-right: 0.75rem;
+            color: var(--success-color);
+        }
+
+        .results-content {
+            background-color: var(--dark-surface-2);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--dark-border);
+            padding: 1.5rem;
+            white-space: pre-wrap;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Hidden Class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            background-color: var(--dark-surface);
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-fast);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            color: var(--primary-color);
+            background-color: var(--dark-surface-2);
+            transform: translateX(-5px);
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background-color: var(--dark-surface-2);
+            border-radius: var(--border-radius-md);
+            margin-top: 1rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--dark-surface);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <!-- Fixed Upload Reminder -->
+    <div style="position: fixed; bottom: 20px; left: 0; right: 0; text-align: center; z-index: 1000;">
+        <div id="reopenUploadSection" style="display: inline-block; padding: 15px 30px; background: linear-gradient(45deg, #2196f3, #7e57c2); color: white; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-weight: bold; font-size: 1.1rem; animation: bounce 2s infinite; cursor: pointer;">
+            <i class="fas fa-upload"></i> Upload your resume to get started!
+        </div>
+    </div>
+
+    <script>
+        // Handle the close and reopen buttons for the upload section
+        document.addEventListener('DOMContentLoaded', function() {
+            const permanentUploadSection = document.getElementById('permanentUploadSection');
+            const reopenUploadSection = document.getElementById('reopenUploadSection');
+            const closeUploadSection = document.getElementById('closeUploadSection');
+
+            // Initially hide the reopen button since the upload section is visible
+            reopenUploadSection.parentElement.style.display = 'none';
+
+            // Handle close button click
+            closeUploadSection.addEventListener('click', function() {
+                permanentUploadSection.style.display = 'none';
+                reopenUploadSection.parentElement.style.display = 'block';
+            });
+
+            // Handle reopen button click
+            reopenUploadSection.addEventListener('click', function() {
+                permanentUploadSection.style.display = 'block';
+                reopenUploadSection.parentElement.style.display = 'none';
+
+                // Add highlight animation
+                const uploadContainer = permanentUploadSection.querySelector('div');
+                uploadContainer.style.boxShadow = '0 0 40px rgba(33, 150, 243, 0.8)';
+
+                // Reset the box shadow after animation
+                setTimeout(function() {
+                    uploadContainer.style.boxShadow = '0 0 30px rgba(33, 150, 243, 0.5)';
+                }, 2000);
+            });
+        });
+    </script>
+
+    <!-- Background Animation -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1 class="logo">Resume Analyzer</h1>
+        <p class="tagline">Get AI-powered feedback to improve your resume</p>
+    </header>
+
+    <!-- ALWAYS VISIBLE UPLOAD SECTION -->
+    <div id="permanentUploadSection" style="position: fixed; top: 150px; left: 0; right: 0; z-index: 9999; text-align: center; pointer-events: none;">
+        <div style="display: inline-block; max-width: 500px; background-color: #1e1e1e; border: 3px solid #2196f3; border-radius: 12px; padding: 20px; box-shadow: 0 0 30px rgba(33, 150, 243, 0.5); pointer-events: auto; position: relative;">
+            <!-- Close button -->
+            <button id="closeUploadSection" style="position: absolute; top: 5px; right: 5px; background: none; border: none; color: #b0b0b0; font-size: 16px; cursor: pointer;" title="Minimize (you can reopen from the bottom of the page)">
+                <i class="fas fa-minus"></i>
+            </button>
+
+            <h3 style="color: white; margin-bottom: 15px;">Upload Your Resume</h3>
+
+            <div style="margin-bottom: 15px; animation: pulse 2s infinite;">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #2196f3;"></i>
+            </div>
+
+            <input type="file" id="permanentUploadInput" accept="application/pdf" style="display: block !important; width: 100%; padding: 10px; background-color: #2d2d2d; color: white; border: 2px solid #2196f3; border-radius: 8px; font-size: 16px; cursor: pointer; margin-bottom: 10px;">
+
+            <div id="permanentFileName" style="color: #7e57c2; font-weight: bold; margin-top: 10px; min-height: 20px;"></div>
+
+            <button id="permanentAnalyzeButton" style="margin-top: 15px; padding: 10px 20px; background: linear-gradient(45deg, #2196f3, #7e57c2); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none;">
+                <i class="fas fa-search"></i> Analyze Resume
+            </button>
+
+            <!-- Hidden textarea for resume text -->
+            <textarea id="permanentResumeText" style="display: none;"></textarea>
+        </div>
+    </div>
+
+        <style>
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+                40% {transform: translateY(-10px);}
+                60% {transform: translateY(-5px);}
+            }
+
+            @keyframes shimmer {
+                100% {transform: translateX(100%);}
+            }
+        </style>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Upload Section - Full Width and Centered -->
+        <div class="upload-section" style="max-width: 600px; margin: 0 auto 2rem auto; position: relative; z-index: 10;">
+            <h2 class="upload-title" style="text-align: center;">
+                <i class="fas fa-file-alt" style="font-size: 2rem; display: block; margin: 0 auto 1rem auto; color: var(--primary-color);"></i>
+                Upload Your Resume
+            </h2>
+            <p class="upload-description" style="text-align: center; font-size: 1.1rem;">
+                Our AI will analyze your resume and provide personalized feedback to help you stand out to recruiters.
+                <br><strong>Upload a PDF document to get started.</strong>
+            </p>
+
+            <form id="resumeForm">
+                <div id="resumeTextContainer" class="hidden">
+                    <textarea id="resume" rows="10" class="hidden"></textarea>
+                </div>
+
+                <!-- Helper Text -->
+                <div style="text-align: center; margin: 1rem 0; padding: 1rem; background-color: rgba(33, 150, 243, 0.2); border-radius: 8px; border-left: 5px solid #2196f3;">
+                    <i class="fas fa-info-circle" style="color: #2196f3; font-size: 1.5rem; vertical-align: middle;"></i>
+                    <span style="margin-left: 0.5rem; font-weight: 600; font-size: 1.1rem; color: white;">Step 1: Upload your resume in PDF format</span>
+                </div>
+
+                <!-- Attention Grabber -->
+                <div style="text-align: center; margin: 1.5rem 0; animation: pulse 2s infinite;">
+                    <i class="fas fa-arrow-down" style="color: #2196f3; font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
+                    <span style="font-weight: 600; color: white; font-size: 1.2rem;">UPLOAD HERE</span>
+                </div>
+
+                <!-- Highlighted Upload Container -->
+                <div class="file-upload-container" style="margin: 1rem 0; padding: 30px; background-color: rgba(33, 150, 243, 0.15); border: 3px dashed #2196f3; border-radius: 12px; text-align: center; box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);">
+                    <i class="fas fa-cloud-upload-alt fa-4x" style="color: var(--primary-color); margin-bottom: 1.5rem;"></i>
+                    <span class="file-upload-text" style="font-size: 1.3rem; font-weight: 600; color: var(--primary-color);">Upload your resume</span>
+                    <span style="margin-bottom: 1rem; color: var(--text-secondary);">Select a PDF file from your computer</span>
+
+                    <input type="file" id="uploadResume" accept="application/pdf" style="display: block !important; width: 100%; padding: 15px; margin: 20px 0; background-color: #2d2d2d; color: white; border: 2px solid #2196f3; border-radius: 8px; font-size: 16px; cursor: pointer; position: relative; z-index: 100;">
+
+                    <span class="file-name" id="fileName" style="margin-top: 1rem; font-weight: 600; color: var(--accent-color);"></span>
+                </div>
+
+                <!-- File Format Note -->
+                <div style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <i class="fas fa-file-pdf" style="color: var(--error-color);"></i> Only PDF files are supported
+                </div>
+
+                <!-- Step 2 Helper Text -->
+                <div id="step2Helper" class="hidden" style="text-align: center; margin: 1.5rem 0 1rem; padding: 0.75rem; background-color: rgba(126, 87, 194, 0.1); border-radius: var(--border-radius-md);">
+                    <i class="fas fa-check-circle" style="color: var(--accent-color);"></i>
+                    <span style="margin-left: 0.5rem; font-weight: 500;">Step 2: Click the button below to analyze your resume</span>
+                </div>
+
+                <button type="submit" id="analyzeButton" class="analyze-button hidden" style="margin-top: 1.5rem; font-size: 1.2rem; padding: 1rem; width: 100%; background: linear-gradient(45deg, #4CAF50, #2196F3); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 15px rgba(0,0,0,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.3)';">
+                    <i class="fas fa-search"></i> Analyze Resume
+                </button>
+            </form>
+
+            <!-- Loading Animation -->
+            <div class="loading-container" id="loadingContainer">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Analyzing your resume...</p>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+
+            <!-- Preview Section -->
+            <div class="preview-section">
+                <h2 class="preview-title"><i class="fas fa-file-pdf"></i> Resume Preview</h2>
+                <div id="pdfPreview" class="pdf-preview"></div>
+                <div class="preview-controls">
+                    <button id="previousButton" class="preview-button hidden">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <button id="nextButton" class="preview-button hidden">
+                        <i class="fas fa-chevron-right"></i> Next
+                    </button>
+                </div>
+                <p id="pageInfo" class="page-info hidden"></p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section hidden" id="resultsSection">
+            <h2 class="results-title"><i class="fas fa-chart-bar"></i> Analysis Results</h2>
+            <div id="output" class="results-content"></div>
+        </div>
+    </div>
+
+  <script>
+    // Handle the permanent upload section
+    document.addEventListener('DOMContentLoaded', function() {
+        const permanentInput = document.getElementById('permanentUploadInput');
+        const permanentFileName = document.getElementById('permanentFileName');
+        const permanentAnalyzeButton = document.getElementById('permanentAnalyzeButton');
+        const permanentResumeText = document.getElementById('permanentResumeText');
+
+        // Handle file selection
+        permanentInput.addEventListener('change', async function(e) {
+            const file = this.files[0];
+            if (!file) return;
+
+            // Show file name
+            permanentFileName.textContent = "Selected: " + file.name;
+
+            // Show analyze button
+            permanentAnalyzeButton.style.display = 'inline-block';
+
+            // Show loading message
+            permanentFileName.innerHTML = "<span style='color: #2196f3;'><i class='fas fa-spinner fa-spin'></i> Processing PDF...</span>";
+
+            // Extract text from PDF
+            try {
+                const pdfBuffer = await file.arrayBuffer();
+                pdf = await pdfjsLib.getDocument({data: pdfBuffer}).promise;
+                let extractedText = '';
+
+                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                    const page = await pdf.getPage(pageNumber);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    extractedText += `${pageText} `;
+                }
+
+                // Set the text in both hidden textareas
+                permanentResumeText.value = extractedText.trim();
+                document.getElementById("resume").value = extractedText.trim();
+
+                // Show success message
+                permanentFileName.innerHTML = "<span style='color: #4caf50;'><i class='fas fa-check-circle'></i> Selected: " + file.name + " (PDF processed successfully)</span>";
+
+                // Show the PDF preview
+                currentPage = 1;
+                await updatePdfView();
+
+                // Show navigation buttons if needed
+                if (pdf.numPages > 1) {
+                    document.getElementById("previousButton").classList.remove("hidden");
+                    document.getElementById("nextButton").classList.remove("hidden");
+                }
+            } catch (error) {
+                console.error('Error extracting text from PDF', error);
+                permanentFileName.innerHTML = "<span style='color: #f44336;'><i class='fas fa-exclamation-circle'></i> Error processing PDF. Please try another file.</span>";
+                alert("Oops, we couldn't extract text from this PDF. Please try another file.");
+            }
+        });
+
+        // Handle analyze button click
+        permanentAnalyzeButton.addEventListener('click', function() {
+            // Get the resume text
+            const resumeText = permanentResumeText.value || document.getElementById("resume").value;
+
+            if (!resumeText.trim()) {
+                alert('No text was extracted from your PDF. Try with a different file.');
+                return;
+            }
+
+            // Show loading animation
+            document.getElementById("loadingContainer").style.display = "flex";
+
+            // Show results section
+            document.getElementById("resultsSection").classList.remove("hidden");
+
+            // Minimize the upload section
+            document.getElementById('closeUploadSection').click();
+
+            // Scroll to results section
+            setTimeout(() => {
+                document.getElementById("resultsSection").scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+
+            // Prepare the prompt
+            const promptTemplate = "Analyze the given resume text and provide detailed feedback in the following format:\n\n1. Overall Assessment (with a score out of 100)\n2. Key Strengths (bullet points)\n3. Areas for Improvement (bullet points)\n4. Specific Recommendations for Enhancement\n5. ATS Compatibility Score\n\nResume text: {Resume text}";
+            const substitutedPrompt = promptTemplate.replace("{Resume text}", resumeText);
+
+            // Make the API request
+            const ws = new WebSocket(`wss://backend.buildpicoapps.com/ask_ai_streaming_v2`);
+
+            ws.addEventListener("open", () => {
+                ws.send(JSON.stringify({
+                    appId: "how-happy",
+                    prompt: substitutedPrompt
+                }));
+            });
+
+            let responseText = "";
+            const output = document.getElementById("output");
+            output.innerText = "";
+
+            ws.addEventListener("message", (event) => {
+                responseText += event.data;
+                output.innerText = responseText;
+            });
+
+            ws.addEventListener("close", (event) => {
+                // Hide loading animation
+                document.getElementById("loadingContainer").style.display = "none";
+
+                if (event.code != 1000) {
+                    alert("Oops, we ran into an error. Refresh the page and try again.");
+                }
+            });
+
+            ws.addEventListener("error", (error) => {
+                // Hide loading animation
+                document.getElementById("loadingContainer").style.display = "none";
+                alert("Oops, we ran into an error. Refresh the page and try again.");
+            });
+        });
+    });
+
+    // Initialize background animation
+    function createBackgroundAnimation() {
+        const bgAnimation = document.getElementById('bgAnimation');
+        const squareCount = 15;
+
+        for (let i = 0; i < squareCount; i++) {
+            const square = document.createElement('div');
+            square.classList.add('square');
+
+            // Random size between 30px and 100px
+            const size = Math.random() * 70 + 30;
+            square.style.width = `${size}px`;
+            square.style.height = `${size}px`;
+
+            // Random position
+            square.style.left = `${Math.random() * 100}%`;
+
+            // Random delay
+            square.style.animationDelay = `${Math.random() * 15}s`;
+
+            // Random duration between 15s and 30s
+            square.style.animationDuration = `${Math.random() * 15 + 15}s`;
+
+            bgAnimation.appendChild(square);
+        }
+    }
+
+    // Set up PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://npmcdn.com/pdfjs-dist@2.9.359/build/pdf.worker.js';
+
+    let pdf;
+    let currentPage = 1;
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create background animation
+        createBackgroundAnimation();
+
+        // Animate elements
+        if (typeof gsap !== 'undefined') {
+            gsap.from('.logo', {opacity: 0, y: -30, duration: 0.8, ease: 'power3.out'});
+            gsap.from('.tagline', {opacity: 0, y: -20, duration: 0.8, delay: 0.2, ease: 'power3.out'});
+            gsap.from('#ctaBanner', {opacity: 0, y: -20, scale: 0.95, duration: 0.8, delay: 0.4, ease: 'back.out(1.7)'});
+
+            // Special animation for the upload section to draw attention
+            gsap.from('.upload-section', {opacity: 0, y: 30, duration: 1, delay: 0.3, ease: 'power3.out'});
+            gsap.to('.file-upload-label', {
+                scale: 1.05,
+                duration: 0.5,
+                delay: 1.2,
+                yoyo: true,
+                repeat: 3,
+                ease: 'power1.inOut'
+            });
+
+            gsap.from('.content-grid', {opacity: 0, y: 20, duration: 0.8, delay: 0.3, ease: 'power3.out'});
+            gsap.from('.back-button', {opacity: 0, x: -20, duration: 0.8, delay: 0.5, ease: 'power3.out'});
+        }
+
+        // Set up drag and drop functionality
+        const uploadLabel = document.getElementById('uploadLabel');
+        const resumeUpload = document.getElementById('uploadResume');
+        const fileName = document.getElementById('fileName');
+
+        // File upload handling
+        resumeUpload.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                // Show file name
+                fileName.textContent = this.files[0].name;
+
+                // Show analyze button and step 2 helper
+                document.getElementById('analyzeButton').classList.remove('hidden');
+                document.getElementById('step2Helper').classList.remove('hidden');
+
+                // Animate the button appearance
+                if (typeof gsap !== 'undefined') {
+                    gsap.from('#step2Helper', {opacity: 0, y: 10, duration: 0.5, ease: 'power3.out'});
+                    gsap.from('#analyzeButton', {opacity: 0, y: 10, duration: 0.5, delay: 0.2, ease: 'power3.out'});
+                }
+            }
+        });
+
+        // Drag and drop handling
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadLabel.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadLabel.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadLabel.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            uploadLabel.classList.add('dragover');
+        }
+
+        function unhighlight() {
+            uploadLabel.classList.remove('dragover');
+        }
+
+        uploadLabel.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files && files[0]) {
+                // Update file input with dropped file
+                resumeUpload.files = files;
+                fileName.textContent = files[0].name;
+
+                // Show analyze button and step 2 helper
+                document.getElementById('analyzeButton').classList.remove('hidden');
+                document.getElementById('step2Helper').classList.remove('hidden');
+
+                // Animate the button appearance
+                if (typeof gsap !== 'undefined') {
+                    gsap.from('#step2Helper', {opacity: 0, y: 10, duration: 0.5, ease: 'power3.out'});
+                    gsap.from('#analyzeButton', {opacity: 0, y: 10, duration: 0.5, delay: 0.2, ease: 'power3.out'});
+                }
+            }
+        }
+    });
+
+    function updatePageInfo() {
+      const pageInfo = document.getElementById("pageInfo");
+      pageInfo.innerText = `${currentPage} / ${pdf.numPages}`;
+      pageInfo.classList.toggle("hidden", pdf.numPages === 1);
+    }
+
+    async function updatePdfView() {
+      // Update button states
+      document.getElementById("previousButton").disabled = currentPage <= 1;
+      document.getElementById("nextButton").disabled = currentPage >= pdf.numPages;
+
+      // Show buttons if they were hidden
+      if (pdf.numPages > 1) {
+        document.getElementById("previousButton").classList.remove("hidden");
+        document.getElementById("nextButton").classList.remove("hidden");
+      }
+
+      updatePageInfo();
+
+      // Render the PDF page
+      const page = await pdf.getPage(currentPage);
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      // Calculate scale to fit the container while maintaining aspect ratio
+      const pdfPreview = document.getElementById("pdfPreview");
+      const containerWidth = pdfPreview.clientWidth - 40; // Subtract padding
+
+      const viewport = page.getViewport({scale: 1.0});
+      const scale = containerWidth / viewport.width;
+      const scaledViewport = page.getViewport({scale: scale});
+
+      canvas.height = scaledViewport.height;
+      canvas.width = scaledViewport.width;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: scaledViewport,
+      };
+
+      // Show loading indicator
+      pdfPreview.innerHTML = '<div class="loading-spinner" style="margin: auto;"></div>';
+
+      // Render the page
+      await page.render(renderContext);
+      pdfPreview.innerHTML = '';
+      pdfPreview.appendChild(canvas);
+    }
+
+    document.getElementById("previousButton").addEventListener("click", () => {
+      currentPage--;
+      updatePdfView();
+    });
+
+    document.getElementById("nextButton").addEventListener("click", () => {
+      currentPage++;
+      updatePdfView();
+    });
+
+    document.getElementById("resumeForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      // Show loading animation
+      document.getElementById("loadingContainer").style.display = "flex";
+
+      // Show results section if it's hidden
+      const resultsSection = document.getElementById("resultsSection");
+      resultsSection.classList.remove("hidden");
+
+      // Scroll to results section
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+
+      const promptTemplate = "Analyze the given resume text and provide detailed feedback in the following format:\n\n1. Overall Assessment (with a score out of 100)\n2. Key Strengths (bullet points)\n3. Areas for Improvement (bullet points)\n4. Specific Recommendations for Enhancement\n5. ATS Compatibility Score\n\nResume text: {Resume text}";
+      const resumeText = document.getElementById("resume").value;
+
+      if (!resumeText.trim()) {
+        alert('No text was extracted from your PDF. Try with a different file.');
+        document.getElementById("loadingContainer").style.display = "none";
+        return;
+      }
+
+      const substitutedPrompt = promptTemplate.replace("{Resume text}", resumeText);
+
+      console.log("Analyzing resume...");
+
+      const output = document.getElementById("output");
+      output.innerText = "";
+
+      const ws = new WebSocket(`wss://backend.buildpicoapps.com/ask_ai_streaming_v2`);
+
+      ws.addEventListener("open", () => {
+          ws.send(
+            JSON.stringify({
+              appId: "how-happy",
+              prompt: substitutedPrompt
+            })
+          );
+        });
+
+      ws.addEventListener("message", (event) => {
+        output.innerText = `${output.innerText}${event.data}`;
+      });
+
+      ws.addEventListener("close", (event) => {
+        console.log("Connection closed", event.code, event.reason);
+        // Hide loading animation
+        document.getElementById("loadingContainer").style.display = "none";
+
+        if (event.code != 1000) {
+          alert("Oops, we ran into an error. Refresh the page and try again.");
+        }
+      });
+
+      ws.addEventListener("error", (error) => {
+        console.log('WebSocket error', error);
+        // Hide loading animation
+        document.getElementById("loadingContainer").style.display = "none";
+        alert("Oops, we ran into an error. Refresh the page and try again.");
+      });
+    });
+
+    document.getElementById("uploadResume").addEventListener("change", async (event) => {
+      // Ensure the upload section stays visible
+      document.querySelector('.upload-section').style.display = 'block';
+      document.querySelector('.file-upload-container').style.display = 'block';
+      document.getElementById('uploadResume').style.display = 'block';
+
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Show the file name
+      document.getElementById("fileName").textContent = "Selected file: " + file.name;
+
+      // Show the analyze button and step 2 helper
+      document.getElementById("analyzeButton").classList.remove("hidden");
+      document.getElementById("step2Helper").classList.remove("hidden");
+
+      // Highlight the file upload container to show success
+      document.querySelector('.file-upload-container').style.borderColor = 'var(--success-color)';
+      document.querySelector('.file-upload-container').style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+
+      // Animate the button appearance
+      if (typeof gsap !== 'undefined') {
+          gsap.from('#step2Helper', {opacity: 0, y: 10, duration: 0.5, ease: 'power3.out'});
+          gsap.from('#analyzeButton', {opacity: 0, y: 10, duration: 0.5, delay: 0.2, ease: 'power3.out'});
+      }
+
+      try {
+        const pdfBuffer = await file.arrayBuffer();
+        pdf = await pdfjsLib.getDocument({data: pdfBuffer}).promise;
+        let extractedText = '';
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+          const page = await pdf.getPage(pageNumber);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ');
+
+          extractedText += `${pageText} `;
+        }
+
+        document.getElementById("resume").value = extractedText.trim();
+
+        // Hide textarea but NOT the file input
+        document.getElementById("resumeTextContainer").classList.add("hidden");
+
+        // Show the results section but don't hide the upload section
+        document.getElementById("resultsSection").classList.remove("hidden");
+
+        // Display the PDF preview
+        currentPage = 1;
+        await updatePdfView();
+
+        // Show the previous/next buttons and page info, if resume has more than 1 page
+        if (pdf.numPages > 1) {
+          document.getElementById("previousButton").classList.remove("hidden");
+          document.getElementById("nextButton").classList.remove("hidden");
+        } else {
+          document.getElementById("previousButton").classList.add("hidden");
+          document.getElementById("nextButton").classList.add("hidden");
+        }
+
+      } catch (error) {
+        console.error('Error extracting text from PDF', error);
+        alert("Oops, we couldn't extract text from this PDF. Please try another file.");
+      }
+    });
+
+    // Form submission handler
+    document.getElementById("resumeForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      // Show loading animation
+      document.getElementById("loadingContainer").style.display = "flex";
+
+      // Get the resume text
+      const resumeText = document.getElementById("resume").value;
+
+      // Show the results section
+      const resultsSection = document.getElementById("resultsSection");
+      resultsSection.classList.remove("hidden");
+
+      // Scroll to results section
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }, 500);
+
+      // Make a request to the OpenAI API
+      fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer sk-Rl5Yl3Yl3Yl3Yl3Yl3Yl3T3BlbkFJYl3Yl3Yl3Yl3Yl3Yl3Y",
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: `You are an expert resume analyzer that provides detailed, constructive feedback on resumes.
+              Analyze the resume for ATS compatibility, formatting, content quality, and overall effectiveness.
+              Structure your response in these sections:
+              1. Overall Assessment (with a score out of 100)
+              2. Strengths (bullet points)
+              3. Areas for Improvement (bullet points)
+              4. Specific Recommendations (detailed advice)
+              Use markdown formatting for better readability.`
+            },
+            {
+              role: "user",
+              content: `Please analyze this resume and provide detailed feedback on how to improve it: ${resumeText}`
+            }
+          ],
+          max_tokens: 1500,
+          temperature: 0.7,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Hide loading animation
+        document.getElementById("loadingContainer").style.display = "none";
+
+        // Display the analysis with some styling
+        const output = document.getElementById("output");
+        const content = data.choices[0].message.content;
+
+        // Convert markdown to HTML (basic conversion)
+        const formattedContent = content
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+          .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
+          .replace(/^# (.*?)$/gm, '<h1>$1</h1>') // H1
+          .replace(/^## (.*?)$/gm, '<h2>$1</h2>') // H2
+          .replace(/^### (.*?)$/gm, '<h3>$1</h3>') // H3
+          .replace(/^- (.*?)$/gm, '<li>$1</li>') // List items
+          .replace(/<\/li><li>/g, '</li>\n<li>') // Fix list items
+          .replace(/^\d+\. (.*?)$/gm, '<li>$1</li>') // Numbered list items
+          .replace(/\n\n/g, '<br><br>'); // Line breaks
+
+        output.innerHTML = formattedContent;
+
+        // Animate the results section
+        if (typeof gsap !== 'undefined') {
+          gsap.from('.results-section', {opacity: 0, y: 20, duration: 0.8, ease: 'power3.out'});
+        }
+      })
+      .catch(error => {
+        // Hide loading animation
+        document.getElementById("loadingContainer").style.display = "none";
+
+        console.error("Error:", error);
+        const output = document.getElementById("output");
+        output.innerHTML = `<div style="color: var(--error-color);"><i class="fas fa-exclamation-circle"></i> An error occurred while analyzing the resume. Please try again.</div>`;
+      });
+    });
+  </script>
+</body>
+</html>

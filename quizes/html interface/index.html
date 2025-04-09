@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Quizzes</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern Quiz Styles -->
+    <link rel="stylesheet" href="../modern-quiz-styles.css">
+    <!-- Custom Styles (if needed) -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../../tutorials/index.html" class="back-button" style="position: absolute; top: 20px; left: 20px; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+        <i class="fas fa-arrow-left"></i> Back to Tutorials
+    </a>
+    
+    <div class="container">
+        <h1>HTML Quizzes</h1>
+        <p style="margin-bottom: 2rem;">Test your HTML knowledge with these interactive quizzes</p>
+        
+        <div class="quiz-grid">
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">HTML Basics</h3>
+                    <p class="quiz-card-description">Test your knowledge of HTML basics including tags, attributes, and document structure.</p>
+                    <a href="..\html\html basics\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">HTML Forms</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions about HTML forms, input types, and form validation.</p>
+                    <a href="..\html\html forms\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">HTML5 Features</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of HTML5 features including semantic elements, audio/video, and canvas.</p>
+                    <a href="..\html\html5\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">HTML Tables</h3>
+                    <p class="quiz-card-description">Test your knowledge of HTML tables, table structure, and table styling techniques.</p>
+                    <a href="..\html\html tables\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+            
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">HTML Multimedia</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions about HTML multimedia elements including images, audio, and video.</p>
+                    <a href="..\html\html multimedia\index.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add a script to handle the active tab state -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make the first quiz card active by default
+            const firstCard = document.querySelector('.quiz-card');
+            if (firstCard) {
+                firstCard.classList.add('active');
+            }
+            
+            // Add hover effects
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    cards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

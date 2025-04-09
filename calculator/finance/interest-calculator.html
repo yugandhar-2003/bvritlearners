@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interest Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #131212;
+            color: #333;
+        }
+        .calculator {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #85338c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #8c3c84;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: none;
+        }
+        .results h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .results-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .results-label {
+            font-weight: bold;
+        }
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .slider-container {
+            margin-top: 10px;
+        }
+        input[type="range"] {
+            margin-top: 10px;
+        }
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .toggle-btn {
+            padding: 8px 15px;
+            border: 1px solid #27ae60;
+            background-color: white;
+            color: #27ae60;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .toggle-btn:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+        .toggle-btn:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+        .toggle-btn.active {
+            background-color: #27ae60;
+            color: white;
+        }
+        #compound-frequency-container {
+            display: block;
+        }
+        .chart-container {
+            margin-top: 20px;
+            height: 250px;
+            position: relative;
+        }
+        .bar {
+            position: absolute;
+            bottom: 0;
+            width: 100px;
+            background-color: #3498db;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+        }
+        .bar-principal {
+            left: 50px;
+            background-color: #27ae60;
+        }
+        .bar-interest {
+            left: 200px;
+            background-color: #f39c12;
+        }
+        .bar-total {
+            left: 350px;
+            background-color: #9b59b6;
+        }
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            width: 100px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .bar-value {
+            position: absolute;
+            bottom: -50px;
+            width: 100px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Interest Calculator</h1>
+        
+        <div class="toggle-container">
+            <button class="toggle-btn active" id="simple-interest-btn">Simple Interest</button>
+            <button class="toggle-btn" id="compound-interest-btn">Compound Interest</button>
+        </div>
+        
+        <div class="input-group">
+            <label for="principal">Principal Amount ($)</label>
+            <input type="number" id="principal" min="1" value="1000">
+            <div class="slider-container">
+                <input type="range" id="principal-slider" min="100" max="100000" step="100" value="1000">
+            </div>
+            <div id="principal-error" class="error">Please enter a valid principal amount.</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="interest-rate">Annual Interest Rate (%)</label>
+            <input type="number" id="interest-rate" min="0.01" max="50" step="0.01" value="5">
+            <div class="slider-container">
+                <input type="range" id="interest-rate-slider" min="0.1" max="20" step="0.1" value="5">
+            </div>
+            <div id="interest-rate-error" class="error">Please enter a valid interest rate.</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="time-period">Time Period (Years)</label>
+            <input type="number" id="time-period" min="0.1" max="50" step="0.1" value="5">
+            <div class="slider-container">
+                <input type="range" id="time-period-slider" min="0.1" max="30" step="0.1" value="5">
+            </div>
+            <div id="time-period-error" class="error">Please enter a valid time period.</div>
+        </div>
+        
+        <div class="input-group" id="compound-frequency-container">
+            <label for="compound-frequency">Compound Frequency</label>
+            <select id="compound-frequency">
+                <option value="1">Annually</option>
+                <option value="2">Semi-annually</option>
+                <option value="4">Quarterly</option>
+                <option value="12" selected>Monthly</option>
+                <option value="365">Daily</option>
+            </select>
+        </div>
+        
+        <button id="calculate-btn">Calculate</button>
+        
+        <div id="results" class="results">
+            <h2>Interest Calculation Results</h2>
+            <div class="results-row">
+                <span class="results-label">Principal Amount:</span>
+                <span id="result-principal"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Interest Earned:</span>
+                <span id="result-interest"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Final Amount:</span>
+                <span id="result-total"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Interest Type:</span>
+                <span id="result-type"></span>
+            </div>
+            <div class="results-row">
+                <span class="results-label">Time Period:</span>
+                <span id="result-time"></span>
+            </div>
+            <div class="results-row" id="result-frequency-row">
+                <span class="results-label">Compound Frequency:</span>
+                <span id="result-frequency"></span>
+            </div>
+            
+            <div class="chart-container">
+                <div class="bar bar-principal"></div>
+                <div class="bar-label" style="left: 50px;">Principal</div>
+                <div class="bar-value" id="chart-principal" style="left: 50px;"></div>
+                
+                <div class="bar bar-interest"></div>
+                <div class="bar-label" style="left: 200px;">Interest</div>
+                <div class="bar-value" id="chart-interest" style="left: 200px;"></div>
+                
+                <div class="bar bar-total"></div>
+                <div class="bar-label" style="left: 350px;">Total</div>
+                <div class="bar-value" id="chart-total" style="left: 350px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const principalInput = document.getElementById('principal');
+        const principalSlider = document.getElementById('principal-slider');
+        const interestRateInput = document.getElementById('interest-rate');
+        const interestRateSlider = document.getElementById('interest-rate-slider');
+        const timePeriodInput = document.getElementById('time-period');
+        const timePeriodSlider = document.getElementById('time-period-slider');
+        const compoundFrequencySelect = document.getElementById('compound-frequency');
+        const compoundFrequencyContainer = document.getElementById('compound-frequency-container');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resultsDiv = document.getElementById('results');
+        
+        // Result elements
+        const resultPrincipal = document.getElementById('result-principal');
+        const resultInterest = document.getElementById('result-interest');
+        const resultTotal = document.getElementById('result-total');
+        const resultType = document.getElementById('result-type');
+        const resultTime = document.getElementById('result-time');
+        const resultFrequency = document.getElementById('result-frequency');
+        const resultFrequencyRow = document.getElementById('result-frequency-row');
+        
+        // Chart elements
+        const barPrincipal = document.querySelector('.bar-principal');
+        const barInterest = document.querySelector('.bar-interest');
+        const barTotal = document.querySelector('.bar-total');
+        const chartPrincipal = document.getElementById('chart-principal');
+        const chartInterest = document.getElementById('chart-interest');
+        const chartTotal = document.getElementById('chart-total');
+        
+        // Error elements
+        const principalError = document.getElementById('principal-error');
+        const interestRateError = document.getElementById('interest-rate-error');
+        const timePeriodError = document.getElementById('time-period-error');
+        
+        // Toggle buttons
+        const simpleInterestBtn = document.getElementById('simple-interest-btn');
+        const compoundInterestBtn = document.getElementById('compound-interest-btn');
+        
+        let isCompoundInterest = false;
+        
+        // Toggle between simple and compound interest
+        simpleInterestBtn.addEventListener('click', () => {
+            simpleInterestBtn.classList.add('active');
+            compoundInterestBtn.classList.remove('active');
+            compoundFrequencyContainer.style.display = 'none';
+            isCompoundInterest = false;
+        });
+        
+        compoundInterestBtn.addEventListener('click', () => {
+            compoundInterestBtn.classList.add('active');
+            simpleInterestBtn.classList.remove('active');
+            compoundFrequencyContainer.style.display = 'block';
+            isCompoundInterest = true;
+        });
+        
+        // Sync sliders with input fields
+        principalInput.addEventListener('input', () => {
+            principalSlider.value = principalInput.value;
+        });
+        
+        principalSlider.addEventListener('input', () => {
+            principalInput.value = principalSlider.value;
+        });
+        
+        interestRateInput.addEventListener('input', () => {
+            interestRateSlider.value = interestRateInput.value;
+        });
+        
+        interestRateSlider.addEventListener('input', () => {
+            interestRateInput.value = interestRateSlider.value;
+        });
+        
+        timePeriodInput.addEventListener('input', () => {
+            timePeriodSlider.value = timePeriodInput.value;
+        });
+        
+        timePeriodSlider.addEventListener('input', () => {
+            timePeriodInput.value = timePeriodSlider.value;
+        });
+        
+        // Calculate button click handler
+        calculateBtn.addEventListener('click', calculateInterest);
+        
+        function calculateInterest() {
+            // Reset error messages
+            principalError.style.display = 'none';
+            interestRateError.style.display = 'none';
+            timePeriodError.style.display = 'none';
+            
+            // Get input values
+            const principal = parseFloat(principalInput.value);
+            const interestRate = parseFloat(interestRateInput.value) / 100;
+            const timePeriod = parseFloat(timePeriodInput.value);
+            const compoundFrequency = parseInt(compoundFrequencySelect.value);
+            
+            // Validate inputs
+            let isValid = true;
+            
+            if (isNaN(principal) || principal <= 0) {
+                principalError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isNaN(interestRate) || interestRate <= 0) {
+                interestRateError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isNaN(timePeriod) || timePeriod <= 0) {
+                timePeriodError.style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+            
+            let interest, totalAmount;
+            
+            if (isCompoundInterest) {
+                // Compound Interest: A = P(1 + r/n)^(nt)
+                totalAmount = principal * Math.pow(1 + (interestRate / compoundFrequency), compoundFrequency * timePeriod);
+                interest = totalAmount - principal;
+                resultType.textContent = "Compound Interest";
+                resultFrequencyRow.style.display = 'flex';
+                
+                let frequencyText = "";
+                switch(compoundFrequency) {
+                    case 1: frequencyText = "Annually"; break;
+                    case 2: frequencyText = "Semi-annually"; break;
+                    case 4: frequencyText = "Quarterly"; break;
+                    case 12: frequencyText = "Monthly"; break;
+                    case 365: frequencyText = "Daily"; break;
+                }
+                resultFrequency.textContent = frequencyText;
+            } else {
+                // Simple Interest: A = P(1 + rt)
+                interest = principal * interestRate * timePeriod;
+                totalAmount = principal + interest;
+                resultType.textContent = "Simple Interest";
+                resultFrequencyRow.style.display = 'none';
+            }
+            
+            // Display results
+            resultPrincipal.textContent = formatCurrency(principal);
+            resultInterest.textContent = formatCurrency(interest);
+            resultTotal.textContent = formatCurrency(totalAmount);
+            resultTime.textContent = timePeriod + (timePeriod === 1 ? " year" : " years");
+            
+            // Update chart
+            const maxHeight = 200;
+            const maxValue = Math.max(principal, interest, totalAmount);
+            
+            barPrincipal.style.height = (principal / maxValue * maxHeight) + 'px';
+            barInterest.style.height = (interest / maxValue * maxHeight) + 'px';
+            barTotal.style.height = (totalAmount / maxValue * maxHeight) + 'px';
+            
+            chartPrincipal.textContent = formatCurrency(principal);
+            chartInterest.textContent = formatCurrency(interest);
+            chartTotal.textContent = formatCurrency(totalAmount);
+            
+            resultsDiv.style.display = 'block';
+        }
+        
+        // Format number as currency
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(number);
+        }
+    </script>
+</body>
+</html>

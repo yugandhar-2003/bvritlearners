@@ -1,0 +1,49 @@
+.buttony {
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    width: 30%;
+    background: tomato;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(10, 10, 10, 20);
+    margin: 15px;
+  
+  }
+          .tutorial-card {
+            height:100%;
+            text-align:center;
+            padding:20px;
+          
+        }
+        
+  .bg1{
+    background: linear-gradient(45deg, #0D99E6 0%, #7ACDC9 100%);
+  }
+  body{
+      background-color:black;
+  }
+  .hel{
+      padding:10px;
+  }
+  .h33{
+    text-align:center;
+    color:white;
+    font-size:30px;
+  }
+  .h333{
+    text-align:center;
+    color:white;
+    
+  }
+  
+  .container{
+          border: 2px solid #ccc;
+          border-radius: 15px;
+          padding: 20px;
+          margin: 20px;
+          background-color:#808080;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          font-size:20px;
+      }
+  

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interest Rate Calculator - Corrected & Refined</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <style>
+        /* === CSS Styles Start === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #007bff;    /* Blue */
+            --secondary-color: #6c757d;  /* Grey */
+            --accent-color: #fd7e14;   /* Orange */
+            --light-grey: #f8f9fa;
+            --medium-grey: #e9ecef;
+            --dark-grey: #dee2e6; /* Slightly darker border */
+            --text-dark: #212529;
+            --text-medium: #495057;
+            --text-light: #6c757d;
+            --border-color: #e2e8f0;
+            --success-color: #198754;
+            --error-color: #dc3545;   /* Standard Red */
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #eef2f7 100%);
+            --card-bg: #ffffff;
+            --principal-color: var(--primary-color);
+            --interest-color: var(--accent-color);
+            --shadow-soft: 0 4px 15px rgba(0, 123, 255, 0.07);
+            --shadow-medium: 0 8px 25px rgba(0, 123, 255, 0.1);
+            --focus-ring: 0 0 0 3px rgba(0, 123, 255, 0.15);
+            --border-radius-main: 12px;
+            --border-radius-inner: 6px;
+            --transition-speed: 0.3s;
+            --transition-ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-medium);
+            line-height: 1.7;
+            padding: 20px; /* Base padding */
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1050px;
+            margin: 20px auto;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .page-header {
+            padding: 18px 30px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: #fcfdff;
+        }
+         .page-header h1 { font-weight: 600; font-size: 1.6rem; color: var(--text-dark); }
+        .print-button {
+            padding: 7px 14px; background-color: var(--secondary-color); color: white;
+            border: none; border-radius: var(--border-radius-inner); cursor: pointer; font-size: 0.85rem;
+            transition: background-color var(--transition-speed) var(--transition-ease);
+        }
+        .print-button:hover { background-color: #5a6268; }
+        .print-button i { margin-right: 5px; }
+
+        header.description-header {
+            padding: 20px 30px 25px; border-bottom: 1px solid var(--border-color);
+            background-color: var(--light-grey);
+         }
+        header.description-header p { font-size: 0.95rem; color: var(--text-light); }
+
+        .calculator-content { display: grid; grid-template-columns: 38% 62%; gap: 0; }
+        .input-section, .results-section { padding: 30px; }
+        .input-section { border-right: 1px solid var(--border-color); background-color: #fdfdff; }
+        @media (max-width: 900px) {
+            .calculator-content { grid-template-columns: 1fr; }
+            .input-section { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+
+         .section-title {
+            font-weight: 600; font-size: 1.2rem; color: var(--text-dark);
+            margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);
+            display: block;
+        }
+        .input-section .section-title { margin-top: 0;}
+
+        .input-group { margin-bottom: 20px; display: flex; align-items: flex-start; flex-wrap: wrap; }
+        .input-group label {
+            flex-basis: 120px; padding-right: 10px; font-weight: 500; font-size: 0.9rem;
+            color: var(--text-medium); text-align: right; padding-top: 8px;
+        }
+        .input-group .input-field-area { flex: 1; min-width: 150px; position: relative; }
+
+        .term-input-group { display: flex; gap: 8px; align-items: center; }
+        .term-input-group > div { flex: 1; position: relative; }
+        .term-input-group input { width: 100%; }
+        .term-input-group span { font-size: 0.85rem; color: var(--text-light); margin-left: 4px; }
+
+        input[type="number"] {
+            width: 100%; padding: 10px 12px; border: 1px solid var(--dark-grey);
+            border-radius: var(--border-radius-inner); font-size: 0.95rem;
+            transition: border-color var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease);
+            background-color: var(--card-bg); color: var(--text-dark);
+        }
+        input[type="number"]::placeholder { color: #adb5bd; }
+        input[type="number"]:focus { outline: none; border-color: var(--primary-color); box-shadow: var(--focus-ring); }
+        /* Allow scrolling on number inputs but hide spinners */
+        input[type="number"] { -moz-appearance: textfield; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .input-adornment { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 0.85rem; opacity: 0.8; pointer-events: none; }
+        input[type="number"].has-adornment { padding-left: 25px; } /* Adjusted padding for left adornment */
+
+        .calculate-button-container { text-align: center; margin-top: 30px; }
+        .calculate-button {
+             padding: 12px 30px; background: linear-gradient(135deg, var(--primary-color), #0056b3);
+             color: white; border: none; border-radius: var(--border-radius-inner);
+             font-size: 1rem; font-weight: 600; cursor: pointer;
+             transition: all var(--transition-speed) var(--transition-ease); display: inline-flex;
+             align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+        .calculate-button:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 123, 255, 0.25); }
+        .calculate-button:active { transform: translateY(0); box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); }
+
+        .error-message { color: var(--error-color); font-size: 0.85rem; margin-top: 15px; text-align: center; min-height: 1.2em; font-weight: 500; display: none; /* Hidden by default */ }
+
+        .results-section { background-color: #fcfdff; }
+        .results-summary { margin-bottom: 30px; }
+        .result-item {
+             display: flex; justify-content: space-between; align-items: center;
+             padding: 9px 0; border-bottom: 1px solid var(--medium-grey); font-size: 0.95rem;
+        }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { color: var(--text-light); font-weight: 400; }
+        .result-value { color: var(--text-dark); font-weight: 500; }
+
+        .primary-result {
+             background-color: #e7f3ff; padding: 18px; border-radius: var(--border-radius-inner);
+             margin-bottom: 20px; border: 1px solid #b3d7ff; box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+        }
+        .primary-result-details { flex-grow: 1; }
+        .primary-result .result-label { font-weight: 500; color: var(--primary-color); font-size: 1rem; display: block; margin-bottom: 2px; }
+        .primary-result .result-value { font-size: 1.7rem; font-weight: 700; color: var(--primary-color); display: block; }
+        .save-calculation { font-size: 0.8rem; color: var(--primary-color); text-decoration: none; white-space: nowrap; margin-left: 15px; font-weight: 500;}
+        .save-calculation:hover { text-decoration: underline; }
+
+        .breakdown-container { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .breakdown-title { font-weight: 600; color: var(--text-dark); margin-bottom: 15px; font-size: 1.05rem;}
+        .breakdown-percentages { display: flex; justify-content: space-around; align-items: center; margin-top: 10px; }
+        .breakdown-item { text-align: center; font-size: 0.9rem; }
+        .breakdown-value { display: block; font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+        .breakdown-principal .breakdown-value { color: var(--principal-color); }
+        .breakdown-interest .breakdown-value { color: var(--interest-color); }
+        .breakdown-label { font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--text-medium); }
+        .color-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+        .principal-swatch { background-color: var(--principal-color); }
+        .interest-swatch { background-color: var(--interest-color); }
+
+        .amortization-section { margin-top: 30px; }
+        .amortization-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;} /* Added wrap and gap */
+        .amortization-title { font-size: 1.15rem; font-weight: 600; color: var(--text-dark); margin: 0;}
+        .schedule-controls button {
+             padding: 6px 12px; margin-left: 8px; font-size: 0.85rem;
+             border: 1px solid var(--dark-grey); background-color: var(--card-bg);
+             border-radius: 5px; cursor: pointer; font-weight: 500; color: var(--text-medium);
+             transition: all var(--transition-speed) var(--transition-ease);
+        }
+        .schedule-controls button:first-child { margin-left: 0; } /* Remove margin on first button */
+        .schedule-controls button.active { background-color: var(--secondary-color); color: white; border-color: var(--secondary-color); box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+        .schedule-controls button:hover:not(.active) { border-color: var(--secondary-color); color: var(--secondary-color);}
+
+        .amortization-table-container {
+            max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-inner);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+        }
+        table.amortization-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .amortization-table th, .amortization-table td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--border-color); }
+        .amortization-table th {
+            background-color: var(--light-grey); font-weight: 600; color: var(--text-dark);
+            position: sticky; top: 0; z-index: 1; border-bottom-width: 2px; border-bottom-color: var(--dark-grey);
+        }
+        .amortization-table td:first-child, .amortization-table th:first-child { text-align: center; font-weight: 500; }
+        .amortization-table tr:last-child td { border-bottom: none; }
+        .amortization-table tr:nth-child(even) { background-color: #f8fafd; }
+        .amortization-table tr:hover { background-color: #eef7ff; }
+        .amortization-table td { color: var(--text-medium); }
+
+        .info-section { padding: 30px 35px; font-size: 0.9rem; border-top: 1px solid var(--border-color); background-color: #fcfdff; }
+        .info-section h3 { font-size: 1.15rem; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; margin-top: 20px; }
+        .info-section h3:first-child { margin-top: 0; }
+        .info-section p, .info-section li { margin-bottom: 15px; color: var(--text-medium); line-height: 1.75;}
+        .info-section ul { padding-left: 25px; list-style: disc;}
+        .related-links { margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border-color); }
+        .related-links strong { font-weight: 600; }
+        .related-links a { margin-right: 15px; color: var(--primary-color); text-decoration: none; font-weight: 500;}
+        .related-links a:hover { text-decoration: underline; }
+
+        footer {
+             background-color: var(--text-dark); color: var(--light-grey); text-align: center;
+             padding: 20px 30px; font-size: 0.85rem; opacity: 0.95; margin-top: 0;
+        }
+
+         @media (max-width: 700px) {
+             .input-group { flex-direction: column; align-items: stretch; }
+             .input-group label { flex-basis: auto; text-align: left; margin-bottom: 5px; padding-top: 0; }
+             .primary-result .result-value { font-size: 1.5rem; }
+             .page-header h1 { font-size: 1.4rem;}
+             .term-input-group { flex-direction: column; gap: 8px; align-items: stretch;}
+             .term-input-group span { margin-left: 0; margin-top: 3px; display: inline-block;}
+             .amortization-header { flex-direction: column; align-items: flex-start; gap: 8px;}
+             .schedule-controls { align-self: flex-start; } /* Keep controls left aligned */
+             body { padding: 15px;}
+             .input-section, .results-section, .info-section { padding: 20px;}
+         }
+
+        .hidden { display: none; }
+        /* === CSS Styles End === */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header class="page-header">
+            <h1>Interest Rate Calculator</h1>
+            <button class="print-button" onclick="window.print();"><i class="fas fa-print"></i> Print</button>
+        </header>
+        <header class="description-header">
+            <p>Calculates the interest rate for fixed-term loans given the loan amount, term, and monthly payment.</p>
+        </header>
+
+        <main class="calculator-content">
+            <section class="input-section">
+                <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 25px;">Modify the values and click the calculate button to use</p>
+                 <h2 class="section-title">Loan Details</h2>
+
+                 <div class="input-group">
+                    <label for="loanAmount">Loan Amount</label>
+                    <div class="input-field-area">
+                        <span class="input-adornment">$</span>
+                        <input type="number" id="loanAmount" class="has-adornment" placeholder="e.g., 32000" value="32000" min="0">
+                    </div>
+                 </div>
+
+                 <div class="input-group">
+                     <label for="loanTermYears">Loan Term</label>
+                     <div class="input-field-area term-input-group">
+                         <div>
+                            <input type="number" id="loanTermYears" placeholder="e.g., 3" value="3" min="0" step="1">
+                            <span>years</span>
+                         </div>
+                         <div>
+                             <input type="number" id="loanTermMonths" placeholder="e.g., 0" value="0" min="0" max="11" step="1">
+                             <span>months</span>
+                         </div>
+                     </div>
+                 </div>
+
+                 <div class="input-group">
+                     <label for="monthlyPayment">Monthly Payment</label>
+                     <div class="input-field-area">
+                         <span class="input-adornment">$</span>
+                         <input type="number" id="monthlyPayment" class="has-adornment" placeholder="e.g., 960" value="960" min="0.01">
+                     </div>
+                 </div>
+
+                 <div class="calculate-button-container">
+                    <button id="calculateBtn" class="calculate-button">
+                        <i class="fas fa-calculator"></i> Calculate Rate
+                    </button>
+                 </div>
+                <div id="error-message" class="error-message"></div>
+            </section>
+
+            <section class="results-section">
+                 <h2 class="section-title">Results</h2>
+
+                 <div class="results-summary">
+                    <div class="result-item primary-result">
+                        <div class="primary-result-details">
+                            <span class="result-label">Interest Rate (APR):</span>
+                            <span class="result-value" id="interestRateResult">-.--%</span>
+                        </div>
+                        <!-- <a href="#" class="save-calculation">Save this calculation</a> -->
+                    </div>
+                     <div class="result-item">
+                        <span class="result-label"><span id="totalPaymentsLabel">Total of 0 monthly payments</span></span>
+                        <span class="result-value" id="totalPaymentsResult">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Total Interest Paid</span>
+                        <span class="result-value" id="totalInterestResult">$0.00</span>
+                    </div>
+                 </div>
+
+                 <div class="breakdown-container">
+                    <h3 class="breakdown-title">Payment Breakdown</h3>
+                     <div class="breakdown-percentages">
+                        <div class="breakdown-item breakdown-principal">
+                            <span class="breakdown-value" id="principalPercent">--%</span>
+                            <span class="breakdown-label"><span class="color-swatch principal-swatch"></span>Principal</span>
+                        </div>
+                        <div class="breakdown-item breakdown-interest">
+                            <span class="breakdown-value" id="interestPercent">--%</span>
+                             <span class="breakdown-label"><span class="color-swatch interest-swatch"></span>Interest</span>
+                        </div>
+                     </div>
+                 </div>
+
+                 <!-- Amortization Section -->
+                 <div class="amortization-section">
+                     <div class="amortization-header">
+                         <h3 class="amortization-title">Loan Amortization</h3>
+                        <div class="schedule-controls">
+                            <button id="annualBtn" class="active">Annual</button>
+                            <button id="monthlyBtn">Monthly</button>
+                        </div>
+                    </div>
+                     <div class="amortization-table-container">
+                         <table class="amortization-table" id="amortizationTable">
+                             <thead>
+                                 <tr id="amortizationTableHeader">
+                                     <!-- Header generated by JS -->
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <!-- Body generated by JS -->
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+
+            </section>
+        </main>
+
+         <section class="info-section">
+             <div class="related-links">
+                 <strong>Related:</strong>
+                 <a href="#">APR Calculator</a> |
+                 <a href="#">Interest Calculator</a> |
+                 <a href="#">Compound Interest Calculator</a>
+            </div>
+             <!-- Informational Text Sections -->
+             <h3>What is Interest Rate?</h3>
+             <p>Interest rate is the amount charged by lenders to borrowers for the use of money, expressed as a percentage of the principal... it can also be described alternatively as the cost to borrow money...</p>
+             <h3>Simple vs. Compound Interest</h3>
+             <p>There are two methods for calculating interest. Simple interest is calculated as a percentage of principal only, while compound interest is calculated as a percentage of the principal along with any accrued interest... This calculator deals with compound interest typical for loans.</p>
+             <h3>Fixed vs. Variable Interest Rates</h3>
+             <p>Fixed rates are rates that are set as a certain percentage for the life of the loan and will not change. Variable rates are interest rates that can fluctuate over time... This calculator will only display the result as a fixed interest rate.</p>
+             <h3>APR</h3>
+             <p>The interest rate for many types of loans is often advertised as an annual percentage rate, or APR... APR is a more accurate representation than the interest rate when shopping and comparing, as it includes certain fees (though this calculator only considers the principal, term, and payment).</p>
+             <h3>Uncontrollable Economic Factors that Affect Interest Rate</h3>
+             <ul><li><strong>Economic Policy and Inflation:</strong> Interest rates fluctuate mainly due to monetary policy...</li><li><strong>Economic Activity:</strong> As interest rates go down, more businesses and people are inclined to borrow...</li><li><strong>Unemployment Rate:</strong> Interest rates and unemployment rates are normally inversely related...</li><li><strong>Supply and Demand:</strong> The market for credit is determined by supply and demand...</li></ul>
+             <h3>Controllable Factors that Determine Interest Rate</h3>
+             <p>While many factors that affect the interest rate are uncontrollable, individuals can affect the interest rates they receive.</p>
+             <ul><li><strong>Individual Credit Standing:</strong> Credit scores represent creditworthiness...</li><li><strong>Secured loans:</strong> Unsecured loans generally carry higher interest rates...</li><li><strong>Loan specifics:</strong> Longer terms can increase the rate...</li><li><strong>Do not apply for credit too often:</strong> Too many inquiries can lower scores...</li><li><strong>Borrow at opportune moments:</strong> Borrow when economic factors are favorable...</li><li><strong>Research and shop around:</strong> Different lenders have different rates...</li></ul>
+             <h3>Real Interest Rate</h3>
+             <p>The relationship between real interest rate, inflation, and the nominal rate is shown by the equation: real rate + inflation = nominal rate...</p>
+         </section>
+
+        <footer>
+            <p>© <span id="currentYear"></span> Your Website Name. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // === JavaScript Logic Start ===
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element Selection ---
+            const loanAmountInput = document.getElementById('loanAmount');
+            const loanTermYearsInput = document.getElementById('loanTermYears');
+            const loanTermMonthsInput = document.getElementById('loanTermMonths');
+            const monthlyPaymentInput = document.getElementById('monthlyPayment');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const errorMessageDiv = document.getElementById('error-message');
+            const annualBtn = document.getElementById('annualBtn');
+            const monthlyBtn = document.getElementById('monthlyBtn');
+            const amortizationTableBody = document.querySelector('#amortizationTable tbody');
+            const amortizationTableHeader = document.getElementById('amortizationTableHeader');
+            const interestRateResult = document.getElementById('interestRateResult');
+            const totalPaymentsLabel = document.getElementById('totalPaymentsLabel');
+            const totalPaymentsResult = document.getElementById('totalPaymentsResult');
+            const totalInterestResult = document.getElementById('totalInterestResult');
+            const principalPercent = document.getElementById('principalPercent');
+            const interestPercent = document.getElementById('interestPercent');
+            const currentYearSpan = document.getElementById('currentYear');
+
+            // --- State Variables ---
+            let currentScheduleView = 'annual';
+            let lastCalculationData = null; // Stores {principal, annualRate, termMonths, monthlyPayment}
+
+            // --- Initialization ---
+            function initializeCalculator() {
+                if (currentYearSpan) {
+                    currentYearSpan.textContent = new Date().getFullYear();
+                }
+                attachEventListeners();
+                clearError();
+                clearResults(); // Clear results initially
+                updateAmortizationHeader(currentScheduleView); // Set initial header *before* first calc
+                handleCalculation(); // Run calculation with default values
+            }
+
+            // --- Event Listeners ---
+            function attachEventListeners() {
+                calculateBtn.addEventListener('click', handleCalculation);
+                annualBtn.addEventListener('click', () => switchScheduleView('annual'));
+                monthlyBtn.addEventListener('click', () => switchScheduleView('monthly'));
+
+                const allInputs = document.querySelectorAll('.input-section input[type="number"]');
+                allInputs.forEach(input => {
+                    input.addEventListener('keypress', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); // Prevent potential form submission
+                            handleCalculation();
+                        }
+                    });
+                     // Optional: Recalculate on input change? Maybe too much, stick to button/enter.
+                     // input.addEventListener('input', handleCalculation);
+                });
+            }
+
+            // --- Core Logic Functions ---
+
+            /**
+             * Main function to handle input gathering, validation, calculation, and display updates.
+             */
+            function handleCalculation() {
+                clearError();
+                // Don't clear lastCalculationData here, only reset it on SUCCESSFUL new calculation
+
+                // 1. Get and Validate Inputs
+                const principal = parseFloat(loanAmountInput.value) || 0;
+                const termYears = parseInt(loanTermYearsInput.value, 10) || 0;
+                const termExtraMonths = parseInt(loanTermMonthsInput.value, 10) || 0;
+                const monthlyPayment = parseFloat(monthlyPaymentInput.value) || 0;
+
+                // --- Input Validation ---
+                let errorMsg = '';
+                if (principal <= 0) { errorMsg = 'Loan Amount must be positive.'; }
+                else if (termYears < 0 || termExtraMonths < 0 || (termYears === 0 && termExtraMonths === 0)) { errorMsg = 'Loan Term must be at least 1 month.'; }
+                else if (termExtraMonths >= 12) { errorMsg = 'Months value must be less than 12.'; }
+                else if (monthlyPayment <= 0) { errorMsg = 'Monthly Payment must be positive.'; }
+
+                if (errorMsg) {
+                    showError(errorMsg);
+                    clearResults(); // Clear previous valid results if inputs are now invalid
+                    lastCalculationData = null; // Invalidate stored data on error
+                    return;
+                }
+                // --- End Validation ---
+
+                const termMonths = (termYears * 12) + termExtraMonths;
+
+                // Preliminary check: If total payments don't even cover principal, rate calculation is impossible/negative.
+                if (monthlyPayment * termMonths < principal) {
+                    showError("Monthly payment is too low to cover the principal over the term.");
+                    clearResults();
+                    lastCalculationData = null;
+                    return;
+                }
+                // Check if payment exactly equals principal / term (0% interest) before iterative search
+                 if (Math.abs(monthlyPayment * termMonths - principal) < 1e-5) { // Handle 0% APR case directly
+                     displayResults(0, termMonths, principal, 0, principal); // Rate=0, Interest=0, Total=Principal
+                     lastCalculationData = { principal, annualRate: 0, termMonths, monthlyPayment };
+                     generateAmortizationSchedule(principal, 0, termMonths, monthlyPayment, currentScheduleView);
+                     return; // Exit after handling 0%
+                 }
+
+
+                // 2. Calculate Interest Rate
+                let annualRatePercent;
+                try {
+                    // Pass a small positive value if payment exactly matches principal / termMonths to avoid 0 rate issue in iterator start
+                    const adjustedPayment = (Math.abs(monthlyPayment * termMonths - principal) < 1e-5) ? monthlyPayment + 1e-6 : monthlyPayment;
+                    annualRatePercent = calculateInterestRateIterative(principal, termMonths, adjustedPayment); // Use adjusted payment
+
+                    if (!isFinite(annualRatePercent) || annualRatePercent < 0) { // Also check for negative rate result
+                         throw new Error("Could not determine a valid positive interest rate. Check input values (e.g., payment might be too high relative to term/amount for typical loans).");
+                     }
+                } catch (error) {
+                    console.error("Rate Calculation Error:", error);
+                    showError(error.message);
+                    clearResults();
+                    lastCalculationData = null;
+                    return;
+                }
+
+                // 3. Calculate Totals (using the *original* monthlyPayment)
+                const totalPayments = monthlyPayment * termMonths;
+                const totalInterest = totalPayments - principal;
+
+                 // Final check on calculated totals (should be okay if rate is finite and positive)
+                 if (!isFinite(totalPayments) || !isFinite(totalInterest) || totalInterest < -1e-5) { // Allow tiny negative due to float math, but not significant
+                     showError("Error calculating totals with the derived rate.");
+                     clearResults();
+                     lastCalculationData = null;
+                     return;
+                 }
+                 const finalTotalInterest = Math.max(0, totalInterest); // Ensure total interest isn't negative on display
+
+
+                // 4. Display Results
+                displayResults(annualRatePercent, termMonths, totalPayments, finalTotalInterest, principal);
+
+                // 5. Store Data for Schedule Toggle and Generate Initial Schedule
+                lastCalculationData = { principal, annualRate: annualRatePercent, termMonths, monthlyPayment };
+                generateAmortizationSchedule(principal, annualRatePercent, termMonths, monthlyPayment, currentScheduleView);
+            }
+
+            /**
+             * Calculates the annual interest rate using an iterative Bisection method.
+             * Returns Annual Rate (%) or NaN.
+             * pv = Present Value (Loan Amount)
+             * n = Number of periods (months)
+             * pmt = Periodic Payment (Monthly Payment) - IMPORTANT: Should be positive input here, made negative internally.
+             * fv = Future Value (usually 0 for loans)
+             * maxIterations = Limit iterations to prevent infinite loops
+             * precision = Target accuracy for the rate
+             */
+            function calculateInterestRateIterative(pv, n, pmt, fv = 0, maxIterations = 100, precision = 1e-9) {
+                const payment = -Math.abs(pmt); // Use negative PMT for internal formula convention
+
+                // Handle edge case: 0% interest should have been caught before calling this
+                // if (Math.abs(pv + fv + payment * n) < precision * 100) return 0.0;
+
+                // PV function based on rate guess (periodic rate i)
+                const calculatePV = (i) => {
+                    if (Math.abs(i) < 1e-12) { // If rate is effectively zero
+                        return -(fv + payment * n); // PV is simply sum of payments + FV
+                    }
+                    const factor = Math.pow(1 + i, -n);
+                    // PV formula: PV = PMT * [1 - (1 + i)^-n] / i + FV * (1 + i)^-n
+                    return -(payment * (1 - factor) / i + fv * factor); // Rearranged to solve for PV
+                };
+
+                let rateLow = 0.0;      // Lower bound for monthly rate (0%)
+                let rateHigh = 1.0;     // Upper bound for monthly rate (100% - very high)
+                let rateMid = 0.05 / 12; // Initial guess: ~5% annual / 12
+
+                // Find initial bounds where PV changes sign or contains the target PV
+                let pvLow = calculatePV(rateLow);
+                let pvHigh = calculatePV(rateHigh);
+
+                // Check if target PV is outside the possible range with these bounds
+                // Note: For a loan (pv > 0, pmt < 0), PV decreases as rate increases.
+                if (pv < pvHigh || pv > pvLow) {
+                     console.warn("Target PV might be outside initial rate bounds [0%, 100% monthly]. Check inputs.");
+                     // Attempt to widen bounds if needed, but 100% monthly is usually sufficient
+                     // For simplicity, return NaN if standard bounds fail initially
+                     return NaN;
+                }
+
+
+                for (let i = 0; i < maxIterations; i++) {
+                    rateMid = (rateLow + rateHigh) / 2;
+                    const calculatedPV = calculatePV(rateMid);
+                    const difference = calculatedPV - pv;
+
+                    if (Math.abs(difference) < precision) {
+                        return rateMid * 12 * 100; // Converged - return ANNUAL %
+                    }
+
+                    // Bisection logic: Adjust bounds based on the difference
+                    // If calculatedPV > pv, our rate guess (rateMid) is too low. Increase lower bound.
+                    if (difference > 0) {
+                        rateLow = rateMid;
+                    } else { // If calculatedPV < pv, our rate guess (rateMid) is too high. Decrease upper bound.
+                        rateHigh = rateMid;
+                    }
+
+                    // Check for stall condition (bounds are extremely close)
+                    if (Math.abs(rateHigh - rateLow) < precision / 10) { // Use tighter precision for stall check
+                         break;
+                    }
+                }
+
+                 // After loop, check final precision one more time with a slightly looser tolerance
+                 if (Math.abs(calculatePV(rateMid) - pv) < precision * 10) {
+                     return rateMid * 12 * 100; // Acceptable convergence
+                 }
+
+                console.warn("Interest rate calculation did not fully converge within iterations.");
+                return NaN; // Indicate failure
+            }
+
+            /**
+             * Generates and displays the amortization schedule table.
+             */
+            function generateAmortizationSchedule(principal, annualRate, termMonths, monthlyPayment, viewType) {
+                amortizationTableBody.innerHTML = ''; // Clear previous rows
+                updateAmortizationHeader(viewType); // Ensure header is correct
+
+                 // Basic validation for schedule generation
+                 if (principal <= 0 || termMonths <= 0 || !isFinite(annualRate) || annualRate < 0 || !isFinite(monthlyPayment) || monthlyPayment <= 0 || !lastCalculationData) {
+                     appendAmortizationRow(viewType === 'monthly' ? 5 : 4, 'No data to display schedule.'); // Span across columns
+                     return;
+                 }
+
+                let balance = principal;
+                const monthlyRate = annualRate / 100 / 12;
+                let yearlyInterest = 0, yearlyPrincipal = 0;
+                const displayPayment = Math.abs(monthlyPayment); // Use positive for display
+
+                for (let month = 1; month <= termMonths; month++) {
+                    const interestForMonth = Math.max(0, balance * monthlyRate); // Interest cannot be negative
+                    let principalForMonth = displayPayment - interestForMonth;
+                    let paymentThisMonth = displayPayment;
+
+                    // Adjust last payment to ensure balance hits exactly zero
+                    // Check if remaining balance plus interest for this month is close to the standard payment
+                     if (month === termMonths || Math.abs((balance + interestForMonth) - displayPayment) < 0.01) { // Use tolerance for float compare
+                          paymentThisMonth = balance + interestForMonth;
+                          principalForMonth = balance; // Ensure principal paid clears remaining balance
+                     }
+
+                    // Update balance, ensuring it doesn't go significantly below zero
+                    balance -= principalForMonth;
+                    if (balance < 1e-5) { // If very close to zero, set it to zero
+                        balance = 0;
+                    }
+
+                    // Safety check: If balance somehow went negative significantly, stop/warn
+                     if (balance < -0.01) {
+                         console.warn(`Balance went negative (${balance}) at month ${month}. Stopping schedule.`);
+                         appendAmortizationRow(viewType === 'monthly' ? 5 : 4, 'Calculation error led to negative balance.');
+                         return; // Stop processing schedule
+                     }
+
+
+                    yearlyInterest += interestForMonth;
+                    yearlyPrincipal += principalForMonth;
+
+                    // Add row based on view type
+                    if (viewType === 'monthly') {
+                        appendAmortizationRow(month, paymentThisMonth, interestForMonth, principalForMonth, balance);
+                    }
+
+                    // Aggregate annually: Add row at the end of each year OR on the final month
+                    if (month % 12 === 0 || month === termMonths) {
+                        if(viewType === 'annual') {
+                            const year = Math.ceil(month / 12);
+                            // Ensure payment used for annual row reflects actual total payment for the period if it's the last month
+                            appendAmortizationRow(year, yearlyInterest, yearlyPrincipal, balance);
+                        }
+                        // Reset aggregates for the next year (or end)
+                        yearlyInterest = 0;
+                        yearlyPrincipal = 0;
+                    }
+                }
+
+                // Handle empty table case (shouldn't happen if validation passed, but good practice)
+                if (amortizationTableBody.children.length === 0) {
+                    appendAmortizationRow(viewType === 'monthly' ? 5 : 4, 'No schedule generated.');
+                }
+            }
+
+            /** Appends a data row or a message row to the amortization table */
+            function appendAmortizationRow(...args) {
+                 const row = document.createElement('tr');
+                 if (typeof args[0] === 'number' && args.length > 1 && typeof args[1] !== 'string') { // Standard data row
+                     const isMonthly = amortizationTableHeader.children.length === 5;
+                     if (isMonthly && args.length === 5) { // Month, Payment, Interest, Principal, Balance
+                         row.innerHTML = `<td>${args[0]}</td><td>${formatCurrency(args[1])}</td><td>${formatCurrency(args[2])}</td><td>${formatCurrency(args[3])}</td><td>${formatCurrency(args[4])}</td>`;
+                     } else if (!isMonthly && args.length === 4) { // Year, Interest, Principal, Ending Balance
+                         row.innerHTML = `<td>${args[0]}</td><td>${formatCurrency(args[1])}</td><td>${formatCurrency(args[2])}</td><td>${formatCurrency(args[3])}</td>`;
+                     } else {
+                         console.error("Mismatched arguments for appendAmortizationRow data row.");
+                         return; // Invalid args for data row
+                     }
+                 } else if (typeof args[0] === 'number' && typeof args[1] === 'string') { // Message row (colspan, message)
+                     row.innerHTML = `<td colspan="${args[0]}" style="text-align: center; font-style: italic;">${args[1]}</td>`;
+                 } else {
+                      console.error("Invalid arguments for appendAmortizationRow.");
+                      return; // Invalid args
+                 }
+                 amortizationTableBody.appendChild(row);
+             }
+
+            // --- UI Update Functions ---
+             /** Updates the results display area */
+             function displayResults(ratePercent, termMonths, totalPayments, totalInterest, principal) {
+                interestRateResult.textContent = formatPercent(ratePercent);
+                totalPaymentsLabel.textContent = `Total of ${termMonths} monthly payments`;
+                totalPaymentsResult.textContent = formatCurrency(totalPayments);
+                totalInterestResult.textContent = formatCurrency(totalInterest); // Use potentially adjusted finalTotalInterest
+
+                const totalPaid = principal + totalInterest; // Use calculated totalInterest here
+                // Prevent division by zero if principal or totalPaid is 0
+                let principalPerc = 0;
+                let interestPerc = 0;
+
+                if (totalPaid > 0) {
+                    principalPerc = (principal / totalPaid) * 100;
+                    interestPerc = (totalInterest / totalPaid) * 100;
+                } else if (principal > 0) { // Case where totalInterest is 0 or negative cancelling principal (shouldn't happen with validation)
+                     principalPerc = 100;
+                } // else both are 0
+
+                // Ensure percentages are non-negative and round nicely while summing to 100%
+                principalPerc = Math.max(0, principalPerc);
+                interestPerc = Math.max(0, interestPerc);
+
+                let roundedPrincipal = Math.round(principalPerc);
+                let roundedInterest = Math.round(interestPerc);
+
+                // Adjust rounding to ensure sum is 100%
+                if (roundedPrincipal + roundedInterest !== 100 && totalPaid > 0) {
+                     // Adjust the one that was rounded 'more' away from its original value perhaps,
+                     // or simply adjust the smaller one to make up the difference.
+                     // Easiest: force interest % = 100 - principal %
+                     roundedInterest = 100 - roundedPrincipal;
+                     // Double check bounds after adjustment
+                     if (roundedInterest < 0) { roundedInterest = 0; roundedPrincipal = 100; }
+                     if (roundedPrincipal < 0) { roundedPrincipal = 0; roundedInterest = 100; }
+                }
+
+
+                principalPercent.textContent = `${roundedPrincipal}%`;
+                interestPercent.textContent = `${roundedInterest}%`;
+            }
+
+            /** Updates the amortization table header */
+            function updateAmortizationHeader(viewType) {
+                const columns = viewType === 'monthly'
+                    ? ['Month', 'Payment', 'Interest', 'Principal', 'Balance']
+                    : ['Year', 'Total Interest', 'Total Principal', 'Ending Balance']; // More descriptive annual labels
+                amortizationTableHeader.innerHTML = columns.map(col => `<th>${col}</th>`).join('');
+            }
+
+            /** Toggles the schedule view and regenerates the table if data exists */
+            function switchScheduleView(newView) {
+                if (newView === currentScheduleView) return; // No change needed
+
+                currentScheduleView = newView;
+                annualBtn.classList.toggle('active', newView === 'annual');
+                monthlyBtn.classList.toggle('active', newView === 'monthly');
+
+                // Regenerate schedule ONLY if valid data exists
+                if (lastCalculationData) {
+                    generateAmortizationSchedule(
+                        lastCalculationData.principal,
+                        lastCalculationData.annualRate,
+                        lastCalculationData.termMonths,
+                        lastCalculationData.monthlyPayment,
+                        currentScheduleView
+                    );
+                } else {
+                    // If no valid data, just update header and show placeholder message
+                    updateAmortizationHeader(currentScheduleView);
+                    amortizationTableBody.innerHTML = '';
+                    appendAmortizationRow(currentScheduleView === 'monthly' ? 5 : 4, 'Calculate valid inputs to see the schedule.');
+                }
+            }
+
+            /** Displays an error message */
+            function showError(message) { // Added this function
+                errorMessageDiv.textContent = message;
+                errorMessageDiv.style.display = 'block';
+             }
+
+            /** Clears error messages */
+            function clearError() { errorMessageDiv.textContent = ''; errorMessageDiv.style.display = 'none'; }
+
+            /** Clears all result fields and the amortization table to default state */
+            function clearResults() {
+                 interestRateResult.textContent = '-.--%';
+                 totalPaymentsLabel.textContent = 'Total of 0 monthly payments';
+                 totalPaymentsResult.textContent = '$0.00';
+                 totalInterestResult.textContent = '$0.00';
+                 principalPercent.textContent = '--%';
+                 interestPercent.textContent = '--%';
+                 amortizationTableBody.innerHTML = ''; // Clear completely
+                 // Add placeholder message with correct colspan for the *current* view
+                 appendAmortizationRow(currentScheduleView === 'monthly' ? 5 : 4, 'Enter loan details and calculate.');
+             }
+
+            // --- Formatting Helpers ---
+            function formatCurrency(value) {
+                 if (typeof value !== 'number' || !isFinite(value)) { return '$ --'; }
+                 // Format as currency, handle potential negative zero if needed (though unlikely here after checks)
+                 const formatted = (Object.is(value, -0) ? 0 : value).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                 return formatted;
+             }
+            function formatPercent(value) {
+                  if (typeof value !== 'number' || !isFinite(value) || value < 0) { return '-.--%'; } // Handle potential negative from calculation issues
+                  // Show 3 decimal places for APR as is standard
+                  return value.toLocaleString('en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + '%';
+              }
+
+            // --- Initialize ---
+            initializeCalculator();
+
+        });
+        // === JavaScript Logic End ===
+    </script>
+
+</body>
+</html>

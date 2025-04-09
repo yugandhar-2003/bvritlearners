@@ -1,0 +1,81 @@
+/* Custom styles for HTML Tables Quiz */
+/* These styles will override the modern-quiz-styles.css if needed */
+
+/* Add smooth transitions to the container */
+.container {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Custom highlight color for selected choices */
+#choices li.selected {
+    background-color: rgba(33, 150, 243, 0.3);
+    border-color: var(--primary-color);
+}
+
+/* Custom styling for correct answers */
+#choices li.correct {
+    background-color: rgba(76, 175, 80, 0.3);
+    border-color: var(--success-color);
+}
+
+/* Custom styling for incorrect answers */
+#choices li.incorrect {
+    background-color: rgba(244, 67, 54, 0.3);
+    border-color: var(--error-color);
+}
+
+/* Custom animation for question transitions */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#question-container {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Custom styling for the score container */
+#score-container {
+    background-color: var(--dark-surface-2);
+    border-radius: var(--border-radius-md);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border: 1px solid var(--dark-border);
+}
+
+#scores-list li {
+    background-color: var(--dark-surface);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius-sm);
+    border-left: 3px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+#scores-list li:hover {
+    transform: translateX(5px);
+    border-left-color: var(--accent-color);
+}
+
+/* Custom styling for the result message */
+#result {
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    display: inline-block;
+    background-color: var(--dark-surface-2);
+    border: 1px solid var(--dark-border);
+    transition: all 0.3s ease;
+}
+
+/* Custom button hover effects */
+#next-btn:hover, #reattempt-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}

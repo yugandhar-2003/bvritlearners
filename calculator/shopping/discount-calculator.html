@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #101010;
+            padding: 20px;
+        }
+        
+        .calculator {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4C9AFF;
+        }
+        
+        button {
+            width: 100%;
+            background-color: #4C9AFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            background-color: #3D87E8;
+        }
+        
+        .results {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        
+        .result-item {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .result-item:last-child {
+            margin-bottom: 0;
+            border-top: 1px dashed #ddd;
+            padding-top: 12px;
+            font-weight: 700;
+            color: #2E8B57;
+        }
+        
+        .result-label {
+            color: #666;
+        }
+        
+        .result-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        input.error-input {
+            border-color: #e74c3c;
+        }
+        
+        .saving-badge {
+            display: inline-block;
+            background-color: #2E8B57;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Discount Calculator</h1>
+        
+        <div class="input-group">
+            <label for="original-price">Original Price ($)</label>
+            <input type="number" id="original-price" placeholder="Enter original price" min="0" step="0.01">
+            <div class="error" id="price-error">Please enter a valid price</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="discount">Discount (%)</label>
+            <input type="number" id="discount" placeholder="Enter discount percentage" min="0" max="100">
+            <div class="error" id="discount-error">Please enter a valid discount (0-100)</div>
+        </div>
+        
+        <button id="calculate-btn">Calculate Discount</button>
+        
+        <div class="results">
+            <div class="result-item">
+                <span class="result-label">Original Price:</span>
+                <span class="result-value" id="result-original-price">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Discount Amount:</span>
+                <span class="result-value" id="result-discount-amount">$0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Final Price:</span>
+                <span class="result-value" id="result-final-price">$0.00 <span class="saving-badge" id="saving-percentage">Save 0%</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const originalPriceInput = document.getElementById('original-price');
+            const discountInput = document.getElementById('discount');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const resultOriginalPrice = document.getElementById('result-original-price');
+            const resultDiscountAmount = document.getElementById('result-discount-amount');
+            const resultFinalPrice = document.getElementById('result-final-price');
+            const savingPercentage = document.getElementById('saving-percentage');
+            const priceError = document.getElementById('price-error');
+            const discountError = document.getElementById('discount-error');
+            
+            // Format currency
+            function formatCurrency(value) {
+                return '$' + parseFloat(value).toFixed(2);
+            }
+            
+            // Validate inputs
+            function validateInputs() {
+                let isValid = true;
+                
+                // Validate price
+                if (originalPriceInput.value <= 0 || isNaN(originalPriceInput.value) || originalPriceInput.value === '') {
+                    priceError.style.display = 'block';
+                    originalPriceInput.classList.add('error-input');
+                    isValid = false;
+                } else {
+                    priceError.style.display = 'none';
+                    originalPriceInput.classList.remove('error-input');
+                }
+                
+                // Validate discount
+                if (discountInput.value < 0 || discountInput.value > 100 || isNaN(discountInput.value) || discountInput.value === '') {
+                    discountError.style.display = 'block';
+                    discountInput.classList.add('error-input');
+                    isValid = false;
+                } else {
+                    discountError.style.display = 'none';
+                    discountInput.classList.remove('error-input');
+                }
+                
+                return isValid;
+            }
+            
+            // Calculate discount
+            function calculateDiscount() {
+                if (!validateInputs()) {
+                    return;
+                }
+                
+                const originalPrice = parseFloat(originalPriceInput.value);
+                const discount = parseFloat(discountInput.value);
+                
+                const discountAmount = originalPrice * (discount / 100);
+                const finalPrice = originalPrice - discountAmount;
+                
+                resultOriginalPrice.textContent = formatCurrency(originalPrice);
+                resultDiscountAmount.textContent = formatCurrency(discountAmount);
+                resultFinalPrice.textContent = formatCurrency(finalPrice);
+                savingPercentage.textContent = `Save ${discount}%`;
+            }
+            
+            // Event listeners
+            calculateBtn.addEventListener('click', calculateDiscount);
+            
+            // Also calculate on Enter key
+            [originalPriceInput, discountInput].forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calculateDiscount();
+                    }
+                });
+            });
+            
+            // Input event listeners to remove error styling when typing
+            [originalPriceInput, discountInput].forEach(input => {
+                input.addEventListener('input', function() {
+                    this.classList.remove('error-input');
+                    document.getElementById(this.id + '-error').style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
