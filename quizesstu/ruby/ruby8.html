@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Changed Title -->
+    <title>Ruby Gems & Bundler Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* Using a Green/Yellow theme variation */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-start: #16a34a; /* green-600 */
+            --primary-end: #ca8a04;   /* yellow-600 */
+            --primary-dark-start: #14532d; /* green-900 */
+            --primary-dark-end: #422006;   /* yellow-900 */
+
+            --accent-light: #a3e635; /* lime-500 */
+            --accent-dark: #bef264;  /* lime-400 */
+
+            --correct-light: #22c55e; /* green-500 */
+            --correct-dark: #4ade80;  /* green-400 */
+            --incorrect-light: #ef4444; /* red-500 */
+            --incorrect-dark: #f87171;  /* red-400 */
+
+            --secondary-bg-light: #f7fee7; /* lime-50 */
+            --secondary-border-light: #d9f99d; /* lime-200 */
+            --secondary-text-light: #4d7c0f; /* lime-700 */
+            --secondary-bg-dark: #1f2937; /* gray-800 */
+            --secondary-border-dark: #374151; /* gray-700 */
+            --secondary-text-dark: #d1d5db; /* gray-300 */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            min-height: 100vh; position: relative; overflow-x: hidden; transition: background-color 0.3s ease;
+        }
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.06) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: 0; pointer-events: none;
+        }
+        html.dark body { background: linear-gradient(135deg, var(--primary-dark-start) 0%, var(--primary-dark-end) 100%); }
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        html.dark .glass-card { background: rgba(31, 41, 55, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; } /* gray-800 base */
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; } /* gray-50 */
+        html.dark .option { background-color: rgba(55, 65, 81, 0.6); border-color: rgba(255, 255, 255, 0.2); color: #d1d5db; } /* gray-700 base */
+        html.dark .option:hover:not(.disabled):not(.selected) { background: rgba(75, 85, 99, 0.8); border-color: rgba(255, 255, 255, 0.4); } /* gray-600 */
+        html.dark .option.selected { background: rgba(190, 242, 100, 0.2); border-color: var(--accent-dark); color: #f7fee7; } /* lime */
+        html.dark .option.correct { background: rgba(74, 222, 128, 0.35) !important; border-color: var(--correct-dark) !important; color: #f0fdf4 !important; }
+        html.dark .option.incorrect { background: rgba(248, 113, 113, 0.3) !important; border-color: var(--incorrect-dark) !important; color: #fef2f2 !important; }
+        html.dark .option.incorrect.selected { color: #fef2f2 !important; box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3); }
+        html.dark .explanation { background-color: rgba(55, 65, 81, 0.8); color: #d1d5db; border-left-color: var(--accent-dark); } /* gray-700 */
+        html.dark .review-item.correct .explanation { border-color: var(--correct-dark); }
+        html.dark .review-item.incorrect .explanation { border-color: var(--incorrect-dark); }
+        html.dark .code-snippet-container { background-color: #1f2937; color: #f9fafb; border: 1px solid #374151; } /* gray-800 */
+        html.dark .btn-secondary { background-color: var(--secondary-bg-dark); color: var(--secondary-text-dark); border: 1px solid var(--secondary-border-dark); }
+        html.dark .btn-secondary:hover:not(:disabled) { background-color: #4b5563; } /* gray-600 */
+        html.dark #score-circle { background-color: #1f2937; border: 6px solid transparent; } /* gray-800 */
+        html.dark #score-value { color: var(--accent-dark); }
+        html.dark .text-gray-500 { color: #9ca3af; } html.dark .text-gray-600 { color: #d1d5db; } html.dark .text-gray-700 { color: #e5e7eb; } html.dark .text-gray-800 { color: #f3f4f6; }
+        /* Adjusting "indigo" placeholders to Green/Lime/Yellow theme */
+        html.dark .text-indigo-900 { color: #a3e635; } /* lime-500 */
+        html.dark .text-indigo-700 { color: #bef264; } /* lime-400 */
+        html.dark .bg-indigo-50 { background-color: #1f3a2d; } /* Dark green */
+        html.dark .text-indigo-600 { color: #d9f99d; } /* lime-200 */
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; } /* gray-700/800 */
+        html.dark .timer-warning { color: #facc15 !important; border-color: #facc15 !important; }
+        html.dark .history-date { color: #9ca3af; }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        html.dark .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+        html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #15803d, #a16207); } /* Darker green/yellow */
+        html.dark .btn-submit { background: linear-gradient(to right, var(--correct-light), #15803d); color: white; }
+        html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #16a34a, #14532d); }
+        html.dark .progress-bar { background: linear-gradient(to right, var(--accent-dark), var(--primary-start)); }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-dark), var(--correct-light)) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #facc15, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-dark), var(--incorrect-light)) 1; }
+        html.dark .text-indigo-800 { color: #c0f064; } /* lime-300 */
+        html.dark .text-indigo-300 { color: #d9f99d; } /* lime-200 */
+        html.dark .text-indigo-200 { color: #ecfccb; } /* lime-100 */
+        html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+        html.dark .review-item.correct { border-color: var(--correct-dark); } html.dark .review-item.incorrect { border-color: var(--incorrect-dark); }
+        html.dark .review-item ul li.text-green-700 { color: var(--correct-dark); } html.dark .review-item ul li.text-red-700 { color: var(--incorrect-dark); }
+        html.dark .review-item ul li.bg-green-100 { background-color: rgba(74, 222, 128, 0.2); ring-color: rgba(74, 222, 128, 0.5); }
+        html.dark .review-item ul li .fa-check { color: var(--correct-dark); } html.dark .review-item ul li .fa-times { color: var(--incorrect-dark); }
+        html.dark .review-item .explanation strong { color: var(--accent-dark); }
+        html.dark .review-item p {color: #d1d5db; } html.dark .review-item ul li { color: #d1d5db;} html.dark .review-item ul li span.text-gray-500 {color: #9ca3af;}
+
+        /* Light Mode Tweaks - Green/Yellow Theme */
+        .glass-card { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; color: #1f2937; }
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.75); cursor: pointer; color: #374151; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(163, 230, 53, 0.6); } /* lime-500 */
+        .option.selected { border-color: var(--accent-light); background: linear-gradient(to right, rgba(163, 230, 53, 0.15), rgba(202, 138, 4, 0.15)); box-shadow: 0 4px 10px rgba(163, 230, 53, 0.2); } /* lime/yellow */
+        .option.correct { background: linear-gradient(to right, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15)) !important; border-color: var(--correct-light) !important; color: #14532d !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: var(--incorrect-light) !important; color: #7f1d1d !important; cursor: default; }
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #15803d, #a16207); } /* Darker green/yellow */
+        .btn-secondary { background-color: var(--secondary-bg-light); color: var(--secondary-text-light); border: 1px solid var(--secondary-border-light); }
+        .btn-secondary:hover:not(:disabled) { background-color: #d9f99d; } /* lime-200 */
+        .btn-submit { background: linear-gradient(to right, var(--correct-light), #16a34a); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #15803d, #14532d); }
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, var(--accent-light), var(--primary-start)); box-shadow: 0 0 15px rgba(22, 163, 74, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #f7fee7, #d9f99d) 1; } /* lime */
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-light), #15803d) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #facc15, #fbbf24) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-light), #b91c1c) 1; }
+        #score-value { color: var(--primary-start); }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.7); margin-top: 0.75rem; border-color: var(--accent-light); }
+        .review-item.correct .explanation { border-color: var(--correct-light); }
+        .review-item.incorrect .explanation { border-color: var(--incorrect-light); }
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #282a36; border: 1px solid #44475a; font-size: 0.9em; color: #f8f8f2; }
+        /* Prism styles remain okaidia */
+        html .code-snippet-container code[class*="language-"] { color: #f8f8f2; } html .code-snippet-container .token.comment { color: #6272a4; } html .code-snippet-container .token.string, html .code-snippet-container .token.char, html .code-snippet-container .token.builtin, html .code-snippet-container .token.inserted { color: #f1fa8c; } html .code-snippet-container .token.keyword { color: #ff79c6; } html .code-snippet-container .token.function, html .code-snippet-container .token.class-name { color: #50fa7b; } html .code-snippet-container .token.punctuation { color: #f8f8f2; } html .code-snippet-container .token.operator { color: #ff79c6; } html .code-snippet-container .token.constant, html .code-snippet-container .token.symbol { color: #bd93f9; } html .code-snippet-container .token.number { color: #bd93f9; } html .code-snippet-container .token.variable { color: #8be9fd; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #f59e0b !important; border-color: #f59e0b !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+        .option:focus, .btn:focus, button:focus { outline: 2px solid var(--primary-start); outline-offset: 2px; }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: var(--accent-dark); }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #4d7c0f; } /* lime-700 */
+        html.dark .history-score { color: #e5e7eb; } html.dark .history-date { color: #9ca3af; }
+        /* Light Mode Text Overrides for Green/Yellow */
+        html:not(.dark) .text-indigo-900 { color: #3f6212; } /* lime-800 */
+        html:not(.dark) .text-indigo-800 { color: #4d7c0f; } /* lime-700 */
+        html:not(.dark) .text-indigo-700 { color: #65a30d; } /* lime-600 */
+        html:not(.dark) .text-indigo-600 { color: #a3e635; } /* lime-500 */
+        html:not(.dark) .bg-indigo-50 { background-color: #f7fee7; border-color: #ecfccb;} /* lime-50/100 */
+        html:not(.dark) .explanation strong { color: #4d7c0f; }
+        html:not(.dark) .explanation .text-sm { color: #1f2937; } html:not(.dark) .review-item p, html:not(.dark) .review-item li { color: #1f2937; } html:not(.dark) .review-item li.text-green-700 { color: #14532d !important; } html:not(.dark) .review-item li.text-red-700 { color: #7f1d1d !important; } html:not(.dark) .review-item li.bg-green-100 { background-color: #dcfce7 !important; ring-color: #86efac !important;} html:not(.dark) .review-item ul li span.text-gray-500 {color: #6b7280;}
+        html:not(.dark) #start-screen h2 { color: #4d7c0f; } html:not(.dark) #start-screen p { color: #3f6212; } html:not(.dark) #score-history-area h3 { color: #365314; } /* lime-900 */ html:not(.dark) .history-item .history-score { color: #111827; } html:not(.dark) .history-item span.text-gray-600 { color: #4b5563; } html:not(.dark) .history-item .history-date { color: #4d7c0f; }
+        html:not(.dark) #results-container h2 { color: #4d7c0f; } html:not(.dark) #score-value { color: var(--primary-start); } html:not(.dark) #score-circle .text-gray-500 { color: #6b7280; } html:not(.dark) #accuracy-value { color: #111827; } html:not(.dark) #time-taken { color: #111827; } html:not(.dark) #performance-message { color: #3f6212; }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- Changed Heading -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Ruby Gems & Bundler Quiz</h1>
+             <!-- Changed Subheading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your knowledge of managing dependencies in Ruby!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- Changed Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Bundle Up?</h2>
+            <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers installing gems, Gemfiles, Bundler commands, and the RubyGems ecosystem.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- Changed Heading -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Ruby Gems & Bundler Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                         <!-- Changed Text -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to manage your Ruby projects effectively!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- Changed Heading -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Gems & Bundler Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // --- Ruby Gems & Bundler Questions ---
+
+            // Installing and using gems
+            {
+                question: "What is a 'gem' in the context of Ruby?",
+                options: ["A type of variable", "A built-in Ruby method", "A packaged library or application distributed via RubyGems", "A syntax error"],
+                correctAnswer: 2,
+                explanation: "A gem is a standard format for distributing Ruby programs and libraries, containing code and metadata."
+            },
+            {
+                question: "Which command is used to install a gem from RubyGems.org?",
+                code: "# How to install the 'rails' gem?",
+                options: ["ruby install rails", "gem get rails", "bundle add rails", "gem install rails"],
+                correctAnswer: 3,
+                explanation: "The `gem install <gem_name>` command downloads and installs the specified gem and its dependencies from the default RubyGems source."
+            },
+            {
+                question: "After installing a gem like 'nokogiri', how do you make its functionality available in your Ruby script?",
+                options: ["include 'nokogiri'", "load 'nokogiri'", "require 'nokogiri'", "import 'nokogiri'"],
+                correctAnswer: 2,
+                explanation: "The `require '<gem_name>'` statement loads the gem's code into your current Ruby environment, allowing you to use its classes and methods."
+            },
+            {
+                question: "What is the primary purpose of RubyGems?",
+                options: ["To compile Ruby code", "To manage Ruby versions", "To provide a standard package manager and distribution system for Ruby libraries", "To debug Ruby applications"],
+                correctAnswer: 2,
+                explanation: "RubyGems is the package manager for Ruby, providing tools to install, manage, and publish gems, and hosting the central repository (RubyGems.org)."
+            },
+
+            // Creating a Gemfile
+            {
+                question: "What is the standard filename for declaring project dependencies using Bundler?",
+                options: ["gems.rb", "dependencies.txt", "Gemfile", "config.yml"],
+                correctAnswer: 2,
+                explanation: "Bundler uses a file named `Gemfile` (case-sensitive, no extension) in the root of a project to list its gem dependencies."
+            },
+            {
+                question: "Which line in a `Gemfile` specifies the source for downloading gems, typically RubyGems.org?",
+                options: ["repo 'https://rubygems.org'", "source 'https://rubygems.org'", "gem_server 'https://rubygems.org'", "download_from 'https://rubygems.org'"],
+                correctAnswer: 1,
+                explanation: "The `source '...'` line tells Bundler where to look for the gems listed in the Gemfile."
+            },
+            {
+                question: "How do you declare a dependency on the 'rspec' gem (any version) in a `Gemfile`?",
+                options: ["needs 'rspec'", "dependency 'rspec'", "gem 'rspec'", "require 'rspec'"],
+                correctAnswer: 2,
+                explanation: "You declare a gem dependency using the `gem` keyword followed by the gem's name as a string: `gem 'rspec'`."
+            },
+            {
+                question: "What does the version specifier `'~> 3.1'` mean in a `Gemfile`?",
+                code: "gem 'rake', '~> 3.1'",
+                options: ["Exactly version 3.1", "Any version 3.x, but not 4.0", "Version 3.1 or any later version (>= 3.1)", "Version 3.1.x (>= 3.1 and < 3.2)"],
+                correctAnswer: 3,
+                explanation: "The pessimistic version constraint `'~> 3.1'` allows updates to the last specified digit (patch level in this case). It means `>= 3.1` and `< 3.2`."
+            },
+             {
+                question: "How can you group gems that are only needed for development and testing environments in a `Gemfile`?",
+                options: ["if development? do ... end", "group :dev, :test do ... end", "config :development, :test { ... }", "gem 'pry', env: [:dev, :test]"],
+                correctAnswer: 1,
+                explanation: "The `group` block allows you to specify gems that should only be installed or required in certain environments (like `:development`, `:test`)."
+            },
+
+            // Using bundle install and require
+            {
+                question: "Which command reads the `Gemfile` and installs the specified gems and their dependencies?",
+                options: ["gem update", "ruby Gemfile", "bundle install", "bundler setup"],
+                correctAnswer: 2,
+                explanation: "`bundle install` (or just `bundle`) is the core Bundler command. It installs gems listed in the `Gemfile`, ensuring compatible versions based on the `Gemfile.lock` if it exists."
+            },
+            {
+                question: "What is the purpose of the `Gemfile.lock` file?",
+                options: ["To list gem authors", "To record the exact versions of all gems that were installed", "To store your RubyGems.org credentials", "A backup of the Gemfile"],
+                correctAnswer: 1,
+                explanation: "`Gemfile.lock` is automatically generated/updated by `bundle install`. It locks down the specific versions of every gem (including dependencies) used in the project, ensuring consistency across different environments."
+            },
+            {
+                question: "Should you typically commit your `Gemfile.lock` to version control (e.g., Git) for applications?",
+                options: ["No, it's generated automatically", "Yes, to ensure all developers and deployment environments use the same gem versions", "Only if you have private gems", "No, only the Gemfile should be committed"],
+                correctAnswer: 1,
+                explanation: "For applications, committing `Gemfile.lock` is crucial. It guarantees that everyone working on the app, and the deployment servers, will install and use the exact same set of gem versions, preventing unexpected behavior due to dependency updates."
+            },
+             {
+                question: "What is the primary role of `require 'bundler/setup'` in an application?",
+                options: ["To install gems", "To update gems", "To modify the Ruby load path to only find gems listed in the Gemfile.lock", "To define the `gem` method"],
+                correctAnswer: 2,
+                explanation: "`require 'bundler/setup'` modifies `$LOAD_PATH` so that subsequent `require` calls in your application will only load the specific versions of gems locked in `Gemfile.lock`, ensuring you use the bundled environment."
+            },
+            {
+                question: "Why might you use `bundle exec <command>` (e.g., `bundle exec rspec`)?",
+                options: ["To edit the Gemfile", "To run a command using the exact versions of gems specified in the `Gemfile.lock`", "To install a specific gem", "To publish your gem"],
+                correctAnswer: 1,
+                explanation: "`bundle exec` ensures that the command (`rspec`, `rake`, `rails`, etc.) is executed within the context of your bundled environment, using the gem versions defined in `Gemfile.lock`, rather than potentially conflicting system-wide versions."
+            },
+            {
+                question: "What does the command `bundle update <gem_name>` do?",
+                options: ["Updates all gems in the Gemfile", "Updates the specified gem and its dependencies to the latest allowed versions according to the Gemfile", "Uninstalls the gem", "Shows documentation for the gem"],
+                correctAnswer: 1,
+                explanation: "`bundle update <gem_name>` attempts to update the named gem (and potentially its dependencies) to the newest versions permitted by the constraints in your `Gemfile`, and then updates `Gemfile.lock`."
+            },
+
+            // RubyGems ecosystem
+            {
+                question: "What is the main website for finding and hosting public Ruby gems?",
+                options: ["GitHub.com", "RubyForge.org", "RubyGems.org", "SourceForge.net"],
+                correctAnswer: 2,
+                explanation: "RubyGems.org is the official and central package repository for the Ruby community."
+            },
+             {
+                question: "Besides `gem '<name>'`, what other information can you commonly specify in the `Gemfile` entry for a gem?",
+                options: ["Version constraints", "Source location (e.g., Git repository)", "Required Ruby version", "All of the above"],
+                correctAnswer: 3,
+                explanation: "You can specify version constraints (`'~> 1.0'`), alternative sources (`git: '...'`, `path: '...'`), required Ruby versions, platforms, and group gems using various options within the `gem` declaration."
+            },
+            {
+                question: "If your `Gemfile` has `gem 'rails', '>= 6.0'`, what does `bundle install` do if `Gemfile.lock` doesn't exist?",
+                options: ["Installs exactly version 6.0.0", "Fails because the version is too broad", "Installs the latest available 6.x or 7.x version of Rails", "Installs the oldest 6.x version"],
+                correctAnswer: 2,
+                explanation: "Without a `Gemfile.lock`, `bundle install` will satisfy the dependency by installing the newest available version of the 'rails' gem that is greater than or equal to 6.0."
+            },
+             {
+                 question: "What command helps identify outdated gems in your bundle?",
+                 options: ["bundle check", "bundle list", "bundle outdated", "bundle audit"],
+                 correctAnswer: 2,
+                 explanation: "`bundle outdated` compares the versions listed in your `Gemfile.lock` with the latest available versions allowed by your `Gemfile`, showing which gems could potentially be updated."
+             },
+              {
+                 question: "Can you specify a gem to be installed directly from a Git repository in your `Gemfile`?",
+                 options: ["No, only from RubyGems.org", "Yes, using the `git:` option", "Yes, using the `repo:` option", "No, you must download it manually"],
+                 correctAnswer: 1,
+                 explanation: "Bundler allows specifying gems directly from Git repositories using `gem 'my_gem', git: 'https://github.com/user/my_gem.git'` often used for forks or unreleased versions."
+             }
+
+        ];
+
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // Changed Keys for Ruby Gems/Bundler Quiz
+        const SCORE_HISTORY_KEY = 'rubyGemsBundlerQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'rubyGemsBundlerQuizState';
+
+        // --- DOM Elements ---
+        // (DOM element references remain the same)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        // (State variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        // (shuffleArray, formatTime remain the same)
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+        function formatTime(seconds) { const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
+
+        // --- Dark Mode ---
+        // (applyDarkMode logic remains the same)
+         function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); }
+            else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); }
+            if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 50); }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // (saveState, loadState, clearState use updated QUIZ_STATE_KEY)
+        function saveState() {
+            if (!quizActive) return;
+            try { const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true }; localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); } // Gems Key
+            catch (e) { console.error("Failed to save Gems/Bundler quiz state:", e); }
+        }
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY); // Gems Key
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0; userAnswers = state.userAnswers; timeElapsed = state.timeElapsed || 0; questionsOrder = state.questionsOrder; quizActive = true;
+                        console.log("In-progress Ruby Gems/Bundler quiz state loaded."); return true;
+                    } else { console.warn("Saved Ruby Gems/Bundler quiz state invalid."); clearState(); return false; }
+                } catch (e) { console.error("Failed to parse saved Gems/Bundler quiz state:", e); clearState(); return false; }
+            }
+            return false;
+        }
+        function clearState() { localStorage.removeItem(QUIZ_STATE_KEY); console.log("In-progress Ruby Gems/Bundler quiz state cleared."); } // Gems Key
+
+        // --- Local Storage: SCORE HISTORY ---
+        // (loadScoreHistory, saveScoreHistory, addScoreToHistory, clearScoreHistory use updated SCORE_HISTORY_KEY)
+        function loadScoreHistory() {
+            try { const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); scoreHistory = historyJson ? JSON.parse(historyJson) : []; if (!Array.isArray(scoreHistory)) scoreHistory = []; } // Gems Key
+            catch (e) { console.error("Failed to load Ruby Gems/Bundler score history:", e); scoreHistory = []; }
+        }
+        function saveScoreHistory() {
+            try { const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); } // Gems Key
+            catch (e) { console.error("Failed to save Ruby Gems/Bundler score history:", e); }
+        }
+        function addScoreToHistory(attemptData) { scoreHistory.push(attemptData); if (scoreHistory.length > MAX_HISTORY_ITEMS) { scoreHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); } saveScoreHistory(); displayScoreHistory(); }
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous Ruby Gems/Bundler attempt scores? This cannot be undone.")) {
+                 scoreHistory = []; localStorage.removeItem(SCORE_HISTORY_KEY); displayScoreHistory(); console.log("Ruby Gems/Bundler score history cleared."); } // Gems Key
+        }
+
+        // --- UI: Display Score History ---
+        // (displayScoreHistory logic remains the same)
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+            if (scoreHistory.length === 0) { scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`; clearHistoryBtn.classList.add('hidden'); }
+            else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div'); item.className = 'history-item'; const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                    item.innerHTML = `<div class="flex-grow pr-4"><span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span> <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span></div> <div class="history-date text-right"> ${formattedDate}<br>${formattedTime} </div>`; scoreHistoryList.appendChild(item);
+                }); clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        // (startQuiz, loadQuestion, selectOption, showFeedback, updateProgress, updateNavigation, nextQuestion, prevQuestion remain largely the same, ensuring language-ruby for Gemfile snippets)
+        function startQuiz() {
+             if (loadState()) { console.log("Resuming Ruby Gems/Bundler quiz."); startTime = Date.now() - (timeElapsed * 1000); }
+             else { console.log("Initializing new Ruby Gems/Bundler quiz."); currentQuestionIndex = 0; score = 0; userAnswers = Array(quizData.length).fill(null); timeElapsed = 0; questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder); startTime = Date.now(); quizActive = true; }
+            startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; quizContainer.style.display = 'block';
+            loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); if(!loadState()) saveState();
+        }
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return; const questionIndexInOriginalData = questionsOrder[index]; const question = quizData[questionIndexInOriginalData]; if (!question) return;
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp'); void questionCard.offsetWidth; questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+            questionText.textContent = `${index + 1}. ${question.question}`; feedbackMessage.textContent = ''; codeSnippetArea.innerHTML = '';
+             if (question.code) { const pre = document.createElement('pre'); pre.className = 'code-snippet-container'; const code = document.createElement('code'); code.className = 'language-ruby'; code.textContent = question.code; pre.appendChild(code); codeSnippetArea.appendChild(pre); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightElement(code), 0); } } // language-ruby is fine for Gemfile/commands too
+            optionsContainer.innerHTML = ''; const selectedAnswerIndex = userAnswers[index];
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div'); optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300'; optionElement.setAttribute('role', 'radio'); optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false'); optionElement.tabIndex = 0;
+                const label = document.createElement('span'); label.className = 'flex-grow mr-4'; label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`; const feedbackIconContainer = document.createElement('span'); feedbackIconContainer.className = 'feedback-icon text-xl'; feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>`; optionElement.appendChild(label); optionElement.appendChild(feedbackIconContainer);
+                const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } }; optionElement.addEventListener('click', handleSelection); optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } }); optionsContainer.appendChild(optionElement);
+            });
+             if (selectedAnswerIndex !== null) { showFeedback(index, selectedAnswerIndex); } else { nextBtn.disabled = true; if (index === quizData.length - 1) submitBtn.disabled = true; }
+            updateProgress(index); updateNavigation();
+        }
+        function selectOption(displayIndex, selectedOptionIndex) { if (userAnswers[displayIndex] !== null) return; userAnswers[displayIndex] = selectedOptionIndex; showFeedback(displayIndex, selectedOptionIndex); nextBtn.disabled = false; if (displayIndex === quizData.length - 1) { submitBtn.disabled = false; } saveState(); }
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex]; const question = quizData[originalQuestionIndex]; const isCorrect = selectedOptionIndex === question.correctAnswer; const options = optionsContainer.querySelectorAll('.option');
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); optElement.style.cursor = 'default'; optElement.tabIndex = -1; const iconCorrect = optElement.querySelector('.icon-correct'); const iconIncorrect = optElement.querySelector('.icon-incorrect'); if (iconCorrect) iconCorrect.style.opacity = '0'; if (iconIncorrect) iconIncorrect.style.opacity = '0';
+                 if (currentOptionIndex === selectedOptionIndex) { optElement.classList.add('selected'); optElement.setAttribute('aria-checked', 'true'); if (isCorrect) { optElement.classList.add('correct'); if (iconCorrect) iconCorrect.style.opacity = '1'; feedbackMessage.textContent = "Correct!"; feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse'; } else { optElement.classList.add('incorrect'); if (iconIncorrect) iconIncorrect.style.opacity = '1'; feedbackMessage.textContent = "Incorrect!"; feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX'; const correctOptionElement = options[question.correctAnswer]; if (correctOptionElement) { correctOptionElement.classList.add('correct'); const correctOptIcon = correctOptionElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } }
+                 else { optElement.setAttribute('aria-checked', 'false'); if (currentOptionIndex === question.correctAnswer && !isCorrect) { optElement.classList.add('correct'); const correctOptIcon = optElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } }
+             }); setTimeout(() => { feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX'); }, 1000);
+        }
+        function updateProgress(index) { const totalQuestions = quizData.length; const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0; progressBar.style.width = `${progress}%`; questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`; }
+        function updateNavigation() { const isFirstQuestion = currentQuestionIndex === 0; const isLastQuestion = currentQuestionIndex === quizData.length - 1; prevBtn.classList.toggle('hidden', isFirstQuestion); navSpacer.classList.toggle('hidden', !isFirstQuestion); nextBtn.classList.toggle('hidden', isLastQuestion); submitBtn.classList.toggle('hidden', !isLastQuestion); const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null; nextBtn.disabled = !currentAnswerSelected; if (isLastQuestion) { submitBtn.disabled = !currentAnswerSelected; } }
+        function nextQuestion() { if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); } }
+        function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); } }
+
+        // --- Timer ---
+        // (startTimer logic remains the same)
+        function startTimer() {
+            clearInterval(timerInterval); if (!quizActive) return;
+            const updateTimerDisplay = () => {
+                const now = Date.now(); timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+                if (timeRemaining <= 0) { timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`; timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); clearInterval(timerInterval); if(quizActive) { submitQuiz(true); } return; }
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`; timerElement.classList.toggle('timer-warning', timeRemaining <= 60); timerElement.classList.remove('text-red-500', 'dark:text-red-400'); if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); }
+            }; updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        // --- Submit and Results ---
+        // (submitQuiz logic uses updated performance messages)
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return; quizActive = false; clearInterval(timerInterval);
+            score = 0; userAnswers.forEach((answerIndex, displayIdx) => { if (answerIndex !== null) { const originalQuestionIndex = questionsOrder[displayIdx]; if (answerIndex === quizData[originalQuestionIndex].correctAnswer) { score++; } } });
+            const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+            addScoreToHistory({ score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)), timestamp: Date.now(), timeTaken: finalTime });
+            quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+            scoreValue.textContent = `${score}/${totalQuestions}`; accuracyValue.textContent = `${accuracy.toFixed(1)}%`; timeTaken.textContent = formatTime(finalTime);
+            accuracyBar.style.width = `0%`; setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100);
+
+            // Updated Performance Messages for Gems/Bundler
+            let performanceText = ""; let scoreLevel = 'low';
+            if (timeUp) { performanceText = "Time expired! Review Gemfile syntax and `bundle install` usage."; if (accuracy >= 85) scoreLevel = 'high'; else if (accuracy >= 60) scoreLevel = 'medium'; }
+            else {
+                if (accuracy >= 95) { performanceText = "Gem Master! You manage Ruby dependencies like a pro!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent! Strong understanding of Gems and Bundler."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! You're getting the hang of dependency management."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Focus on Gemfile version specifiers and `bundle exec`."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Review the purpose of Gemfile.lock and `require`."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText; scoreCircle.setAttribute('data-score-level', scoreLevel);
+            if (scoreLevel === 'high' && !timeUp) { triggerConfetti(); }
+            clearState();
+        }
+
+        // (triggerConfetti logic remains the same)
+        function triggerConfetti() { if (typeof confetti !== 'function') return; const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true }); myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 }); setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200); }
+
+        // --- Review Screen ---
+        // (showReview logic remains the same, ensuring language-ruby)
+        function showReview() {
+            resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block'; reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer;
+                 const reviewItem = document.createElement('div'); reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30 dark:border-green-600' : 'border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-600' }`;
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+                  if (question.code) { const escapedCode = question.code; reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-ruby">${escapedCode}</code></pre>`; }
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = "";
+                      if (i === question.correctAnswer) { liClass = "font-semibold text-green-700 dark:text-green-400"; iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; }
+                      if (i === userAnswerIndex) { if (isCorrect) { liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50"; } else { liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; } }
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${optionText}</span>${iconHTML}</li>`;
+                 }); reviewHTML += `</ul>`;
+                 if (question.explanation) { reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700"><strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p></div>`; }
+                 reviewItem.innerHTML = reviewHTML; reviewQuestions.appendChild(reviewItem);
+            }); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0); }
+        }
+        function showResultsScreen() { reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); }
+
+        // --- Restart ---
+        // (restartQuiz logic remains the same)
+        function restartQuiz() { currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; clearInterval(timerInterval); progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = ''; resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn'); nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.remove('hidden'); displayScoreHistory(); console.log("Ruby Gems/Bundler Quiz reset."); }
+
+        // --- Sharing ---
+        // (shareResults uses updated text)
+         async function shareResults() {
+             const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Ruby Gems & Bundler Quiz! Think your dependency management skills are sharp?`; // Gems theme
+             const shareUrl = window.location.href;
+             if (navigator.share) {
+                 try { await navigator.share({ title: 'My Ruby Gems & Bundler Quiz Result!', text: shareText, url: shareUrl }); console.log('Result shared successfully'); } // Gems title
+                 catch (err) { console.error('Error sharing using Web Share API:', err); copyToClipboard(`${shareText} ${shareUrl}`); }
+             } else { console.log('Web Share API not supported, falling back to clipboard.'); copyToClipboard(`${shareText} ${shareUrl}`); }
+         }
+        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); }).catch(err => { console.error('Could not copy text: ', err); alert("Failed to copy results."); }); }
+
+        // --- Event Listeners ---
+        // (Event listeners remain the same)
+        startBtn.addEventListener('click', startQuiz); nextBtn.addEventListener('click', nextQuestion); prevBtn.addEventListener('click', prevQuestion); submitBtn.addEventListener('click', () => submitQuiz(false)); reviewBtn.addEventListener('click', showReview); restartBtn.addEventListener('click', restartQuiz); backToResults.addEventListener('click', showResultsScreen); shareBtn.addEventListener('click', shareResults); clearHistoryBtn.addEventListener('click', clearScoreHistory); darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+        // (Keyboard navigation logic remains the same)
+         document.addEventListener('keydown', (e) => {
+             const isQuizActive = quizContainer.style.display === 'block'; const isStartActive = startScreen.style.display === 'block'; const isResultsActive = resultsContainer.style.display === 'block'; const isReviewActive = reviewContainer.style.display === 'block';
+             if (isQuizActive) { if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); } else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); } else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); } }
+             else if (isStartActive) { if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); } else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); } }
+             else if (isResultsActive) { if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); } else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); } else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); } }
+             else if (isReviewActive) { if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); } }
+         });
+
+        // --- Initial Application Load ---
+        // (Initialization uses updated console log)
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode'); applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory(); displayScoreHistory();
+            quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block';
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            console.log("Ruby Gems & Bundler Quiz application initialized."); // Updated log
+        }
+
+        // --- Run Initialization ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+

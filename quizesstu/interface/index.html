@@ -7,94 +7,358 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <!-- Font Awesome (ensure this is v6+ for brand icons) -->
+    <!-- Font Awesome (v6.2.0 as specified) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
 
+    <!-- Placeholder CSS for new icons - ADD THESE TO YOUR styles.css -->
+    <style>
+        /* --- Add these styles (or similar) to your styles.css --- */
+        .quiz-icon { color: #fff; /* Default icon color */}
+        .python-icon { background-color: #3776ab; } /* Python Blue */
+        .java-icon { background-color: #f89820; } /* Java Orange */
+        .c-icon { background-color: #a8b9cc; } /* C Grey */
+        .cpp-icon { background-color: #649ad2; } /* C++ Blue */
+        .js-icon { background-color: #f7df1e; color: #000; } /* JS Yellow (needs dark text) */
+        .ruby-icon { background-color: #cc342d; } /* Ruby Red */
+        .go-icon { background-color: #00add8; } /* Go Cyan */
+        .rust-icon { background-color: #dea584; color: #000; } /* Rust Orange/Brown (needs dark text) */
+        .swift-icon { background-color: #ffac45; } /* Swift Orange */
+        .kotlin-icon { background-color: #7f52ff; } /* Kotlin Purple */
+        .html-icon { background-color: #e34f26; } /* HTML Orange */
+        .css-icon { background-color: #1572b6; } /* CSS Blue */
+        .react-icon { background-color: #61dafb; color: #000;} /* React Cyan (needs dark text) */
+        .node-icon { background-color: #68a063; } /* Node Green */
+        .spring-icon { background-color: #6db33f; } /* Spring Green */
+        .sql-icon { background-color: #ffda44; color: #333; } /* SQL Gold (needs dark text) */
+        .plsql-icon { background-color: #e67e22; } /* Oracle Orange */
+        .tsql-icon { background-color: #a9b9c7; } /* SQL Server Grey/Blue */
+        .bash-icon { background-color: #4eaa4f; } /* Bash Green */
+        .powershell-icon { background-color: #012456; } /* PowerShell Blue */
+        .perl-icon { background-color: #39457e; } /* Perl Blue/Purple */
+        .git-icon { background-color: #f05032; } /* Git Orange */
+
+        /* Style for category headers */
+        .category-title {
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        /* Ensure cards are visible by default if JS fails */
+        .quiz-card-container {
+            display: block; /* Or flex depending on parent, but block is safe */
+        }
+    </style>
+
 </head>
 <body>
 
-    <div class="container quiz-main-container">
-        <h1 class="page-title">Programming Quizzes</h1>
-        <p class="page-subtitle">Test your knowledge in various programming languages.</p>
+    <div class="container quiz-main-container mt-4 mb-5"> <!-- Added margin bottom -->
+        <h1 class="page-title text-center">Programming Quizzes</h1>
+        <p class="page-subtitle text-center mb-4">Test your knowledge in various programming languages & technologies.</p>
 
+        <!-- Search Bar -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-group">
+                    <input type="text" id="quizSearchInput" class="form-control form-control-lg" placeholder="Search for a quiz (e.g., Java, Python, SQL)...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Category: General-Purpose Programming Languages -->
+        <h2 class="category-title">🧑‍💻 General-Purpose Languages</h2>
         <div class="row">
-
-            <!-- Python Quiz Card -->
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <!-- Python -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                        <div class="quiz-icon python-icon">
-                            <i class="fab fa-python"></i>
-                        </div>
+                        <div class="quiz-icon python-icon"><i class="fab fa-python"></i></div>
                         <h3 class="quiz-title">Python Quiz</h3>
-                        <!-- Ensure relative path is correct -->
-                        <a href="..\python interface\index.html" class="quiz-button mt-auto">
-                            <span>START QUIZ</span> <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <a href="..\python interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-
-            <!-- Java Quiz Card -->
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <!-- Java -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                        <div class="quiz-icon java-icon">
-                            <i class="fab fa-java"></i>
-                        </div>
+                        <div class="quiz-icon java-icon"><i class="fab fa-java"></i></div>
                         <h3 class="quiz-title">Java Quiz</h3>
-                         <!-- Ensure relative path is correct -->
-                        <a href="..\java interface\index.html" class="quiz-button mt-auto">
-                            <span>START QUIZ</span> <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <a href="..\java interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-
-            <!-- C Language Quiz Card -->
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
+             <!-- C Language -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                        <div class="quiz-icon c-icon">
-                            <!-- Font Awesome doesn't have a specific C icon, use 'code' -->
-                            <i class="fas fa-code"></i>
-                        </div>
+                         <div class="quiz-icon c-icon"><i class="fas fa-c"></i></div>
                         <h3 class="quiz-title">C Language Quiz</h3>
-                         <!-- Ensure relative path is correct -->
-                        <a href="..\c interface\index.html" class="quiz-button mt-auto">
-                            <span>START QUIZ</span> <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <a href="..\c interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-
-            <!-- HTML Quiz Card -->
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <!-- C++ -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                        <div class="quiz-icon html-icon">
-                            <i class="fab fa-html5"></i>
-                        </div>
-                        <h3 class="quiz-title">HTML Quiz</h3>
-                         <!-- Ensure relative path is correct -->
-                        <a href="..\html interface\index.html" class="quiz-button mt-auto">
-                            <span>START QUIZ</span> <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <div class="quiz-icon cpp-icon"><i class="fas fa-code"></i></div>
+                        <h3 class="quiz-title">C++ Quiz</h3>
+                        <a href="..\cpp interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-            <!-- Add more cards here following the same pattern -->
-
+            <!-- Ruby -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon ruby-icon"><i class="fas fa-gem"></i></div>
+                        <h3 class="quiz-title">Ruby Quiz</h3>
+                        <a href="..\ruby interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Go (Golang) -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon go-icon"><i class="fab fa-golang"></i></div>
+                        <h3 class="quiz-title">Go (Golang) Quiz</h3>
+                        <a href="..\go interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Rust -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon rust-icon"><i class="fab fa-rust"></i></div>
+                        <h3 class="quiz-title">Rust Quiz</h3>
+                        <a href="..\rust interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Swift -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon swift-icon"><i class="fab fa-swift"></i></div>
+                        <h3 class="quiz-title">Swift Quiz</h3>
+                        <a href="..\swift interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Kotlin -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon kotlin-icon"><i class="fas fa-k"></i></div>
+                        <h3 class="quiz-title">Kotlin Quiz</h3>
+                        <a href="..\kotlin interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
         </div> <!-- /.row -->
+
+        <!-- Category: Web Development Languages -->
+        <h2 class="category-title">🌐 Web Development</h2>
+        <!-- Sub-Category: Frontend -->
+        <h4 class="mt-3 mb-3 font-weight-normal text-secondary">Frontend</h4>
+        <div class="row">
+             <!-- HTML -->
+             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon html-icon"><i class="fab fa-html5"></i></div>
+                        <h3 class="quiz-title">HTML Quiz</h3>
+                        <a href="..\html interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- CSS -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon css-icon"><i class="fab fa-css3-alt"></i></div>
+                        <h3 class="quiz-title">CSS Quiz</h3>
+                        <a href="..\css interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- JavaScript -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                 <div class="quiz-card h-100">
+                     <div class="quiz-card-inner">
+                         <div class="quiz-icon js-icon"><i class="fab fa-js"></i></div>
+                         <h3 class="quiz-title">JavaScript Quiz</h3>
+                         <a href="..\javascript interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                     </div>
+                 </div>
+             </div>
+            <!-- Reactjs -->
+           <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+               <div class="quiz-card h-100">
+                   <div class="quiz-card-inner">
+                       <div class="quiz-icon react-icon"><i class="fab fa-react"></i></div>
+                       <h3 class="quiz-title">Reactjs Quiz</h3>
+                       <a href="..\react interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                   </div>
+               </div>
+           </div>
+        </div> <!-- /.row -->
+        <!-- Sub-Category: Backend -->
+        <h4 class="mt-4 mb-3 font-weight-normal text-secondary">Backend</h4>
+        <div class="row">
+            <!-- Node.js -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon node-icon"><i class="fab fa-node-js"></i></div>
+                        <h3 class="quiz-title">Node.js Quiz</h3>
+                        <a href="..\node interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Spring Boot -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                 <div class="quiz-card h-100">
+                     <div class="quiz-card-inner">
+                         <div class="quiz-icon spring-icon"><i class="fas fa-leaf"></i></div>
+                         <h3 class="quiz-title">Spring Boot Quiz</h3>
+                         <a href="..\spring interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                     </div>
+                 </div>
+             </div>
+        </div> <!-- /.row -->
+
+        <!-- Category: Database Query Languages -->
+        <h2 class="category-title">📊 Database Query Languages</h2>
+        <div class="row">
+             <!-- SQL -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon sql-icon"><i class="fas fa-database"></i></div>
+                        <h3 class="quiz-title">SQL Quiz</h3>
+                        <a href="..\sql interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+             <!-- PL/SQL -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                 <div class="quiz-card h-100">
+                     <div class="quiz-card-inner">
+                         <div class="quiz-icon plsql-icon"><i class="fas fa-database"></i></div>
+                         <h3 class="quiz-title">PL/SQL Quiz</h3>
+                         <a href="..\plsql interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                     </div>
+                 </div>
+             </div>
+             <!-- T-SQL -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                 <div class="quiz-card h-100">
+                     <div class="quiz-card-inner">
+                         <div class="quiz-icon tsql-icon"><i class="fas fa-database"></i></div>
+                         <h3 class="quiz-title">T-SQL Quiz</h3>
+                         <a href="..\tsql interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                     </div>
+                 </div>
+             </div>
+        </div> <!-- /.row -->
+
+        <!-- Category: Scripting & Automation -->
+        <h2 class="category-title">💻 Scripting & Automation</h2>
+        <div class="row">
+            <!-- Bash -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon bash-icon"><i class="fas fa-terminal"></i></div>
+                        <h3 class="quiz-title">Bash Scripting Quiz</h3>
+                        <a href="..\bash interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- PowerShell -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon powershell-icon"><i class="fas fa-terminal"></i></div>
+                        <h3 class="quiz-title">PowerShell Quiz</h3>
+                        <a href="..\powershell interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- Perl -->
+            <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+                <div class="quiz-card h-100">
+                    <div class="quiz-card-inner">
+                        <div class="quiz-icon perl-icon"><i class="fas fa-gem"></i></div>
+                        <h3 class="quiz-title">Perl Quiz</h3>
+                        <a href="..\perl interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- /.row -->
+
+        <!-- Category: Version Control -->
+        <h2 class="category-title">🐙 Version Control</h2>
+        <div class="row">
+            <!-- Git -->
+           <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
+               <div class="quiz-card h-100">
+                   <div class="quiz-card-inner">
+                       <div class="quiz-icon git-icon"><i class="fab fa-git-alt"></i></div>
+                       <h3 class="quiz-title">Git Quiz</h3>
+                       <a href="..\git interface\index.html" class="quiz-button mt-auto"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
+                   </div>
+               </div>
+           </div>
+        </div> <!-- /.row -->
+
     </div> <!-- /.container -->
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+    <!-- Search Filter Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('quizSearchInput');
+            const quizCards = document.querySelectorAll('.quiz-card-container'); // Select the container cols
+
+            searchInput.addEventListener('keyup', function(event) {
+                const searchTerm = event.target.value.toLowerCase().trim();
+
+                quizCards.forEach(cardContainer => {
+                    const titleElement = cardContainer.querySelector('.quiz-title');
+                    // Check if titleElement exists to avoid errors if card structure changes
+                    if (titleElement) {
+                         const title = titleElement.textContent.toLowerCase();
+                         // Show card if title includes search term OR if search term is empty
+                        if (title.includes(searchTerm) || searchTerm === '') {
+                            cardContainer.style.display = ''; // Show the container column
+                        } else {
+                            cardContainer.style.display = 'none'; // Hide the container column
+                        }
+                    }
+                });
+
+                 // Optional: Hide category titles if all cards within them are hidden (more complex)
+                 // This requires grouping cards by category in the JS, which adds complexity.
+                 // For now, empty categories might just appear with no cards below them.
+            });
+        });
+    </script>
+
 </body>
 </html>

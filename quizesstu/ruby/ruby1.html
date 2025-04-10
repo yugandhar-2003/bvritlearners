@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Ruby Basics Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #cc241d 0%, #9d0006 100%); /* Ruby-ish Gradient */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+            background: linear-gradient(135deg, #50000f 0%, #282828 100%); /* Darker Ruby/Gray */
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(40, 40, 40, 0.7); /* Darker Glass */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ebdbb2; /* Gruvbox light */
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #fbf1c7; /* Gruvbox lighter */
+         }
+         html.dark .option {
+             background-color: rgba(60, 56, 54, 0.6); /* Gruvbox dark bg */
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d5c4a1; /* Gruvbox light fg */
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(80, 73, 69, 0.8);
+             border-color: rgba(251, 241, 199, 0.4); /* Gruvbox light yellow */
+         }
+         html.dark .option.selected {
+             background: rgba(204, 36, 29, 0.35); /* Ruby red transparent */
+             border-color: #fb4934; /* Gruvbox red */
+             color: #fbf1c7;
+         }
+         html.dark .option.correct {
+            background: rgba(152, 151, 26, 0.35) !important; /* Gruvbox green transparent */
+            border-color: #b8bb26 !important; /* Gruvbox green */
+            color: #fbf1c7 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(251, 73, 52, 0.3) !important; /* Gruvbox red transparent */
+            border-color: #fb4934 !important; /* Gruvbox red */
+             color: #fbf1c7 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fbf1c7 !important;
+             box-shadow: inset 0 0 5px rgba(251, 73, 52, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(40, 40, 40, 0.8);
+             color: #d5c4a1;
+             border-left-color: #cc241d; /* Ruby Red */
+         }
+        html.dark .review-item.correct .explanation { border-color: #b8bb26; } /* Gruvbox green */
+        html.dark .review-item.incorrect .explanation { border-color: #fb4934; } /* Gruvbox red */
+         html.dark .code-snippet-container {
+             background-color: #282828; /* Gruvbox dark bg */
+             color: #ebdbb2; /* Gruvbox light fg */
+             border: 1px solid #504945; /* Gruvbox gray */
+         }
+          html.dark .btn-secondary {
+              background-color: #504945; /* Gruvbox gray */
+              color: #ebdbb2;
+              border: 1px solid #665c54;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #665c54;
+          }
+          html.dark #score-circle {
+              background-color: #3c3836; /* Gruvbox darker bg */
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #fe8019; /* Gruvbox orange */
+          }
+           html.dark .text-gray-500 { color: #a89984; } /* Gruvbox gray */
+           html.dark .text-gray-600 { color: #bdae93; } /* Gruvbox lighter gray */
+           html.dark .text-gray-700 { color: #d5c4a1; } /* Gruvbox light fg */
+           html.dark .text-gray-800 { color: #ebdbb2; } /* Gruvbox lighter fg */
+           html.dark .text-indigo-900 { color: #fabd2f; } /* Gruvbox yellow */
+           html.dark .text-indigo-700 { color: #fe8019; } /* Gruvbox orange */
+           html.dark .bg-gray-200 { background-color: #504945;} /* Gruvbox gray */
+           html.dark .bg-indigo-50 { background-color: #50000f;} /* Dark red */
+           html.dark .text-indigo-600 { color: #fe8019; } /* Gruvbox orange */
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(80, 73, 69, 0.4), rgba(60, 56, 54, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #ebdbb2;
+           }
+           html.dark .timer-warning { color: #fabd2f !important; border-color: #fabd2f !important; } /* Gruvbox yellow */
+           html.dark .history-date { color: #a89984; } /* Gruvbox gray */
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+           html.dark .btn-primary { background: linear-gradient(to right, #cc241d, #9d0006); color: white; }
+           html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #fb4934, #cc241d); }
+           html.dark .btn-submit { background: linear-gradient(to right, #b8bb26, #98971a); color: #282828; } /* Gruvbox green */
+           html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #d7df00, #b8bb26); }
+           html.dark .progress-bar { background: linear-gradient(to right, #b8bb26, #fe8019); } /* Green to Orange */
+           html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #d7df00) 1; } /* Green */
+           html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; } /* Yellow/Orange */
+           html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #cc241d) 1; } /* Red */
+
+
+        /* Light Mode Tweaks for Ruby Theme */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            color: #3c3836; /* Darker text for light mode */
+        }
+         .option {
+             transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden;
+             border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer;
+         }
+         .option:hover:not(.disabled):not(.selected) {
+             transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+             border-color: rgba(204, 36, 29, 0.5); /* Light Ruby Red Border */
+         }
+         .option.selected {
+             border-color: #cc241d; /* Ruby Red Border */
+             background: linear-gradient(to right, rgba(204, 36, 29, 0.15), rgba(157, 0, 6, 0.15));
+             box-shadow: 0 4px 10px rgba(204, 36, 29, 0.2);
+         }
+         .option.correct {
+             background: linear-gradient(to right, rgba(152, 151, 26, 0.2), rgba(152, 151, 26, 0.15)) !important;
+             border-color: #98971a !important; /* Gruvbox Dark Green */
+             color: #79740e !important; /* Darker Green Text */
+             cursor: default; transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(251, 73, 52, 0.15), rgba(204, 36, 29, 0.15)) !important;
+             border-color: #fb4934 !important; /* Gruvbox Red */
+             color: #9d0006 !important; /* Darker Red Text */
+             cursor: default;
+         }
+         .btn {
+             position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px;
+             padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+             box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none;
+         }
+         .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+         .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+         .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+         .btn-primary { background: linear-gradient(to right, #cc241d, #9d0006); color: white; } /* Ruby Red Gradient */
+         .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #fb4934, #cc241d); } /* Lighter Red on hover */
+         .btn-secondary { background-color: #ebdbb2; color: #3c3836; border: 1px solid #d5c4a1; } /* Gruvbox Light */
+         .btn-secondary:hover:not(:disabled) { background-color: #d5c4a1; }
+         .btn-submit { background: linear-gradient(to right, #b8bb26, #98971a); color: white; } /* Gruvbox Green Gradient */
+         .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #d7df00, #b8bb26); } /* Lighter Green */
+
+         .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+         .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #b8bb26, #fe8019); box-shadow: 0 0 15px rgba(254, 128, 25, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); } /* Green to Orange */
+
+         .results-container { display: none; animation: fadeIn 0.8s forwards; }
+         .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d5c4a1, #a89984) 1; /* Gruvbox Gray */ }
+         .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #98971a) 1; } /* Green */
+         .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; } /* Yellow/Orange */
+         .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #cc241d) 1; } /* Red */
+         #score-value { color: #cc241d; } /* Ruby Red Score */
+
+         .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #cc241d; /* Ruby Red */ }
+         .review-item.correct .explanation { border-color: #98971a; } /* Gruvbox Dark Green */
+         .review-item.incorrect .explanation { border-color: #fb4934; } /* Gruvbox Red */
+         .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #f9f5d7; border: 1px solid #d5c4a1; font-size: 0.9em; color: #3c3836; } /* Light mode code */
+
+         .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+         .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+         .timer-warning { animation: pulseWarning 1.5s infinite; color: #fabd2f !important; border-color: #fabd2f !important; } /* Yellow */
+         @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+         .option:focus, .btn:focus, button:focus { outline: 2px solid #cc241d; outline-offset: 2px; } /* Red focus */
+         html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #fe8019; } /* Orange focus */
+         #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+         #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+         .history-item:last-child { border-bottom: none; }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #665c54; }
+         html.dark .history-score { color: #ebdbb2; }
+         html.dark .history-date { color: #a89984; }
+         html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+         html.dark .review-item.correct { border-color: #b8bb26; }
+         html.dark .review-item.incorrect { border-color: #fb4934; }
+         html.dark .review-item ul li.text-green-700 { color: #b8bb26; }
+         html.dark .review-item ul li.text-red-700 { color: #fb4934; }
+         html.dark .review-item ul li.bg-green-100 { background-color: rgba(184, 187, 38, 0.2); ring-color: rgba(184, 187, 38, 0.5); }
+         html.dark .review-item ul li .fa-check { color: #b8bb26; }
+         html.dark .review-item ul li .fa-times { color: #fb4934; }
+         html.dark .review-item .explanation strong { color: #fabd2f; }
+         html.dark .review-item p {color: #d5c4a1; }
+         html.dark .review-item ul li { color: #d5c4a1;}
+         html.dark .review-item ul li span.text-gray-500 {color: #a89984;}
+         html.light .text-indigo-900 { color: #9d0006; } /* Dark Red */
+         html.light .text-indigo-700 { color: #cc241d; } /* Medium Red */
+         html.light .bg-indigo-50 { background-color: #fbeeed;} /* Very light red */
+         html.light .text-indigo-600 { color: #cc241d; } /* Medium Red */
+         html.light .text-indigo-800 { color: #790000; } /* Darker Red */
+
+         /* Ensure Prism okaidia looks okay in light mode code block */
+         html.light .code-snippet-container code[class*="language-"] { color: #f8f8f2; }
+         html.light .code-snippet-container .token.punctuation { color: #f8f8f2; }
+         html.light .code-snippet-container .token.comment { color: #6272a4; }
+         html.light .code-snippet-container .token.keyword { color: #ff79c6; }
+         html.light .code-snippet-container .token.string { color: #f1fa8c; }
+         html.light .code-snippet-container .token.number { color: #bd93f9; }
+         html.light .code-snippet-container .token.constant { color: #bd93f9; }
+         html.light .code-snippet-container .token.class-name { color: #8be9fd; }
+         html.light .code-snippet-container .token.function { color: #50fa7b; }
+         html.light .code-snippet-container .token.variable { color: #8be9fd; }
+         html.light .code-snippet-container .token.operator { color: #ff79c6; }
+         /* Override background for light mode */
+         html.light .code-snippet-container { background-color: #282a36; border-color: #44475a;}
+
+         /* Adjust explanation text color in light mode */
+         html.light .explanation .text-sm { color: #3c3836; }
+         html.light .explanation strong { color: #9d0006; }
+
+         /* Adjust review item text color in light mode */
+         html.light .review-item p, html.light .review-item li { color: #3c3836; }
+         html.light .review-item li.text-green-700 { color: #79740e !important; }
+         html.light .review-item li.text-red-700 { color: #9d0006 !important; }
+         html.light .review-item li.bg-green-100 { background-color: #f0f1d3 !important; ring-color: #bdcf4f !important;}
+         html.light .review-item ul li span.text-gray-500 {color: #7c6f64;}
+
+         /* Adjust Start Screen Colors */
+         html.light #start-screen h2 { color: #9d0006; }
+         html.light #start-screen p { color: #504945; }
+         html.light #score-history-area h3 { color: #790000; }
+         html.light .history-item .history-score { color: #3c3836; }
+         html.light .history-item span.text-gray-600 { color: #504945; }
+         html.light .history-item .history-date { color: #7c6f64; }
+
+         /* Adjust Results Screen Colors */
+         html.light #results-container h2 { color: #9d0006; }
+         html.light #score-value { color: #cc241d; }
+         html.light #score-circle .text-gray-500 { color: #665c54; }
+         html.light #accuracy-value { color: #3c3836; }
+         html.light #time-taken { color: #3c3836; }
+         html.light #performance-message { color: #3c3836; }
+         html.light .bg-indigo-50 { background-color: #fdecec; border-color: #f9d6d6;} /* Light red background/border */
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Ruby Mastery Quiz</h1> <!-- Changed Heading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Challenge your Ruby fundamentals!</p> <!-- Changed Subheading -->
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Test Your Ruby Skills?</h2> <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers Ruby basics: variables, constants, types, operators, comments.</p> <!-- Changed Text -->
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to improve your skills!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // --- Ruby Basics & Syntax Questions ---
+
+            // 1. Variable Declaration
+            { question: "How do you declare a local variable named `user_name` and assign it the value \"Alice\" in Ruby?", options: ["let user_name = \"Alice\"", "var user_name = \"Alice\"", "user_name = \"Alice\"", "String user_name = \"Alice\""], correctAnswer: 2, explanation: "Ruby uses simple assignment (`=`) to declare and initialize local variables. Variable names typically use snake_case." },
+            // 2. Constant Declaration
+            { question: "What is the convention for defining a constant named `MAX_USERS` with the value 100 in Ruby?", options: ["const MAX_USERS = 100", "MAX_USERS = 100", "define MAX_USERS = 100", "max_users = 100"], correctAnswer: 1, explanation: "Ruby constants start with an uppercase letter and use simple assignment. By convention, they are written in ALL_CAPS_SNAKE_CASE." },
+            // 3. Data Type: Integer
+            { question: "What is the class of the value `42` in Ruby?", code: "puts 42.class", options: ["Number", "Fixnum", "Integer", "Numeric"], correctAnswer: 2, explanation: "`42` is a whole number, and its class in modern Ruby is `Integer`. Older Ruby versions had `Fixnum` for smaller integers." },
+            // 4. Data Type: String
+            { question: "What is the data type of the value returned by this code?", code: "greeting = \"Hello, Ruby!\"\nputs greeting.class", options: ["Text", "String", "CharacterSequence", "Str"], correctAnswer: 1, explanation: "Text enclosed in double (`\"\"`) or single (`''`) quotes represents a `String` object in Ruby." },
+            // 5. Data Type: Float
+            { question: "What is the class of `3.14159` in Ruby?", code: "puts 3.14159.class", options: ["Decimal", "Integer", "Number", "Float"], correctAnswer: 3, explanation: "Numbers with a decimal point are represented by the `Float` class in Ruby, representing floating-point numbers." },
+            // 6. Data Type: Boolean
+            { question: "What are the two literal boolean values in Ruby?", options: ["0 and 1", "TRUE and FALSE", "true and false", "\"true\" and \"false\""], correctAnswer: 2, explanation: "Ruby's boolean values are `true` (representing truth) and `false` (representing falsehood)." },
+            // 7. Data Type: Nil
+            { question: "Which keyword represents the absence of a value, often similar to 'null' in other languages?", options: ["void", "undefined", "null", "nil"], correctAnswer: 3, explanation: "`nil` is a special object in Ruby representing nothingness or the absence of a value. Its class is `NilClass`." },
+            // 8. Operator: Arithmetic (Integer Division)
+            { question: "What is the result of `15 / 4` in Ruby?", code: "puts 15 / 4", options: ["3.75", "4", "3", "Error"], correctAnswer: 2, explanation: "When dividing two Integers in Ruby, the result is an Integer, and any fractional part is truncated (discarded). 15 divided by 4 is 3 with a remainder." },
+            // 9. Operator: Arithmetic (Float Division)
+            { question: "What is the result of `15.0 / 4` in Ruby?", code: "puts 15.0 / 4", options: ["3", "4", "3.75", "Error"], correctAnswer: 2, explanation: "If either operand in a division is a Float, Ruby performs floating-point division, resulting in a Float. `15.0 / 4` equals `3.75`." },
+            // 10. Operator: Modulo
+            { question: "What does the modulo operator (`%`) calculate in the expression `10 % 3`?", code: "puts 10 % 3", options: ["The result of division (3.33...)", "The integer part of division (3)", "The remainder of division (1)", "A percentage"], correctAnswer: 2, explanation: "The modulo operator (`%`) returns the remainder after integer division. 10 divided by 3 is 3 with a remainder of 1." },
+            // 11. Operator: Exponentiation
+            { question: "What is the result of `3 ** 3` in Ruby?", code: "puts 3 ** 3", options: ["9", "6", "27", "Error"], correctAnswer: 2, explanation: "The double asterisk (`**`) is the exponentiation operator. `3 ** 3` means 3 raised to the power of 3 (3 * 3 * 3), which is 27." },
+            // 12. Operator: Comparison (Equality)
+            { question: "What will the following comparison return?", code: "puts 10 == \"10\"", options: ["true", "false", "nil", "Error"], correctAnswer: 1, explanation: "The `==` operator checks for equality. In Ruby, an Integer (`10`) is not considered equal to a String (`\"10\"`), so it returns `false`." },
+            // 13. Operator: Comparison (Greater Than)
+            { question: "What is the result of `5 > 5`?", code: "puts 5 > 5", options: ["true", "false", "nil", "0"], correctAnswer: 1, explanation: "The `>` operator checks if the left operand is strictly greater than the right. Since 5 is not strictly greater than 5, it returns `false`." },
+            // 14. Operator: Logical AND
+            { question: "What is the result of the logical expression `true && false`?", code: "puts true && false", options: ["true", "false", "nil", "Error"], correctAnswer: 1, explanation: "The logical AND operator (`&&`) returns `true` only if both its left and right operands are truthy. Since `false` is falsy, the result is `false`." },
+            // 15. Operator: Logical OR
+            { question: "What is the result of `nil || \"hello\"`?", code: "puts nil || \"hello\"", options: ["true", "false", "nil", "\"hello\""], correctAnswer: 3, explanation: "The logical OR operator (`||`) returns the first operand if it's truthy, otherwise it returns the second operand. `nil` is falsy, so it returns the second operand, `\"hello\"`." },
+            // 16. Comments: Single-line
+            { question: "How do you write a single-line comment in Ruby?", options: ["// This is a comment", "/* This is a comment */", "# This is a comment", "-- This is a comment"], correctAnswer: 2, explanation: "Ruby uses the hash symbol (`#`) to denote a single-line comment. Everything from the `#` to the end of the line is ignored by the interpreter." },
+            // 17. Comments: Multi-line
+            { question: "What syntax is used for traditional multi-line comments in Ruby?", options: ["### Comment block ###", "''' Comment block '''", "=begin\nComment block\n=end", "/* Comment block */"], correctAnswer: 2, explanation: "Multi-line comments in Ruby are typically created using `=begin` on one line and `=end` on another. Everything between these markers is ignored." },
+            // 18. Indentation
+            { question: "Is indentation syntactically required for code blocks (like `if`/`else`, loops) in Ruby?", options: ["Yes, 4 spaces are mandatory", "Yes, 2 spaces are mandatory", "No, but it is a crucial convention for readability", "Only for `class` and `module` definitions"], correctAnswer: 2, explanation: "Ruby uses keywords like `end` to delimit blocks, so indentation is not syntactically required for the code to run. However, consistent indentation (usually 2 spaces) is a strong convention for making code readable." },
+            // 19. String Concatenation
+            { question: "What is the output of this code?", code: "part1 = \"Ruby \"\npart2 = \"Rocks!\"\nputs part1 + part2", options: ["RubyRocks!", "Ruby Rocks!", "Error", "part1part2"], correctAnswer: 1, explanation: "The `+` operator can be used to concatenate (join) strings in Ruby. `\"Ruby \" + \"Rocks!\"` results in the string `\"Ruby Rocks!\"`." },
+            // 20. String Interpolation
+            { question: "What will be printed by the following Ruby code?", code: "language = \"Ruby\"\nputs \"I am learning #{language}!\"", options: ["I am learning language!", "I am learning \#{language}!", "I am learning Ruby!", "Error"], correctAnswer: 2, explanation: "String interpolation `#{expression}` inside a double-quoted string evaluates the expression and inserts its string representation into the main string. Here, `#{language}` is replaced by the value of the `language` variable." }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60;
+        const MAX_HISTORY_ITEMS = 5;
+        const SCORE_HISTORY_KEY = 'rubyBasicsQuizScoreHistory'; // Changed Key
+        const QUIZ_STATE_KEY = 'rubyBasicsQuizState'; // Changed Key
+
+        // --- DOM Elements ---
+        // (DOM element references remain the same as they target the HTML structure)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+
+        // --- State Variables ---
+        // (State variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        // (Helper functions `shuffleArray`, `formatTime` remain the same)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        // (Dark Mode logic remains the same)
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight AFTER theme change, slight delay helps sometimes
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50);
+             }
+        }
+
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // (Logic remains the same, uses updated QUIZ_STATE_KEY)
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress quiz state is incompatible/invalid.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress quiz state cleared.");
+        }
+
+
+        // --- Local Storage: SCORE HISTORY ---
+        // (Logic remains the same, uses updated SCORE_HISTORY_KEY)
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        // (Logic remains the same)
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        // (Core quiz flow logic remains the same)
+        function startQuiz() {
+             if (loadState()) {
+                 console.log("Resuming quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 console.log("Initializing a new quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true;
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            saveState();
+        }
+
+        function loadQuestion(index) {
+            // (Load question logic remains, but uses the new Ruby quizData)
+            // (Crucially, Prism highlighting needs to work for 'language-ruby')
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 // Use language-ruby for Prism.js
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 code.className = 'language-ruby'; // Important for Ruby highlighting
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      // Use highlightElement for dynamically added code
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        // (selectOption, showFeedback, updateProgress, updateNavigation, nextQuestion, prevQuestion logic remains the same)
+         function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState();
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled');
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1;
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Highlight the actual correct option if the user was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     // Also highlight the correct answer if the user picked wrong, even if this isn't the selected one
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+            // Remove animation classes after a delay
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer only when prev is visible
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Disable next/submit if current question hasn't been answered
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) submitBtn.disabled = !currentAnswerSelected;
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to next question
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to previous question
+            }
+        }
+
+        // --- Timer ---
+        // (Timer logic remains the same)
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!quizActive) return;
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) { submitQuiz(true); } // Auto-submit only if quiz was active
+                    return;
+                }
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+
+                 // Periodic save state during the quiz
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); }
+            };
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+
+        // --- Submit and Results ---
+        // (Submit logic remains the same, calculates based on new quizData)
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return; // Prevent double submission
+            quizActive = false; // Mark quiz as inactive
+            clearInterval(timerInterval);
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            // Add attempt to score history
+            addScoreToHistory({
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: parseFloat(accuracy.toFixed(1)),
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            });
+
+            // --- UI Updates for Results Screen ---
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Re-trigger animation
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            // Animate accuracy bar
+            accuracyBar.style.width = `0%`; // Reset first for animation effect
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); // Apply width after short delay
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Performance Message & Score Circle Style
+            let performanceText = "";
+            let scoreLevel = 'low'; // Default: low
+            if (timeUp) {
+                performanceText = "Time's up! Let's review your Ruby knowledge.";
+                 if (accuracy >= 85) scoreLevel = 'high'; else if (accuracy >= 60) scoreLevel = 'medium';
+            } else {
+                if (accuracy >= 95) { performanceText = "Outstanding! Ruby Master!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent work! Strong grasp of Ruby basics."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! You're well on your way."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Keep practicing those Ruby fundamentals."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep studying! Review the answers and try again."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel); // Apply attribute for styling
+
+            // Trigger confetti for high scores (if not timed out)
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState(); // Clear the IN-PROGRESS quiz state after successful submission
+        }
+
+        // (Confetti logic remains the same)
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return;
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 });
+             // Add a couple more bursts for fun
+             setTimeout(() => {
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 200);
+         }
+
+
+        // --- Review Screen ---
+        // (Review logic remains the same, renders based on new quizData and userAnswers)
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+             // Re-trigger animation
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth; // Trigger reflow
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review items
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 // Add appropriate classes for styling correct/incorrect review items
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 bg-green-50 dark:bg-green-900/30 dark:border-green-600'
+                     : 'border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-600'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  // Add code snippet if it exists for the question
+                  if (question.code) {
+                      // Ensure HTML entities are escaped if needed, though textContent usually handles this
+                      const escapedCode = question.code; //.replace(/</g, "<").replace(/>/g, ">");
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-ruby">${escapedCode}</code></pre>`;
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+
+                      // Style the correct answer
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; // Correct icon
+                      }
+
+                      // Style the user's answer
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              // User's answer was correct
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              // User's answer was incorrect
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; // Style as incorrect
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; // Incorrect icon
+                          }
+                      } else if (i !== question.correctAnswer && userAnswerIndex === null){
+                          // Option wasn't selected and wasn't correct (and user didn't answer) - neutral style
+                          liClass = "text-gray-500 dark:text-gray-500";
+                      } else if (i !== question.correctAnswer) {
+                          // Option wasn't selected and isn't the correct one - neutral style
+                           liClass = "text-gray-700 dark:text-gray-300";
+                      }
+
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${optionText}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+
+                 reviewHTML += `</ul>`;
+
+                 // Add explanation if available
+                 if (question.explanation) {
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                        <strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                    </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             // Re-run Prism highlighting for the dynamically added code blocks in review
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        // (showResultsScreen logic remains the same)
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+             // Re-trigger animation
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+
+        // --- Restart ---
+        // (Restart logic remains the same)
+        function restartQuiz() {
+             // Reset state variables (except scoreHistory)
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            questionsOrder = [];
+            timeElapsed = 0;
+            quizActive = false;
+            clearInterval(timerInterval);
+
+            // Reset UI elements
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = '';
+
+            // Hide quiz/results/review, show start screen
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            // Re-trigger start screen animation
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; // Trigger reflow
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+
+            // Reset buttons state
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Ensure spacer is correct on restart
+
+            // Refresh score history display on the start screen
+            displayScoreHistory();
+            console.log("Quiz reset.");
+        }
+
+        // --- Sharing ---
+        // (Sharing logic remains, text updated)
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Ruby Basics Quiz! Test your knowledge!`; // Changed text
+             const shareUrl = window.location.href; // Or a specific URL for the quiz
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My Ruby Quiz Result!', // Changed Title
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Result shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Fallback to clipboard copy if share fails (e.g., user cancels)
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 // Fallback for browsers that don't support navigator.share
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        // (copyToClipboard logic remains the same)
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!");
+             })
+             .catch(err => {
+                 console.error('Could not copy text: ', err);
+                 alert("Failed to copy results. You may need to copy manually.");
+             });
+         }
+
+        // --- Event Listeners ---
+        // (Event listeners remain the same)
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Ensure it passes false for manual submit
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+        // (Keyboard navigation logic remains the same)
+         document.addEventListener('keydown', (e) => {
+             // Only activate if the relevant element is focused
+             if (quizContainer.style.display === 'block') { // Quiz is active
+                 if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+             } else if (startScreen.style.display === 'block') { // On start screen
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (resultsContainer.style.display === 'block') { // On results screen
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (reviewContainer.style.display === 'block') { // On review screen
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+        // --- Initial Application Load ---
+        // (Initialization logic remains the same)
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory();
+            displayScoreHistory();
+
+            // Ensure only start screen is visible initially
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            // Reset button states just in case
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+
+            console.log("Ruby Basics Quiz application initialized.");
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

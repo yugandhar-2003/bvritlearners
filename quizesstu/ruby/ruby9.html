@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Changed Title -->
+    <title>Ruby Advanced Features & Best Practices Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* --- Styles adjusted for Emerald/Green theme --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-start: #059669; /* emerald-600 */
+            --primary-end: #10b981;   /* emerald-500 */
+            --primary-dark-start: #064e3b; /* emerald-900 */
+            --primary-dark-end: #065f46;   /* emerald-800 */
+            --accent-light: #34d399; /* emerald-400 */
+            --accent-dark: #6ee7b7;  /* emerald-300 */
+            --correct-light: #22c55e; /* green-500 */
+            --correct-dark: #4ade80;  /* green-400 */
+            --incorrect-light: #ef4444; /* red-500 */
+            --incorrect-dark: #f87171;  /* red-400 */
+            --secondary-bg-light: #d1fae5; /* emerald-100 */
+            --secondary-border-light: #a7f3d0; /* emerald-200 */
+            --secondary-text-light: #047857; /* emerald-700 */
+            --secondary-bg-dark: #374151; /* gray-700 */
+            --secondary-border-dark: #4b5563; /* gray-600 */
+            --secondary-text-dark: #e5e7eb; /* gray-200 */
+        }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%); min-height: 100vh; position: relative; overflow-x: hidden; transition: background-color 0.3s ease; }
+        body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 40px 40px; z-index: 0; pointer-events: none; }
+        html.dark body { background: linear-gradient(135deg, var(--primary-dark-start) 0%, var(--primary-dark-end) 100%); }
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; color: #1f2937; }
+        html.dark .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #f3f4f6; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; }
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; color: #374151; }
+        html.dark .option { background-color: rgba(55, 65, 81, 0.6); border-color: rgba(255, 255, 255, 0.2); color: #d1d5db; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(52, 211, 153, 0.5); } /* emerald-400 semi-transparent */
+        html.dark .option:hover:not(.disabled):not(.selected) { background: rgba(75, 85, 99, 0.8); border-color: rgba(255, 255, 255, 0.4); }
+        .option.selected { border-color: var(--accent-light); background: linear-gradient(to right, rgba(52, 211, 153, 0.15), rgba(16, 185, 129, 0.15)); box-shadow: 0 4px 10px rgba(52, 211, 153, 0.2); }
+        html.dark .option.selected { background: rgba(110, 231, 183, 0.2); border-color: var(--accent-dark); color: #d1fae5; }
+        .option.correct { background: linear-gradient(to right, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15)) !important; border-color: var(--correct-light) !important; color: #14532d !important; cursor: default; transform: scale(1.02); }
+        html.dark .option.correct { background: rgba(74, 222, 128, 0.35) !important; border-color: var(--correct-dark) !important; color: #f0fdf4 !important; }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: var(--incorrect-light) !important; color: #7f1d1d !important; cursor: default; }
+        html.dark .option.incorrect { background: rgba(248, 113, 113, 0.3) !important; border-color: var(--incorrect-dark) !important; color: #fef2f2 !important; }
+        html.dark .option.incorrect.selected { color: #fef2f2 !important; box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3); }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: var(--accent-light); }
+        html.dark .explanation { background-color: rgba(30, 41, 59, 0.8); color: #d1d5db; border-left-color: var(--accent-dark); }
+        .review-item.correct .explanation { border-color: var(--correct-light); }
+        html.dark .review-item.correct .explanation { border-color: var(--correct-dark); }
+        .review-item.incorrect .explanation { border-color: var(--incorrect-light); }
+        html.dark .review-item.incorrect .explanation { border-color: var(--incorrect-dark); }
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #282a36; border: 1px solid #44475a; font-size: 0.9em; color: #f8f8f2; }
+        html.dark .code-snippet-container { background-color: #1e293b; color: #e5e7eb; border: 1px solid #374151; }
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+        html.dark .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #047857, #059669); } /* Darker emerald */
+        html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #065f46, #047857); }
+        .btn-secondary { background-color: var(--secondary-bg-light); color: var(--secondary-text-light); border: 1px solid var(--secondary-border-light); }
+        html.dark .btn-secondary { background-color: var(--secondary-bg-dark); color: var(--secondary-text-dark); border: 1px solid var(--secondary-border-dark); }
+        .btn-secondary:hover:not(:disabled) { background-color: #a7f3d0; } /* emerald-200 */
+        html.dark .btn-secondary:hover:not(:disabled) { background-color: #4b5563; }
+        .btn-submit { background: linear-gradient(to right, var(--correct-light), #15803d); color: white; }
+        html.dark .btn-submit { background: linear-gradient(to right, var(--correct-light), #15803d); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #16a34a, #14532d); }
+        html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #16a34a, #166534); }
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, var(--accent-light), var(--primary-start)); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        html.dark .progress-bar { background: linear-gradient(to right, var(--accent-dark), var(--primary-start)); }
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d1fae5, #a7f3d0) 1; } /* emerald-100/200 */
+        html.dark #score-circle { background-color: #1f2937; border: 6px solid transparent; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-light), #15803d) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-dark), var(--correct-light)) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-light), #b91c1c) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-dark), var(--incorrect-light)) 1; }
+        #score-value { color: var(--primary-start); }
+        html.dark #score-value { color: var(--accent-dark); }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(30, 41, 59, 0.3)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #f59e0b !important; border-color: #f59e0b !important; }
+        html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+        .option:focus, .btn:focus, button:focus { outline: 2px solid var(--primary-start); outline-offset: 2px; }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: var(--accent-dark); }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; color: #1f2937;}
+        html.dark .history-score { color: #f3f4f6; }
+        .history-date { font-size: 0.8rem; color: #4b5563; }
+        html.dark .history-date { color: #9ca3af; }
+        /* Adjust theme text colors */
+        html:not(.dark) .text-emerald-900 { color: #064e3b; }
+        html:not(.dark) .text-emerald-700 { color: #047857; }
+        html:not(.dark) .bg-emerald-50 { background-color: #ecfdf5; border-color: #d1fae5;}
+        html:not(.dark) .text-emerald-600 { color: #059669; }
+        html:not(.dark) .text-emerald-800 { color: #065f46; }
+        html.dark .text-emerald-900 { color: #a7f3d0; } /* Lighter emerald for dark */
+        html.dark .text-emerald-700 { color: #6ee7b7; }
+        html.dark .bg-emerald-50 { background-color: #1e293b;} /* slate-800 */
+        html.dark .text-emerald-600 { color: #6ee7b7; }
+        /* Prism Okaidia light mode adjustments */
+        html:not(.dark) .code-snippet-container code[class*="language-"] { color: #f8f8f2; }
+        html:not(.dark) .code-snippet-container .token.comment { color: #6272a4; }
+        html:not(.dark) .code-snippet-container .token.string { color: #f1fa8c; }
+        html:not(.dark) .code-snippet-container .token.keyword { color: #ff79c6; }
+        html:not(.dark) .code-snippet-container .token.number, html:not(.dark) .code-snippet-container .token.boolean, html:not(.dark) .code-snippet-container .token.constant, html:not(.dark) .code-snippet-container .token.symbol { color: #bd93f9; }
+        html:not(.dark) .code-snippet-container .token.function, html:not(.dark) .code-snippet-container .token.class-name { color: #50fa7b; }
+        html:not(.dark) .code-snippet-container .token.operator, html:not(.dark) .code-snippet-container .token.punctuation { color: #f8f8f2; }
+        html:not(.dark) .code-snippet-container .token.variable { color: #8be9fd; }
+        /* Explanation text colors */
+        html:not(.dark) .explanation .text-sm { color: #1f2937; }
+        html:not(.dark) .explanation strong { color: #065f46; } /* emerald-800 */
+        html.dark .explanation strong { color: var(--accent-dark); }
+        /* Review item text colors */
+        html:not(.dark) .review-item p, html:not(.dark) .review-item li { color: #1f2937; }
+        html.dark .review-item p, html.dark .review-item li { color: #e5e7eb; }
+        html:not(.dark) .review-item li.text-green-700 { color: #14532d !important; }
+        html.dark .review-item li.text-green-700 { color: var(--correct-dark); }
+        html:not(.dark) .review-item li.text-red-700 { color: #7f1d1d !important; }
+        html.dark .review-item li.text-red-700 { color: var(--incorrect-dark); }
+        html:not(.dark) .review-item li.bg-green-100 { background-color: #dcfce7 !important; ring-color: #86efac !important;}
+        html.dark .review-item li.bg-green-100 { background-color: rgba(74, 222, 128, 0.2); ring-color: rgba(74, 222, 128, 0.5); }
+        html:not(.dark) .review-item ul li span.text-gray-500 {color: #6b7280;}
+        html.dark .review-item ul li span.text-gray-500 {color: #9ca3af;}
+        html.dark .review-item ul li .fa-check { color: var(--correct-dark); }
+        html.dark .review-item ul li .fa-times { color: var(--incorrect-dark); }
+        /* Start Screen colors */
+        html:not(.dark) #start-screen h2 { color: #065f46; } /* emerald-800 */
+        html.dark #start-screen h2 { color: #a7f3d0; } /* emerald-200 */
+        html:not(.dark) #start-screen p { color: #374151; }
+        html.dark #start-screen p { color: #d1d5db; }
+        html:not(.dark) #score-history-area h3 { color: #064e3b; } /* emerald-900 */
+        html.dark #score-history-area h3 { color: #6ee7b7; } /* emerald-300 */
+        html:not(.dark) .history-item span.text-gray-600 { color: #4b5563; }
+        html.dark .history-item span.text-gray-600 { color: #d1d5db; }
+        /* Results Screen colors */
+        html:not(.dark) #results-container h2 { color: #065f46; } /* emerald-800 */
+        html.dark #results-container h2 { color: #a7f3d0; } /* emerald-200 */
+        html:not(.dark) #score-circle .text-gray-500 { color: #6b7280; }
+        html.dark #score-circle .text-gray-500 { color: #9ca3af; }
+        html:not(.dark) #accuracy-value { color: #1f2937; }
+        html.dark #accuracy-value { color: #f3f4f6; }
+        html:not(.dark) #time-taken { color: #1f2937; }
+        html.dark #time-taken { color: #f3f4f6; }
+        html:not(.dark) #performance-message { color: #374151; }
+        html.dark #performance-message { color: #d1d5db; }
+        html:not(.dark) .bg-emerald-50 { background-color: #ecfdf5; border-color: #d1fae5;}
+        html.dark .bg-emerald-50 { background-color: #1e293b;}
+        html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+        html.dark .review-item.correct { border-color: var(--correct-dark); }
+        html.dark .review-item.incorrect { border-color: var(--incorrect-dark); }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- Changed Heading -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Ruby Advanced Features & Best Practices Quiz</h1>
+            <!-- Changed Subheading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Explore metaprogramming, reflection, testing, and idiomatic Ruby!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- Changed Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-emerald-900 dark:text-emerald-200">Ready for Advanced Ruby Concepts?</h2>
+            <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers metaprogramming, reflection, GC basics, idiomatic style, and testing.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- Changed Text -->
+                <h3 class="text-lg font-semibold mb-3 text-emerald-800 dark:text-emerald-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/N</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                 <!-- Changed text color class -->
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-emerald-900 dark:text-emerald-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- Changed text color class -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-emerald-900 dark:text-emerald-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                         <!-- Changed text color class -->
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-emerald-700 dark:text-emerald-300">0/N</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                         <!-- Use correct/green gradient for accuracy -->
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                     <!-- Changed background/border colors -->
+                    <div class="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-100 dark:border-emerald-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep sharpening your Ruby skills!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- Changed text color class -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-emerald-900 dark:text-emerald-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // ==============================================================
+        // === NEW RUBY ADVANCED FEATURES & BEST PRACTICES QUIZ DATA ===
+        // ==============================================================
+        const quizData = [
+            // --- Metaprogramming ---
+            {
+                question: "What does the `send` method allow you to do in Ruby?",
+                options: ["Send emails from a script", "Invoke a method on an object dynamically using its name (as a string or symbol)", "Send data over a network socket", "Send signals to operating system processes"],
+                correctAnswer: 1,
+                explanation: "`object.send(:method_name, arg1, arg2)` allows you to call a method whose name is determined at runtime. It bypasses `private` and `protected` restrictions by default (use `public_send` to respect visibility)."
+            },
+            {
+                question: "Which metaprogramming method is used to define a new method on a class or module dynamically?",
+                code: "class Greeter\n  # How to define a method 'say_hi' here dynamically?\nend",
+                options: ["`create_method`", "`define_method`", "`method_add`", "`build_method`"],
+                correctAnswer: 1,
+                explanation: "`define_method(method_name_symbol) { |args| ... block ... }` allows you to programmatically create instance methods within a class or module definition."
+            },
+            {
+                question: "What is the primary purpose of implementing `method_missing` in a class?",
+                options: ["To catch typos when calling methods", "To provide default behavior for undefined methods", "To automatically define missing methods", "To raise a specific error for missing methods"],
+                correctAnswer: 1,
+                explanation: "`method_missing(method_name, *args, &block)` is a hook that gets called when you try to invoke a method on an object that isn't explicitly defined. It allows you to handle such calls dynamically, often used for creating flexible APIs or DSLs."
+            },
+             {
+                question: "When using `define_method`, how does the defined method access instance variables of the object?",
+                options: ["It cannot access instance variables", "Only through `self.instance_variable_get`", "Directly using `@variable_name`, thanks to closures", "By passing them explicitly as arguments"],
+                correctAnswer: 2,
+                explanation: "The block passed to `define_method` acts as a closure. It captures the surrounding scope, including `self`, allowing direct access to instance variables (`@ivar`) just like a normally defined method."
+            },
+            // --- Introspection & Reflection ---
+             {
+                question: "Which method can you call on any Ruby object to find out its class?",
+                options: ["`object.type`", "`object.kind`", "`object.class`", "`object.category`"],
+                correctAnswer: 2,
+                explanation: "`object.class` returns the Class object that the `object` is an instance of."
+            },
+             {
+                question: "How can you get an array of symbols representing all the public methods available to an object `obj`?",
+                options: ["`obj.list_methods`", "`obj.public_methods`", "`obj.available_methods`", "`obj.callable`"],
+                correctAnswer: 1,
+                explanation: "`obj.public_methods` returns an array of symbols for all public methods callable on `obj`, including inherited ones. You can pass `false` (`obj.public_methods(false)`) to get only methods defined directly in the object's class."
+            },
+            {
+                question: "What method checks if an object `obj` can respond to a specific method call, e.g., `:calculate`?",
+                options: ["`obj.can?(:calculate)`", "`obj.has_method?(:calculate)`", "`obj.responds_to?(:calculate)`", "`obj.callable?(:calculate)`"],
+                correctAnswer: 2, // responds_to? is deprecated, use respond_to?
+                explanation: "`obj.respond_to?(:method_name)` checks if the object has a public method with the given name (symbol or string) without actually calling it. It's useful for duck typing."
+             },
+            {
+                question: "How can you retrieve the value of an instance variable `@name` from an object `obj` from *outside* the object's class definition (reflection)?",
+                options: ["`obj.@name` (direct access)", "`obj.instance_variable_get(:@name)`", "`obj.get_ivar('@name')`", "It's impossible without an attr_reader"],
+                correctAnswer: 1,
+                explanation: "`instance_variable_get` is a reflection method that allows accessing an object's instance variable directly using its name (as a symbol or string), bypassing normal encapsulation (use with caution!)."
+            },
+            // --- Memory Management & GC ---
+            {
+                question: "What is the general principle behind Ruby's garbage collection (GC)?",
+                options: ["Manually freeing memory with `free()`", "Reference counting only", "Mark and Sweep (or variations thereof)", "Memory is never freed, only recycled"],
+                correctAnswer: 2,
+                explanation: "Most modern Ruby implementations (like MRI) use a 'Mark and Sweep' garbage collector (often with generational or incremental improvements). It marks objects reachable from roots (globals, stack) and then 'sweeps' away unmarked (unreachable) objects to free memory."
+            },
+             {
+                question: "In Ruby, when are most objects typically allocated memory?",
+                options: ["On the stack", "In global static memory", "On the heap", "Directly in CPU registers"],
+                correctAnswer: 2,
+                explanation: "Ruby objects are generally allocated on the heap, which is a region of memory managed by the Ruby interpreter and its garbage collector."
+            },
+             {
+                question: "What does it generally mean if an object is 'unreachable' in the context of GC?",
+                options: ["The object's file was deleted", "The object is marked as private", "There are no active references pointing to the object from the root set or other reachable objects", "The object has a `nil` value"],
+                correctAnswer: 2,
+                explanation: "The garbage collector identifies objects that can no longer be accessed by the running program (no variables or other live objects hold a reference to them). These unreachable objects are candidates for collection."
+            },
+            // --- Idiomatic Ruby ---
+            {
+                question: "What is the common Ruby convention for naming methods that return a boolean value (true/false)?",
+                options: ["Start with `is_` (e.g., `is_valid`)", "End with `?` (e.g., `valid?`)", "Use all caps (e.g., `VALID`)", "No specific convention"],
+                correctAnswer: 1,
+                explanation: "Methods primarily intended to return `true` or `false` (predicates) conventionally end with a question mark (`?`), like `empty?`, `nil?`, `include?`."
+            },
+             {
+                question: "What does a method name ending with an exclamation mark (`!`), like `save!`, usually signify in Ruby?",
+                options: ["The method is very important", "The method modifies the object it's called on (mutating) OR raises an error on failure", "The method returns a boolean", "The method is private"],
+                correctAnswer: 1,
+                explanation: "The bang (`!`) suffix often indicates either that the method modifies the receiver object in place (mutating, like `sort!`) or that it has a non-bang counterpart and the bang version will raise an exception on failure instead of returning `nil` or `false` (e.g., `find_by!` vs `find_by`)."
+            },
+             {
+                question: "Which approach is generally considered more idiomatic in Ruby for iterating over an array `arr` and performing an action?",
+                options: ["`for i in 0...arr.length do ... end`", "`arr.each { |item| ... }`", "`while i < arr.size do ... i += 1 end`", "`loop { ... break if ... }`"],
+                correctAnswer: 1,
+                explanation: "Using iterator methods like `each`, `map`, `select`, `reject`, etc., provided by the Enumerable module is highly idiomatic in Ruby. They are often more concise and expressive than traditional `for` or `while` loops."
+            },
+            {
+                question: "What is meant by 'implicit return' in Ruby methods?",
+                options: ["Methods always return `nil` unless specified", "The value of the last evaluated expression in a method is automatically returned", "You must use the `return` keyword for all return values", "Methods can only return one value"],
+                correctAnswer: 1,
+                explanation: "In Ruby, the `return` keyword is optional. If omitted, the result of the last expression evaluated within the method body is automatically used as the method's return value."
+            },
+            // --- Testing (RSpec/Minitest) ---
+            {
+                question: "What is the main purpose of testing frameworks like RSpec and Minitest?",
+                options: ["To automatically generate code", "To verify that code behaves as expected and prevent regressions", "To optimize code performance", "To provide documentation only"],
+                correctAnswer: 1,
+                explanation: "Testing frameworks provide tools and structure to write automated tests that assert the expected behavior of code units (methods, classes). This helps ensure correctness and catch errors introduced by changes (regressions)."
+            },
+            {
+                question: "In RSpec, what are the typical keywords used to group related tests and define individual test cases?",
+                options: ["`test_suite` and `test_case`", "`group` and `assert`", "`describe`/`context` and `it`", "`module` and `test`"],
+                correctAnswer: 2,
+                explanation: "`describe` (or its alias `context`) is used to group tests for a specific class or feature. `it` is used to define an individual test example or specification, describing what behavior is being tested."
+            },
+            {
+                question: "In Minitest (spec style), what keywords often correspond to RSpec's `describe` and `it`?",
+                options: ["`feature` and `scenario`", "`describe` and `it`", "`test` and `check`", "`class` and `def test_`"],
+                correctAnswer: 1, // Minitest::Spec uses describe/it
+                explanation: "Minitest's spec DSL (`Minitest::Spec`) intentionally mimics RSpec's structure, using `describe` blocks to group tests and `it` blocks for individual test cases." // Note: Minitest::Test uses class/def test_ methods.
+            },
+             {
+                question: "What is the role of `expect` (RSpec) or `assert` (Minitest) in a test?",
+                options: ["To set up test data", "To execute the code being tested", "To make a claim about the result of the code execution", "To clean up after the test"],
+                correctAnswer: 2,
+                explanation: "Assertions (`expect(...).to matcher` in RSpec, `assert_equal expected, actual` etc. in Minitest) are the core of a test. They check if the actual outcome of running the code matches the expected outcome."
+            },
+            {
+                question: "What does 'Red-Green-Refactor' refer to in test-driven development (TDD)?",
+                options: ["Code color highlighting in editors", "A specific testing framework", "A cycle: Write a failing test (Red), write code to make it pass (Green), improve the code (Refactor)", "A project management methodology"],
+                correctAnswer: 2,
+                explanation: "Red-Green-Refactor is the core cycle of TDD: 1. Write a test that fails because the feature isn't implemented (Red). 2. Write the minimum code necessary to make the test pass (Green). 3. Improve the code's design, clarity, or performance while ensuring tests still pass (Refactor)."
+            }
+        ];
+
+        const TIME_LIMIT_SECONDS = 18 * 60; // 18 minutes (slightly longer for advanced topics)
+        const MAX_HISTORY_ITEMS = 5;
+        // === UPDATED LOCAL STORAGE KEYS ===
+        const SCORE_HISTORY_KEY = 'rubyAdvancedQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'rubyAdvancedQuizState';
+
+        // --- DOM Elements ---
+        // (References remain the same)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        // (Variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        // (shuffleArray, formatTime remain the same)
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+        function formatTime(seconds) { const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
+
+        // --- Dark Mode ---
+        // (applyDarkMode remains the same)
+        function applyDarkMode(isDark) { const icon = darkModeToggle.querySelector('i'); if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); } else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); } if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 50); } }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // (saveState, loadState, clearState remain the same, use new QUIZ_STATE_KEY)
+        function saveState() { if (!quizActive) return; try { const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true }; localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); } catch (e) { console.error("Failed to save quiz state:", e); } }
+        function loadState() { const savedState = localStorage.getItem(QUIZ_STATE_KEY); if (savedState) { try { const state = JSON.parse(savedState); if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) { currentQuestionIndex = state.currentQuestionIndex || 0; userAnswers = state.userAnswers; timeElapsed = state.timeElapsed || 0; questionsOrder = state.questionsOrder; quizActive = true; console.log("In-progress Advanced Ruby quiz state loaded."); return true; } else { console.warn("Saved Advanced Ruby quiz state invalid."); clearState(); return false; } } catch (e) { console.error("Failed to parse Advanced Ruby quiz state:", e); clearState(); return false; } } return false; }
+        function clearState() { localStorage.removeItem(QUIZ_STATE_KEY); console.log("In-progress Advanced Ruby quiz state cleared."); }
+
+        // --- Local Storage: SCORE HISTORY ---
+        // (loadScoreHistory, saveScoreHistory, addScoreToHistory, clearScoreHistory remain the same, use new SCORE_HISTORY_KEY)
+        function loadScoreHistory() { try { const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); scoreHistory = historyJson ? JSON.parse(historyJson) : []; if (!Array.isArray(scoreHistory)) scoreHistory = []; } catch (e) { console.error("Failed to load score history:", e); scoreHistory = []; } }
+        function saveScoreHistory() { try { const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); } catch (e) { console.error("Failed to save score history:", e); } }
+        function addScoreToHistory(attemptData) { scoreHistory.push(attemptData); if (scoreHistory.length > MAX_HISTORY_ITEMS) { scoreHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); } saveScoreHistory(); displayScoreHistory(); }
+        function clearScoreHistory() { if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) { scoreHistory = []; localStorage.removeItem(SCORE_HISTORY_KEY); displayScoreHistory(); console.log("Score history cleared."); } }
+
+        // --- UI: Display Score History ---
+        // (displayScoreHistory remains the same)
+        function displayScoreHistory() { scoreHistoryList.innerHTML = ''; if (scoreHistory.length === 0) { scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`; clearHistoryBtn.classList.add('hidden'); } else { const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); sortedHistory.forEach(attempt => { const item = document.createElement('div'); item.className = 'history-item'; const date = new Date(attempt.timestamp); const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }); item.innerHTML = `<div class="flex-grow pr-4"><span class="history-score">${attempt.score}/${attempt.totalQuestions}</span> <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span></div><div class="history-date text-right">${formattedDate}<br>${formattedTime}</div>`; scoreHistoryList.appendChild(item); }); clearHistoryBtn.classList.remove('hidden'); } }
+
+        // --- Quiz Logic ---
+        // (startQuiz remains the same)
+        function startQuiz() { if (loadState()) { console.log("Resuming Advanced Ruby quiz."); startTime = Date.now() - (timeElapsed * 1000); } else { console.log("Initializing new Advanced Ruby quiz."); currentQuestionIndex = 0; score = 0; userAnswers = Array(quizData.length).fill(null); timeElapsed = 0; questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder); startTime = Date.now(); quizActive = true; } startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; quizContainer.style.display = 'block'; loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); if(!loadState()) saveState(); }
+
+        // (loadQuestion remains the same, uses language-ruby)
+        function loadQuestion(index) { if (index < 0 || index >= quizData.length) return; const questionIndexInOriginalData = questionsOrder[index]; const question = quizData[questionIndexInOriginalData]; if (!question) return; questionCard.classList.remove('animate__animated', 'animate__fadeInUp'); void questionCard.offsetWidth; questionCard.classList.add('animate__animated', 'animate__fadeInUp'); questionText.textContent = `${index + 1}. ${question.question}`; feedbackMessage.textContent = ''; codeSnippetArea.innerHTML = ''; if (question.code) { const pre = document.createElement('pre'); pre.className = 'code-snippet-container'; const code = document.createElement('code'); code.className = 'language-ruby'; code.textContent = question.code; pre.appendChild(code); codeSnippetArea.appendChild(pre); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightElement(code), 0); } } optionsContainer.innerHTML = ''; const selectedAnswerIndex = userAnswers[index]; question.options.forEach((optionText, optionIndex) => { const optionElement = document.createElement('div'); optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700'; optionElement.setAttribute('role', 'radio'); optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false'); optionElement.tabIndex = 0; const label = document.createElement('span'); label.className = 'flex-grow mr-4'; label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`; const feedbackIconContainer = document.createElement('span'); feedbackIconContainer.className = 'feedback-icon text-xl'; feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect" style="opacity: 0;"></i>`; optionElement.appendChild(label); optionElement.appendChild(feedbackIconContainer); const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } }; optionElement.addEventListener('click', handleSelection); optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } }); optionsContainer.appendChild(optionElement); }); if (selectedAnswerIndex !== null) { showFeedback(index, selectedAnswerIndex); } else { nextBtn.disabled = true; if (index === quizData.length - 1) submitBtn.disabled = true; } updateProgress(index); updateNavigation(); }
+
+        // (selectOption, showFeedback, updateProgress, updateNavigation, nextQuestion, prevQuestion remain the same)
+        function selectOption(displayIndex, selectedOptionIndex) { if (userAnswers[displayIndex] !== null) return; userAnswers[displayIndex] = selectedOptionIndex; showFeedback(displayIndex, selectedOptionIndex); nextBtn.disabled = false; if (displayIndex === quizData.length - 1) { submitBtn.disabled = false; } saveState(); }
+        function showFeedback(displayIndex, selectedOptionIndex) { const originalQuestionIndex = questionsOrder[displayIndex]; const question = quizData[originalQuestionIndex]; const isCorrect = selectedOptionIndex === question.correctAnswer; const options = optionsContainer.querySelectorAll('.option'); options.forEach((optElement, currentOptionIndex) => { optElement.classList.add('disabled'); optElement.style.cursor = 'default'; optElement.tabIndex = -1; const iconCorrect = optElement.querySelector('.icon-correct'); const iconIncorrect = optElement.querySelector('.icon-incorrect'); if (iconCorrect) iconCorrect.style.opacity = '0'; if (iconIncorrect) iconIncorrect.style.opacity = '0'; if (currentOptionIndex === selectedOptionIndex) { optElement.classList.add('selected'); optElement.setAttribute('aria-checked', 'true'); if (isCorrect) { optElement.classList.add('correct'); if (iconCorrect) iconCorrect.style.opacity = '1'; feedbackMessage.textContent = "Correct!"; feedbackMessage.className = 'mt-5 text-center font-medium text-[var(--correct-light)] dark:text-[var(--correct-dark)] animate__animated animate__pulse'; } else { optElement.classList.add('incorrect'); if (iconIncorrect) iconIncorrect.style.opacity = '1'; feedbackMessage.textContent = "Incorrect!"; feedbackMessage.className = 'mt-5 text-center font-medium text-[var(--incorrect-light)] dark:text-[var(--incorrect-dark)] animate__animated animate__shakeX'; const correctOptionElement = options[question.correctAnswer]; if (correctOptionElement) { correctOptionElement.classList.add('correct'); const correctOptIcon = correctOptionElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } } else { optElement.setAttribute('aria-checked', 'false'); if (currentOptionIndex === question.correctAnswer && !isCorrect) { optElement.classList.add('correct'); const correctOptIcon = optElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } }); setTimeout(() => { feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX'); }, 1000); }
+        function updateProgress(index) { const totalQuestions = quizData.length; const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0; progressBar.style.width = `${progress}%`; questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`; }
+        function updateNavigation() { const isFirstQuestion = currentQuestionIndex === 0; const isLastQuestion = currentQuestionIndex === quizData.length - 1; prevBtn.classList.toggle('hidden', isFirstQuestion); navSpacer.classList.toggle('hidden', !isFirstQuestion); nextBtn.classList.toggle('hidden', isLastQuestion); submitBtn.classList.toggle('hidden', !isLastQuestion); const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null; nextBtn.disabled = !currentAnswerSelected; if (isLastQuestion) { submitBtn.disabled = !currentAnswerSelected; } }
+        function nextQuestion() { if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); } }
+        function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); } }
+
+        // --- Timer ---
+        // (startTimer remains the same, uses TIME_LIMIT_SECONDS)
+        function startTimer() { clearInterval(timerInterval); if (!quizActive) return; const updateTimerDisplay = () => { const now = Date.now(); timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed; if (timeRemaining <= 0) { timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`; timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); clearInterval(timerInterval); if(quizActive) { submitQuiz(true); } return; } timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`; timerElement.classList.toggle('timer-warning', timeRemaining <= 60); timerElement.classList.remove('text-red-500', 'dark:text-red-400'); if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); } }; updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000); }
+
+        // --- Submit and Results ---
+        // (submitQuiz updated with new performance messages)
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return;
+            quizActive = false;
+            clearInterval(timerInterval);
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            addScoreToHistory({ score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)), timestamp: Date.now(), timeTaken: finalTime });
+
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            timeTaken.textContent = formatTime(finalTime);
+
+            accuracyBar.style.width = `0%`;
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100);
+
+            let performanceText = "";
+            let scoreLevel = 'low';
+            if (timeUp) {
+                performanceText = "Time's up! Review Ruby's advanced features and testing practices.";
+                 if (accuracy >= 85) scoreLevel = 'high'; else if (accuracy >= 60) scoreLevel = 'medium';
+            } else {
+                 // === UPDATED Performance Messages for Advanced Ruby ===
+                if (accuracy >= 95) { performanceText = "Impressive! You wield Ruby's advanced features with skill!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent! Strong understanding of metaprogramming and idiomatic Ruby."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! You're comfortable with reflection and testing concepts."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Keep exploring metaprogramming and Ruby style."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep studying! Review `method_missing`, testing principles, and idiomatic patterns."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState();
+        }
+
+        // (triggerConfetti updated with new theme colors)
+        function triggerConfetti() {
+            if (typeof confetti !== 'function') return;
+            const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+            // Use new theme colors
+            const themeColors = ['#059669', '#10b981', '#34d399', '#a7f3d0', '#ffffff']; // Emerald theme
+            myConfetti({
+                particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000, colors: themeColors });
+             setTimeout(() => {
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300, colors: themeColors.slice(0, 4) });
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300, colors: themeColors.slice(1) });
+            }, 200);
+        }
+
+
+        // --- Review Screen ---
+        // (showReview remains the same, uses language-ruby)
+        function showReview() { resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block'; reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn'); reviewQuestions.innerHTML = ''; questionsOrder.forEach((originalQuestionIndex, displayIndex) => { const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer; const reviewItem = document.createElement('div'); reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ isCorrect ? 'border-[var(--correct-light)] bg-green-50 dark:bg-green-900/30 dark:border-[var(--correct-dark)]' : 'border-[var(--incorrect-light)] bg-red-50 dark:bg-red-900/30 dark:border-[var(--incorrect-dark)]' }`; let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`; if (question.code) { const codeElement = document.createElement('code'); codeElement.className = 'language-ruby'; codeElement.textContent = question.code; reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md">${codeElement.outerHTML}</pre>`; } reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`; question.options.forEach((optionText, i) => { let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = ""; if (i === question.correctAnswer) { liClass = "font-semibold text-[var(--correct-light)] dark:text-[var(--correct-dark)]"; iconHTML = `<i class="fas fa-check ml-2 text-[var(--correct-light)] dark:text-[var(--correct-dark)]"></i>`; } if (i === userAnswerIndex) { if (isCorrect) { liClass += " ring-1 ring-[var(--correct-light)] dark:ring-[var(--correct-dark)] rounded px-2 py-1 bg-green-100 dark:bg-green-800/50"; } else { liClass = "font-semibold text-[var(--incorrect-light)] dark:text-[var(--incorrect-dark)] line-through"; iconHTML = `<i class="fas fa-times ml-2 text-[var(--incorrect-light)] dark:text-[var(--incorrect-dark)]"></i>`; } } reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${optionText}</span>${iconHTML}</li>`; }); reviewHTML += `</ul>`; if (question.explanation) { reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700"><strong class="block mb-1 text-sm text-[var(--primary-start)] dark:text-[var(--accent-dark)]">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p></div>`; } reviewItem.innerHTML = reviewHTML; reviewQuestions.appendChild(reviewItem); }); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0); } }
+
+        // (showResultsScreen remains the same)
+        function showResultsScreen() { reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); }
+
+        // --- Restart ---
+        // (restartQuiz remains the same)
+        function restartQuiz() { currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; clearInterval(timerInterval); progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = ''; resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn'); nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.add('hidden'); displayScoreHistory(); console.log("Advanced Ruby Quiz reset."); }
+
+        // --- Sharing ---
+        // (shareResults updated with new sharing text)
+        async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // === UPDATED Sharing Text ===
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Ruby Advanced Features & Best Practices Quiz! Metaprogramming, testing, and more!`;
+             const shareUrl = window.location.href;
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         // === UPDATED Share Title ===
+                         title: 'My Advanced Ruby Quiz Result!',
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Result shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing using Web Share API:', err);
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 console.log('Web Share API not supported, falling back to clipboard.');
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        // (copyToClipboard remains the same)
+        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); }).catch(err => { console.error('Could not copy text: ', err); alert("Failed to copy results."); }); }
+
+        // --- Event Listeners ---
+        // (Listeners remain the same)
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+        // (Keyboard navigation remains the same)
+        document.addEventListener('keydown', (e) => { const isQuizActive = quizContainer.style.display === 'block'; const isStartActive = startScreen.style.display === 'block'; const isResultsActive = resultsContainer.style.display === 'block'; const isReviewActive = reviewContainer.style.display === 'block'; const activeElement = document.activeElement; const isInputFocused = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA'); if (isInputFocused) return; if (isQuizActive) { if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); } else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); } else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); } } else if (isStartActive) { if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); } else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); } } else if (isResultsActive) { if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); } else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); } else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); } } else if (isReviewActive) { if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); } } });
+
+        // --- Initial Application Load ---
+        // (initializeApp remains the same)
+        function initializeApp() { const savedDarkMode = localStorage.getItem('darkMode'); applyDarkMode(savedDarkMode === 'enabled'); loadScoreHistory(); displayScoreHistory(); quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); console.log("Ruby Advanced Features Quiz initialized."); }
+
+        // --- Run Initialization ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+
+
+
+

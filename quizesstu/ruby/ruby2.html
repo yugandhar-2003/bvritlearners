@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Changed Title -->
+    <title>Ruby Methods Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <!-- Using Okaidia theme which works well for Ruby too -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* --- Root Variables (Theme Colors) --- */
+        :root {
+            --primary-start: #7e22ce; /* purple-700 */
+            --primary-end: #be185d;   /* pink-700 */
+            --primary-dark-start: #1f2937; /* gray-800 */
+            --primary-dark-end: #374151;   /* gray-700 */
+
+            --accent-light: #a855f7; /* purple-500 */
+            --accent-dark: #d946ef;  /* fuchsia-500 */
+
+            --correct-light: #16a34a; /* green-600 */
+            --correct-dark: #4ade80;  /* green-400 */
+            --incorrect-light: #dc2626; /* red-600 */
+            --incorrect-dark: #f87171;  /* red-400 */
+
+            --secondary-bg-light: #f3e8ff; /* purple-50 */
+            --secondary-border-light: #e9d5ff; /* purple-200 */
+            --secondary-text-light: #6b21a8; /* purple-800 */
+            --secondary-bg-dark: #374151; /* gray-700 */
+            --secondary-border-dark: #4b5563; /* gray-600 */
+            --secondary-text-dark: #e5e7eb; /* gray-200 */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- Dark Mode Styles --- */
+        html.dark body {
+            background: linear-gradient(135deg, var(--primary-dark-start) 0%, var(--primary-dark-end) 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(55, 65, 81, 0.7); /* gray-700 */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb; /* gray-200 */
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb; /* gray-50 */
+         }
+         html.dark .option {
+             background-color: rgba(75, 85, 99, 0.6); /* gray-600 */
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db; /* gray-300 */
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(107, 114, 128, 0.8); /* gray-500 */
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         html.dark .option.selected {
+             background: rgba(217, 70, 239, 0.2); /* Using accent-dark derived color */
+             border-color: var(--accent-dark);
+             color: #fce7f3; /* Lighter pink text */
+         }
+         html.dark .option.correct {
+            background: rgba(74, 222, 128, 0.35) !important; /* correct-dark transparent */
+            border-color: var(--correct-dark) !important;
+            color: #f0fdf4 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(248, 113, 113, 0.3) !important; /* incorrect-dark transparent */
+            border-color: var(--incorrect-dark) !important;
+            color: #fef2f2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fef2f2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(55, 65, 81, 0.8); /* gray-700 */
+             color: #d1d5db; /* gray-300 */
+             border-left-color: var(--accent-dark);
+         }
+        html.dark .review-item.correct .explanation { border-color: var(--correct-dark); }
+        html.dark .review-item.incorrect .explanation { border-color: var(--incorrect-dark); }
+         html.dark .code-snippet-container {
+             background-color: #1f2937; /* gray-800 - Keep okaidia-like BG */
+             color: #f9fafb; /* gray-50 */
+             border: 1px solid #374151; /* gray-700 */
+         }
+          html.dark .btn-secondary {
+              background-color: var(--secondary-bg-dark);
+              color: var(--secondary-text-dark);
+              border: 1px solid var(--secondary-border-dark);
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563; /* gray-600 */
+          }
+          html.dark #score-circle {
+              background-color: #1f2937; /* gray-800 */
+              border: 6px solid transparent;
+          }
+          html.dark #score-value {
+              color: var(--accent-dark);
+          }
+           html.dark .text-gray-500 { color: #9ca3af; } /* gray-400 */
+           html.dark .text-gray-600 { color: #d1d5db; } /* gray-300 */
+           html.dark .text-gray-700 { color: #e5e7eb; } /* gray-200 */
+           html.dark .text-gray-800 { color: #f3f4f6; } /* gray-100 */
+           /* Adjusting "indigo" placeholders to Purple/Pink theme */
+           html.dark .text-indigo-900 { color: #c084fc; } /* purple-400 */
+           html.dark .text-indigo-700 { color: #d8b4fe; } /* purple-300 */
+           html.dark .bg-indigo-50 { background-color: #2d183f;} /* Dark purple */
+           html.dark .text-indigo-600 { color: #e879f9; } /* fuchsia-400 */
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(75, 85, 99, 0.4), rgba(55, 65, 81, 0.3)); /* gray-600/700 */
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb; /* gray-200 */
+           }
+           html.dark .timer-warning { color: #facc15 !important; border-color: #facc15 !important; } /* yellow-400 */
+           html.dark .history-date { color: #9ca3af; } /* gray-400 */
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+           html.dark .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+           html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #6b21a8, #a31452); } /* Slightly darker hover */
+           html.dark .btn-submit { background: linear-gradient(to right, var(--correct-light), #14532d); color: white; } /* green-600/900 */
+           html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #15803d, #166534); }
+           html.dark .progress-bar { background: linear-gradient(to right, var(--accent-dark), var(--primary-start)); }
+           html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-dark), var(--correct-light)) 1; }
+           html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #facc15, #fbbf24) 1; } /* yellow-400/500 */
+           html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-dark), var(--incorrect-light)) 1; }
+           html.dark .text-indigo-800 { color: #a855f7; } /* purple-500 */
+           html.dark .text-indigo-300 { color: #d8b4fe; } /* purple-300 */
+           html.dark .text-indigo-200 { color: #e9d5ff; } /* purple-200 */
+           html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+           html.dark .review-item.correct { border-color: var(--correct-dark); }
+           html.dark .review-item.incorrect { border-color: var(--incorrect-dark); }
+           html.dark .review-item ul li.text-green-700 { color: var(--correct-dark); }
+           html.dark .review-item ul li.text-red-700 { color: var(--incorrect-dark); }
+           html.dark .review-item ul li.bg-green-100 { background-color: rgba(74, 222, 128, 0.2); ring-color: rgba(74, 222, 128, 0.5); }
+           html.dark .review-item ul li .fa-check { color: var(--correct-dark); }
+           html.dark .review-item ul li .fa-times { color: var(--incorrect-dark); }
+           html.dark .review-item .explanation strong { color: var(--accent-dark); }
+           html.dark .review-item p {color: #d1d5db; } /* gray-300 */
+           html.dark .review-item ul li { color: #d1d5db;}
+           html.dark .review-item ul li span.text-gray-500 {color: #9ca3af;} /* gray-400 */
+
+        /* --- Light Mode Tweaks for Purple/Pink Theme --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            color: #374151; /* gray-700 text */
+        }
+         .option {
+             transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden;
+             border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer;
+             color: #4b5563; /* gray-600 */
+         }
+         .option:hover:not(.disabled):not(.selected) {
+             transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+             border-color: rgba(168, 85, 247, 0.5); /* purple-500 semi-transparent */
+         }
+         .option.selected {
+             border-color: var(--accent-light);
+             background: linear-gradient(to right, rgba(168, 85, 247, 0.15), rgba(190, 24, 93, 0.15)); /* purple/pink transparent */
+             box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
+         }
+         .option.correct {
+             background: linear-gradient(to right, rgba(22, 163, 74, 0.2), rgba(21, 128, 61, 0.15)) !important; /* green-600/700 */
+             border-color: var(--correct-light) !important;
+             color: #14532d !important; /* green-900 */
+             cursor: default; transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(220, 38, 38, 0.15), rgba(185, 28, 28, 0.15)) !important; /* red-600/700 */
+             border-color: var(--incorrect-light) !important;
+             color: #7f1d1d !important; /* red-900 */
+             cursor: default;
+         }
+         .btn {
+             position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px;
+             padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+             box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none;
+         }
+         .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+         .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+         .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+         .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+         .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #6b21a8, #a31452); } /* Slightly darker hover */
+         .btn-secondary { background-color: var(--secondary-bg-light); color: var(--secondary-text-light); border: 1px solid var(--secondary-border-light); }
+         .btn-secondary:hover:not(:disabled) { background-color: #e9d5ff; } /* purple-200 */
+         .btn-submit { background: linear-gradient(to right, var(--correct-light), #15803d); color: white; } /* green-600/700 */
+         .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #16a34a, #14532d); }
+
+         .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+         .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, var(--accent-light), var(--primary-start)); box-shadow: 0 0 15px rgba(126, 34, 206, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+         .results-container { display: none; animation: fadeIn 0.8s forwards; }
+         .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #f3e8ff, #e9d5ff) 1; /* purple-50/200 */ }
+         .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-light), #15803d) 1; } /* green-600/700 */
+         .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #facc15, #fbbf24) 1; } /* yellow-400/500 */
+         .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-light), #b91c1c) 1; } /* red-600/700 */
+         #score-value { color: var(--primary-start); } /* purple-700 Score */
+
+         .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: var(--accent-light); }
+         .review-item.correct .explanation { border-color: var(--correct-light); }
+         .review-item.incorrect .explanation { border-color: var(--incorrect-light); }
+         /* Code snippet container uses Prism okaidia, which is dark */
+         .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #282a36; border: 1px solid #44475a; font-size: 0.9em; color: #f8f8f2; }
+         html .code-snippet-container code[class*="language-"] { color: #f8f8f2; }
+         html .code-snippet-container .token.comment { color: #6272a4; }
+         html .code-snippet-container .token.string, html .code-snippet-container .token.char, html .code-snippet-container .token.builtin, html .code-snippet-container .token.inserted { color: #f1fa8c; } /* Yellow for strings in Ruby */
+         html .code-snippet-container .token.keyword { color: #ff79c6; } /* Pink for keywords */
+         html .code-snippet-container .token.function, html .code-snippet-container .token.class-name { color: #50fa7b; } /* Green for method names/classes */
+         html .code-snippet-container .token.punctuation { color: #f8f8f2; }
+         html .code-snippet-container .token.operator { color: #ff79c6; } /* Pink for operators */
+         html .code-snippet-container .token.constant, html .code-snippet-container .token.symbol { color: #bd93f9; } /* Purple for symbols/constants */
+         html .code-snippet-container .token.number { color: #bd93f9; } /* Purple for numbers */
+         html .code-snippet-container .token.variable { color: #8be9fd; } /* Cyan for variables */
+
+
+         .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+         .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+         .timer-warning { animation: pulseWarning 1.5s infinite; color: #f59e0b !important; border-color: #f59e0b !important; } /* amber-500 */
+         @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+         .option:focus, .btn:focus, button:focus { outline: 2px solid var(--primary-start); outline-offset: 2px; }
+         html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: var(--accent-dark); }
+         #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+         #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+         .history-item:last-child { border-bottom: none; }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; } /* gray-500 */
+         html.dark .history-score { color: #e5e7eb; } /* gray-200 */
+         html.dark .history-date { color: #9ca3af; } /* gray-400 */
+
+         /* --- Light Mode Text Color Overrides for Purple/Pink Theme --- */
+         /* Replacing "indigo" with purple/pink shades */
+         html:not(.dark) .text-indigo-900 { color: #581c87; } /* purple-900 */
+         html:not(.dark) .text-indigo-800 { color: #6b21a8; } /* purple-800 */
+         html:not(.dark) .text-indigo-700 { color: #7e22ce; } /* purple-700 */
+         html:not(.dark) .text-indigo-600 { color: #9333ea; } /* purple-600 */
+         html:not(.dark) .bg-indigo-50 { background-color: #f5f3ff; border-color: #ede9fe;} /* violet-50 / violet-100 */
+         html:not(.dark) .explanation strong { color: #7e22ce; } /* purple-700 */
+         html:not(.dark) .explanation .text-sm { color: #374151; } /* gray-700 */
+         html:not(.dark) .review-item p, html:not(.dark) .review-item li { color: #374151; } /* gray-700 */
+         html:not(.dark) .review-item li.text-green-700 { color: #14532d !important; } /* green-900 */
+         html:not(.dark) .review-item li.text-red-700 { color: #7f1d1d !important; } /* red-900 */
+         html:not(.dark) .review-item li.bg-green-100 { background-color: #dcfce7 !important; ring-color: #86efac !important;} /* green-100 / green-300 */
+         html:not(.dark) .review-item ul li span.text-gray-500 {color: #6b7280;} /* gray-500 */
+         /* Start Screen */
+         html:not(.dark) #start-screen h2 { color: #7e22ce; } /* purple-700 */
+         html:not(.dark) #start-screen p { color: #4b5563; } /* gray-600 */
+         html:not(.dark) #score-history-area h3 { color: #6b21a8; } /* purple-800 */
+         html:not(.dark) .history-item .history-score { color: #1f2937; } /* gray-800 */
+         html:not(.dark) .history-item span.text-gray-600 { color: #4b5563; } /* gray-600 */
+         html:not(.dark) .history-item .history-date { color: #6b7280; } /* gray-500 */
+         /* Results Screen */
+         html:not(.dark) #results-container h2 { color: #7e22ce; } /* purple-700 */
+         html:not(.dark) #score-value { color: var(--primary-start); }
+         html:not(.dark) #score-circle .text-gray-500 { color: #6b7280; } /* gray-500 */
+         html:not(.dark) #accuracy-value { color: #1f2937; } /* gray-800 */
+         html:not(.dark) #time-taken { color: #1f2937; } /* gray-800 */
+         html:not(.dark) #performance-message { color: #4b5563; } /* gray-600 */
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- Changed Heading -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Ruby Methods Quiz</h1>
+             <!-- Changed Subheading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Assess your knowledge of defining and using methods in Ruby!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- Changed Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Test Your Ruby Method Skills?</h2>
+            <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers definition, calling, parameters, return values, and scope.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- Changed Heading -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Ruby Methods Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                         <!-- Changed Text -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to improve your Ruby skills!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- Changed Heading -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Ruby Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <!-- Add Ruby language support for Prism -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // --- Ruby Methods Questions ---
+            // 1. Definition Syntax
+            {
+                question: "Which keywords are used to define a method in Ruby?",
+                options: ["function...end", "def...end", "method...end", "define...end"],
+                correctAnswer: 1,
+                explanation: "`def` is used to start a method definition, and `end` concludes it."
+            },
+            // 2. Basic Calling
+            {
+                question: "How do you call a simple method named `greet`?",
+                code: "def greet\n  puts \"Hello!\"\nend",
+                options: ["call greet()", "greet()", "greet", "run greet"],
+                correctAnswer: 2, // Parentheses often optional in Ruby for no-arg calls
+                explanation: "You call a method simply by using its name. Parentheses `()` are often optional if there are no arguments, so `greet` works."
+            },
+            // 3. Required Parameters
+            {
+                question: "How do you define a method `add` that requires two parameters, `a` and `b`?",
+                options: ["def add(a, b)", "def add a, b", "def add requires a, b", "def add(a) and (b)"],
+                correctAnswer: 0, // Both 0 and 1 are technically valid syntax, but (a, b) is more standard
+                explanation: "Parameters are listed within parentheses `()` after the method name, separated by commas. `def add a, b` is also valid but less common."
+            },
+            // 4. Calling with Arguments
+            {
+                question: "Given `def welcome(name)`, how would you call it with the name 'Alice'?",
+                code: "def welcome(name)\n  puts \"Welcome, #{name}!\"\nend",
+                options: ["welcome 'Alice'", "welcome('Alice')", "welcome name: 'Alice'", "Both A and B"],
+                correctAnswer: 3,
+                explanation: "You can pass arguments with or without parentheses. Both `welcome 'Alice'` and `welcome('Alice')` are valid ways to call the method."
+            },
+            // 5. Default Parameters
+            {
+                question: "How do you define a method `say` with a parameter `message` that defaults to 'Hi'?",
+                options: ["def say(message = 'Hi')", "def say(message: 'Hi')", "def say(message or 'Hi')", "def say(message default 'Hi')"],
+                correctAnswer: 0,
+                explanation: "Default values for positional parameters are assigned using the `=` operator within the parameter list."
+            },
+            // 6. Calling with Default Parameters (Using Default)
+            {
+                question: "If you have `def greet(name = 'Friend')`, what does `greet` (called with no arguments) print?",
+                code: "def greet(name = 'Friend')\n  puts \"Hello, #{name}!\"\nend",
+                options: ["Error", "Hello, !", "Hello, Friend!", "Hello, name!"],
+                correctAnswer: 2,
+                explanation: "When a method with a default parameter is called without providing that argument, the default value is used."
+            },
+            // 7. Implicit Return
+            {
+                question: "What is the return value of the following Ruby method when called?",
+                code: "def calculate\n  x = 5\n  y = 10\n  x + y\nend",
+                options: ["nil", "15", "true", "The string 'x + y'"],
+                correctAnswer: 1,
+                explanation: "In Ruby, the value of the last evaluated expression in a method is implicitly returned if no explicit `return` keyword is used."
+            },
+            // 8. Explicit Return
+            {
+                question: "What does the `return` keyword do in a Ruby method?",
+                options: ["Prints a value to the console", "Ends the method execution immediately and specifies the return value", "Declares a variable", "Checks a condition"],
+                correctAnswer: 1,
+                explanation: "`return` immediately exits the current method, returning the specified value (or `nil` if no value is given)."
+            },
+            // 9. Return Value with Explicit Return
+            {
+                question: "What is the return value of `get_status` when called with `1`?",
+                code: "def get_status(code)\n  return \"Active\" if code == 1\n  \"Inactive\"\nend",
+                options: ["\"Active\"", "\"Inactive\"", "nil", "true"],
+                correctAnswer: 0,
+                explanation: "The `return \"Active\" if code == 1` line is executed, causing the method to immediately return the string \"Active\"."
+            },
+            // 10. Method Scope (Local Variables)
+            {
+                question: "Can a method directly access a local variable defined outside of it?",
+                code: "message = \"Outside\"\ndef show_message\n  puts message # Trying to access 'message'\nend",
+                options: ["Yes, methods can access all outside variables", "No, methods have their own scope and cannot directly access outside local variables", "Only if the variable is declared with `var`", "Only if the method uses `self`"],
+                correctAnswer: 1,
+                explanation: "Local variables defined outside a method are not accessible inside it unless passed as arguments or accessed via closures (like blocks), instance/class variables, or globals."
+            },
+            // 11. Calling Methods on Objects
+            {
+                question: "How do you call the `length` method on a string object `my_string`?",
+                code: "my_string = \"Ruby\"",
+                options: ["length(my_string)", "my_string.length()", "my_string.length", "Both B and C"],
+                correctAnswer: 3,
+                explanation: "Methods are called on objects using the dot (`.`) operator. Parentheses are often optional for methods without arguments, so both `my_string.length()` and `my_string.length` work."
+            },
+            // 12. Predicate Methods
+            {
+                question: "What is a common convention for Ruby methods that return a boolean value (true/false)?",
+                options: ["They start with `is_`", "They end with a question mark `?`", "They are written in ALL CAPS", "They start with `check_`"],
+                correctAnswer: 1,
+                explanation: "Methods that return `true` or `false`, often called predicate methods, conventionally end with a question mark (e.g., `empty?`, `include?`)."
+            },
+            // 13. Bang Methods
+            {
+                question: "What does a method ending with an exclamation mark `!` (a 'bang method') often indicate?",
+                options: ["It returns `nil`", "It performs a dangerous or destructive operation, or modifies the object in place", "It's a private method", "It always raises an error"],
+                correctAnswer: 1,
+                explanation: "The `!` convention suggests the method might modify the object it's called on (mutating) or perform an operation that could raise an error where a non-bang version might return `nil`."
+            },
+            // 14. Keyword Arguments Definition
+            {
+                question: "How do you define a method `configure` that accepts keyword arguments `retries` and `timeout`?",
+                options: ["def configure(retries:, timeout:)", "def configure(:retries, :timeout)", "def configure(keyword retries, keyword timeout)", "def configure(**options)"],
+                correctAnswer: 0, // Option 3 (**) catches arbitrary keywords, but 0 is specific definition
+                explanation: "Keyword arguments are defined in the parameter list by appending a colon `:` to the parameter name."
+            },
+            // 15. Calling with Keyword Arguments
+            {
+                question: "Given `def setup(user:, role: 'guest')`, how do you call it providing only the required `user`?",
+                code: "def setup(user:, role: 'guest')\n  puts \"Setting up #{user} as #{role}\"\nend",
+                options: ["setup('admin')", "setup(user: 'admin')", "setup(user: 'admin', role: nil)", "setup user: 'admin'"],
+                correctAnswer: 1, // or 3
+                explanation: "Keyword arguments are passed using the `key: value` syntax. `setup user: 'admin'` is also valid Ruby syntax for this."
+            },
+             // 16. Variable Arguments (*args)
+            {
+                question: "How can a method `sum` accept any number of numeric arguments?",
+                code: "def sum(*numbers)\n  numbers.inject(0, :+)\nend",
+                options: ["def sum(numbers[])", "def sum(...numbers)", "def sum(*numbers)", "def sum(any numbers)"],
+                correctAnswer: 2,
+                explanation: "Using an asterisk `*` before a parameter name (often `args` or a descriptive plural) collects any remaining positional arguments into an array."
+            },
+            // 17. Public Visibility (Default)
+            {
+                question: "What is the default visibility of methods defined in a Ruby class?",
+                options: ["private", "protected", "public", "internal"],
+                correctAnswer: 2,
+                explanation: "Unless specified otherwise, methods defined in a class are `public` by default, meaning they can be called by anyone."
+            },
+            // 18. Private Visibility
+            {
+                question: "What is the main characteristic of a `private` method in Ruby?",
+                options: ["It can only be called from within the same file", "It can only be called with an explicit receiver (like `self.`)", "It cannot be called with an explicit receiver; it must be called implicitly by `self`", "It can only be called by subclasses"],
+                correctAnswer: 2,
+                explanation: "Private methods can only be called implicitly from within the defining class or its subclasses. You cannot call `object.private_method` even if `object` is `self`."
+            },
+            // 19. Protected Visibility
+            {
+                question: "When can a `protected` method be called?",
+                options: ["Anywhere, like public methods", "Only implicitly, like private methods", "Only by instances of the defining class or its subclasses, allowing an explicit receiver if it's `self` or an instance of the same class/subclass", "Only within the same module"],
+                correctAnswer: 2,
+                explanation: "Protected methods are callable by objects of the same class or subclasses, allowing `other_object.protected_method` if `other_object` is of an appropriate type."
+            },
+            // 20. Method Naming Conventions
+            {
+                question: "What is the standard Ruby convention for naming methods?",
+                options: ["camelCaseNaming", "PascalCaseNaming", "snake_case_naming", "kebab-case-naming"],
+                correctAnswer: 2,
+                explanation: "Ruby convention strongly favors using `snake_case` (lowercase words separated by underscores) for method and variable names."
+            }
+        ];
+
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // Changed Keys for Ruby Quiz
+        const SCORE_HISTORY_KEY = 'rubyMethodsQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'rubyMethodsQuizState';
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight AFTER theme change
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50);
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); // Use Ruby key
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY); // Use Ruby key
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Basic validation
+                    if (state.quizActive &&
+                        Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length &&
+                        Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length)
+                    {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress Ruby Methods quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress Ruby Methods quiz state is incompatible or invalid.");
+                        clearState();
+                        return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress Ruby Methods quiz state:", e);
+                    clearState();
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY); // Use Ruby key
+            console.log("In-progress Ruby Methods quiz state cleared.");
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); // Use Ruby key
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load Ruby Methods score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); // Use Ruby key
+            } catch (e) { console.error("Failed to save Ruby Methods score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            if (scoreHistory.length > MAX_HISTORY_ITEMS) {
+                scoreHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+            }
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous Ruby Methods attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY); // Use Ruby key
+                 displayScoreHistory();
+                 console.log("Ruby Methods score history cleared.");
+             }
+        }
+
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) {
+                 console.log("Resuming Ruby Methods quiz from saved state.");
+                 startTime = Date.now() - (timeElapsed * 1000);
+             } else {
+                 console.log("Initializing a new Ruby Methods quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+                 quizActive = true;
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            if(!loadState()) saveState(); // Save initial state only if new quiz
+        }
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             // Handle code snippet
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 // <<< IMPORTANT: Changed to language-ruby >>>
+                 code.className = 'language-ruby';
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            // Generate options
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSelection();
+                    }
+                });
+
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState();
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled');
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1;
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion);
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!quizActive) return;
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) {
+                       submitQuiz(true);
+                    }
+                    return;
+                }
+
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                    saveState();
+                 }
+            };
+
+            updateTimerDisplay();
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return;
+            quizActive = false;
+            clearInterval(timerInterval);
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            addScoreToHistory({
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: parseFloat(accuracy.toFixed(1)),
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            });
+
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            timeTaken.textContent = formatTime(finalTime);
+
+            accuracyBar.style.width = `0%`;
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100);
+
+            // Determine Performance Message & Score Circle Style (Ruby specific)
+            let performanceText = "";
+            let scoreLevel = 'low';
+            if (timeUp) {
+                performanceText = "Time's up! Review the Ruby method concepts and try again.";
+                 if (accuracy >= 85) scoreLevel = 'high';
+                 else if (accuracy >= 60) scoreLevel = 'medium';
+            } else {
+                if (accuracy >= 95) { performanceText = "Magnificent! You're a Ruby method maestro!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent! You have a strong grasp of Ruby methods."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! Solid understanding of Ruby fundamentals."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Focus on parameters and return values."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep coding! Review the answers and practice defining methods."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState();
+        }
+
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return;
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti({
+                particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000
+             });
+             setTimeout(() => {
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 200);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = '';
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 bg-green-50 dark:bg-green-900/30 dark:border-green-600'
+                     : 'border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-600'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  if (question.code) {
+                      const escapedCode = question.code;
+                      // <<< IMPORTANT: Changed to language-ruby >>>
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-ruby">${escapedCode}</code></pre>`;
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`;
+                          }
+                      }
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${optionText}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+
+                 reviewHTML += `</ul>`;
+
+                 if (question.explanation) {
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                        <strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                    </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+         function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            questionsOrder = [];
+            timeElapsed = 0;
+            quizActive = false;
+            clearInterval(timerInterval);
+
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = '';
+
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth;
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Check this logic, might need adjustment
+
+            displayScoreHistory();
+            console.log("Ruby Methods Quiz reset.");
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Updated text for Ruby Methods
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Ruby Methods Quiz! Think you can beat my score?`;
+             const shareUrl = window.location.href;
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         // Updated Title
+                         title: 'My Ruby Methods Quiz Result!',
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Result shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing using Web Share API:', err);
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 console.log('Web Share API not supported, falling back to clipboard.');
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!");
+             })
+             .catch(err => {
+                 console.error('Could not copy text to clipboard: ', err);
+                 alert("Failed to copy results. You might need to copy the text manually.");
+             });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+
+        // --- Keyboard Navigation ---
+         document.addEventListener('keydown', (e) => {
+             const isQuizActive = quizContainer.style.display === 'block';
+             const isStartActive = startScreen.style.display === 'block';
+             const isResultsActive = resultsContainer.style.display === 'block';
+             const isReviewActive = reviewContainer.style.display === 'block';
+
+             if (isQuizActive) {
+                 if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+             } else if (isStartActive) {
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (isResultsActive) {
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (isReviewActive) {
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            loadScoreHistory();
+            displayScoreHistory();
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+
+            console.log("Ruby Methods Quiz application initialized."); // Updated log
+        }
+
+        // --- Run Initialization ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+

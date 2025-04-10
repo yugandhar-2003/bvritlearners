@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Changed Title -->
+    <title>Ruby Error Handling Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* Using a slightly different theme - perhaps Blue/Green */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-start: #0ea5e9; /* sky-500 */
+            --primary-end: #10b981;   /* emerald-500 */
+            --primary-dark-start: #1e3a8a; /* blue-900 */
+            --primary-dark-end: #064e3b;   /* emerald-900 */
+
+            --accent-light: #2dd4bf; /* teal-400 */
+            --accent-dark: #67e8f9;  /* cyan-300 */
+
+            --correct-light: #22c55e; /* green-500 */
+            --correct-dark: #4ade80;  /* green-400 */
+            --incorrect-light: #ef4444; /* red-500 */
+            --incorrect-dark: #f87171;  /* red-400 */
+
+            --secondary-bg-light: #ecfdf5; /* emerald-50 */
+            --secondary-border-light: #a7f3d0; /* emerald-200 */
+            --secondary-text-light: #047857; /* emerald-700 */
+            --secondary-bg-dark: #1f2937; /* gray-800 */
+            --secondary-border-dark: #374151; /* gray-700 */
+            --secondary-text-dark: #d1d5db; /* gray-300 */
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            min-height: 100vh; position: relative; overflow-x: hidden; transition: background-color 0.3s ease;
+        }
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+        html.dark body { background: linear-gradient(135deg, var(--primary-dark-start) 0%, var(--primary-dark-end) 100%); }
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        html.dark .glass-card { background: rgba(31, 41, 55, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; } /* gray-800 base */
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; } /* gray-50 */
+        html.dark .option { background-color: rgba(55, 65, 81, 0.6); border-color: rgba(255, 255, 255, 0.2); color: #d1d5db; } /* gray-700 base */
+        html.dark .option:hover:not(.disabled):not(.selected) { background: rgba(75, 85, 99, 0.8); border-color: rgba(255, 255, 255, 0.4); } /* gray-600 */
+        html.dark .option.selected { background: rgba(103, 232, 249, 0.2); border-color: var(--accent-dark); color: #ecfeff; } /* cyan */
+        html.dark .option.correct { background: rgba(74, 222, 128, 0.35) !important; border-color: var(--correct-dark) !important; color: #f0fdf4 !important; }
+        html.dark .option.incorrect { background: rgba(248, 113, 113, 0.3) !important; border-color: var(--incorrect-dark) !important; color: #fef2f2 !important; }
+        html.dark .option.incorrect.selected { color: #fef2f2 !important; box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3); }
+        html.dark .explanation { background-color: rgba(55, 65, 81, 0.8); color: #d1d5db; border-left-color: var(--accent-dark); } /* gray-700 */
+        html.dark .review-item.correct .explanation { border-color: var(--correct-dark); }
+        html.dark .review-item.incorrect .explanation { border-color: var(--incorrect-dark); }
+        html.dark .code-snippet-container { background-color: #1f2937; color: #f9fafb; border: 1px solid #374151; } /* gray-800 */
+        html.dark .btn-secondary { background-color: var(--secondary-bg-dark); color: var(--secondary-text-dark); border: 1px solid var(--secondary-border-dark); }
+        html.dark .btn-secondary:hover:not(:disabled) { background-color: #4b5563; } /* gray-600 */
+        html.dark #score-circle { background-color: #1f2937; border: 6px solid transparent; } /* gray-800 */
+        html.dark #score-value { color: var(--accent-dark); }
+        html.dark .text-gray-500 { color: #9ca3af; } html.dark .text-gray-600 { color: #d1d5db; } html.dark .text-gray-700 { color: #e5e7eb; } html.dark .text-gray-800 { color: #f3f4f6; }
+        html.dark .text-indigo-900 { color: #7dd3fc; } /* sky-300 */ html.dark .text-indigo-700 { color: #a5f3fc; } /* cyan-200 */ html.dark .bg-indigo-50 { background-color: #0c2e4b;} /* Dark blue */ html.dark .text-indigo-600 { color: #67e8f9; } /* cyan-300 */
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; } /* gray-700/800 */
+        html.dark .timer-warning { color: #facc15 !important; border-color: #facc15 !important; }
+        html.dark .history-date { color: #9ca3af; }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        html.dark .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+        html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #0369a1, #059669); } /* Darker sky/emerald */
+        html.dark .btn-submit { background: linear-gradient(to right, var(--correct-light), #15803d); color: white; }
+        html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #16a34a, #14532d); }
+        html.dark .progress-bar { background: linear-gradient(to right, var(--accent-dark), var(--primary-start)); }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-dark), var(--correct-light)) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #facc15, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-dark), var(--incorrect-light)) 1; }
+        html.dark .text-indigo-800 { color: #38bdf8; } /* sky-400 */ html.dark .text-indigo-300 { color: #a5f3fc; } /* cyan-200 */ html.dark .text-indigo-200 { color: #cffafe; } /* cyan-100 */
+        html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+        html.dark .review-item.correct { border-color: var(--correct-dark); } html.dark .review-item.incorrect { border-color: var(--incorrect-dark); }
+        html.dark .review-item ul li.text-green-700 { color: var(--correct-dark); } html.dark .review-item ul li.text-red-700 { color: var(--incorrect-dark); }
+        html.dark .review-item ul li.bg-green-100 { background-color: rgba(74, 222, 128, 0.2); ring-color: rgba(74, 222, 128, 0.5); }
+        html.dark .review-item ul li .fa-check { color: var(--correct-dark); } html.dark .review-item ul li .fa-times { color: var(--incorrect-dark); }
+        html.dark .review-item .explanation strong { color: var(--accent-dark); }
+        html.dark .review-item p {color: #d1d5db; } html.dark .review-item ul li { color: #d1d5db;} html.dark .review-item ul li span.text-gray-500 {color: #9ca3af;}
+
+        /* Light Mode Tweaks - Blue/Green Theme */
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; color: #1f2937; } /* gray-800 text */
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; color: #374151; } /* gray-700 */
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(45, 212, 191, 0.5); } /* teal-400 */
+        .option.selected { border-color: var(--accent-light); background: linear-gradient(to right, rgba(45, 212, 191, 0.15), rgba(16, 185, 129, 0.15)); box-shadow: 0 4px 10px rgba(45, 212, 191, 0.2); } /* teal/emerald */
+        .option.correct { background: linear-gradient(to right, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.15)) !important; border-color: var(--correct-light) !important; color: #14532d !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: var(--incorrect-light) !important; color: #7f1d1d !important; cursor: default; }
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, var(--primary-start), var(--primary-end)); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #0369a1, #059669); } /* Darker sky/emerald */
+        .btn-secondary { background-color: var(--secondary-bg-light); color: var(--secondary-text-light); border: 1px solid var(--secondary-border-light); }
+        .btn-secondary:hover:not(:disabled) { background-color: #a7f3d0; } /* emerald-200 */
+        .btn-submit { background: linear-gradient(to right, var(--correct-light), #16a34a); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #15803d, #14532d); }
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, var(--accent-light), var(--primary-start)); box-shadow: 0 0 15px rgba(14, 165, 233, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #ecfdf5, #a7f3d0) 1; } /* emerald */
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, var(--correct-light), #15803d) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #facc15, #fbbf24) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, var(--incorrect-light), #b91c1c) 1; }
+        #score-value { color: var(--primary-start); }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: var(--accent-light); }
+        .review-item.correct .explanation { border-color: var(--correct-light); }
+        .review-item.incorrect .explanation { border-color: var(--incorrect-light); }
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #282a36; border: 1px solid #44475a; font-size: 0.9em; color: #f8f8f2; }
+        html .code-snippet-container code[class*="language-"] { color: #f8f8f2; } html .code-snippet-container .token.comment { color: #6272a4; } html .code-snippet-container .token.string, html .code-snippet-container .token.char, html .code-snippet-container .token.builtin, html .code-snippet-container .token.inserted { color: #f1fa8c; } html .code-snippet-container .token.keyword { color: #ff79c6; } html .code-snippet-container .token.function, html .code-snippet-container .token.class-name { color: #50fa7b; } html .code-snippet-container .token.punctuation { color: #f8f8f2; } html .code-snippet-container .token.operator { color: #ff79c6; } html .code-snippet-container .token.constant, html .code-snippet-container .token.symbol { color: #bd93f9; } html .code-snippet-container .token.number { color: #bd93f9; } html .code-snippet-container .token.variable { color: #8be9fd; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #f59e0b !important; border-color: #f59e0b !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+        .option:focus, .btn:focus, button:focus { outline: 2px solid var(--primary-start); outline-offset: 2px; }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: var(--accent-dark); }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #4b5563; } /* gray-600 */
+        html.dark .history-score { color: #e5e7eb; } html.dark .history-date { color: #9ca3af; }
+        html:not(.dark) .text-indigo-900 { color: #0c4a6e; } /* sky-800 */ html:not(.dark) .text-indigo-800 { color: #075985; } /* sky-700 */ html:not(.dark) .text-indigo-700 { color: #0369a1; } /* sky-600 */ html:not(.dark) .text-indigo-600 { color: #0ea5e9; } /* sky-500 */ html:not(.dark) .bg-indigo-50 { background-color: #f0f9ff; border-color: #e0f2fe;} /* sky-50/100 */
+        html:not(.dark) .explanation strong { color: #0369a1; } /* sky-700 */ html:not(.dark) .explanation .text-sm { color: #1f2937; } html:not(.dark) .review-item p, html:not(.dark) .review-item li { color: #1f2937; } html:not(.dark) .review-item li.text-green-700 { color: #14532d !important; } html:not(.dark) .review-item li.text-red-700 { color: #7f1d1d !important; } html:not(.dark) .review-item li.bg-green-100 { background-color: #dcfce7 !important; ring-color: #86efac !important;} html:not(.dark) .review-item ul li span.text-gray-500 {color: #6b7280;}
+        html:not(.dark) #start-screen h2 { color: #0369a1; } html:not(.dark) #start-screen p { color: #374151; } html:not(.dark) #score-history-area h3 { color: #075985; } html:not(.dark) .history-item .history-score { color: #111827; } html:not(.dark) .history-item span.text-gray-600 { color: #4b5563; } html:not(.dark) .history-item .history-date { color: #4b5563; }
+        html:not(.dark) #results-container h2 { color: #0369a1; } html:not(.dark) #score-value { color: var(--primary-start); } html:not(.dark) #score-circle .text-gray-500 { color: #6b7280; } html:not(.dark) #accuracy-value { color: #111827; } html:not(.dark) #time-taken { color: #111827; } html:not(.dark) #performance-message { color: #374151; }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- Changed Heading -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Ruby Error Handling Quiz</h1>
+             <!-- Changed Subheading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Master `rescue`, `raise`, and custom exceptions in Ruby!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- Changed Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Handle Ruby Errors?</h2>
+            <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Test your knowledge of `begin`/`rescue`, `raise`, `ensure`, and error classes.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- Changed Heading -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Ruby Error Handling Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                         <!-- Changed Text -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to build robust Ruby applications!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- Changed Heading -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Ruby Error Handling Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // --- Ruby Error Handling Questions ---
+
+            // begin, rescue, ensure, else
+            {
+                question: "Which keyword starts a block of code where exceptions might occur and need to be handled?",
+                options: ["try", "catch", "rescue", "begin"],
+                correctAnswer: 3,
+                explanation: "The `begin` keyword starts a block that may raise an exception. It's often paired with `rescue` and optionally `ensure` or `else`."
+            },
+            {
+                question: "Which keyword introduces a block of code that executes if an exception is raised within the preceding `begin` block?",
+                options: ["catch", "handle", "rescue", "except"],
+                correctAnswer: 2,
+                explanation: "`rescue` is used to define the code that should run when a specific (or general) exception occurs."
+            },
+            {
+                question: "What is the purpose of the `ensure` block in Ruby exception handling?",
+                options: ["To execute code only if an exception occurs", "To execute code only if no exception occurs", "To execute code regardless of whether an exception occurred or not", "To re-raise the captured exception"],
+                correctAnswer: 2,
+                explanation: "The `ensure` block contains code that is guaranteed to run after the `begin` block finishes, whether an exception was raised and rescued or not. It's typically used for cleanup (e.g., closing files)."
+            },
+            {
+                question: "When does the code inside an `else` block (within a `begin`/`rescue` structure) execute?",
+                options: ["Always", "Only when an exception is rescued", "Only when NO exception occurs in the `begin` block", "Only after the `ensure` block runs"],
+                correctAnswer: 2,
+                explanation: "The `else` clause associated with `begin`/`rescue` executes only if the `begin` block completes without raising any exceptions."
+            },
+            {
+                question: "How can you rescue only a specific type of error, like `TypeError`?",
+                code: "begin\n  # Code that might raise TypeError\nrescue ???\n  puts \"Caught a type error!\"\nend",
+                options: ["rescue if TypeError", "rescue TypeError", "rescue when TypeError", "rescue only TypeError"],
+                correctAnswer: 1,
+                explanation: "You specify the exception class (or classes) directly after the `rescue` keyword to catch only those specific types of errors (and their subclasses)."
+            },
+            {
+                question: "How do you capture the exception object itself within a `rescue` block?",
+                code: "begin\n  # ... some error ...\nrescue StandardError ???\n  puts \"Error: #{e.message}\"\nend",
+                options: ["as e", "-> e", "=> e", "into e"],
+                correctAnswer: 2,
+                explanation: "Using the 'hash rocket' syntax `=> variable_name` (e.g., `rescue StandardError => e`) assigns the caught exception object to the specified variable."
+            },
+             {
+                question: "What happens if an exception is raised but there is no matching `rescue` block for its type?",
+                options: ["The program continues silently", "The exception is ignored", "The program terminates, typically printing the exception's message and backtrace", "It automatically retries the `begin` block"],
+                correctAnswer: 2,
+                explanation: "If an exception isn't caught by a matching `rescue` clause, it propagates up the call stack. If it reaches the top level without being rescued, the program usually halts and displays the error information."
+            },
+
+            // Raising custom exceptions
+            {
+                question: "Which keyword is used to manually trigger an exception?",
+                options: ["throw", "error", "exception", "raise"],
+                correctAnswer: 3,
+                explanation: "The `raise` keyword is used to explicitly signal that an error condition has occurred. It can be used with or without arguments."
+            },
+            {
+                question: "How can you raise a specific type of error, like `ArgumentError`, with a custom message?",
+                options: ["raise ArgumentError, \"Invalid argument\"", "raise \"Invalid argument\", ArgumentError", "raise ArgumentError(\"Invalid argument\")", "Both A and C"],
+                correctAnswer: 3,
+                explanation: "You can pass the exception class and a message string to `raise`. `raise ArgumentError.new(\"Invalid argument\")` also works. Often, `raise ArgumentError, \"message\"` is preferred for brevity."
+            },
+             {
+                question: "How do you define a custom exception class `MyCustomError` that inherits from `StandardError`?",
+                options: ["class MyCustomError < StandardError; end", "def MyCustomError < StandardError; end", "module MyCustomError < StandardError; end", "class MyCustomError extends StandardError; end"],
+                correctAnswer: 0,
+                explanation: "Custom exception classes are defined just like regular classes, typically inheriting from `StandardError` or another more specific built-in error class using the `<` syntax."
+            },
+             {
+                question: "Why is it generally recommended for custom exceptions to inherit from `StandardError` rather than `Exception`?",
+                options: ["`Exception` cannot be inherited from", "`StandardError` has more built-in methods", "Rescuing `Exception` catches system-level errors (like `Interrupt`), which is usually not desired", "`StandardError` is faster"],
+                correctAnswer: 2,
+                explanation: "`Exception` is the root of the hierarchy. Rescuing it (`rescue Exception`) catches almost everything, including signals like Ctrl+C (`Interrupt`) or memory errors, making it hard to stop the program or handle critical issues appropriately. `StandardError` is the conventional parent for application-level errors."
+            },
+
+            // Built-in error classes
+            {
+                question: "If you try to call a method that doesn't exist on an object, which exception is typically raised?",
+                code: "num = 10\nnum.non_existent_method",
+                options: ["TypeError", "ArgumentError", "RuntimeError", "NoMethodError"],
+                correctAnswer: 3,
+                explanation: "`NoMethodError` is raised when a message (method call) is sent to an object that doesn't have a corresponding method defined."
+            },
+            {
+                question: "Which error is raised if you pass the wrong number of arguments to a method?",
+                code: "def greet(name); end\ngreet(\"Alice\", \"Bob\")",
+                options: ["ArgumentError", "TypeError", "NameError", "NoMethodError"],
+                correctAnswer: 0,
+                explanation: "`ArgumentError` is raised when the number of arguments passed to a method doesn't match the number it expects."
+            },
+            {
+                question: "What error might occur if you try to perform an operation on an object of an inappropriate type (e.g., adding a number to a string without conversion)?",
+                code: "\"hello\" + 5",
+                options: ["SyntaxError", "ArgumentError", "TypeError", "RuntimeError"],
+                correctAnswer: 2,
+                explanation: "`TypeError` is raised when an operation is attempted on an object that isn't of the expected type (e.g., String can't be implicitly added to an Integer with `+`)."
+            },
+            {
+                question: "Which general-purpose error class is often used for application-specific errors when a more specific built-in one doesn't fit?",
+                options: ["StandardError", "Exception", "ScriptError", "RuntimeError"],
+                correctAnswer: 3,
+                explanation: "`RuntimeError` is a subclass of `StandardError` often used as a default or general error type for issues encountered during program execution when no other specific error class applies. `raise \"Some error\"` defaults to raising a `RuntimeError`."
+            },
+            {
+                question: "What is the top-level ancestor class for almost all Ruby exceptions?",
+                options: ["Object", "StandardError", "Exception", "Kernel"],
+                correctAnswer: 2,
+                explanation: "The `Exception` class sits at the top of the hierarchy. Most application errors inherit from `StandardError`, which itself inherits from `Exception`."
+            },
+            {
+                question: "If you use `rescue` without specifying any error class, which errors does it catch by default?",
+                code: "begin\n # Risky code\nrescue\n # Handle error\nend",
+                options: ["Only `RuntimeError`", "Only `TypeError`", "`StandardError` and its descendants", "`Exception` and all its descendants"],
+                correctAnswer: 2,
+                explanation: "A bare `rescue` clause is equivalent to `rescue StandardError`. It catches `StandardError` and any class that inherits from it, which covers most common application errors but excludes critical system errors."
+            },
+             {
+                question: "What is the purpose of the `retry` keyword within a `rescue` block?",
+                options: ["To skip the rest of the rescue block", "To re-raise the original exception", "To jump back to the beginning of the `begin` block and try the code again", "To exit the entire `begin`/`rescue` structure"],
+                correctAnswer: 2,
+                explanation: "`retry` transfers control back to the start of the `begin` block, allowing the code that caused the exception to be executed again. It's often used after attempting some corrective action within the `rescue`."
+             },
+             {
+                 question: "What is the significance of `NameError`?",
+                 code: "puts my_undefined_variable",
+                 options: ["Wrong number of arguments", "Method doesn't exist", "Tried to use an undefined variable or constant name", "Invalid data type used"],
+                 correctAnswer: 2,
+                 explanation: "`NameError` (or its subclass `NoMethodError`) is raised when Ruby encounters a name (for a local variable, method, or constant) that it cannot resolve in the current scope."
+             },
+             {
+                 question: "Consider the hierarchy: `NoMemoryError < Exception`, `ArgumentError < StandardError < Exception`. Which of these would `rescue StandardError` catch?",
+                 options: ["Only `ArgumentError`", "`ArgumentError` and `StandardError`", "`ArgumentError`, `StandardError`, and `NoMemoryError`", "None of them"],
+                 correctAnswer: 1,
+                 explanation: "`rescue StandardError` catches `StandardError` itself and any class that inherits from it. `ArgumentError` inherits from `StandardError`, so it's caught. `NoMemoryError` inherits directly from `Exception`, not `StandardError`, so it wouldn't be caught by this specific rescue."
+             }
+
+        ];
+
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // Changed Keys for Ruby Error Handling Quiz
+        const SCORE_HISTORY_KEY = 'rubyErrorHandlingQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'rubyErrorHandlingQuizState';
+
+        // --- DOM Elements ---
+        // (DOM element references remain the same)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        // (State variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        // (shuffleArray, formatTime remain the same)
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+        function formatTime(seconds) { const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
+
+        // --- Dark Mode ---
+        // (applyDarkMode logic remains the same)
+         function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); }
+            else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); }
+            if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 50); }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // (saveState, loadState, clearState use updated QUIZ_STATE_KEY)
+        function saveState() {
+            if (!quizActive) return;
+            try { const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true }; localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); } // Error Handling Key
+            catch (e) { console.error("Failed to save Error Handling quiz state:", e); }
+        }
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY); // Error Handling Key
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0; userAnswers = state.userAnswers; timeElapsed = state.timeElapsed || 0; questionsOrder = state.questionsOrder; quizActive = true;
+                        console.log("In-progress Ruby Error Handling quiz state loaded."); return true;
+                    } else { console.warn("Saved Ruby Error Handling quiz state invalid."); clearState(); return false; }
+                } catch (e) { console.error("Failed to parse saved Error Handling quiz state:", e); clearState(); return false; }
+            }
+            return false;
+        }
+        function clearState() { localStorage.removeItem(QUIZ_STATE_KEY); console.log("In-progress Ruby Error Handling quiz state cleared."); } // Error Handling Key
+
+        // --- Local Storage: SCORE HISTORY ---
+        // (loadScoreHistory, saveScoreHistory, addScoreToHistory, clearScoreHistory use updated SCORE_HISTORY_KEY)
+        function loadScoreHistory() {
+            try { const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); scoreHistory = historyJson ? JSON.parse(historyJson) : []; if (!Array.isArray(scoreHistory)) scoreHistory = []; } // Error Handling Key
+            catch (e) { console.error("Failed to load Ruby Error Handling score history:", e); scoreHistory = []; }
+        }
+        function saveScoreHistory() {
+            try { const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); } // Error Handling Key
+            catch (e) { console.error("Failed to save Ruby Error Handling score history:", e); }
+        }
+        function addScoreToHistory(attemptData) { scoreHistory.push(attemptData); if (scoreHistory.length > MAX_HISTORY_ITEMS) { scoreHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); } saveScoreHistory(); displayScoreHistory(); }
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous Ruby Error Handling attempt scores? This cannot be undone.")) {
+                 scoreHistory = []; localStorage.removeItem(SCORE_HISTORY_KEY); displayScoreHistory(); console.log("Ruby Error Handling score history cleared."); } // Error Handling Key
+        }
+
+        // --- UI: Display Score History ---
+        // (displayScoreHistory logic remains the same)
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+            if (scoreHistory.length === 0) { scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`; clearHistoryBtn.classList.add('hidden'); }
+            else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div'); item.className = 'history-item'; const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                    item.innerHTML = `<div class="flex-grow pr-4"><span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span> <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span></div> <div class="history-date text-right"> ${formattedDate}<br>${formattedTime} </div>`; scoreHistoryList.appendChild(item);
+                }); clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        // (startQuiz, loadQuestion, selectOption, showFeedback, updateProgress, updateNavigation, nextQuestion, prevQuestion remain largely the same, ensuring language-ruby)
+        function startQuiz() {
+             if (loadState()) { console.log("Resuming Ruby Error Handling quiz."); startTime = Date.now() - (timeElapsed * 1000); }
+             else { console.log("Initializing new Ruby Error Handling quiz."); currentQuestionIndex = 0; score = 0; userAnswers = Array(quizData.length).fill(null); timeElapsed = 0; questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder); startTime = Date.now(); quizActive = true; }
+            startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; quizContainer.style.display = 'block';
+            loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); if(!loadState()) saveState();
+        }
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return; const questionIndexInOriginalData = questionsOrder[index]; const question = quizData[questionIndexInOriginalData]; if (!question) return;
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp'); void questionCard.offsetWidth; questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+            questionText.textContent = `${index + 1}. ${question.question}`; feedbackMessage.textContent = ''; codeSnippetArea.innerHTML = '';
+             if (question.code) { const pre = document.createElement('pre'); pre.className = 'code-snippet-container'; const code = document.createElement('code'); code.className = 'language-ruby'; code.textContent = question.code; pre.appendChild(code); codeSnippetArea.appendChild(pre); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightElement(code), 0); } }
+            optionsContainer.innerHTML = ''; const selectedAnswerIndex = userAnswers[index];
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div'); optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300'; optionElement.setAttribute('role', 'radio'); optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false'); optionElement.tabIndex = 0;
+                const label = document.createElement('span'); label.className = 'flex-grow mr-4'; label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`; const feedbackIconContainer = document.createElement('span'); feedbackIconContainer.className = 'feedback-icon text-xl'; feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>`; optionElement.appendChild(label); optionElement.appendChild(feedbackIconContainer);
+                const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } }; optionElement.addEventListener('click', handleSelection); optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } }); optionsContainer.appendChild(optionElement);
+            });
+             if (selectedAnswerIndex !== null) { showFeedback(index, selectedAnswerIndex); } else { nextBtn.disabled = true; if (index === quizData.length - 1) submitBtn.disabled = true; }
+            updateProgress(index); updateNavigation();
+        }
+        function selectOption(displayIndex, selectedOptionIndex) { if (userAnswers[displayIndex] !== null) return; userAnswers[displayIndex] = selectedOptionIndex; showFeedback(displayIndex, selectedOptionIndex); nextBtn.disabled = false; if (displayIndex === quizData.length - 1) { submitBtn.disabled = false; } saveState(); }
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex]; const question = quizData[originalQuestionIndex]; const isCorrect = selectedOptionIndex === question.correctAnswer; const options = optionsContainer.querySelectorAll('.option');
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); optElement.style.cursor = 'default'; optElement.tabIndex = -1; const iconCorrect = optElement.querySelector('.icon-correct'); const iconIncorrect = optElement.querySelector('.icon-incorrect'); if (iconCorrect) iconCorrect.style.opacity = '0'; if (iconIncorrect) iconIncorrect.style.opacity = '0';
+                 if (currentOptionIndex === selectedOptionIndex) { optElement.classList.add('selected'); optElement.setAttribute('aria-checked', 'true'); if (isCorrect) { optElement.classList.add('correct'); if (iconCorrect) iconCorrect.style.opacity = '1'; feedbackMessage.textContent = "Correct!"; feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse'; } else { optElement.classList.add('incorrect'); if (iconIncorrect) iconIncorrect.style.opacity = '1'; feedbackMessage.textContent = "Incorrect!"; feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX'; const correctOptionElement = options[question.correctAnswer]; if (correctOptionElement) { correctOptionElement.classList.add('correct'); const correctOptIcon = correctOptionElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } }
+                 else { optElement.setAttribute('aria-checked', 'false'); if (currentOptionIndex === question.correctAnswer && !isCorrect) { optElement.classList.add('correct'); const correctOptIcon = optElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } }
+             }); setTimeout(() => { feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX'); }, 1000);
+        }
+        function updateProgress(index) { const totalQuestions = quizData.length; const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0; progressBar.style.width = `${progress}%`; questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`; }
+        function updateNavigation() { const isFirstQuestion = currentQuestionIndex === 0; const isLastQuestion = currentQuestionIndex === quizData.length - 1; prevBtn.classList.toggle('hidden', isFirstQuestion); navSpacer.classList.toggle('hidden', !isFirstQuestion); nextBtn.classList.toggle('hidden', isLastQuestion); submitBtn.classList.toggle('hidden', !isLastQuestion); const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null; nextBtn.disabled = !currentAnswerSelected; if (isLastQuestion) { submitBtn.disabled = !currentAnswerSelected; } }
+        function nextQuestion() { if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); } }
+        function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); } }
+
+        // --- Timer ---
+        // (startTimer logic remains the same)
+        function startTimer() {
+            clearInterval(timerInterval); if (!quizActive) return;
+            const updateTimerDisplay = () => {
+                const now = Date.now(); timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+                if (timeRemaining <= 0) { timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`; timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); clearInterval(timerInterval); if(quizActive) { submitQuiz(true); } return; }
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`; timerElement.classList.toggle('timer-warning', timeRemaining <= 60); timerElement.classList.remove('text-red-500', 'dark:text-red-400'); if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); }
+            }; updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        // --- Submit and Results ---
+        // (submitQuiz logic uses updated performance messages)
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return; quizActive = false; clearInterval(timerInterval);
+            score = 0; userAnswers.forEach((answerIndex, displayIdx) => { if (answerIndex !== null) { const originalQuestionIndex = questionsOrder[displayIdx]; if (answerIndex === quizData[originalQuestionIndex].correctAnswer) { score++; } } });
+            const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+            addScoreToHistory({ score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)), timestamp: Date.now(), timeTaken: finalTime });
+            quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+            scoreValue.textContent = `${score}/${totalQuestions}`; accuracyValue.textContent = `${accuracy.toFixed(1)}%`; timeTaken.textContent = formatTime(finalTime);
+            accuracyBar.style.width = `0%`; setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100);
+
+            // Updated Performance Messages for Error Handling
+            let performanceText = ""; let scoreLevel = 'low';
+            if (timeUp) { performanceText = "Time's up! Review `begin/rescue/ensure` and when to `raise` errors."; if (accuracy >= 85) scoreLevel = 'high'; else if (accuracy >= 60) scoreLevel = 'medium'; }
+            else {
+                if (accuracy >= 95) { performanceText = "Flawless! You handle Ruby errors with exceptional grace!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent! You have a robust understanding of Ruby error handling."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! You're comfortable rescuing and raising errors."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Practice rescuing specific error types and using `ensure`."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep going! Review the built-in error classes and the `raise` keyword."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText; scoreCircle.setAttribute('data-score-level', scoreLevel);
+            if (scoreLevel === 'high' && !timeUp) { triggerConfetti(); }
+            clearState();
+        }
+
+        // (triggerConfetti logic remains the same)
+        function triggerConfetti() { if (typeof confetti !== 'function') return; const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true }); myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 }); setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200); }
+
+        // --- Review Screen ---
+        // (showReview logic remains the same, ensuring language-ruby)
+        function showReview() {
+            resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block'; reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer;
+                 const reviewItem = document.createElement('div'); reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30 dark:border-green-600' : 'border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-600' }`;
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+                  if (question.code) { const escapedCode = question.code; reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-ruby">${escapedCode}</code></pre>`; }
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = "";
+                      if (i === question.correctAnswer) { liClass = "font-semibold text-green-700 dark:text-green-400"; iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; }
+                      if (i === userAnswerIndex) { if (isCorrect) { liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50"; } else { liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; } }
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${optionText}</span>${iconHTML}</li>`;
+                 }); reviewHTML += `</ul>`;
+                 if (question.explanation) { reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700"><strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p></div>`; }
+                 reviewItem.innerHTML = reviewHTML; reviewQuestions.appendChild(reviewItem);
+            }); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0); }
+        }
+        function showResultsScreen() { reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); }
+
+        // --- Restart ---
+        // (restartQuiz logic remains the same)
+        function restartQuiz() { currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; clearInterval(timerInterval); progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = ''; resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn'); nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.remove('hidden'); displayScoreHistory(); console.log("Ruby Error Handling Quiz reset."); }
+
+        // --- Sharing ---
+        // (shareResults uses updated text)
+         async function shareResults() {
+             const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Ruby Error Handling Quiz! Can you rescue your score? 😉`; // Error Handling theme
+             const shareUrl = window.location.href;
+             if (navigator.share) {
+                 try { await navigator.share({ title: 'My Ruby Error Handling Quiz Result!', text: shareText, url: shareUrl }); console.log('Result shared successfully'); } // Error Handling title
+                 catch (err) { console.error('Error sharing using Web Share API:', err); copyToClipboard(`${shareText} ${shareUrl}`); }
+             } else { console.log('Web Share API not supported, falling back to clipboard.'); copyToClipboard(`${shareText} ${shareUrl}`); }
+         }
+        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); }).catch(err => { console.error('Could not copy text: ', err); alert("Failed to copy results."); }); }
+
+        // --- Event Listeners ---
+        // (Event listeners remain the same)
+        startBtn.addEventListener('click', startQuiz); nextBtn.addEventListener('click', nextQuestion); prevBtn.addEventListener('click', prevQuestion); submitBtn.addEventListener('click', () => submitQuiz(false)); reviewBtn.addEventListener('click', showReview); restartBtn.addEventListener('click', restartQuiz); backToResults.addEventListener('click', showResultsScreen); shareBtn.addEventListener('click', shareResults); clearHistoryBtn.addEventListener('click', clearScoreHistory); darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+        // (Keyboard navigation logic remains the same)
+         document.addEventListener('keydown', (e) => {
+             const isQuizActive = quizContainer.style.display === 'block'; const isStartActive = startScreen.style.display === 'block'; const isResultsActive = resultsContainer.style.display === 'block'; const isReviewActive = reviewContainer.style.display === 'block';
+             if (isQuizActive) { if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); } else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); } else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); } }
+             else if (isStartActive) { if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); } else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); } }
+             else if (isResultsActive) { if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); } else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); } else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); } }
+             else if (isReviewActive) { if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); } }
+         });
+
+        // --- Initial Application Load ---
+        // (Initialization uses updated console log)
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode'); applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory(); displayScoreHistory();
+            quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block';
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            console.log("Ruby Error Handling Quiz application initialized."); // Updated log
+        }
+
+        // --- Run Initialization ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+
