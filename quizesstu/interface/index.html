@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programming Quizzes</title>
+    <title>Programming Quizzes - Dark Mode</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -12,13 +12,13 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Custom Styles (including improved icons) -->
+    <!-- Custom Styles (Dark Theme) -->
     <style>
-        /* General Page Styling */
+        /* --- Dark Theme Base Styles --- */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa; /* Light grey background */
-            color: #333;
+            background-color: #1a1a1a; /* Dark background */
+            color: #f8f9fa; /* Light default text */
         }
 
         .quiz-main-container {
@@ -27,55 +27,67 @@
 
         .page-title {
             font-weight: 700;
-            color: #343a40; /* Darker title */
+            color: #ffffff; /* White title */
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
         }
 
         .page-subtitle {
-            color: #6c757d; /* Grey subtitle */
+            color: #adb5bd; /* Lighter grey subtitle */
             font-weight: 400;
         }
 
-        /* Search Bar */
+        /* --- Search Bar (Dark Theme) --- */
         #quizSearchInput {
-            border-radius: 30px; /* Rounded search bar */
+            background-color: #2c2c2c; /* Darker input background */
+            color: #f8f9fa; /* Light text */
+            border-radius: 30px;
             padding: 0.75rem 1.5rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border: 1px solid #ced4da;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Slightly stronger shadow */
+            border: 1px solid #444; /* Darker border */
+        }
+        #quizSearchInput::placeholder {
+            color: #6c757d; /* Muted placeholder text */
         }
 
         #quizSearchInput:focus {
-            border-color: #80bdff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            background-color: #333; /* Slightly lighter on focus */
+            border-color: #007bff; /* Blue focus border */
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.35); /* Adjusted focus shadow */
+            color: #fff;
         }
 
-        /* Category Titles */
+        /* --- Category Titles (Dark Theme) --- */
         .category-title {
             margin-top: 2.5rem;
             margin-bottom: 1.5rem;
-            border-bottom: 2px solid #dee2e6; /* Slightly darker border */
+            border-bottom: 2px solid #444; /* Darker border */
             padding-bottom: 0.75rem;
             font-weight: 600;
-            color: #495057; /* Dark grey category title */
-            font-size: 1.75rem; /* Larger category title */
+            color: #e9ecef; /* Lighter grey category title */
+            font-size: 1.75rem;
         }
+         h4.text-secondary { /* Sub-category titles */
+            color: #adb5bd !important; /* Ensure override - light grey */
+         }
 
-        /* Quiz Card Styling */
+
+        /* --- Quiz Card Styling (Dark Theme) --- */
         .quiz-card {
-            background-color: #ffffff;
-            border-radius: 15px; /* More rounded corners */
-            border: none; /* Remove default border */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Soft shadow */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden; /* Ensure inner content respects border radius */
-            display: flex; /* Use flex to make inner content take full height */
-            flex-direction: column; /* Stack inner content vertically */
+            background-color: #2c2c2c; /* Dark card background */
+            border-radius: 15px;
+            border: 1px solid #3a3a3a; /* Subtle border */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark */
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .quiz-card:hover {
-            transform: translateY(-5px); /* Lift card on hover */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); /* Enhanced shadow on hover */
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45); /* Enhanced shadow */
+            border-color: #555; /* Slightly lighter border on hover */
         }
 
         .quiz-card-inner {
@@ -83,60 +95,62 @@
             text-align: center;
             display: flex;
             flex-direction: column;
-            flex-grow: 1; /* Allow inner content to grow */
+            flex-grow: 1;
         }
 
         .quiz-title {
             font-weight: 600;
             font-size: 1.3rem;
-            color: #343a40;
-            margin-bottom: 15px; /* Space below title */
-            flex-grow: 1; /* Push button down */
+            color: #ffffff; /* White title */
+            margin-bottom: 15px;
+            flex-grow: 1;
         }
 
-        /* --- Attractive Icon Styles --- */
+        /* --- Attractive Icon Styles (No change needed for backgrounds) --- */
         .quiz-icon {
-            width: 75px;           /* Increased size for more impact */
+            width: 75px;
             height: 75px;
-            border-radius: 50%;     /* Perfect circle */
-            display: flex;          /* Use flexbox for easy centering */
-            align-items: center;    /* Center vertically */
-            justify-content: center; /* Center horizontally */
-            margin: 0 auto 25px auto; /* Center block horizontally, add space below */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Softer, noticeable shadow */
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
-            color: #fff; /* Default icon color (usually white) */
-            overflow: hidden; /* Ensures nothing spills out if needed */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px auto;
+            /* Slightly adjust shadow for dark background */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #fff; /* Default icon color (white) */
+            overflow: hidden;
         }
 
         .quiz-icon i {
-            font-size: 36px;       /* Larger icon font size */
-            line-height: 1;        /* Helps precise vertical centering */
-            transition: transform 0.3s ease; /* Smooth transition for icon too */
+            font-size: 36px;
+            line-height: 1;
+            transition: transform 0.3s ease;
         }
 
         .quiz-card:hover .quiz-icon {
-            transform: translateY(-5px) scale(1.05); /* Lift and slightly enlarge */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18); /* Enhanced shadow on hover */
+            transform: translateY(-5px) scale(1.05);
+            /* Slightly more pronounced shadow on hover for dark */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
-        /* --- Specific Language Backgrounds & Text Colors --- */
+        /* --- Specific Language Backgrounds (KEEP THESE - They provide contrast) --- */
         .python-icon { background-color: #3776ab; }
         .java-icon { background-color: #f89820; }
         .c-icon { background-color: #a8b9cc; }
         .cpp-icon { background-color: #649ad2; }
-        .js-icon { background-color: #f7df1e; color: #000; }
+        .js-icon { background-color: #f7df1e; color: #000; } /* Dark text still ok on yellow */
         .ruby-icon { background-color: #cc342d; }
         .go-icon { background-color: #00add8; }
-        .rust-icon { background-color: #dea584; color: #000; }
+        .rust-icon { background-color: #dea584; color: #000; } /* Dark text still ok on this orange */
         .swift-icon { background-color: #ffac45; }
         .kotlin-icon { background-color: #7f52ff; }
         .html-icon { background-color: #e34f26; }
         .css-icon { background-color: #1572b6; }
-        .react-icon { background-color: #61dafb; color: #000;}
+        .react-icon { background-color: #61dafb; color: #000;} /* Dark text still ok on cyan */
         .node-icon { background-color: #68a063; }
         .spring-icon { background-color: #6db33f; }
-        .sql-icon { background-color: #ffda44; color: #333; }
+        .sql-icon { background-color: #ffda44; color: #333; } /* Dark text still ok on gold */
         .plsql-icon { background-color: #e67e22; }
         .tsql-icon { background-color: #a9b9c7; }
         .bash-icon { background-color: #4eaa4f; }
@@ -144,25 +158,26 @@
         .perl-icon { background-color: #39457e; }
         .git-icon { background-color: #f05032; }
 
-        /* Ensure text color overrides work specifically for the icon inside */
+        /* Ensure text color overrides work specifically for the icon inside (no change needed) */
         .js-icon i,
         .rust-icon i,
         .react-icon i,
         .sql-icon i {
-           color: inherit; /* Make the <i> tag inherit the color set on the parent .quiz-icon */
+           color: inherit;
         }
 
-        /* Quiz Button */
+        /* --- Quiz Button (Dark Theme adjustments optional, blue often works well) --- */
         .quiz-button {
             background-color: #007bff; /* Primary blue */
             color: #fff;
             padding: 10px 25px;
-            border-radius: 30px; /* Pill shape */
+            border-radius: 30px;
             text-decoration: none;
             font-weight: 500;
-            display: inline-block; /* Needed for margin-top: auto to work well */
+            display: inline-block;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-top: auto; /* Pushes button to bottom within flex container */
+            margin-top: auto;
+            border: none; /* Ensure no default border interferes */
         }
 
         .quiz-button span {
@@ -173,7 +188,7 @@
             background-color: #0056b3; /* Darker blue on hover */
             color: #fff;
             text-decoration: none;
-            transform: scale(1.03); /* Slight scale effect */
+            transform: scale(1.03);
         }
 
         .quiz-button i {
@@ -181,12 +196,12 @@
         }
 
         .quiz-button:hover i {
-            transform: translateX(4px); /* Arrow moves slightly right */
+            transform: translateX(4px);
         }
 
         /* Ensure cards are visible by default if JS fails */
         .quiz-card-container {
-            display: block; /* Or flex depending on parent, but block is safe */
+            display: block;
         }
 
     </style>
@@ -200,7 +215,7 @@
         <!-- Search Bar -->
         <div class="row justify-content-center mb-5">
             <div class="col-md-8 col-lg-6">
-                <div class="form-group mb-0"> <!-- Removed bottom margin from form-group -->
+                <div class="form-group mb-0">
                     <input type="text" id="quizSearchInput" class="form-control form-control-lg" placeholder="Search for a quiz (e.g., Java, Python, SQL)...">
                 </div>
             </div>
@@ -243,7 +258,7 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                        <div class="quiz-icon cpp-icon"><i class="fas fa-code"></i></div> <!-- Consider changing C++ icon if a better one exists -->
+                        <div class="quiz-icon cpp-icon"><i class="fas fa-code"></i></div>
                         <h3 class="quiz-title">C++ Quiz</h3>
                         <a href="..\cpp interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
                     </div>
@@ -263,7 +278,6 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                        <!-- Note: Font Awesome 6 has fab fa-golang -->
                         <div class="quiz-icon go-icon"><i class="fab fa-golang"></i></div>
                         <h3 class="quiz-title">Go (Golang) Quiz</h3>
                         <a href="..\go interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
@@ -294,7 +308,6 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                         <!-- Note: Font Awesome doesn't have a specific Kotlin icon, using 'K' -->
                         <div class="quiz-icon kotlin-icon"><i class="fas fa-k"></i></div>
                         <h3 class="quiz-title">Kotlin Quiz</h3>
                         <a href="..\kotlin interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
@@ -305,8 +318,7 @@
 
         <!-- Category: Web Development Languages -->
         <h2 class="category-title">🌐 Web Development</h2>
-        <!-- Sub-Category: Frontend -->
-        <h4 class="mt-3 mb-3 font-weight-normal text-secondary" style="font-size: 1.4rem;">Frontend</h4> <!-- Slightly smaller sub-category -->
+        <h4 class="mt-3 mb-3 font-weight-normal text-secondary" style="font-size: 1.4rem;">Frontend</h4>
         <div class="row">
              <!-- HTML -->
              <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
@@ -349,7 +361,6 @@
                </div>
            </div>
         </div> <!-- /.row -->
-        <!-- Sub-Category: Backend -->
         <h4 class="mt-4 mb-3 font-weight-normal text-secondary" style="font-size: 1.4rem;">Backend</h4>
         <div class="row">
             <!-- Node.js -->
@@ -366,7 +377,6 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                  <div class="quiz-card h-100">
                      <div class="quiz-card-inner">
-                         <!-- Using leaf icon for Spring -->
                          <div class="quiz-icon spring-icon"><i class="fas fa-leaf"></i></div>
                          <h3 class="quiz-title">Spring Boot Quiz</h3>
                          <a href="..\spring interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
@@ -392,7 +402,6 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                  <div class="quiz-card h-100">
                      <div class="quiz-card-inner">
-                          <!-- Using database icon for consistency -->
                          <div class="quiz-icon plsql-icon"><i class="fas fa-database"></i></div>
                          <h3 class="quiz-title">PL/SQL Quiz</h3>
                          <a href="..\plsql interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
@@ -403,7 +412,6 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                  <div class="quiz-card h-100">
                      <div class="quiz-card-inner">
-                          <!-- Using database icon for consistency -->
                          <div class="quiz-icon tsql-icon"><i class="fas fa-database"></i></div>
                          <h3 class="quiz-title">T-SQL Quiz</h3>
                          <a href="..\tsql interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
@@ -429,7 +437,6 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                         <!-- Using terminal icon for consistency -->
                         <div class="quiz-icon powershell-icon"><i class="fas fa-terminal"></i></div>
                         <h3 class="quiz-title">PowerShell Quiz</h3>
                         <a href="..\powershell interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
@@ -440,7 +447,6 @@
             <div class="col-12 col-md-6 col-lg-4 mb-4 quiz-card-container">
                 <div class="quiz-card h-100">
                     <div class="quiz-card-inner">
-                         <!-- Using gem icon, common association with Perl (like Ruby) -->
                         <div class="quiz-icon perl-icon"><i class="fas fa-gem"></i></div>
                         <h3 class="quiz-title">Perl Quiz</h3>
                         <a href="..\perl interface\index.html" class="quiz-button"><span>START QUIZ</span> <i class="fas fa-arrow-right"></i></a>
@@ -471,7 +477,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
-    <!-- Search Filter Script -->
+    <!-- Search Filter Script (No changes needed here) -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('quizSearchInput');
@@ -495,13 +501,10 @@
                 });
 
                  // Optional: Hide category titles if all cards within them are hidden
-                 // Select all category titles and rows containing cards
                  const categoryTitles = document.querySelectorAll('.category-title');
                  categoryTitles.forEach(title => {
                      let nextRow = title.nextElementSibling;
-                     // Find the next sibling that is a div.row (adjust if structure changes)
                      while(nextRow && !nextRow.classList.contains('row')) {
-                         // If we hit another category title or the end, stop
                          if (nextRow.classList.contains('category-title') || nextRow.tagName === 'H4' || nextRow.tagName === 'H2') break;
                          nextRow = nextRow.nextElementSibling;
                      }
@@ -511,15 +514,13 @@
                         subCategoryTitle = title.nextElementSibling;
                      }
 
-
                      if (nextRow && nextRow.classList.contains('row')) {
                          const visibleCards = nextRow.querySelectorAll('.quiz-card-container[style*="display: block"], .quiz-card-container:not([style*="display: none"])');
                          let hasVisibleCards = visibleCards.length > 0;
 
-                         // If this row is empty, check the *next* row if it belongs to the same main category (e.g., Frontend/Backend)
                          let nextRowSibling = nextRow.nextElementSibling;
                          while(nextRowSibling && !nextRowSibling.classList.contains('row') && !nextRowSibling.classList.contains('category-title') && nextRowSibling.tagName !== 'H2') {
-                             nextRowSibling = nextRowSibling.nextElementSibling; // Skip over things like H4 titles
+                             nextRowSibling = nextRowSibling.nextElementSibling;
                          }
 
                          if (!hasVisibleCards && nextRowSibling && nextRowSibling.classList.contains('row')) {
@@ -530,19 +531,15 @@
 
                          if (hasVisibleCards) {
                              title.style.display = '';
-                             if(subCategoryTitle) subCategoryTitle.style.display = ''; // Show sub-category if relevant row has cards
+                             if(subCategoryTitle) subCategoryTitle.style.display = '';
                          } else {
                              title.style.display = 'none';
-                             if(subCategoryTitle) subCategoryTitle.style.display = 'none'; // Hide sub-category too
+                             if(subCategoryTitle) subCategoryTitle.style.display = 'none';
                          }
                      } else if (subCategoryTitle) {
-                         // Handle case where there's a subcategory title but maybe no row directly after it? Hide it if no cards found anywhere below.
-                         // This part might need more refinement depending on exact HTML structure. For now, assume the row check is sufficient.
-                         // A simple approach: if the main title gets hidden, hide the sub-title too.
                           if(title.style.display === 'none') {
                               subCategoryTitle.style.display = 'none';
                           } else {
-                               // Check if the row associated *with the subcategory* has visible cards
                                let subCatRow = subCategoryTitle.nextElementSibling;
                                while(subCatRow && !subCatRow.classList.contains('row')) {
                                    subCatRow = subCatRow.nextElementSibling;
@@ -551,13 +548,11 @@
                                    const visibleSubCards = subCatRow.querySelectorAll('.quiz-card-container[style*="display: block"], .quiz-card-container:not([style*="display: none"])');
                                    subCategoryTitle.style.display = visibleSubCards.length > 0 ? '' : 'none';
                                } else {
-                                    subCategoryTitle.style.display = 'none'; // Hide if no row found
+                                    subCategoryTitle.style.display = 'none';
                                }
                           }
                      }
                  });
-
-
             });
         });
     </script>
