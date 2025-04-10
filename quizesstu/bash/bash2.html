@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Bash Variables Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* Styles remain the same as the previous "Basic Shell Commands" version */
+        /* ... (Keep all the CSS from the previous example) ... */
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4e4e4e 0%, #2b2b2b 100%);
+            min-height: 100vh; position: relative; overflow-x: hidden; transition: background-color 0.3s ease;
+        }
+        body::before { /* Background pattern */
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.04) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+        html.dark body { background: linear-gradient(135deg, #3a3a3a 0%, #1c1c1c 100%); }
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        html.dark .glass-card { background: rgba(40, 40, 40, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ebdbb2; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #fbf1c7; }
+        html.dark .option { background-color: rgba(60, 56, 54, 0.6); border-color: rgba(255, 255, 255, 0.2); color: #d5c4a1; }
+        html.dark .option:hover:not(.disabled):not(.selected) { background: rgba(80, 73, 69, 0.8); border-color: rgba(251, 241, 199, 0.4); }
+        html.dark .option.selected { background: rgba(60, 56, 54, 0.9); border-color: #fabd2f; color: #fbf1c7; }
+        html.dark .option.correct { background: rgba(152, 151, 26, 0.35) !important; border-color: #b8bb26 !important; color: #fbf1c7 !important; }
+        html.dark .option.incorrect { background: rgba(251, 73, 52, 0.3) !important; border-color: #fb4934 !important; color: #fbf1c7 !important; }
+        html.dark .option.incorrect.selected { box-shadow: inset 0 0 5px rgba(251, 73, 52, 0.3); }
+        html.dark .explanation { background-color: rgba(40, 40, 40, 0.8); color: #d5c4a1; border-left-color: #83a598; }
+        html.dark .review-item.correct .explanation { border-color: #b8bb26; }
+        html.dark .review-item.incorrect .explanation { border-color: #fb4934; }
+        html.dark .code-snippet-container { background-color: #282828; color: #ebdbb2; border: 1px solid #504945; }
+        html.dark .btn-secondary { background-color: #504945; color: #ebdbb2; border: 1px solid #665c54; }
+        html.dark .btn-secondary:hover:not(:disabled) { background-color: #665c54; }
+        html.dark #score-circle { background-color: #3c3836; border: 6px solid transparent; }
+        html.dark #score-value { color: #fe8019; }
+        html.dark .text-gray-500 { color: #a89984; } html.dark .text-gray-600 { color: #bdae93; } html.dark .text-gray-700 { color: #d5c4a1; } html.dark .text-gray-800 { color: #ebdbb2; }
+        html.dark .text-indigo-900 { color: #fabd2f; } html.dark .text-indigo-700 { color: #fe8019; } html.dark .text-indigo-600 { color: #fe8019; }
+        html.dark .bg-gray-200 { background-color: #504945;} html.dark .bg-indigo-50 { background-color: #3a3a3a;}
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(80, 73, 69, 0.4), rgba(60, 56, 54, 0.3)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); color: #ebdbb2; }
+        html.dark .timer-warning { color: #fabd2f !important; border-color: #fabd2f !important; }
+        html.dark .history-date { color: #a89984; }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        html.dark .btn-primary { background: linear-gradient(to right, #666666, #444444); color: white; }
+        html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #777777, #555555); }
+        html.dark .btn-submit { background: linear-gradient(to right, #83a598, #458588); color: #282828; }
+        html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #8ec07c, #83a598); }
+        html.dark .progress-bar { background: linear-gradient(to right, #8ec07c, #fabd2f); }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #8ec07c) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #d65d0e) 1; }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; color: #333; }
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(245, 245, 245, 0.9); cursor: pointer; color: #444; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(100, 100, 100, 0.5); }
+        .option.selected { border-color: #555; background: linear-gradient(to right, rgba(180, 180, 180, 0.2), rgba(200, 200, 200, 0.2)); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+        .option.correct { background: linear-gradient(to right, rgba(152, 151, 26, 0.15), rgba(184, 187, 38, 0.1)) !important; border-color: #79740e !important; color: #5f670a !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(251, 73, 52, 0.1), rgba(204, 36, 29, 0.1)) !important; border-color: #cc241d !important; color: #9d0006 !important; cursor: default; }
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, #666666, #444444); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #777777, #555555); }
+        .btn-secondary { background-color: #f0f0f0; color: #333; border: 1px solid #ccc; }
+        .btn-secondary:hover:not(:disabled) { background-color: #e0e0e0; }
+        .btn-submit { background: linear-gradient(to right, #458588, #076678); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #83a598, #458588); }
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(0, 0, 0, 0.1); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.05); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #8ec07c, #fabd2f); box-shadow: 0 0 15px rgba(250, 189, 47, 0.3); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #ccc, #aaa) 1; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #8ec07c) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #d65d0e) 1; }
+        #score-value { color: #444; }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(248, 248, 248, 0.9); margin-top: 0.75rem; border-color: #777; }
+        .review-item.correct .explanation { border-color: #79740e; } .review-item.incorrect .explanation { border-color: #cc241d; }
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #282a36; border: 1px solid #44475a; font-size: 0.9em; color: #f8f8f2; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #fabd2f !important; border-color: #fabd2f !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #458588; outline-offset: 2px; }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #fe8019; }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(0, 0, 0, 0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        .history-item:last-child { border-bottom: none; } .history-score { font-weight: 600; color: #333; } .history-date { font-size: 0.8rem; color: #777; }
+        html.dark #score-history-area { border-top-color: rgba(255, 255, 255, 0.1); } html.dark .history-item { border-bottom-color: rgba(255, 255, 255, 0.1); } html.dark .history-score { color: #ebdbb2; } html.dark .history-date { color: #a89984; }
+        html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+        html.dark .review-item.correct { border-color: #b8bb26; } html.dark .review-item.incorrect { border-color: #fb4934; }
+        html.dark .review-item ul li.text-green-700 { color: #b8bb26; } html.dark .review-item ul li.text-red-700 { color: #fb4934; }
+        html.dark .review-item ul li.bg-green-100 { background-color: rgba(184, 187, 38, 0.2); ring-color: rgba(184, 187, 38, 0.5); }
+        html.dark .review-item ul li .fa-check { color: #b8bb26; } html.dark .review-item ul li .fa-times { color: #fb4934; }
+        html.dark .review-item .explanation strong { color: #fabd2f; } html.dark .review-item p {color: #d5c4a1; } html.dark .review-item ul li { color: #d5c4a1;} html.dark .review-item ul li span.text-gray-500 {color: #a89984;}
+        html.light .text-indigo-900 { color: #333; } html.light .text-indigo-700 { color: #555; } html.light .text-indigo-600 { color: #555; } html.light .text-indigo-800 { color: #222; }
+        html.light .bg-indigo-50 { background-color: #f5f5f5;}
+        html.light .explanation .text-sm { color: #444; } html.light .explanation strong { color: #222; }
+        html.light .review-item p, html.light .review-item li { color: #333; }
+        html.light .review-item li.text-green-700 { color: #5f670a !important; } html.light .review-item li.text-red-700 { color: #9d0006 !important; }
+        html.light .review-item li.bg-green-100 { background-color: #eaf6d0 !important; ring-color: #a8c02c !important;}
+        html.light .review-item ul li span.text-gray-500 {color: #888;}
+        html.light #start-screen h2 { color: #333; } html.light #start-screen p { color: #555; }
+        html.light #score-history-area h3 { color: #444; } html.light .history-item .history-score { color: #333; } html.light .history-item span.text-gray-600 { color: #555; } html.light .history-item .history-date { color: #777; }
+        html.light #results-container h2 { color: #333; } html.light #score-value { color: #444; } html.light #score-circle .text-gray-500 { color: #777; }
+        html.light #accuracy-value { color: #333; } html.light #time-taken { color: #333; } html.light #performance-message { color: #444; }
+        html.light .bg-indigo-50 { background-color: #f0f0f0; border-color: #e0e0e0;}
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Changed Heading -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Bash Variables & Data Types</h1>
+            <!-- Changed Subheading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Master variable handling in Bash!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+             <!-- Changed Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Test Your Bash Variable Skills</h2>
+             <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers assignment, scope, quoting, arrays, special variables, and more.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container (Structure remains the same) -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <div class="mb-6 progress-container"> <div id="progress-bar" class="progress-bar" style="width: 0%"></div> </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0"> <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span> <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span> </div>
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6"> <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3> <div id="code-snippet-area" class="mb-5"></div> <div id="options-container" class="space-y-4"> </div> <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;"> </div> </div>
+            <div class="flex justify-between items-center mt-8"> <button id="prev-btn" class="btn btn-secondary hidden"> <i class="fas fa-arrow-left mr-2"></i> Prev </button> <div id="nav-spacer" class="flex-grow"></div> <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i> </button> <button id="submit-btn" class="btn btn-submit hidden" disabled> Submit <i class="fas fa-check-circle ml-2"></i> </button> </div>
+        </div>
+
+        <!-- Results Container (Structure remains the same) -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas> <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Quiz Results</h2>
+            <div class="flex justify-center mb-8"> <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl"> <div class="text-center"> <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span> <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span> </div> </div> </div>
+            <div class="space-y-6 mb-8"> <div> <div class="flex justify-between items-center mb-2"> <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span> <span id="accuracy-value" class="font-bold text-lg">0%</span> </div> <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden"> <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div> </div> </div> <div> <div class="flex justify-between items-center mb-2"> <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span> <span id="time-taken" class="font-bold text-lg">00:00</span> </div> <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2"> <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300"> Keep practicing to improve your skills! </p> </div> </div> </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6"> <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center"> <i class="fas fa-search mr-2"></i> Review Answers </button> <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center"> <i class="fas fa-redo mr-2"></i> Restart Quiz </button> </div>
+            <div class="text-center mt-4"> <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm"> <i class="fas fa-share-alt mr-2"></i> Share Score </button> </div>
+        </div>
+
+        <!-- Review Container (Structure remains the same) -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+             // --- Bash Variables & Data Types Questions ---
+
+             // 1. Basic Assignment
+             { question: "How do you correctly assign the string \"hello world\" to a variable named `greeting` in Bash?", options: ["greeting = \"hello world\"", "greeting=\"hello world\"", "set greeting = \"hello world\"", "let greeting=\"hello world\""], correctAnswer: 1, explanation: "In Bash, variable assignment uses the syntax `VARIABLE_NAME=value`. There should be no spaces around the equals sign (`=`)." },
+             // 2. Accessing Variable
+             { question: "If `my_var=\"Bash\"`, how do you print the value of `my_var` using `echo`?", code: "my_var=\"Bash\"", options: ["echo my_var", "echo $my_var", "echo %my_var%", "print $my_var"], correctAnswer: 1, explanation: "You access the value of a variable by prefixing its name with a dollar sign (`$`), like `$my_var`." },
+             // 3. Single vs Double Quotes (Variable Expansion)
+             { question: "What will the following command print?", code: "name=\"Alice\"\necho 'Hello, $name!'", options: ["Hello, Alice!", "Hello, $name!", "'Hello, $name!'", "Error"], correctAnswer: 1, explanation: "Single quotes (`'`) prevent variable expansion and command substitution. The literal string `$name` is printed." },
+             // 4. Double Quotes (Variable Expansion)
+             { question: "What will this command print?", code: "user=\"Bob\"\necho \"Welcome, $user!\"", options: ["Welcome, Bob!", "Welcome, $user!", "\"Welcome, $user!\"", "Error"], correctAnswer: 0, explanation: "Double quotes (`\"`) allow variable expansion. `$user` is replaced with its value, \"Bob\"." },
+             // 5. Unset Variable
+             { question: "What command removes a variable named `temp_var` from the shell's memory?", options: ["rm temp_var", "delete temp_var", "unset temp_var", "clear temp_var"], correctAnswer: 2, explanation: "The `unset` command is used to remove shell variables or functions." },
+             // 6. Read-only Variable
+             { question: "How can you make a variable `API_KEY` read-only after assigning it a value?", options: ["const API_KEY=\"xyz\"", "final API_KEY=\"xyz\"", "readonly API_KEY", "lock API_KEY"], correctAnswer: 2, explanation: "The `readonly` command marks a variable so that its value cannot be changed or unset afterwards. You typically assign first, then make it readonly." },
+             // 7. Local Variable in Function
+             { question: "Inside a Bash function, how do you declare a variable `count` that is local to that function?", options: ["var count=0", "local count=0", "private count=0", "function_var count=0"], correctAnswer: 1, explanation: "The `local` keyword declares a variable with scope limited to the current function and any functions it calls." },
+             // 8. Arithmetic Expansion
+             { question: "How do you perform arithmetic addition and store the result in `sum`?", code: "a=5\nb=10", options: ["sum=$a + $b", "sum=$(expr $a + $b)", "sum=$((a + b))", "sum=a+b"], correctAnswer: 2, explanation: "The `$((...))` syntax is the modern and preferred way for arithmetic expansion in Bash. `expr` is an older external command." },
+             // 9. Special Variable: Exit Status
+             { question: "Which special variable holds the exit status (0 for success, non-zero for failure) of the last executed command?", options: ["$!", "$#", "$$", "$?"], correctAnswer: 3, explanation: "`$?` contains the exit code of the most recently executed foreground command or script." },
+             // 10. Special Variable: Number of Arguments
+             { question: "Which special variable represents the total number of positional parameters (arguments) passed to a script or function?", options: ["$*", "$@", "$#", "$0"], correctAnswer: 2, explanation: "`$#` expands to the number of positional parameters passed to the script or function." },
+             // 11. Special Variable: All Arguments as Single String
+             { question: "Which special variable expands to all positional parameters as a single word, separated by the first character of the IFS variable?", options: ["$*", "$@", "$#", "$!"], correctAnswer: 0, explanation: "`$*` treats all arguments as one string. When quoted (`\"$*\"`), it expands to a single string with arguments joined by the first IFS character (usually space)." },
+             // 12. Special Variable: All Arguments as Separate Words
+             { question: "Which special variable, when quoted (`\"$@\"`), expands each positional parameter as a separate word, preserving spaces within arguments?", options: ["$*", "$@", "$#", "$?"], correctAnswer: 1, explanation: "`\"$@\"` is crucial for handling arguments correctly, especially those containing spaces. It expands each argument into its own quoted string." },
+             // 13. Special Variable: Script Name
+             { question: "Which special variable holds the name of the script itself as it was invoked?", options: ["$1", "$$", "$#", "$0"], correctAnswer: 3, explanation: "`$0` contains the name of the script or shell being executed." },
+             // 14. Special Variable: Process ID
+             { question: "Which special variable expands to the process ID (PID) of the current shell?", options: ["$PID", "$!", "$$", "$?"], correctAnswer: 2, explanation: "`$$` gives the process ID of the shell running the script." },
+             // 15. Default Value If Unset
+             { question: "What does `${VAR:-default}` do?", options: ["Assigns `default` to `VAR` if `VAR` is unset or null.", "Prints `default` if `VAR` is unset or null, but doesn't change `VAR`.", "Prints an error if `VAR` is unset or null.", "Assigns `default` to `VAR` only if `VAR` is unset."], correctAnswer: 1, explanation: "This parameter expansion uses the value of `VAR` if set and non-null, otherwise it uses `default`. The variable `VAR` itself is not modified." },
+             // 16. Assign Default Value If Unset
+             { question: "What does `${VAR:=default}` do?", options: ["Assigns `default` to `VAR` if `VAR` is unset or null, and returns the value.", "Prints `default` if `VAR` is unset or null.", "Causes an error if `VAR` is unset or null.", "Compares `VAR` with `default`."], correctAnswer: 0, explanation: "This expansion assigns `default` to `VAR` only if `VAR` is unset or null. It then returns the final value of `VAR`." },
+             // 17. Environment Variable Check
+             { question: "How can you check if an environment variable `EDITOR` is set (even if it's empty)?", options: ["if [ -v EDITOR ]; then ...", "if [ $EDITOR ]; then ...", "if [ -e EDITOR ]; then ...", "if exists $EDITOR; then ..."], correctAnswer: 0, explanation: "The `-v VARNAME` test operator within `[` or `[[` checks if the variable `VARNAME` is set, regardless of its value (it can be empty)." },
+             // 18. Array Declaration
+             { question: "How do you declare an indexed array named `my_array` with elements \"apple\", \"banana\", \"cherry\"?", options: ["my_array={\"apple\", \"banana\", \"cherry\"}", "my_array=(\"apple\" \"banana\" \"cherry\")", "array my_array = [apple, banana, cherry]", "set my_array = apple banana cherry"], correctAnswer: 1, explanation: "Indexed arrays in Bash are declared using parentheses `(...)` with elements separated by spaces." },
+             // 19. Accessing Array Element
+             { question: "Given `files=(\"a.txt\" \"b.log\" \"c.sh\")`, how do you access the second element (\"b.log\")?", code: "files=(\"a.txt\" \"b.log\" \"c.sh\")", options: ["echo $files[1]", "echo ${files[1]}", "echo $files(1)", "echo ${files(1)}"], correctAnswer: 1, explanation: "Array elements are accessed using zero-based indexing within square brackets, like `${array_name[index]}`. Index 1 corresponds to the second element." },
+             // 20. Getting Array Length
+             { question: "How do you find the number of elements in the array `users`?", code: "users=(\"root\" \"admin\" \"guest\")", options: ["echo ${#users}", "echo ${#users[@]}", "echo $(users.length)", "echo count(users)"], correctAnswer: 1, explanation: "`${#array_name[@]}` or `${#array_name[*]}` expands to the number of elements in the array." }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        const SCORE_HISTORY_KEY = 'bashVariablesQuizScoreHistory'; // Changed Key
+        const QUIZ_STATE_KEY = 'bashVariablesQuizState'; // Changed Key
+
+        // --- DOM Elements (remain the same) ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+
+        // --- State Variables (remain the same) ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions (remain the same) ---
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+        function formatTime(seconds) { const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
+
+        // --- Dark Mode (remains the same) ---
+        function applyDarkMode(isDark) { const icon = darkModeToggle.querySelector('i'); if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); } else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); } if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 50); } }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE (Uses updated QUIZ_STATE_KEY) ---
+        function saveState() { if (!quizActive) return; try { const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true }; localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); } catch (e) { console.error("Failed to save quiz state:", e); } }
+        function loadState() { const savedState = localStorage.getItem(QUIZ_STATE_KEY); if (savedState) { try { const state = JSON.parse(savedState); if (state.quizActive && typeof state.currentQuestionIndex === 'number' && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length && typeof state.timeElapsed === 'number') { currentQuestionIndex = state.currentQuestionIndex; userAnswers = state.userAnswers; timeElapsed = state.timeElapsed; questionsOrder = state.questionsOrder; quizActive = true; console.log("In-progress quiz state loaded successfully."); return true; } else { console.warn("Saved in-progress quiz state is incompatible or invalid."); clearState(); return false; } } catch (e) { console.error("Failed to parse saved in-progress quiz state:", e); clearState(); return false; } } return false; }
+        function clearState() { localStorage.removeItem(QUIZ_STATE_KEY); console.log("In-progress quiz state cleared."); }
+
+        // --- Local Storage: SCORE HISTORY (Uses updated SCORE_HISTORY_KEY) ---
+        function loadScoreHistory() { try { const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); scoreHistory = historyJson ? JSON.parse(historyJson) : []; if (!Array.isArray(scoreHistory)) scoreHistory = []; scoreHistory = scoreHistory.filter(attempt => typeof attempt.score === 'number' && typeof attempt.totalQuestions === 'number' && typeof attempt.accuracy === 'number' && typeof attempt.timestamp === 'number' && typeof attempt.timeTaken === 'number' ); } catch (e) { console.error("Failed to load or parse score history:", e); scoreHistory = []; } }
+        function saveScoreHistory() { try { const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); } catch (e) { console.error("Failed to save score history:", e); } }
+        function addScoreToHistory(attemptData) { scoreHistory.push(attemptData); saveScoreHistory(); displayScoreHistory(); }
+        function clearScoreHistory() { if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) { scoreHistory = []; localStorage.removeItem(SCORE_HISTORY_KEY); displayScoreHistory(); console.log("Score history cleared."); } }
+
+        // --- UI: Display Score History (remains the same) ---
+        function displayScoreHistory() { scoreHistoryList.innerHTML = ''; if (scoreHistory.length === 0) { scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`; clearHistoryBtn.classList.add('hidden'); } else { const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); sortedHistory.forEach(attempt => { const item = document.createElement('div'); item.className = 'history-item'; const date = new Date(attempt.timestamp); const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }); item.innerHTML = ` <div class="flex-grow pr-4"> <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span> <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span> </div> <div class="history-date text-right"> ${formattedDate}<br>${formattedTime} </div> `; scoreHistoryList.appendChild(item); }); clearHistoryBtn.classList.remove('hidden'); } }
+
+        // --- Quiz Logic (Core remains the same, loads new quizData) ---
+        function startQuiz() { if (loadState()) { console.log("Resuming quiz from saved state."); startTime = Date.now() - timeElapsed * 1000; } else { console.log("Initializing a new quiz session."); currentQuestionIndex = 0; score = 0; userAnswers = Array(quizData.length).fill(null); timeElapsed = 0; questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder); startTime = Date.now(); clearState(); } startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; quizContainer.style.display = 'block'; quizActive = true; loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); saveState(); }
+        function loadQuestion(index) { if (index < 0 || index >= quizData.length) return; const questionIndexInOriginalData = questionsOrder[index]; const question = quizData[questionIndexInOriginalData]; if (!question) return; questionCard.classList.remove('animate__animated', 'animate__fadeInUp'); void questionCard.offsetWidth; questionCard.classList.add('animate__animated', 'animate__fadeInUp'); questionText.textContent = `${index + 1}. ${question.question}`; feedbackMessage.textContent = ''; codeSnippetArea.innerHTML = ''; if (question.code) { const pre = document.createElement('pre'); pre.className = 'code-snippet-container'; const code = document.createElement('code'); code.className = 'language-shell'; /* Ensure Bash highlighting */ code.textContent = question.code; pre.appendChild(code); codeSnippetArea.appendChild(pre); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightElement(code), 0); } } optionsContainer.innerHTML = ''; const selectedAnswerIndex = userAnswers[index]; question.options.forEach((optionText, optionIndex) => { const optionElement = document.createElement('div'); optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300'; optionElement.setAttribute('role', 'radio'); optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false'); optionElement.tabIndex = 0; const label = document.createElement('span'); label.className = 'flex-grow mr-4'; label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`; const feedbackIconContainer = document.createElement('span'); feedbackIconContainer.className = 'feedback-icon text-xl'; feedbackIconContainer.innerHTML = ` <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i> <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i> `; optionElement.appendChild(label); optionElement.appendChild(feedbackIconContainer); const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } }; optionElement.addEventListener('click', handleSelection); optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } }); optionsContainer.appendChild(optionElement); }); if (selectedAnswerIndex !== null) { showFeedback(index, selectedAnswerIndex); nextBtn.disabled = false; if(index === quizData.length - 1) submitBtn.disabled = false; } else { nextBtn.disabled = true; if (index === quizData.length - 1) submitBtn.disabled = true; } updateProgress(index); updateNavigation(); }
+        function selectOption(displayIndex, selectedOptionIndex) { if (userAnswers[displayIndex] !== null) return; userAnswers[displayIndex] = selectedOptionIndex; showFeedback(displayIndex, selectedOptionIndex); nextBtn.disabled = false; if (displayIndex === quizData.length - 1) { submitBtn.disabled = false; } saveState(); }
+        function showFeedback(displayIndex, selectedOptionIndex) { const originalQuestionIndex = questionsOrder[displayIndex]; const question = quizData[originalQuestionIndex]; const isCorrect = selectedOptionIndex === question.correctAnswer; const options = optionsContainer.querySelectorAll('.option'); options.forEach((optElement, currentOptionIndex) => { optElement.classList.add('disabled'); optElement.style.cursor = 'default'; optElement.tabIndex = -1; const iconCorrect = optElement.querySelector('.icon-correct'); const iconIncorrect = optElement.querySelector('.icon-incorrect'); if (iconCorrect) iconCorrect.style.opacity = '0'; if (iconIncorrect) iconIncorrect.style.opacity = '0'; if (currentOptionIndex === selectedOptionIndex) { optElement.classList.add('selected'); optElement.setAttribute('aria-checked', 'true'); if (isCorrect) { optElement.classList.add('correct'); if (iconCorrect) iconCorrect.style.opacity = '1'; feedbackMessage.textContent = "Correct!"; feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse'; } else { optElement.classList.add('incorrect'); if (iconIncorrect) iconIncorrect.style.opacity = '1'; feedbackMessage.textContent = "Incorrect."; feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX'; const correctOptionElement = options[question.correctAnswer]; if (correctOptionElement) { correctOptionElement.classList.add('correct'); const correctOptIcon = correctOptionElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } } else if (currentOptionIndex === question.correctAnswer) { optElement.classList.add('correct'); const correctOptIcon = optElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } else { optElement.setAttribute('aria-checked', 'false'); } }); setTimeout(() => { feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX'); }, 1000); }
+        function updateProgress(index) { const totalQuestions = quizData.length; const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0; progressBar.style.width = `${progress}%`; questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`; }
+        function updateNavigation() { const isFirstQuestion = currentQuestionIndex === 0; const isLastQuestion = currentQuestionIndex === quizData.length - 1; prevBtn.classList.toggle('hidden', isFirstQuestion); navSpacer.classList.toggle('hidden', !isFirstQuestion); nextBtn.classList.toggle('hidden', isLastQuestion); submitBtn.classList.toggle('hidden', !isLastQuestion); const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null; nextBtn.disabled = !currentAnswerSelected; if (isLastQuestion) { submitBtn.disabled = !currentAnswerSelected; } }
+        function nextQuestion() { if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); } }
+        function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); } }
+
+        // --- Timer (remains the same) ---
+        function startTimer() { clearInterval(timerInterval); if (!quizActive) return; const updateTimerDisplay = () => { if (!quizActive) { clearInterval(timerInterval); return; } const now = Date.now(); if (typeof startTime !== 'number' || isNaN(startTime)) { console.error("Invalid startTime for timer."); clearInterval(timerInterval); return; } timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed; if (timeRemaining <= 0) { timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`; timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); clearInterval(timerInterval); if (quizActive) { submitQuiz(true); } return; } timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`; timerElement.classList.toggle('timer-warning', timeRemaining <= 60); if (timeRemaining > 60) { timerElement.classList.remove('text-red-500', 'dark:text-red-400'); } if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); } }; updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000); }
+
+        // --- Submit and Results (remains the same, uses updated quizData) ---
+        function submitQuiz(timeUp = false) { if (!quizActive && !timeUp) return; const wasActive = quizActive; quizActive = false; clearInterval(timerInterval); if (!wasActive && !timeUp) { console.warn("Attempted to submit an already inactive quiz."); return; } score = 0; userAnswers.forEach((answerIndex, displayIdx) => { if (displayIdx < questionsOrder.length && answerIndex !== null) { const originalQuestionIndex = questionsOrder[displayIdx]; if (originalQuestionIndex >= 0 && originalQuestionIndex < quizData.length) { if (answerIndex === quizData[originalQuestionIndex].correctAnswer) { score++; } } else { console.warn(`Invalid originalQuestionIndex ${originalQuestionIndex} found at displayIndex ${displayIdx}.`); } } }); const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed; addScoreToHistory({ score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)), timestamp: Date.now(), timeTaken: finalTime }); quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); scoreValue.textContent = `${score}/${totalQuestions}`; accuracyValue.textContent = `${accuracy.toFixed(1)}%`; accuracyBar.style.width = `0%`; setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); timeTaken.textContent = formatTime(finalTime); let performanceText = ""; let scoreLevel = 'low'; if (timeUp) { performanceText = "Time's up! Let's review Bash variables."; if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium'; } else { if (accuracy >= 95) { performanceText = "Excellent! You've mastered Bash variables!"; scoreLevel = 'high'; } else if (accuracy >= 80) { performanceText = "Great job! Strong understanding of variables."; scoreLevel = 'high'; } else if (accuracy >= 60) { performanceText = "Good work! Keep refining your variable skills."; scoreLevel = 'medium'; } else if (accuracy >= 40) { performanceText = "Solid effort. Focus on quoting and special variables."; scoreLevel = 'medium'; } else { performanceText = "Keep learning! Check the explanations carefully."; scoreLevel = 'low'; } } performanceMessage.textContent = performanceText; scoreCircle.setAttribute('data-score-level', scoreLevel); if (scoreLevel === 'high' && !timeUp) { triggerConfetti(); } clearState(); }
+        function triggerConfetti() { if (typeof confetti !== 'function') { console.warn("Confetti function not loaded."); return; } const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true }); if (!myConfetti) { console.warn("Failed to create confetti instance."); return; } myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 }); setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200); }
+
+        // --- Review Screen (remains the same, loads new quizData) ---
+        function showReview() { resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block'; reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn'); reviewQuestions.innerHTML = ''; questionsOrder.forEach((originalQuestionIndex, displayIndex) => { const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer; const reviewItem = document.createElement('div'); reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ userAnswerIndex === null ? 'border-gray-400 bg-gray-50 dark:bg-gray-800/30 dark:border-gray-500' : isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30 dark:border-green-600' : 'border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-600' }`; let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`; if (question.code) { const escapedCode = question.code; reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-shell">${escapedCode}</code></pre>`; } reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`; question.options.forEach((optionText, i) => { let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = ""; if (i === question.correctAnswer) { liClass = "font-semibold text-green-700 dark:text-green-400"; iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; } if (i === userAnswerIndex) { if (isCorrect) { liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50"; } else { liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; } } else if (userAnswerIndex === null && i !== question.correctAnswer) { liClass = "text-gray-400 dark:text-gray-600"; } if (userAnswerIndex === null && i === question.correctAnswer) { liClass += " opacity-80"; } reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"> <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span> <span class="flex-grow">${optionText}</span> ${iconHTML} </li>`; }); if (userAnswerIndex === null) { reviewHTML += `<li class="mt-2 text-sm text-yellow-700 dark:text-yellow-400 italic">(Not answered)</li>`; } reviewHTML += `</ul>`; if (question.explanation) { const formattedExplanation = question.explanation.replace(/`([^`]+)`/g, '<code class="bg-gray-200 dark:bg-gray-700 px-1 rounded text-sm">$1</code>'); reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700"> <strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong> <p class="text-sm text-gray-600 dark:text-gray-400">${formattedExplanation}</p> </div>`; } reviewItem.innerHTML = reviewHTML; reviewQuestions.appendChild(reviewItem); }); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0); } }
+        function showResultsScreen() { reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); }
+
+        // --- Restart (remains the same) ---
+        function restartQuiz() { currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; startTime = undefined; clearInterval(timerInterval); progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = ''; resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn'); nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.remove('hidden'); clearState(); displayScoreHistory(); console.log("Bash Variables Quiz reset."); }
+
+        // --- Sharing (Uses updated text) ---
+         async function shareResults() { const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Bash Variables Quiz! How well do you know Bash vars?`; const shareUrl = window.location.href; if (navigator.share) { try { await navigator.share({ title: 'My Bash Variables Quiz Result!', text: shareText, url: shareUrl }); console.log('Result shared successfully'); } catch (err) { console.error('Error sharing:', err); copyToClipboard(`${shareText} ${shareUrl}`); } } else { copyToClipboard(`${shareText} ${shareUrl}`); } }
+        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); }).catch(err => { console.error('Could not copy text: ', err); alert("Failed to copy results. You may need to copy manually."); }); }
+
+        // --- Event Listeners (remain the same) ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (remains the same) ---
+         document.addEventListener('keydown', (e) => { const activeEl = document.activeElement; if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) { return; } if (quizContainer.style.display === 'block') { if (e.key === 'ArrowRight' && !nextBtn.disabled && !nextBtn.classList.contains('hidden')) { nextQuestion(); } else if (e.key === 'ArrowLeft' && !prevBtn.classList.contains('hidden')) { prevQuestion(); } const optionIndex = parseInt(e.key) - 1; if (optionIndex >= 0 && optionIndex < 4) { const optionToSelect = optionsContainer.querySelectorAll('.option')[optionIndex]; if (optionToSelect && !optionToSelect.classList.contains('disabled')) { selectOption(currentQuestionIndex, optionIndex); } } else { const charCode = e.key.toUpperCase().charCodeAt(0); if (charCode >= 65 && charCode <= 68) { const optionCharIndex = charCode - 65; const optionToSelect = optionsContainer.querySelectorAll('.option')[optionCharIndex]; if (optionToSelect && !optionToSelect.classList.contains('disabled')) { selectOption(currentQuestionIndex, optionCharIndex); } } } } if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); } else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); } else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); } else if (document.activeElement === startBtn && startScreen.style.display === 'block' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); } else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); } else if (document.activeElement === reviewBtn && resultsContainer.style.display === 'block' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); } else if (document.activeElement === restartBtn && resultsContainer.style.display === 'block' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); } else if (document.activeElement === shareBtn && resultsContainer.style.display === 'block' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); } else if (document.activeElement === backToResults && reviewContainer.style.display === 'block' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); } });
+
+        // --- Initial Application Load (remains the same) ---
+        function initializeApp() { const savedDarkMode = localStorage.getItem('darkMode'); applyDarkMode(savedDarkMode === 'enabled'); loadScoreHistory(); displayScoreHistory(); quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); console.log("Bash Variables Quiz application initialized."); }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

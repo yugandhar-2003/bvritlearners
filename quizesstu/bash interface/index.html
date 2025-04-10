@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bash Scripting Quizzes</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern Quiz Styles -->
+    <link rel="stylesheet" href="../modern-quiz-styles.css">
+    <!-- Custom Styles (if needed) -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+</head>
+<body>
+    <!-- Back Button (Adjust path if necessary) -->
+    <a href="../../tutorials/index.html" class="back-button" style="position: absolute; top: 20px; left: 20px; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+        <i class="fas fa-arrow-left"></i> Back to Tutorials
+    </a>
+
+    <div class="container">
+        <h1>Bash Scripting Quizzes</h1>
+        <p style="margin-bottom: 2rem;">Test your Bash scripting knowledge with these interactive quizzes</p>
+
+        <div class="quiz-grid">
+            <!-- 1. Basic Shell Commands -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Basic Shell Commands</h3>
+                    <p class="quiz-card-description">Test your knowledge of fundamental Bash commands like ls, cd, pwd, echo, cat, and more.</p>
+                    <!-- Note: Using relative path -->
+                    <a href="../bash/bash1.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 2. Variables and Data Types -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Variables and Data Types</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions on declaring, assigning, and using variables in Bash scripts.</p>
+                    <!-- Note: Using relative path -->
+                    <a href="../bash/bash2.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 3. Input and Output -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Input and Output</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of reading user input (read) and managing output streams (echo, redirection).</p>
+                     <!-- Note: Using relative path -->
+                    <a href="../bash/bash3"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 4. Conditional Statements -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Conditional Statements</h3>
+                    <p class="quiz-card-description">Test your grasp of if, elif, else, case statements, and test conditions ([ ], [[ ]]).</p>
+                     <!-- Note: Using relative path -->
+                    <a href="../bash/bash4.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 5. Loops -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Loops</h3>
+                    <p class="quiz-card-description">Assess your knowledge of for, while, and until loops for iteration and automation.</p>
+                     <!-- Note: Using relative path -->
+                    <a href="../bash/bash5.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 6. Functions -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Functions</h3>
+                    <p class="quiz-card-description">Challenge yourself with defining, calling, passing arguments to, and returning values from Bash functions.</p>
+                     <!-- Note: Using relative path -->
+                    <a href="../bash/bash6.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+           
+            <!-- 8. Arrays -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Arrays</h3>
+                    <p class="quiz-card-description">Test your knowledge of creating, accessing, and manipulating indexed and associative arrays in Bash.</p>
+                     <!-- Note: Using relative path -->
+                    <a href="../bash/bash8.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 9. File Handling -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">File Handling</h3>
+                    <p class="quiz-card-description">Assess your skills in checking file existence, reading from, writing to, and managing files.</p>
+                     <!-- Note: Using relative path -->
+                    <a href="../bash/bash9.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 10. Process Management & Permissions -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Process Management & Permissions</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of managing processes (ps, kill) and file permissions (chmod, chown).</p>
+                     <!-- Note: Using relative path -->
+                    <a href="../bash/bash10.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+        </div> <!-- /.quiz-grid -->
+    </div> <!-- /.container -->
+
+    <!-- Script for hover effect (remains the same) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make the first quiz card active by default
+            const firstCard = document.querySelector('.quiz-card');
+            if (firstCard) {
+                firstCard.classList.add('active');
+            }
+
+            // Add hover effects
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    cards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
