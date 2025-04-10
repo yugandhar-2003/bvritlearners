@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- *** UPDATED TITLE *** -->
+    <title>PowerShell Remoting & DSC Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* --- CSS styles (Using Purple/Indigo Theme for PowerShell - UNCHANGED) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); /* Indigo to Purple */
+            min-height: 100vh; position: relative; overflow-x: hidden; transition: background-color 0.3s ease;
+        }
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+        html.dark body { background: linear-gradient(135deg, #3730a3 0%, #5b21b6 100%); } /* Darker Indigo/Purple */
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s ease; }
+        html.dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); color: #e5e7eb; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #f9fafb; }
+
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(99, 102, 241, 0.5); } /* Indigo hover */
+        .option.selected { border-color: #6366f1; background: linear-gradient(to right, rgba(99, 102, 241, 0.15), rgba(124, 58, 237, 0.15)); box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2); } /* Indigo/Purple selected */
+        .option.correct { background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important; border-color: #10b981 !important; color: #047857 !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important; border-color: #ef4444 !important; color: #b91c1c !important; cursor: default; }
+        .option.disabled { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
+        .option .feedback-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; opacity: 0; transition: opacity 0.3s ease; }
+        .option .feedback-icon .icon-correct { color: #10b981; }
+        .option .feedback-icon .icon-incorrect { color: #ef4444; }
+        .option.correct .feedback-icon .icon-correct, .option.incorrect .feedback-icon .icon-incorrect { opacity: 1; }
+        .option.correct:not(.selected) .feedback-icon .icon-correct { opacity: 1; }
+
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark .progress-container { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #818cf8, #a78bfa); box-shadow: 0 0 15px rgba(124, 58, 237, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, #6366f1, #8b5cf6); color: white; } /* Indigo -> Purple */
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #4f46e5, #7c3aed); } /* Darker Indigo -> Darker Purple */
+        .btn-secondary { background-color: #e5e7eb; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover:not(:disabled) { background-color: #d1d5db; }
+        .btn-submit { background: linear-gradient(to right, #10b981, #2dd4bf); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #059669, #14b8a6); }
+
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #818cf8; } /* Light Indigo border */
+        html.light .review-item.correct .explanation { border-color: #10b981; } /* Green correct */
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; } /* Red incorrect */
+        html.dark .explanation { background-color: rgba(30, 41, 59, 0.8); color: #cbd5e1; border-left-color: #a78bfa; } /* Light Purple border dark */
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #272822; /* Okaidia theme background */ border: 1px solid #444; font-size: 0.9em; }
+        html.dark .code-snippet-container { background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; } /* Dark theme adjustment */
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+        .powershell-logo img, .powershell-logo svg { animation: pulseLogo 2.5s infinite ease-in-out; }
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3)); border: 1px solid rgba(255, 255, 255, 0.15); color: #e5e7eb; }
+
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #facc15 !important; border-color: #facc15 !important; }
+        html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #4338ca; outline-offset: 2px; } /* Dark Indigo focus */
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #818cf8; } /* Lighter Indigo focus dark */
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #6b7280; }
+        html.dark .history-date { color: #9ca3af; }
+
+        /* Text Color Adjustments for Purple/Indigo Theme (UNCHANGED) */
+        html.dark .text-indigo-900 { color: #a5b4fc; } html.dark .text-indigo-800 { color: #818cf8; } html.dark .text-indigo-700 { color: #6366f1; } html.dark .text-indigo-600 { color: #4f46e5; } html.dark .text-indigo-500 { color: #6366f1; } html.dark .text-indigo-300 { color: #c7d2fe; } html.dark .text-indigo-200 { color: #e0e7ff; } html.dark .text-purple-900 { color: #c084fc; } html.dark .text-purple-800 { color: #a855f7; } html.dark .text-purple-700 { color: #9333ea; } html.dark .text-purple-600 { color: #7e22ce; } html.dark .text-purple-500 { color: #8b5cf6; } html.dark .text-purple-300 { color: #d8b4fe; } html.dark .text-red-600 { color: #f87171; } html.dark .text-red-400 { color: #fb7185; }
+        /* Background/Border Adjustments for Purple/Indigo Theme (UNCHANGED) */
+        html.dark .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.1); } html.dark .bg-indigo-900\/30 { background-color: rgba(49, 46, 129, 0.3); } html.dark .border-indigo-100 { border-color: #a5b4fc; } html.dark .border-indigo-700\/50 { border-color: rgba(67, 56, 202, 0.5); } html.dark .bg-purple-50 { background-color: rgba(167, 139, 250, 0.1); } html.dark .bg-purple-900\/30 { background-color: rgba(91, 33, 182, 0.3); } html.dark .border-purple-100 { border-color: #d8b4fe; } html.dark .border-purple-700\/50 { border-color: rgba(126, 34, 206, 0.5); }
+        /* General Dark Mode Text/BG (Mostly Unchanged) */
+        html.dark .text-gray-500 { color: #9ca3af; } html.dark .text-gray-600 { color: #cbd5e1; } html.dark .text-gray-700 { color: #e2e8f0; } html.dark .text-gray-800 { color: #f1f5f9; } html.dark .bg-gray-200 { background-color: #4b5563;} html.dark .text-green-700 { color: #a7f3d0; } html.dark .text-green-500 { color: #34d399; } html.dark .text-red-700 { color: #fda4af; } html.dark .text-red-500 { color: #f87171; } html.dark .bg-green-50 { background-color: rgba(16, 185, 129, 0.1); } html.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.1); } html.dark .bg-green-100 { background-color: rgba(5, 150, 105, 0.2); } html.dark .dark\:ring-green-600 { --tw-ring-color: #10b981; } html.dark .dark\:bg-green-800\/50 { background-color: rgba(6, 95, 70, 0.5); } html.dark .dark\:bg-green-900\/30 { background-color: rgba(6, 78, 59, 0.3); } html.dark .dark\:bg-red-900\/30 { background-color: rgba(159, 18, 57, 0.3); } html.dark .dark\:text-gray-100 { color: #f1f5f9; } html.dark .dark\:text-gray-300 { color: #d1d5db; } html.dark .dark\:text-gray-400 { color: #9ca3af; } html.dark .dark\:border-gray-700 { border-color: #374151; } html.dark .dark\:text-indigo-300 { color: #c7d2fe; } /* Explanation title */ html.dark .option.selected { color: #e0e7ff; } /* Adjusted for indigo theme */ html.dark .option.correct { color: #d1fae5 !important; } html.dark .option.incorrect { color: #fee2e2 !important; } html.dark .option.incorrect.selected { color: #fee2e2 !important; }
+
+        /* --- End of CSS --- */
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- *** UPDATED HEADER *** -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">PowerShell Remoting & DSC Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Managing Remote Systems and Desired State</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- *** UPDATED START SCREEN TEXT *** -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Manage Remotely?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Test your knowledge of PowerShell Remoting (<code>Enter-PSSession</code>, <code>Invoke-Command</code>, WinRM setup, security) and Desired State Configuration (DSC resources, configurations, LCM).</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- *** UPDATED HISTORY TITLE *** -->
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts (Remoting & DSC)</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <!-- Status Badges -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/15</span> <!-- Keep max number, will adjust dynamically -->
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-gray-100 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4"></div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;"></div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden"><i class="fas fa-arrow-left mr-2"></i> Prev</button>
+                <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i></button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>Submit <i class="fas fa-check-circle ml-2"></i></button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+             <canvas id="confetti-canvas"></canvas>
+             <!-- *** UPDATED RESULTS TITLE *** -->
+             <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Quiz Results: PowerShell Remoting & DSC</h2>
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/15</span> <!-- Keep max number, will adjust dynamically -->
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Stats -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <!-- *** UPDATED Performance Message Area *** -->
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300"></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center"><i class="fas fa-search mr-2"></i> Review Answers</button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center"><i class="fas fa-redo mr-2"></i> Restart Quiz</button>
+            </div>
+             <!-- *** UPDATED Share Button *** -->
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm"><i class="fas fa-share-alt mr-2"></i> Share Score</button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- *** UPDATED REVIEW TITLE *** -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Answers: Remoting & DSC</h2>
+                <div id="review-questions" class="space-y-8"></div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center"><i class="fas fa-arrow-left mr-2"></i> Back to Results</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // --- *** UPDATED quizData for PowerShell Remoting & DSC *** ---
+        const quizData = [
+            { question: "Which cmdlet is used to establish an interactive remote PowerShell session?", options: ["Invoke-Command", "New-PSSession", "Enter-PSSession", "Connect-PSSession"], correctAnswer: 2, explanation: "`Enter-PSSession` starts an interactive session on a remote computer, allowing you to run commands directly on that machine as if you were logged in locally." },
+            { question: "To execute a single command or script block on one or more remote computers without starting an interactive session, you should use:", options: ["Start-Job", "Invoke-Command", "Enter-PSSession -ScriptBlock {...}", "Send-Command"], correctAnswer: 1, explanation: "`Invoke-Command` is designed for running commands or scripts non-interactively on remote systems. You specify the target computers using `-ComputerName` and the code using `-ScriptBlock` or `-FilePath`." },
+            { question: "What underlying technology does PowerShell Remoting primarily rely on by default?", options: ["SSH", "Telnet", "WinRM (Windows Remote Management)", "RPC (Remote Procedure Call)"], correctAnswer: 2, explanation: "PowerShell Remoting uses the WS-Management protocol, which is implemented in Windows by the Windows Remote Management (WinRM) service." },
+            { question: "Which cmdlet must typically be run on a computer (with administrator privileges) to enable it to receive PowerShell Remoting connections?", options: ["Enable-PSRemoting", "Configure-WinRM", "Start-WinRMService", "Set-PSRemotingEnabled $true"], correctAnswer: 0, explanation: "`Enable-PSRemoting` performs several actions, including starting the WinRM service, setting it to start automatically, creating a firewall rule, and registering session configurations." },
+            { question: "You need to run a script located at `C:\\Scripts\\Deploy.ps1` on `Server01` and `Server02`. Which command is most appropriate?", code: "Invoke-Command -ComputerName Server01, Server02 -FilePath C:\\Scripts\\Deploy.ps1", options: ["Use `Enter-PSSession` on each server.", "The command shown in the code block.", "Use `Copy-Item` then `Enter-PSSession`.", "Use `Start-Process` remotely."], correctAnswer: 1, explanation: "The `Invoke-Command` with the `-FilePath` parameter is the standard way to execute a local script file on remote computers specified by `-ComputerName`." },
+            { question: "What is the purpose of the `TrustedHosts` setting in WinRM configuration?", options: ["To specify which users are allowed to connect.", "To list remote computers that the client trusts for credential delegation (CredSSP).", "To list remote computers the client trusts when not using Kerberos authentication (e.g., in a workgroup).", "To define the encryption level for the session."], correctAnswer: 2, explanation: "`TrustedHosts` allows connections (typically using NTLM) when Kerberos cannot be used for mutual authentication, such as between machines in different domains or workgroups. It's a client-side setting." },
+            { question: "Which `Invoke-Command` parameter allows you to run the remote command as a background job on the *local* machine?", options: ["-RunInBackground", "-AsJob", "-Background", "-Detached"], correctAnswer: 1, explanation: "The `-AsJob` switch parameter causes `Invoke-Command` to return immediately and creates a local PowerShell background job object that represents the execution on the remote computer(s)." },
+            { question: "In PowerShell Desired State Configuration (DSC), what defines the desired state of a specific component (like a service or file)?", options: ["Configuration Script", "Node Block", "Resource Block", "MOF File"], correctAnswer: 2, explanation: "A Resource Block (e.g., `Service MyService { Name = 'Spooler'; State = 'Running' }`) within a DSC Configuration script defines the desired state for a particular DSC Resource." },
+            { question: "What is the role of the Local Configuration Manager (LCM) in DSC?", options: ["It compiles the Configuration script into a MOF file.", "It is the engine on the target node that applies and maintains the configuration.", "It acts as the central Pull Server for configurations.", "It defines the parameters for a Configuration."], correctAnswer: 1, explanation: "The LCM is the component running on every target node responsible for receiving configurations (Push or Pull) and invoking the appropriate DSC resources to make the system conform to the desired state defined in the MOF file." },
+            { question: "Which cmdlet is used to apply a DSC configuration (MOF file) to the local machine?", options: ["Apply-DscConfiguration", "Invoke-DscResource", "Set-DscLocalConfigurationManager", "Start-DscConfiguration"], correctAnswer: 3, explanation: "`Start-DscConfiguration` initiates the process of applying a configuration document (.mof file) to the target node. It typically uses the LCM to perform the work." },
+            { question: "What does the `Ensure` property typically signify in many built-in DSC resources (like File, Registry, WindowsFeature)?", options: ["The credential to use.", "Whether the item should be 'Present' or 'Absent'.", "The path to the item.", "A dependency on another resource."], correctAnswer: 1, explanation: "The `Ensure` property commonly determines whether the configured item should exist ('Present') or not exist ('Absent') on the target node." },
+            { question: "How can you discover the available DSC resources on your system?", options: ["List-DscModules", "Find-DscResource", "Get-DscResource", "Show-DscConfiguration"], correctAnswer: 2, explanation: "`Get-DscResource` lists all DSC resources that are installed and available for use in configurations on the local machine." },
+            { question: "In DSC, what is the 'Pull' mode?", options: ["Manually pushing MOF files to each node.", "Nodes periodically contacting a central Pull Server to download their configuration.", "Using `Invoke-Command` to apply configurations.", "Compiling configurations on the target node."], correctAnswer: 1, explanation: "In Pull mode, target nodes are configured to contact a central HTTP(S) or SMB endpoint (the Pull Server) at regular intervals to check for and download their assigned configurations and required DSC resources." },
+            { question: "Which command would you use to test if the target node currently complies with a specific MOF configuration file without applying changes?", options: ["Test-DscConfiguration", "Compare-DscConfiguration", "Assert-DscConfiguration", "Start-DscConfiguration -WhatIf"], correctAnswer: 0, explanation: "`Test-DscConfiguration` checks if the node's current state matches the desired state defined in the specified configuration (or the one currently applied) and returns `$true` or `$false`." },
+            { question: "What is a potential security risk when using CredSSP authentication for PowerShell Remoting?", options: ["Passwords sent in plain text.", "Requires opening extra firewall ports.", "The 'double-hop' problem where delegated credentials cannot be used.", "Delegation of user credentials to the remote server, which could be compromised."], correctAnswer: 3, explanation: "CredSSP allows credential delegation (solving the double-hop problem), but it means your full user credentials are sent to and cached on the remote server. If that server is compromised, your credentials could be stolen." }
+        ];
+
+        const TIME_LIMIT_SECONDS = 12 * 60; // 12 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // --- *** UPDATED *** localStorage Keys for PowerShell Remoting & DSC Quiz ---
+        const QUIZ_STATE_KEY = 'powershellQuizState_RemotingDSC'; // Unique key
+        const SCORE_HISTORY_KEY = 'powershellQuizScoreHistory_RemotingDSC'; // Unique key
+
+        // --- DOM Elements (IDs remain unchanged) ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables (Structure remains unchanged) ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions (Unchanged) ---
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } }
+        function formatTime(seconds) { const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
+
+        // --- Dark Mode (Unchanged) ---
+        function applyDarkMode(isDark) { const icon = darkModeToggle.querySelector('i'); if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); } else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); } if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 0); } }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // *** Uses the specific QUIZ_STATE_KEY for PowerShell Remoting & DSC ***
+        function saveState() {
+             if (!quizActive) return; try { const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true }; localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+        function loadState() {
+             const savedState = localStorage.getItem(QUIZ_STATE_KEY); if (savedState) { try { const state = JSON.parse(savedState); if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) { currentQuestionIndex = state.currentQuestionIndex || 0; userAnswers = state.userAnswers; timeElapsed = state.timeElapsed || 0; questionsOrder = state.questionsOrder; quizActive = true; console.log(`In-progress state loaded for ${QUIZ_STATE_KEY}.`); return true; } else { console.warn(`Saved state for ${QUIZ_STATE_KEY} is invalid.`); clearState(); return false; } } catch (e) { console.error(`Failed to parse saved state for ${QUIZ_STATE_KEY}:`, e); clearState(); return false; } } return false;
+        }
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY); console.log(`In-progress state cleared for ${QUIZ_STATE_KEY}.`);
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        // *** Uses the specific SCORE_HISTORY_KEY for PowerShell Remoting & DSC ***
+        function loadScoreHistory() {
+            try { const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); scoreHistory = historyJson ? JSON.parse(historyJson) : []; if (!Array.isArray(scoreHistory)) scoreHistory = []; } catch (e) { console.error(`Failed to load score history for ${SCORE_HISTORY_KEY}:`, e); scoreHistory = []; }
+        }
+        function saveScoreHistory() {
+            try { const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); } catch (e) { console.error(`Failed to save score history for ${SCORE_HISTORY_KEY}:`, e); }
+        }
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData); saveScoreHistory(); displayScoreHistory();
+        }
+        function clearScoreHistory() {
+             // *** UPDATED *** Confirmation Message
+             if (confirm("Are you sure you want to clear the PowerShell Remoting & DSC quiz history? This cannot be undone.")) {
+                 scoreHistory = []; localStorage.removeItem(SCORE_HISTORY_KEY); displayScoreHistory(); console.log(`Score history cleared for ${SCORE_HISTORY_KEY}.`);
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; if (scoreHistory.length === 0) { // *** UPDATED *** Empty Message
+                 scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous Remoting & DSC attempts recorded.</p>`; clearHistoryBtn.classList.add('hidden');
+             } else { const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); sortedHistory.forEach(attempt => { const item = document.createElement('div'); item.className = 'history-item'; const date = new Date(attempt.timestamp); const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }); item.innerHTML = ` <div class="flex-grow pr-4"> <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span> <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span> </div> <div class="history-date text-right"> ${formattedDate}<br>${formattedTime} </div> `; scoreHistoryList.appendChild(item); }); clearHistoryBtn.classList.remove('hidden'); }
+        }
+
+        // --- Quiz Logic (Mostly unchanged, uses updated keys via helpers) ---
+        function startQuiz() {
+             if (loadState()) { console.log(`Resuming ${QUIZ_STATE_KEY}.`); startTime = Date.now() - timeElapsed * 1000; } else { console.log(`Starting new ${QUIZ_STATE_KEY}.`); currentQuestionIndex = 0; score = 0; userAnswers = Array(quizData.length).fill(null); timeElapsed = 0; questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder); startTime = Date.now(); } startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; quizContainer.style.display = 'block'; quizActive = true; loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); saveState();
+        }
+
+        function loadQuestion(index) {
+             if (index < 0 || index >= quizData.length) return;
+             const questionIndexInOriginalData = questionsOrder[index];
+             const question = quizData[questionIndexInOriginalData];
+             if (!question) return;
+
+             const totalQuestions = quizData.length;
+             questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+             scoreValue.textContent = `${score}/${totalQuestions}`; // Keep this line to update the score display on the results page even if it's hidden
+
+             questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+             void questionCard.offsetWidth;
+             questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+             questionText.innerHTML = `${index + 1}. ${question.question}`; // Use innerHTML for potential <code> tags in question
+             feedbackMessage.textContent = '';
+             codeSnippetArea.innerHTML = '';
+
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 code.className = 'language-powershell'; // Ensure PowerShell highlighting
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                     setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+             optionsContainer.innerHTML = '';
+             const selectedAnswerIndex = userAnswers[index];
+
+             question.options.forEach((optionText, optionIndex) => {
+                 const optionElement = document.createElement('div');
+                 optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                 optionElement.setAttribute('role', 'radio');
+                 optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                 optionElement.tabIndex = 0;
+
+                 const label = document.createElement('span');
+                 label.className = 'flex-grow mr-4';
+                 // Use innerHTML to render potential `<code>` tags within options
+                 label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                 const feedbackIconContainer = document.createElement('span');
+                 feedbackIconContainer.className = 'feedback-icon text-xl';
+                 feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>`;
+
+                 optionElement.appendChild(label);
+                 optionElement.appendChild(feedbackIconContainer);
+
+                 const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } };
+                 optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } });
+
+                 optionsContainer.appendChild(optionElement);
+             });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false;
+                 if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+
+             updateProgress(index);
+             updateNavigation();
+        }
+
+        // --- selectOption, showFeedback, updateProgress, updateNavigation, nextQuestion, prevQuestion functions remain IDENTICAL ---
+        function selectOption(displayIndex, selectedOptionIndex) {
+             if (userAnswers[displayIndex] !== null) return; // Prevent re-answering
+             userAnswers[displayIndex] = selectedOptionIndex;
+             showFeedback(displayIndex, selectedOptionIndex);
+             nextBtn.disabled = false;
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+             saveState(); // Save state after selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+            const originalQuestionIndex = questionsOrder[displayIndex];
+            const question = quizData[originalQuestionIndex];
+            const isCorrect = selectedOptionIndex === question.correctAnswer;
+            const options = optionsContainer.querySelectorAll('.option');
+
+            options.forEach((optElement, currentOptionIndex) => {
+                optElement.classList.add('disabled'); // Disable all options
+                optElement.style.cursor = 'default';
+                optElement.tabIndex = -1; // Remove from tab order
+
+                const iconCorrect = optElement.querySelector('.icon-correct');
+                const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                if (iconCorrect) iconCorrect.style.opacity = '0'; // Reset icons
+                if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                if (currentOptionIndex === selectedOptionIndex) {
+                    optElement.classList.add('selected');
+                    optElement.setAttribute('aria-checked', 'true');
+                    if (isCorrect) {
+                        optElement.classList.add('correct');
+                        if (iconCorrect) iconCorrect.style.opacity = '1';
+                        feedbackMessage.textContent = "Correct!";
+                        feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                    } else {
+                        optElement.classList.add('incorrect');
+                        if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                        feedbackMessage.textContent = "Incorrect!";
+                        feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                        // Highlight the correct answer as well if the selection was wrong
+                        const correctOptionElement = options[question.correctAnswer];
+                        if (correctOptionElement) {
+                            correctOptionElement.classList.add('correct'); // Show correct answer visually
+                            const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark on correct one
+                        }
+                    }
+                } else {
+                     optElement.setAttribute('aria-checked', 'false');
+                     // Only highlight the actual correct answer if the user was wrong AND this isn't the user's wrong selection
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                    }
+                }
+            });
+
+             // Remove animation classes after a delay
+             setTimeout(() => {
+                 feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+             }, 1000);
+        }
+
+        function updateProgress(index) {
+             const totalQuestions = quizData.length;
+             const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+             progressBar.style.width = `${progress}%`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer only if prevBtn is visible
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) { submitBtn.disabled = !currentAnswerSelected; }
+        }
+
+        function nextQuestion() { if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); } }
+        function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); } }
+
+        // --- Timer (Logic remains unchanged, uses state helpers) ---
+        function startTimer() {
+             clearInterval(timerInterval);
+             if (!quizActive) return;
+             const updateTimerDisplay = () => {
+                 const now = Date.now();
+                 timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                 const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+                 if (timeRemaining <= 0) {
+                     timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                     timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                     clearInterval(timerInterval);
+                     if(quizActive) { submitQuiz(true); } // Auto-submit if time runs out
+                     return;
+                 }
+                 timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                 timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                 if (timeRemaining > 60) { timerElement.classList.remove('text-red-500', 'dark:text-red-400'); } // Remove red color if > 1 min left
+                 // Save state periodically (e.g., every 10 seconds)
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); }
+             };
+             updateTimerDisplay(); // Initial display
+             timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+             if (!quizActive && !timeUp) return; // Don't submit if already inactive unless forced by timeUp
+             quizActive = false; // Mark quiz as inactive
+             clearInterval(timerInterval); // Stop the timer
+
+             // Calculate score
+             score = 0;
+             userAnswers.forEach((answerIndex, displayIdx) => {
+                 if (answerIndex !== null) { // Check if the question was answered
+                     const originalQuestionIndex = questionsOrder[displayIdx];
+                     if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                         score++;
+                     }
+                 }
+             });
+
+             // Calculate final stats
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed; // Use full time if time ran out
+
+             // Add to history
+             addScoreToHistory({
+                 score: score,
+                 totalQuestions: totalQuestions,
+                 accuracy: parseFloat(accuracy.toFixed(1)),
+                 timestamp: Date.now(),
+                 timeTaken: finalTime
+             });
+
+             // Display results screen
+             quizContainer.style.display = 'none';
+             reviewContainer.style.display = 'none';
+             resultsContainer.style.display = 'block';
+             resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+             void resultsContainer.offsetWidth; // Trigger reflow
+             resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+             // Update results UI elements
+             scoreValue.textContent = `${score}/${totalQuestions}`;
+             accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+             accuracyBar.style.width = `${accuracy}%`;
+             timeTaken.textContent = formatTime(finalTime);
+
+             // *** UPDATED *** Performance Message Text (Remoting/DSC themed)
+             let performanceText = "";
+             let scoreLevel = 'low'; // Default level
+
+             if (timeUp) {
+                 performanceText = "Time's up! Let's review your PowerShell Remoting & DSC knowledge.";
+                  if (accuracy >= 85) scoreLevel = 'high'; else if (accuracy >= 60) scoreLevel = 'medium';
+             } else {
+                 if (accuracy >= 95) { performanceText = "Outstanding! You're a master of remote PowerShell management and DSC!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent job! You have a strong command of PSR and DSC concepts."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Good work! You're proficient with PowerShell Remoting and DSC fundamentals."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Solid effort! Review WinRM configuration, `Invoke-Command` usage, and DSC resource syntax."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Focus on `Enter-PSSession`, DSC configurations, and remoting security."; scoreLevel = 'low'; }
+             }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+             // Trigger confetti for high scores (only if time didn't run out)
+             if (scoreLevel === 'high' && !timeUp) {
+                 triggerConfetti();
+             }
+
+             // Clear the in-progress state
+             clearState();
+        }
+
+        // --- Confetti (Unchanged) ---
+        function triggerConfetti() { if (typeof confetti !== 'function') return; const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true }); myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 }); setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200); }
+
+        // --- Review Screen (Logic unchanged, uses dynamic data and state) ---
+        // *** Ensures PowerShell code highlighting and <code> tags are rendered ***
+        function showReview() {
+            resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = '';
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer; const answered = userAnswerIndex !== null; // Check if answered
+
+                const reviewItem = document.createElement('div');
+                reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${answered ? (isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : 'border-red-500 bg-red-50 dark:bg-red-900/30') : 'border-gray-400 bg-gray-100 dark:bg-gray-700/30'}`; // Style for unanswered
+
+                let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`; // Use innerHTML for potential <code>
+                if (question.code) { const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">"); reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-powershell">${escapedCode}</code></pre>`; }
+                reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">${answered ? 'Your Answer:' : 'Not Answered'}</p><ul class="space-y-2 list-none mb-4">`;
+
+                question.options.forEach((optionText, i) => {
+                    let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = "";
+                    const isCorrectAnswer = i === question.correctAnswer;
+                    const isSelectedAnswer = i === userAnswerIndex;
+
+                    if (isCorrectAnswer) { liClass = "font-semibold text-green-700 dark:text-green-400"; iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; }
+                    if (answered && isSelectedAnswer) { // Only apply selection style if answered
+                        if (isCorrect) { liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50"; }
+                         else { liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; }
+                    } else if (!answered && isCorrectAnswer) {
+                         // Highlight correct answer even if not answered, but subtly
+                         liClass += " opacity-80";
+                    }
+                    // Use innerHTML for optionText to render potential `<code>` tags
+                    reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                     <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                     <span class="flex-grow">${optionText}</span>${iconHTML}</li>`;
+                });
+                reviewHTML += `</ul>`;
+                // Show explanation regardless of whether it was answered correctly/incorrectly/at all
+                if (question.explanation) { reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700"><strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p></div>`; } // Use innerHTML for explanation
+
+                reviewItem.innerHTML = reviewHTML;
+                reviewQuestions.appendChild(reviewItem);
+            });
+
+            if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0); } // Highlight any code in review
+        }
+
+
+        function showResultsScreen() { reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); }
+
+        // --- Restart (Logic unchanged, uses updated keys via helpers) ---
+        function restartQuiz() {
+             currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+             progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = '';
+             resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block';
+             startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn');
+             nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.remove('hidden');
+             displayScoreHistory(); // Ensure Remoting/DSC history is shown
+             console.log(`PowerShell Remoting & DSC quiz reset for ${QUIZ_STATE_KEY}.`); // *** UPDATED *** log message
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // *** UPDATED *** Share Text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the PowerShell Remoting & DSC Quiz! Challenge yourself!`;
+             const shareUrl = window.location.href;
+             if (navigator.share) { try { await navigator.share({ title: 'My PowerShell Remoting & DSC Quiz Result!', text: shareText, url: shareUrl }); } catch (err) { console.error('Error sharing:', err); /* Optional: Fallback to copy */ copyToClipboard(`${shareText} ${shareUrl}`); } }
+             else { copyToClipboard(`${shareText} Check it out: ${shareUrl}`); }
+         }
+
+        // --- Clipboard Copy (Unchanged) ---
+        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); }).catch(err => { console.error('Could not copy text: ', err); alert("Failed to copy results."); }); }
+
+        // --- Event Listeners (Setup remains unchanged) ---
+        startBtn.addEventListener('click', startQuiz); nextBtn.addEventListener('click', nextQuestion); prevBtn.addEventListener('click', prevQuestion); submitBtn.addEventListener('click', () => submitQuiz(false)); reviewBtn.addEventListener('click', showReview); restartBtn.addEventListener('click', restartQuiz); backToResults.addEventListener('click', showResultsScreen); shareBtn.addEventListener('click', shareResults); clearHistoryBtn.addEventListener('click', clearScoreHistory); darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Setup remains unchanged) ---
+        document.addEventListener('keydown', (e) => {
+             const isQuizActive = quizContainer.style.display === 'block'; const isResultsActive = resultsContainer.style.display === 'block'; const isReviewActive = reviewContainer.style.display === 'block'; const isStartActive = startScreen.style.display === 'block';
+             if (isQuizActive) {
+                 // Allow selecting options with A, B, C, D keys if not answered yet
+                 const answerIndex = userAnswers[currentQuestionIndex];
+                 if (answerIndex === null) { // Only allow selection if not yet answered
+                     const keyUpper = e.key.toUpperCase();
+                     if (keyUpper >= 'A' && keyUpper <= 'D') {
+                         const optionIndex = keyUpper.charCodeAt(0) - 65; // A=0, B=1, etc.
+                         const options = optionsContainer.querySelectorAll('.option');
+                         if (optionIndex < options.length) {
+                             e.preventDefault();
+                             selectOption(currentQuestionIndex, optionIndex);
+                         }
+                     }
+                 }
+
+                 if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { const focusableOptions = Array.from(optionsContainer.querySelectorAll('.option')); const currentFocusIndex = focusableOptions.findIndex(opt => opt === document.activeElement); if (focusableOptions.length > 0) { e.preventDefault(); let nextFocusIndex = currentFocusIndex; if (e.key === 'ArrowDown') { nextFocusIndex = (currentFocusIndex + 1) % focusableOptions.length; } else { nextFocusIndex = (currentFocusIndex - 1 + focusableOptions.length) % focusableOptions.length; } focusableOptions[nextFocusIndex].focus(); } }
+                 else if (e.key === 'ArrowRight' && !nextBtn.disabled && !nextBtn.classList.contains('hidden')) { e.preventDefault(); nextQuestion(); }
+                 else if (e.key === 'ArrowLeft' && !prevBtn.classList.contains('hidden')) { e.preventDefault(); prevQuestion(); }
+                 else if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList.contains('option')) { e.preventDefault(); if (!document.activeElement.classList.contains('disabled')) { const options = Array.from(optionsContainer.querySelectorAll('.option')); const index = options.indexOf(document.activeElement); if (index !== -1) selectOption(currentQuestionIndex, index); } }
+                 else if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+             } else if (isStartActive) {
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (isResultsActive) {
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (isReviewActive) {
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode'); applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory(); // Loads using SCORE_HISTORY_KEY (Remoting & DSC)
+            displayScoreHistory(); // Displays loaded Remoting & DSC history
+            quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block';
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            console.log("PowerShell Remoting & DSC Quiz application initialized."); // *** UPDATED *** log message
+        }
+
+        // Run initialization when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

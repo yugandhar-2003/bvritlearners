@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerShell Scripting Quizzes</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../modern-quiz-styles.css">
+    
+</head>
+<body>
+   
+    <div class="container">
+        <h1>PowerShell Scripting Quizzes</h1>
+        <p class="subtitle">Test your PowerShell knowledge with these interactive quizzes</p>
+
+        <div class="quiz-grid">
+            <!-- 1. Introduction to PowerShell -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Introduction to PowerShell</h3>
+                    <p class="quiz-card-description">Understand the basics, purpose, and core concepts of the PowerShell environment.</p>
+                    <!-- Note: Assuming quizzes are in a 'powershell' subdirectory -->
+                    <a href="../powershell/powershell1.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 2. Cmdlets and Aliases -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Cmdlets and Aliases</h3>
+                    <p class="quiz-card-description">Test your knowledge of core PowerShell commands (cmdlets) and their shortcuts (aliases).</p>
+                    <a href="../powershell/powershell2.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 3. Pipelines and Objects -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Pipelines and Objects</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of connecting cmdlets with the pipeline and working with objects.</p>
+                    <a href="../powershell/powershell3.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 4. Variables and Data Types -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Variables and Data Types</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions on declaring, assigning, and using variables and data types in PowerShell.</p>
+                    <a href="../powershell/powershell4.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 5. Conditional Statements and Loops -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Conditional Statements and Loops</h3>
+                    <p class="quiz-card-description">Assess your knowledge of control flow structures like If, Switch, ForEach, For, and While loops.</p>
+                    <a href="../powershell/powershell5.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 6. Functions and Scripts -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Functions and Scripts</h3>
+                    <p class="quiz-card-description">Challenge yourself with creating and using reusable functions and structuring PowerShell scripts (.ps1 files).</p>
+                    <a href="../powershell/powershell6.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+           <!-- 7. Error Handling and Debugging -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Error Handling and Debugging</h3>
+                    <p class="quiz-card-description">Test your skills in managing errors using Try/Catch/Finally, Trap, and debugging techniques.</p>
+                    <a href="../powershell/powershell7.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 8. Working with Files and Directories -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Working with Files and Directories</h3>
+                    <p class="quiz-card-description">Assess your knowledge of cmdlets for navigating, creating, modifying, and managing files and directories.</p>
+                    <a href="../powershell/powershell8.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 9. Remote Management -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Remote Management</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of PowerShell Remoting concepts (WinRM, Enter-PSSession, Invoke-Command).</p>
+                    <a href="../powershell/powershell9.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- 10. Modules and Packages -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">Modules and Packages</h3>
+                    <p class="quiz-card-description">Test your ability to find, install, import, and manage PowerShell modules and packages.</p>
+                    <a href="../powershell/powershell10.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+        </div> <!-- /.quiz-grid -->
+    </div> <!-- /.container -->
+
+    <!-- Script for hover effect -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.quiz-card');
+
+            // Make the first quiz card active by default if cards exist
+            if (cards.length > 0) {
+                 cards[0].classList.add('active');
+            }
+
+            // Add hover effects
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    // Remove active class from all cards
+                    cards.forEach(c => c.classList.remove('active'));
+                    // Add active class to the currently hovered card
+                    this.classList.add('active');
+                });
+            });
+
+            // Optional: Remove active class when mouse leaves the entire grid
+            // const grid = document.querySelector('.quiz-grid');
+            // if(grid) {
+            //     grid.addEventListener('mouseleave', function() {
+            //          cards.forEach(c => c.classList.remove('active'));
+            //          // Optionally reactivate the first one on grid leave
+            //          // if (cards.length > 0) {
+            //          //    cards[0].classList.add('active');
+            //          // }
+            //     });
+            // }
+        });
+    </script>
+</body>
+</html>
