@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated Title -->
+    <title>Rust Structs & Enums Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* Base styles remain largely the same */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%); /* New gradient */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+
+        /* Dark Mode Styles - Adjusted gradient */
+        html.dark body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        /* Dark mode glass card, options, etc. (Adjusted from previous Rust version) */
+        html.dark .glass-card { background: rgba(44, 62, 80, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ecf0f1; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #ffffff; }
+        html.dark .option { background-color: rgba(52, 73, 94, 0.6); border-color: rgba(255, 255, 255, 0.2); color: #bdc3c7; }
+        html.dark .option:hover:not(.disabled):not(.selected) { background: rgba(72, 93, 114, 0.8); border-color: rgba(255, 255, 255, 0.4); }
+        html.dark .option.selected { background: rgba(93, 173, 226, 0.35); border-color: #5dade2; color: #eaf2f8; } /* Using blue */
+        html.dark .option.correct { background: rgba(46, 204, 113, 0.35) !important; border-color: #2ecc71 !important; color: #d0f4e0 !important; }
+        html.dark .option.incorrect { background: rgba(231, 76, 60, 0.3) !important; border-color: #e74c3c !important; color: #f9ebea !important; }
+        html.dark .option.incorrect.selected { color: #f9ebea !important; box-shadow: inset 0 0 5px rgba(231, 76, 60, 0.3); }
+        html.dark .explanation { background-color: rgba(44, 62, 80, 0.8); color: #bdc3c7; border-left-color: #5dade2; } /* Blue accent */
+        html.dark .review-item.correct .explanation { border-color: #27ae60; }
+        html.dark .review-item.incorrect .explanation { border-color: #c0392b; }
+        html.dark .code-snippet-container { background-color: #2c3e50; color: #ecf0f1; border: 1px solid #34495e; }
+        html.dark .btn-secondary { background-color: #7f8c8d; color: #ecf0f1; border: 1px solid #95a5a6; }
+        html.dark .btn-secondary:hover:not(:disabled) { background-color: #95a5a6; }
+        html.dark #score-circle { background-color: #34495e; border: 6px solid transparent; }
+        html.dark #score-value { color: #5dade2; }
+        html.dark .text-gray-500 { color: #95a5a6; } html.dark .text-gray-600 { color: #bdc3c7; } html.dark .text-gray-700 { color: #ecf0f1; } html.dark .text-gray-800 { color: #ffffff; }
+        html.dark .text-indigo-900 { color: #aed6f1; } /* Mapped indigo to blue */
+        html.dark .text-indigo-700 { color: #85c1e9; } /* Mapped indigo to blue */
+        html.dark .bg-gray-200 { background-color: #7f8c8d;}
+        html.dark .bg-indigo-50 { background-color: #2874a6;} /* Mapped indigo to blue */
+        html.dark .text-indigo-600 { color: #aed6f1; } /* Mapped indigo to blue */
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(76, 161, 175, 0.4), rgba(44, 62, 80, 0.3)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); color: #ecf0f1; }
+        html.dark .timer-warning { color: #f1c40f !important; border-color: #f1c40f !important; }
+        html.dark .history-date { color: #95a5a6; }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        /* Container and Glass Card */
+        .container { position: relative; z-index: 1; }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        .quiz-card { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; transform: translateY(30px); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Option Styling (Adjusted colors) */
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(33, 147, 176, 0.5); } /* Blue accent */
+        .option.selected { border-color: #2193b0; background: linear-gradient(to right, rgba(109, 213, 237, 0.15), rgba(33, 147, 176, 0.15)); box-shadow: 0 4px 10px rgba(33, 147, 176, 0.2); }
+        .option.correct { background: linear-gradient(to right, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2)) !important; border-color: #2ecc71 !important; color: #16a085 !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(231, 76, 60, 0.15), rgba(192, 57, 43, 0.15)) !important; border-color: #e74c3c !important; color: #c0392b !important; cursor: default; }
+        .option.disabled { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
+        .option .feedback-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; opacity: 0; transition: opacity 0.3s ease; }
+        .option .feedback-icon .icon-correct { color: #2ecc71; }
+        .option .feedback-icon .icon-incorrect { color: #e74c3c; }
+        .option.correct .feedback-icon .icon-correct, .option.incorrect .feedback-icon .icon-incorrect { opacity: 1; }
+        .option.correct:not(.selected) .feedback-icon .icon-correct { opacity: 1; }
+
+        /* Progress Bar (Adjusted gradient) */
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark .progress-container { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #2ecc71, #2193b0); /* Green to Blue */ box-shadow: 0 0 15px rgba(33, 147, 176, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Results Container & Score Circle (Adjusted colors) */
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #bdc3c7, #ecf0f1) 1; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #2ecc71, #58d68d) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #f39c12, #f1c40f) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #e74c3c, #ec7063) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #58d68d, #82e0aa) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #f1c40f, #f4d03f) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #ec7063, #f1948a) 1; }
+
+        /* Buttons (Adjusted colors) */
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, #2193b0, #6dd5ed); color: white; } /* Blue gradient */
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #1b7ea3, #56cbe0); } /* Darker blue */
+        .btn-secondary { background-color: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7; }
+        .btn-secondary:hover:not(:disabled) { background-color: #bdc3c7; }
+        .btn-submit { background: linear-gradient(to right, #27ae60, #2ecc71); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #1e8449, #27ae60); }
+
+        /* Review Item Styling (Adjusted colors) */
+        .review-item { transition: all 0.3s ease; background-color: rgba(255, 255, 255, 0.05); }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #1b7ea3; } /* Dark blue accent */
+        html.light .review-item.correct .explanation { border-color: #2ecc71; }
+        html.light .review-item.incorrect .explanation { border-color: #e74c3c; }
+
+        /* Code Snippet Container (Keep dark theme for contrast) */
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #2c3e50; color: #ecf0f1; border: 1px solid #34495e; font-size: 0.9em; }
+        html.light .code-snippet-container { background-color: #f8f9f9; color: #2c3e50; border: 1px solid #e5e7eb; }
+        html.light .code-snippet-container code[class*="language-"], html.light .code-snippet-container pre[class*="language-"] { color: #2c3e50; text-shadow: none; }
+
+        /* Text Shadow, etc. (Unchanged) */
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+
+        /* Status Badge Styling (Adjusted colors) */
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #f39c12 !important; border-color: #f39c12 !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        /* Focus Styles (Adjusted color) */
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #1a5276; outline-offset: 2px; } /* Darker blue */
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #aed6f1; } /* Lighter blue */
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        /* Confetti Canvas (Unchanged) */
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+        /* Score History (Unchanged structure, colors handled by general rules) */
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #7f8c8d; }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        html.dark .history-date { color: #95a5a6; }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- Updated Title -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Rust Structs & Enums Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your knowledge of Rust's data structures!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- Updated Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-gray-800 dark:text-white">Ready to Define Some Types?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers Rust Structs, Enums, Pattern Matching, and `impl` blocks.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-200">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <!-- Status Badges -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/X</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-white leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <!-- Updated Title -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">Quiz Results</h2>
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400">0/X</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg text-gray-800 dark:text-gray-100">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg text-gray-800 dark:text-gray-100">00:00</span>
+                    </div>
+                    <!-- Adjusted result message background -->
+                    <div class="p-4 bg-blue-50 dark:bg-gray-700/30 rounded-lg border border-blue-100 dark:border-gray-600/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to improve your skills!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // --- RUST Structs & Enums Quiz Data ---
+        const quizData = [
+            // Structs (Named Fields)
+            { question: "How do you define a struct named `User` with `username` (String) and `active` (bool) fields?",
+              options: [
+                  "struct User { username: String, active: bool }",
+                  "type User = { username: String, active: bool };",
+                  "class User { username: String, active: bool }",
+                  "struct User(String, bool);"
+              ],
+              correctAnswer: 0,
+              explanation: "Structs with named fields are defined using the `struct` keyword, followed by the name and curly braces `{}` containing `field_name: Type` pairs."
+            },
+            { question: "Given `struct Point { x: i32, y: i32 }`, how do you create an instance?",
+              code: "// How to create a Point at (10, 20)?",
+              options: [
+                  "let p = Point(10, 20);",
+                  "let p = Point { x: 10, y: 20 };",
+                  "let p = new Point { x: 10, y: 20 };",
+                  "let p: Point = (10, 20);"
+              ],
+              correctAnswer: 1,
+              explanation: "Instances of structs with named fields are created using `StructName { field1: value1, field2: value2 }` syntax."
+            },
+            { question: "How do you access the `y` value of a `Point` instance named `p`?",
+              code: "struct Point { x: i32, y: i32 }\nlet p = Point { x: 5, y: -3 };",
+              options: [ "p[y]", "p.y", "p::y", "Point::y(p)" ],
+              correctAnswer: 1,
+              explanation: "Fields of a struct instance are accessed using dot notation (`instance.field_name`)."
+            },
+            { question: "What does the `..` syntax achieve in struct instantiation?",
+              code: "struct Config { enabled: bool, timeout: u32, retries: u8 }\nlet base_config = Config { enabled: true, timeout: 100, retries: 3 };\nlet new_config = Config { enabled: false, ..base_config };",
+              options: [
+                  "It creates a mutable reference.",
+                  "It fills unspecified fields with default values.",
+                  "It copies the values of the remaining fields from another instance.",
+                  "It indicates incomplete initialization (compile error)."
+              ],
+              correctAnswer: 2,
+              explanation: "The `..instance` syntax (struct update syntax) sets the fields explicitly listed and copies the values for all *other* fields from the `instance` provided after `..`."
+            },
+
+            // Tuple Structs & Unit-like Structs
+            { question: "How do you define a tuple struct named `Color` that holds three `u8` values?",
+              options: [
+                  "struct Color { r: u8, g: u8, b: u8 }",
+                  "struct Color(u8, u8, u8);",
+                  "type Color = (u8, u8, u8);",
+                  "enum Color(u8, u8, u8);"
+              ],
+              correctAnswer: 1,
+              explanation: "Tuple structs are defined using the `struct` keyword, followed by the name and parentheses `()` containing the types of the fields."
+            },
+            { question: "How do you access the first element (index 0) of a `Color` tuple struct instance named `red`?",
+              code: "struct Color(u8, u8, u8);\nlet red = Color(255, 0, 0);",
+              options: [ "red[0]", "red.0", "red::0", "Color.0(red)" ],
+              correctAnswer: 1,
+              explanation: "Elements of a tuple struct instance are accessed using dot notation followed by the index (`instance.index`)."
+            },
+            { question: "What is a struct defined with no fields called?",
+              code: "struct AlwaysEqual;",
+              options: [ "Empty Struct", "Marker Struct", "Void Struct", "Unit-like Struct" ],
+              correctAnswer: 3,
+              explanation: "Structs defined with no fields, like `struct MyStruct;`, are called unit-like structs because they behave similarly to the unit type `()`."
+            },
+
+            // Enums & Pattern Matching
+            { question: "How do you define an enum `WebEvent` with variants `PageLoad` and `Click { x: i32, y: i32 }`?",
+              options: [
+                  "enum WebEvent { PageLoad, Click(i32, i32) }",
+                  "enum WebEvent { PageLoad; Click { x: i32, y: i32 } }",
+                  "enum WebEvent { PageLoad, Click { x: i32, y: i32 } }",
+                  "struct WebEvent { PageLoad, Click { x: i32, y: i32 } }"
+              ],
+              correctAnswer: 2, // Note: Answer C is correct syntax for struct-like variant
+              explanation: "Enums are defined with the `enum` keyword. Variants can be simple identifiers, hold tuple-like data `Variant(Type1, Type2)`, or hold struct-like data `Variant { field: Type }`."
+            },
+            { question: "Given `enum Message { Quit, Write(String) }`, how do you create an instance representing a write message?",
+              options: [
+                  "Message::Write(\"hello\".to_string())",
+                  "Message { Write: \"hello\".to_string() }",
+                  "Message::Write { content: \"hello\".to_string() }",
+                  "Write(\"hello\".to_string())"
+              ],
+              correctAnswer: 0,
+              explanation: "Enum variants are instantiated using the `EnumName::VariantName` syntax. If the variant holds data, provide it within parentheses or curly braces as defined."
+            },
+             { question: "What is the primary way to use the values inside an enum variant in Rust?",
+              options: [ "Direct field access (e.g., `msg.data`)", "Using `if let`", "Using `match` expressions", "Casting the enum to its data type" ],
+              correctAnswer: 2,
+              explanation: "`match` is the most common and exhaustive way to handle all possible variants of an enum and extract any associated data."
+            },
+            { question: "What does the `Option<T>` enum represent?",
+              options: [
+                  "A boolean choice",
+                  "A value that might be mutable or immutable",
+                  "A value that could be present (`Some(T)`) or absent (`None`)",
+                  "An optional feature flag"
+              ],
+              correctAnswer: 2,
+              explanation: "`Option<T>` is a standard library enum used to encode the possibility of a value being absent. It has two variants: `Some(T)` containing a value of type `T`, and `None` indicating absence."
+            },
+            { question: "What will this `match` expression print?",
+              code:"enum Coin { Penny, Nickel, Dime, Quarter }\n\nfn value_in_cents(coin: Coin) -> u8 {\n    match coin {\n        Coin::Penny => 1,\n        Coin::Nickel => 5,\n        Coin::Dime => 10,\n        Coin::Quarter => 25,\n    }\n}\n\nlet my_coin = Coin::Dime;\nprintln!(\"{}\", value_in_cents(my_coin));",
+              options: [ "1", "5", "10", "25" ],
+              correctAnswer: 2,
+              explanation: "The `match` expression compares `my_coin` (which is `Coin::Dime`) against each pattern. It matches `Coin::Dime => 10`, so the function returns 10."
+            },
+             { question: "How can you extract the value `v` from `Some(v)` using `match`?",
+              code: "let maybe_num = Some(5);\nlet num = match maybe_num { // ... complete the match arms\n };",
+              options: [
+                  "Some(val) => val, None => 0", // Assuming default 0 if None
+                  "Some => maybe_num.unwrap(), None => 0",
+                  "Some(v) => return v, None => 0",
+                  "Some { value } => value, None => 0"
+              ],
+              correctAnswer: 0,
+              explanation: "The pattern `Some(val)` binds the value contained within the `Some` variant to the variable `val`, which can then be used in the match arm's expression."
+            },
+
+            // Methods & Associated Functions (impl)
+            { question: "Where are methods associated with a struct or enum defined in Rust?",
+              options: [ "Inside the struct/enum definition", "In a separate `methods` block", "In an `impl` block", "Globally, taking the struct/enum as the first argument" ],
+              correctAnswer: 2,
+              explanation: "Methods and associated functions for a type are defined within an implementation block starting with `impl TypeName { ... }`."
+            },
+            { question: "What is the first parameter of a method that borrows the instance immutably?",
+              code: "struct Rectangle { width: u32, height: u32 }\n\nimpl Rectangle {\n    fn area(/* ??? */) -> u32 {\n        self.width * self.height\n    }\n}",
+              options: [ "self", "&mut self", "&self", "instance: &Rectangle" ],
+              correctAnswer: 2,
+              explanation: "`&self` is shorthand for `self: &Self`, indicating an immutable borrow of the instance the method is called on. It allows reading fields but not modifying them."
+            },
+            { question: "How do you call a method named `can_hold` on an instance `rect1` of a `Rectangle` struct?",
+              code: "struct Rectangle { width: u32, height: u32 }\nimpl Rectangle { fn can_hold(&self, other: &Rectangle) -> bool { /* ... */ } }\nlet rect1 = Rectangle { width: 30, height: 50 };\nlet rect2 = Rectangle { width: 10, height: 40 };",
+              options: [ "Rectangle::can_hold(rect1, &rect2)", "rect1.can_hold(&rect2)", "can_hold(&rect1, &rect2)", "rect1::can_hold(&rect2)" ],
+              correctAnswer: 1,
+              explanation: "Methods are called using dot notation on an instance: `instance.method_name(arguments)`. Rust automatically handles the borrowing (`&self`, `&mut self`, or `self`) based on the method signature."
+            },
+            { question: "What is a function defined inside an `impl` block that does *not* take `self`, `&self`, or `&mut self` as its first parameter called?",
+              options: [ "A static method", "A constructor", "An associated function", "A trait method" ],
+              correctAnswer: 2,
+              explanation: "Functions within an `impl` block that don't take `self` are called associated functions. They are associated with the type itself, not a specific instance. Static methods in other languages are a similar concept."
+            },
+             { question: "How is an associated function typically called?",
+              code: "struct Square { size: u32 }\n\nimpl Square {\n    // Associated function often used as a constructor\n    fn new(size: u32) -> Square {\n        Square { size }\n    }\n}",
+              options: [ "Square.new(5)", "new Square(5)", "Square::new(5)", "let s = Square; s.new(5)" ],
+              correctAnswer: 2,
+              explanation: "Associated functions are called using the type name followed by `::` and the function name: `TypeName::function_name(arguments)`."
+            },
+             { question: "Can an enum have methods defined in an `impl` block?",
+               options: [ "Yes, just like structs", "No, only structs can have methods", "Only if the enum variants contain data", "Only if the enum derives the `Methods` trait" ],
+               correctAnswer: 0,
+               explanation: "Yes, enums can have methods and associated functions defined for them using `impl EnumName { ... }`, similar to how it's done for structs."
+             }
+        ];
+        const TIME_LIMIT_SECONDS = 18 * 60; // Increased time slightly for potentially more complex questions
+        const MAX_HISTORY_ITEMS = 5;
+        // --- Updated Local Storage Keys ---
+        const SCORE_HISTORY_KEY = 'rustStructsEnumsQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'rustStructsEnumsQuizState';
+
+        // --- DOM Elements (References remain the same) ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables (Unchanged) ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions (Unchanged) ---
+        function shuffleArray(array) { /* ... */ }
+        function formatTime(seconds) { /* ... */ }
+         // --- Helper Functions (Keep the same) ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode (Unchanged logic) ---
+        function applyDarkMode(isDark) { /* ... */ }
+         function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50);
+             }
+        }
+
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE (Uses new QUIZ_STATE_KEY) ---
+        function saveState() { /* ... */ }
+        function loadState() { /* ... */ }
+        function clearState() { /* ... */ }
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); // Uses new key
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY); // Uses new key
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.quizActive &&
+                        Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length &&
+                        Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length &&
+                        typeof state.currentQuestionIndex === 'number' && state.currentQuestionIndex >= 0 && state.currentQuestionIndex < quizData.length)
+                    {
+                        currentQuestionIndex = state.currentQuestionIndex;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress Rust Structs/Enums quiz state loaded.");
+                        return true;
+                    } else {
+                         console.warn("Saved Rust Structs/Enums quiz state is incompatible/invalid.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved Rust Structs/Enums quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY); // Uses new key
+            console.log("In-progress Rust Structs/Enums quiz state cleared.");
+        }
+
+
+        // --- Local Storage: SCORE HISTORY (Uses new SCORE_HISTORY_KEY) ---
+        function loadScoreHistory() { /* ... */ }
+        function saveScoreHistory() { /* ... */ }
+        function addScoreToHistory(attemptData) { /* ... */ }
+        function clearScoreHistory() { /* ... */ }
+         function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); // Uses new key
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load Rust Structs/Enums score history:", e);
+                scoreHistory = [];
+            }
+        }
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); // Uses new key
+            } catch (e) { console.error("Failed to save Rust Structs/Enums score history:", e); }
+        }
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all Structs & Enums quiz attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY); // Uses new key
+                 displayScoreHistory();
+                 console.log("Rust Structs/Enums score history cleared.");
+             }
+        }
+
+
+        // --- UI: Display Score History (Unchanged logic) ---
+        function displayScoreHistory() { /* ... */ }
+         function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic (Core logic unchanged, uses new quizData) ---
+        function startQuiz() { /* ... */ }
+        function loadQuestion(index) { /* ... */ }
+        function selectOption(displayIndex, selectedOptionIndex) { /* ... */ }
+        function showFeedback(displayIndex, selectedOptionIndex) { /* ... */ }
+        function updateProgress(index) { /* ... */ }
+        function updateNavigation() { /* ... */ }
+        function nextQuestion() { /* ... */ }
+        function prevQuestion() { /* ... */ }
+         function startQuiz() {
+             if (loadState()) {
+                 console.log("Resuming Rust quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 console.log("Initializing a new Rust quiz session.");
+                 currentQuestionIndex = 0; score = 0; timeElapsed = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+             }
+            startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block'; quizActive = true;
+            loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); saveState();
+        }
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp'); void questionCard.offsetWidth; questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+            questionText.textContent = `${index + 1}. ${question.question}`; feedbackMessage.textContent = '';
+
+            codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre'); pre.className = 'code-snippet-container';
+                 const code = document.createElement('code'); code.className = 'language-rust'; code.textContent = question.code;
+                 pre.appendChild(code); codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightElement(code), 0); }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio'); optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false'); optionElement.tabIndex = 0;
+                const label = document.createElement('span'); label.className = 'flex-grow mr-4'; label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+                const feedbackIconContainer = document.createElement('span'); feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect" style="opacity: 0;"></i>`;
+                optionElement.appendChild(label); optionElement.appendChild(feedbackIconContainer);
+                const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } };
+                optionElement.addEventListener('click', handleSelection); optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false; if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 nextBtn.disabled = true; if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index); updateNavigation();
+        }
+        function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return; // Lock answer
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false; if (displayIndex === quizData.length - 1) { submitBtn.disabled = false; }
+            saveState();
+        }
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex]; const question = quizData[originalQuestionIndex]; const isCorrect = selectedOptionIndex === question.correctAnswer; const options = optionsContainer.querySelectorAll('.option');
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); optElement.style.cursor = 'default'; optElement.tabIndex = -1;
+                 const iconCorrect = optElement.querySelector('.icon-correct'); const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0'; if (iconIncorrect) iconIncorrect.style.opacity = '0';
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected'); optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) { optElement.classList.add('correct'); if (iconCorrect) iconCorrect.style.opacity = '1'; feedbackMessage.textContent = "Correct!"; feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse'; }
+                     else { optElement.classList.add('incorrect'); if (iconIncorrect) iconIncorrect.style.opacity = '1'; feedbackMessage.textContent = "Incorrect!"; feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX'; const correctOptionElement = options[question.correctAnswer]; if (correctOptionElement) { correctOptionElement.classList.add('correct'); const correctOptIcon = correctOptionElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } }
+                 } else { optElement.setAttribute('aria-checked', 'false'); if (currentOptionIndex === question.correctAnswer && !isCorrect) { optElement.classList.add('correct'); const correctOptIcon = optElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } }
+            });
+            setTimeout(() => { feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX'); }, 1000);
+        }
+        function updateProgress(index) {
+            const totalQuestions = quizData.length; const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0; progressBar.style.width = `${progress}%`; questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0; const isLastQuestion = currentQuestionIndex === quizData.length - 1; const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            prevBtn.classList.toggle('hidden', isFirstQuestion); navSpacer.classList.toggle('hidden', !isFirstQuestion); nextBtn.classList.toggle('hidden', isLastQuestion); submitBtn.classList.toggle('hidden', !isLastQuestion);
+            nextBtn.disabled = !currentAnswerSelected; if (isLastQuestion) { submitBtn.disabled = !currentAnswerSelected; }
+        }
+        function nextQuestion() { if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); } }
+        function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); } }
+
+        // --- Timer (Unchanged logic) ---
+        function startTimer() { /* ... */ }
+         function startTimer() {
+            clearInterval(timerInterval); if (!quizActive) return;
+            const updateTimerDisplay = () => {
+                const now = Date.now(); timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+                if (timeRemaining <= 0) { timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`; timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); clearInterval(timerInterval); if(quizActive) { submitQuiz(true); } return; }
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`; timerElement.classList.toggle('timer-warning', timeRemaining <= 60 && timeRemaining > 0); timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+                if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); }
+            };
+            updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        // --- Submit and Results (Adjust performance messages if desired) ---
+        function submitQuiz(timeUp = false) { /* ... */ }
+        function triggerConfetti() { /* ... */ }
+         function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return; quizActive = false; clearInterval(timerInterval);
+            score = 0; userAnswers.forEach((answerIndex, displayIdx) => { if (answerIndex !== null) { const originalQuestionIndex = questionsOrder[displayIdx]; if (answerIndex === quizData[originalQuestionIndex].correctAnswer) { score++; } } });
+            const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+            addScoreToHistory({ score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)), timestamp: Date.now(), timeTaken: finalTime });
+            quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+            scoreValue.textContent = `${score}/${totalQuestions}`; accuracyValue.textContent = `${accuracy.toFixed(1)}%`; setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); timeTaken.textContent = formatTime(finalTime);
+            let performanceText = ""; let scoreLevel = 'low';
+            if (timeUp) { performanceText = "Time's up! Let's review how you did with Rust's types."; if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium'; }
+            else {
+                if (accuracy >= 90) { performanceText = "Excellent! Master of Rust types!"; scoreLevel = 'high'; }
+                else if (accuracy >= 75) { performanceText = "Great job structuring your knowledge!"; scoreLevel = 'high'; }
+                else if (accuracy >= 60) { performanceText = "Good understanding of structs and enums."; scoreLevel = 'medium'; }
+                else if (accuracy >= 40) { performanceText = "Solid effort! Review the tricky parts."; scoreLevel = 'medium'; }
+                else { performanceText = "Keep practicing! Structs and enums are fundamental."; scoreLevel = 'low'; }
+            }
+            performanceMessage.textContent = performanceText; scoreCircle.setAttribute('data-score-level', scoreLevel);
+            if (scoreLevel === 'high' && !timeUp) triggerConfetti();
+            clearState();
+        }
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return; const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 });
+             setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200);
+         }
+
+        // --- Review Screen (Uses Prism Rust highlighting) ---
+        function showReview() { /* ... */ }
+        function showResultsScreen() { /* ... */ }
+         function showReview() {
+            resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block'; reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn'); reviewQuestions.innerHTML = '';
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer;
+                 const reviewItem = document.createElement('div'); reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : 'border-red-500 bg-red-50 dark:bg-red-900/30' }`;
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+                 if (question.code) { const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">"); reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-rust">${escapedCode}</code></pre>`; }
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = ""; let selectedMark = "";
+                      if (i === question.correctAnswer) { liClass = "font-semibold text-green-700 dark:text-green-400"; iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; }
+                      if (i === userAnswerIndex) { selectedMark = `<span class="text-xs font-bold ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} ml-2">[Your Choice]</span>`; if (!isCorrect) { liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; } }
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${optionText}</span>${iconHTML}${selectedMark}</li>`;
+                 });
+                 reviewHTML += `</ul>`;
+                 if (question.explanation) { reviewHTML += `<div class="explanation mt-4 pt-3 border-t border-gray-200 dark:border-gray-700"><strong class="block mb-1 text-sm text-blue-800 dark:text-blue-300">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p></div>`; } // Blue explanation title
+                 reviewItem.innerHTML = reviewHTML; reviewQuestions.appendChild(reviewItem);
+            });
+             if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 50); }
+        }
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart (Uses new clearState) ---
+        function restartQuiz() { /* ... */ }
+         function restartQuiz() {
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; clearInterval(timerInterval); clearState();
+            progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = '';
+            resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block';
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn');
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.remove('hidden');
+            displayScoreHistory(); console.log("Rust Structs/Enums Quiz reset.");
+        }
+
+        // --- Sharing (Update share text) ---
+        async function shareResults() { /* ... */ }
+        function copyToClipboard(text) { /* ... */ }
+        async function shareResults() {
+             const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Rust Structs & Enums Quiz! Test your type knowledge!`; // Updated text
+             const shareUrl = window.location.href;
+             if (navigator.share) { try { await navigator.share({ title: 'My Rust Quiz Result!', text: shareText, url: shareUrl }); } catch (err) { console.error('Error sharing:', err); } }
+             else { copyToClipboard(`${shareText} ${shareUrl}`); }
+         }
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); }).catch(err => { console.error('Could not copy text: ', err); alert("Failed to copy results."); });
+         }
+
+        // --- Event Listeners (Unchanged) ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Unchanged logic) ---
+        document.addEventListener('keydown', (e) => { /* ... */ });
+         document.addEventListener('keydown', (e) => {
+            const activeEl = document.activeElement; const isQuizInteractable = quizContainer.style.display === 'block' || resultsContainer.style.display === 'block' || reviewContainer.style.display === 'block' || startScreen.style.display === 'block';
+            if (!isQuizInteractable) return; if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) { return; }
+            if (quizContainer.style.display === 'block') {
+                 if ( (e.key === 'ArrowRight' || e.key.toLowerCase() === 'n') && !nextBtn.disabled && !nextBtn.classList.contains('hidden') ) { nextQuestion(); }
+                 else if ( (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'p') && !prevBtn.classList.contains('hidden') ) { prevQuestion(); }
+                 else if ( e.key === 'Enter' && !submitBtn.disabled && !submitBtn.classList.contains('hidden') ) { submitQuiz(false); }
+                 else if (optionsContainer.children.length > 0 && userAnswers[currentQuestionIndex] === null) { let optionIndex = -1; if (e.key >= '1' && e.key <= '9') optionIndex = parseInt(e.key) - 1; else if (e.key.toLowerCase() >= 'a' && e.key.toLowerCase() <= 'z') optionIndex = e.key.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0); if (optionIndex >= 0 && optionIndex < optionsContainer.children.length) { selectOption(currentQuestionIndex, optionIndex); } }
+            }
+            if (activeEl) { if ( (e.key === 'Enter' || e.key === ' ') ) { if (activeEl === startBtn) { e.preventDefault(); startQuiz(); } else if (activeEl === reviewBtn) { e.preventDefault(); showReview(); } else if (activeEl === restartBtn) { e.preventDefault(); restartQuiz(); } else if (activeEl === backToResults) { e.preventDefault(); showResultsScreen(); } else if (activeEl === shareBtn) { e.preventDefault(); shareResults(); } else if (activeEl === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden')) { e.preventDefault(); clearScoreHistory(); } else if (Array.from(optionsContainer.children).includes(activeEl) && !activeEl.classList.contains('disabled')) { e.preventDefault(); activeEl.click(); } } }
+         });
+
+        // --- Initial Application Load (Uses new loadScoreHistory, sets up UI) ---
+        function initializeApp() { /* ... */ }
+         function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode'); applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory(); // Uses new key
+            displayScoreHistory();
+            quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block';
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            if (typeof Prism !== 'undefined') { Prism.highlightAll(); }
+            console.log("Rust Structs & Enums Quiz application initialized.");
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+

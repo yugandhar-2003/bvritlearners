@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Traits & Generics Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Yet another Rust-ish gradient */
+            background: linear-gradient(135deg, #3a7bd5 0%, #001540 100%); /* Blueish theme */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             /* Darker blue/black gradient */
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(30, 41, 59, 0.8); /* Dark blue-gray */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb;
+         }
+         html.dark .option {
+             background-color: rgba(51, 65, 85, 0.7);
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db;
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(71, 85, 105, 0.85);
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         /* Adjusted selected color for blue theme */
+         html.dark .option.selected {
+             background: rgba(59, 130, 246, 0.30); /* Blue tint */
+             border-color: #60a5fa; /* Lighter blue */
+             color: #dbeafe; /* Light blue text */
+         }
+         html.dark .option.correct {
+            background: rgba(16, 185, 129, 0.35) !important;
+            border-color: #34d399 !important;
+            color: #d1fae5 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #f87171 !important;
+             color: #fee2e2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fee2e2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         /* Adjusted explanation border for blue theme */
+         html.dark .explanation {
+             background-color: rgba(30, 41, 59, 0.9);
+             color: #cbd5e1;
+             border-left-color: #60a5fa; /* Lighter blue */
+         }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+         html.dark .code-snippet-container {
+             background-color: #1e293b;
+             color: #e2e8f0;
+             border: 1px solid #334155;
+         }
+          html.dark .btn-secondary {
+              background-color: #374151;
+              color: #e5e7eb;
+              border: 1px solid #4b5563;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563;
+          }
+          html.dark #score-circle {
+              background-color: #1f2937;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          /* Adjusted score value color for blue theme */
+          html.dark #score-value {
+              color: #93c5fd; /* Medium blue */
+          }
+           html.dark .text-gray-500 { color: #9ca3af; }
+           html.dark .text-gray-600 { color: #cbd5e1; }
+           html.dark .text-gray-700 { color: #e2e8f0; }
+           html.dark .text-gray-800 { color: #f1f5f9; }
+           /* Adjusted heading colors for blue theme */
+           html.dark .text-indigo-900 { color: #bfdbfe; } /* Lighter blue */
+           html.dark .text-indigo-700 { color: #93c5fd; } /* Medium blue */
+           html.dark .bg-gray-200 { background-color: #4b5563;}
+           html.dark .bg-indigo-50 { background-color: #1e3a8a;} /* Dark blue */
+           html.dark .text-indigo-600 { color: #60a5fa; } /* Light blue */
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb;
+           }
+           html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+           html.dark .history-date { color: #9ca3af; }
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(59, 130, 246, 0.5); /* Blue hover */
+        }
+        .option.selected {
+            border-color: #3b82f6; /* Blue */
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.15)); /* Blue gradient */
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Progress bar blue gradient */
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        /* Primary button blue gradient */
+        .btn-primary {
+             background: linear-gradient(to right, #3b82f6, #60a5fa);
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #2563eb, #3b82f6); /* Darker blue */
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf);
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+        /* Explanation border blue */
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #60a5fa; /* Light blue */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #272822; /* Okaidia background */
+            border: 1px solid #444;
+            font-size: 0.9em;
+        }
+        html.dark .code-snippet-container {
+             background-color: #1e293b; /* Dark mode code background */
+             border: 1px solid #334155;
+         }
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #fcd34d !important;
+             border-color: #fcd34d !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        /* Focus ring blue */
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #3b82f6;
+             outline-offset: 2px;
+        }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+             outline-color: #93c5fd; /* Lighter blue focus */
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+
+         /* Specific dark mode history text */
+         html.dark .history-score { color: #f3f4f6; }
+         html.dark .history-date { color: #9ca3af; }
+         html.dark #clear-history-btn { color: #f87171; }
+         html.dark #score-history-area { border-top-color: rgba(255, 255, 255, 0.1); }
+         html.dark .history-item { border-bottom-color: rgba(255, 255, 255, 0.1); }
+
+         /* Adjusted dark mode heading colors for blue theme */
+         html.dark .glass-card h2 { color: #bfdbfe; }
+         html.dark #score-history-area h3 { color: #93c5fd; }
+         html.dark #results-container h2 { color: #bfdbfe; }
+         html.dark #review-container h2 { color: #bfdbfe; }
+         html.dark #question-text { color: #f3f4f6; }
+         html.dark .explanation strong { color: #93c5fd; } /* Explanation title blue */
+         html.dark .p-4.bg-indigo-50 { background-color: #1e3a8a; } /* Dark blue perf message bg */
+         html.dark .p-4.border-indigo-100 { border-color: rgba(96, 165, 250, 0.3); } /* Light blue perf message border */
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Changed Header -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Rust Traits & Generics Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Master Rust's powerful abstraction tools!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+             <!-- Changed Start Screen Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-gray-800 dark:text-blue-200">Ready for Abstraction?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers traits, generics, bounds, associated types, and more.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-blue-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <!-- Updated Question Count -->
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/17</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-gray-100 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-blue-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                         <!-- Updated Question Count -->
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-300">0/17</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                     <!-- Adjusted performance message background/border color -->
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-700/50 mt-2">
+                         <!-- Changed Performance Message -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing with traits and generics to write flexible Rust code!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-blue-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // *** NEW RUST TRAITS & GENERICS QUIZ DATA ***
+        const quizData = [
+            // Defining Traits
+            { question: "What keyword is used to define a trait in Rust?",
+              options: [
+                "interface",
+                "protocol",
+                "trait",
+                "impl"
+              ],
+              correctAnswer: 2,
+              explanation: "The `trait` keyword is used to define shared behavior, similar to interfaces in other languages."
+            },
+            { question: "How do you define a method signature within a trait named `Summarizable`?",
+              code: `trait Summarizable {\n    // Define a method 'summary' that returns a String\n}`,
+              options: [
+                "fn summary(&self) -> String;",
+                "method summary(&self) -> String;",
+                "define summary(&self) -> String;",
+                "String summary(&self);"
+              ],
+              correctAnswer: 0,
+              explanation: "Method signatures in traits are defined using the `fn` keyword, followed by the method name, parameters (like `&self`), and the return type, ending with a semicolon."
+            },
+            // Implementing Traits
+            { question: "What keyword is used to implement a trait for a specific type?",
+              options: [
+                "implements",
+                "impl",
+                "for",
+                "use"
+              ],
+              correctAnswer: 1,
+              explanation: "The `impl` keyword is used, followed by the trait name, `for`, and the type name (e.g., `impl Summary for NewsArticle`)."
+            },
+            { question: "Inside an `impl Trait for Type` block, what must you provide?",
+              options: [
+                "Only new methods specific to the type.",
+                "Concrete implementations for all methods defined in the trait.",
+                "Type annotations for the trait's associated types.",
+                "A reference to the trait definition."
+              ],
+              correctAnswer: 1,
+              explanation: "When implementing a trait, you must provide concrete method bodies for all the methods defined in the trait's signature (unless they have default implementations)."
+            },
+            // Using Traits (Parameters, Return Types)
+            { question: "Which syntax allows a function `notify` to accept any type that implements the `Summary` trait?",
+              options: [
+                "fn notify<Summary>(item: &Summary)",
+                "fn notify(item: &trait Summary)",
+                "fn notify(item: &impl Summary)",
+                "fn notify(item: &dyn Summary)"
+              ],
+              correctAnswer: 2,
+              explanation: "`impl Trait` syntax is syntactic sugar for a trait bound, allowing any type implementing `Summary` to be passed. `dyn Summary` is used for trait objects (dynamic dispatch)."
+            },
+             { question: "What is the alternative, more verbose syntax for the `impl Trait` parameter in the previous question?",
+              options: [
+                "<T where T: Summary> fn notify(item: &T)",
+                "<T: Summary> fn notify(item: &T)",
+                "<T> fn notify(item: &T) where Summary for T",
+                "fn notify<T>(item: &T: Summary)"
+              ],
+              correctAnswer: 1,
+              explanation: "The full generic syntax uses a type parameter `T` declared after the function name (`<T>`) and specifies the trait bound using `<T: Summary>` before the parameter list."
+            },
+             // Generics
+            { question: "How do you define a generic function `largest` that works for any type `T` that implements `PartialOrd` and `Copy`?",
+              options: [
+                "fn largest<T>(list: &[T]) -> T where T: PartialOrd + Copy",
+                "fn largest<T: PartialOrd + Copy>(list: &[T]) -> T",
+                "fn largest(list: &[impl PartialOrd + Copy]) -> impl PartialOrd + Copy",
+                "Both A and B are valid."
+              ],
+              correctAnswer: 3, // Both A and B are valid syntaxes
+              explanation: "You can define trait bounds directly after the type parameter (`<T: Bound>`) or using a `where` clause (`where T: Bound`), which is often clearer for multiple bounds. Both A and B achieve the same result."
+            },
+            { question: "How do you define a struct `Point` that can hold two values of the *same* generic type `T`?",
+              code: `// Define Point struct`,
+              options: [
+                "struct Point<T> { x: T, y: T }",
+                "struct Point { x: T, y: T }<T>",
+                "struct Point<T, U> { x: T, y: U }",
+                "generic struct Point<T> { x: T, y: T }"
+              ],
+              correctAnswer: 0,
+              explanation: "Generic type parameters are declared in angle brackets after the struct name (`struct Point<T>`). The fields then use that generic type `T`."
+            },
+            { question: "Can a struct `Point<T, U>` hold values of two *different* generic types?",
+              options: [
+                "No, structs can only have one generic type parameter.",
+                "Yes, by declaring multiple type parameters like `<T, U>`.",
+                "Only if T and U implement the `Copy` trait.",
+                "Only if T and U are the same size."
+              ],
+              correctAnswer: 1,
+              explanation: "You can define structs with multiple distinct generic type parameters (e.g., `struct Point<T, U> { x: T, y: U }`) to allow fields to hold values of potentially different types."
+            },
+            // Trait Bounds
+            { question: "What is the purpose of a trait bound like `<T: Display>`?",
+              options: [
+                "To ensure `T` can be copied.",
+                "To restrict the generic type `T` to only those types that implement the `Display` trait.",
+                "To convert `T` into a `Display` object.",
+                "To make `T` mutable."
+              ],
+              correctAnswer: 1,
+              explanation: "Trait bounds constrain a generic type parameter, ensuring that any type used in its place implements the specified trait(s). This allows the function/struct to use the methods defined by those traits on the generic value."
+            },
+            { question: "How do you specify multiple trait bounds for a generic type `T` (e.g., `Display` and `Debug`)?",
+              options: [
+                "<T: Display, Debug>",
+                "<T: Display & Debug>",
+                "<T: Display + Debug>",
+                "<T: Display | Debug>"
+              ],
+              correctAnswer: 2,
+              explanation: "Multiple trait bounds are specified using the `+` syntax, e.g., `<T: Display + Debug>` or `where T: Display + Debug`."
+            },
+            { question: "When might you prefer using a `where` clause for trait bounds over the inline syntax?",
+              options: [
+                "When there is only one simple trait bound.",
+                "When the function or type signature becomes complex with many type parameters and bounds.",
+                "Never, the inline syntax `<T: Bound>` is always preferred.",
+                "Only when implementing traits, not when defining functions."
+              ],
+              correctAnswer: 1,
+              explanation: "`where` clauses help improve readability when function signatures involve multiple generic types with several trait bounds each, moving the constraints out of the main signature line."
+            },
+             // Associated Types
+            { question: "What is the purpose of an associated type within a trait?",
+              options: [
+                "To define a generic type parameter for the trait itself.",
+                "To allow the trait implementor to specify a concrete type related to the trait's functionality.",
+                "To provide a default implementation for a method.",
+                "To create a sub-trait."
+              ],
+              correctAnswer: 1,
+              explanation: "Associated types act as placeholders for types within a trait definition. The type that implements the trait specifies the concrete type to be used for that placeholder (e.g., `type Item` in the `Iterator` trait)."
+            },
+            { question: "Consider the standard `Iterator` trait. What does `type Item;` represent?",
+              code: `pub trait Iterator {\n    type Item;\n    fn next(&mut self) -> Option<Self::Item>;\n}`,
+              options: [
+                "A generic type parameter for the `Iterator` trait.",
+                "A default type used if the implementor doesn't specify one.",
+                "The type of the value that the iterator yields.",
+                "A method named `Item`."
+              ],
+              correctAnswer: 2,
+              explanation: "`type Item;` defines an associated type named `Item`. Each implementation of `Iterator` must specify the concrete type of element (`Self::Item`) that its `next` method will return inside the `Option`."
+            },
+             { question: "How does a struct `Counter` implementing `Iterator` specify its `Item` type?",
+              code: `struct Counter { /* ... */ }\n\nimpl Iterator for Counter {\n    // How to specify Item is u32?\n    fn next(&mut self) -> Option<Self::Item> { /* ... */ }\n}`,
+              options: [
+                "impl Iterator<u32> for Counter",
+                "Specify `<Item=u32>` after `impl Iterator`",
+                "Add `type Item = u32;` inside the `impl` block",
+                "The compiler infers it from `next()`'s return type"
+              ],
+              correctAnswer: 2,
+              explanation: "The concrete type for an associated type is specified using `type AssociatedTypeName = ConcreteType;` within the `impl Trait for Type` block."
+            },
+            // Default Methods
+            { question: "Can traits provide default implementations for methods?",
+              options: [
+                "No, traits only define signatures.",
+                "Yes, by providing a method body directly in the trait definition.",
+                "Only if the trait also defines associated types.",
+                "Only for methods that take `&self`."
+              ],
+              correctAnswer: 1,
+              explanation: "Traits can provide default method implementations by including a method body `{ ... }` instead of just a semicolon `;`. Implementors can use this default or provide their own override."
+            },
+            { question: "If a trait `Flyable` has a default `fly` method, how can a type `Bird` use that default implementation?",
+              code: `trait Flyable {\n    fn fly(&self) { println!("Flying!"); }\n}\n\nstruct Bird;\n\n// How to implement Flyable for Bird using the default fly?\n`,
+              options: [
+                "`impl Flyable for Bird {}` (empty block)",
+                "`impl Flyable for Bird { use default fly; }`",
+                "`impl Flyable for Bird;` (just a semicolon)",
+                "It's used automatically, no `impl` block needed."
+              ],
+              correctAnswer: 0,
+              explanation: "To use the default implementation, you simply provide an empty `impl Flyable for Bird {}` block. If you want to override it, you would provide a new `fly` method body within the block."
+            }
+        ];
+        const TIME_LIMIT_SECONDS = 20 * 60; // Allow ample time (adjust as needed)
+        const MAX_HISTORY_ITEMS = 5; // Max number of recent scores to store
+        // *** UPDATED LOCAL STORAGE KEYS ***
+        const SCORE_HISTORY_KEY = 'rustTraitsGenericsQuizScoreHistory'; // localStorage key for score history
+        const QUIZ_STATE_KEY = 'rustTraitsGenericsQuizState'; // localStorage key for in-progress state
+
+        // --- DOM Elements ---
+        // (DOM element variables remain the same)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+
+        // --- State Variables ---
+        // (State variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+
+        // --- Helper Functions ---
+        // (Helper functions remain the same)
+         function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+
+        // --- Dark Mode ---
+        // (Dark mode function remains the same)
+         function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight code after theme change
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50);
+             }
+        }
+
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // (State management functions remain the same, using new keys)
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress quiz state is incompatible/invalid.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress quiz state cleared.");
+        }
+
+
+        // --- Local Storage: SCORE HISTORY ---
+        // (History functions remain the same, using new keys)
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Score history cleared.");
+             }
+        }
+
+
+        // --- UI: Display Score History ---
+        // (Display history function remains the same)
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; // Clear current list
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); // Newest first
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+
+        // --- Quiz Logic ---
+        // (Core quiz logic functions remain largely the same, adapting to new data)
+        function startQuiz() {
+             if (loadState()) { // Try to load and resume
+                 console.log("Resuming quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000; // Adjust start time
+             } else { // Start fresh
+                 console.log("Initializing a new quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true;
+
+            // Update UI elements with correct total question count
+            const totalQuestions = quizData.length;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${currentQuestionIndex + 1}/${totalQuestions}`;
+            scoreValue.textContent = `${score}/${totalQuestions}`; // Update placeholder on results screen too
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            saveState(); // Save initial state (fresh or resumed)
+        }
+
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 code.className = 'language-rust';
+                 const safeCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                 code.textContent = safeCode;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${safeOptionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                 const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false;
+                 if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState();
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled');
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1;
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                              if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion);
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        // --- Timer ---
+        // (Timer function remains the same)
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!quizActive) return;
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) {
+                        submitQuiz(true);
+                    }
+                    return;
+                }
+
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                     saveState();
+                 }
+            };
+
+            updateTimerDisplay();
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+
+        // --- Submit and Results ---
+        // (Submit function remains largely the same, adapting to new data/text)
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return;
+
+            quizActive = false;
+            clearInterval(timerInterval);
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            addScoreToHistory({
+                score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)),
+                timestamp: Date.now(), timeTaken: finalTime
+            });
+
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            accuracyBar.style.width = `0%`;
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100);
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Updated performance messages
+            let performanceText = "";
+            let scoreLevel = 'low';
+            if (timeUp) {
+                performanceText = "Time's up! Review traits and generics for better abstraction.";
+                 if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium';
+            } else {
+                if (accuracy >= 90) { performanceText = "Excellent! You wield Rust's traits and generics skillfully!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 75) { performanceText = "Great job! Strong understanding of Rust's abstractions."; scoreLevel = 'high'; }
+                 else if (accuracy >= 60) { performanceText = "Good work! Practice trait bounds and associated types."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 40) { performanceText = "Decent effort! Focus on the details of generic implementations."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Traits and generics are fundamental to idiomatic Rust."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState();
+        }
+
+
+        // (Confetti function remains the same)
+         function triggerConfetti() {
+             if (typeof confetti !== 'function') return;
+
+             const confettiSettings = {
+                 particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 1000
+             };
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti(confettiSettings);
+             setTimeout(() => myConfetti({...confettiSettings, particleCount: 60, spread: 100, origin: { y: 0.7, x: 0.3 }, angle: 120, gravity: 0.7}), 200);
+             setTimeout(() => myConfetti({...confettiSettings, particleCount: 60, spread: 100, origin: { y: 0.7, x: 0.7 }, angle: 60, gravity: 0.7}), 250);
+         }
+
+        // --- Review Screen ---
+        // (Review function remains largely the same, adapting to new data)
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = '';
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/30'
+                     : 'border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/30'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  if (question.code) {
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-rust">${escapedCode}</code></pre>`;
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Choices:</p><ul class="space-y-2 list-none mb-4">`;
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+                      const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`;
+                          }
+                      } else if (i === question.correctAnswer && userAnswerIndex === null) {
+                           liClass = "font-semibold text-green-700 dark:text-green-400";
+                           iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${safeOptionText}</span>${iconHTML}</li>`;
+                 });
+                 reviewHTML += `</ul>`;
+
+                 if (question.explanation) {
+                     const explanationBorderColor = isCorrect ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400';
+                     reviewHTML += `
+                         <div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 ${explanationBorderColor}">
+                              {/* Adjusted Explanation Title Color */}
+                             <strong class="block mb-1 text-sm text-gray-800 dark:text-blue-300">Explanation:</strong>
+                             <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                         </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        // (showResultsScreen function remains the same)
+         function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        // (Restart function remains the same)
+        function restartQuiz() {
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = [];
+            startTime = undefined; timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = '';
+            resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn');
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden'); submitBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden');
+
+            displayScoreHistory();
+            console.log("Quiz reset.");
+        }
+
+        // --- Sharing ---
+        // (Share functions remain largely the same, adapting text)
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Updated share text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Rust Traits & Generics Quiz! How well do you know Rust's abstractions?`;
+             const shareUrl = window.location.href;
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My Rust Quiz Result!', // Updated title
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Successfully shared');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!");
+             }).catch(err => {
+                 console.error('Could not copy text: ', err);
+                 alert("Failed to copy results. You may need to copy manually.");
+             });
+         }
+
+        // --- Event Listeners ---
+        // (Event listeners remain the same)
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => {
+            applyDarkMode(!htmlElement.classList.contains('dark'));
+        });
+
+
+        // --- Keyboard Navigation Enhancements ---
+        // (Keyboard navigation remains the same)
+         document.addEventListener('keydown', (e) => {
+             // ... (keyboard logic unchanged) ...
+              if (!quizActive && resultsContainer.style.display !== 'block' && reviewContainer.style.display !== 'block') {
+                // Only handle start screen keys if quiz isn't active and results/review aren't shown
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (quizActive) {
+                 // Handle keys during the quiz
+                 if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+                 // Add keydown for options (A=0, B=1, etc.)
+                 else if (e.key >= 'a' && e.key <= 'z') {
+                     const optionIndex = e.key.charCodeAt(0) - 'a'.charCodeAt(0);
+                     const options = optionsContainer.querySelectorAll('.option');
+                     if (optionIndex >= 0 && optionIndex < options.length && userAnswers[currentQuestionIndex] === null) {
+                         e.preventDefault();
+                         selectOption(currentQuestionIndex, optionIndex);
+                     }
+                 }
+             } else if (resultsContainer.style.display === 'block') {
+                 // Handle keys on results screen
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (reviewContainer.style.display === 'block') {
+                 // Handle keys on review screen
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+        // --- Initial Application Load ---
+        // (Initialization function updates placeholders)
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            loadScoreHistory();
+            displayScoreHistory();
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden'); submitBtn.classList.add('hidden');
+
+            // Update question count placeholders with the actual count from the new data
+            const totalQuestions = quizData.length;
+            document.getElementById('question-counter').innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question 1/${totalQuestions}`;
+            document.getElementById('score-value').textContent = `0/${totalQuestions}`;
+
+
+            console.log("Rust Traits & Generics Quiz application initialized.");
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+

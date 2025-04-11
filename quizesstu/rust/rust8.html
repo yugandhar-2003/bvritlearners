@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Modules & Crates Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Greenish theme */
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             /* Darker green/teal gradient */
+            background: linear-gradient(135deg, #0f473a 0%, #1f5f4a 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(17, 24, 39, 0.8); /* Dark gray-blue */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb;
+         }
+         html.dark .option {
+             background-color: rgba(55, 65, 81, 0.7); /* Slightly lighter gray */
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db;
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(75, 85, 99, 0.85);
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         /* Adjusted selected color for green theme */
+         html.dark .option.selected {
+             background: rgba(16, 185, 129, 0.30); /* Green tint */
+             border-color: #34d399; /* Medium green */
+             color: #a7f3d0; /* Light green text */
+         }
+         html.dark .option.correct {
+            background: rgba(16, 185, 129, 0.35) !important;
+            border-color: #34d399 !important;
+            color: #d1fae5 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #f87171 !important;
+             color: #fee2e2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fee2e2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         /* Adjusted explanation border for green theme */
+         html.dark .explanation {
+             background-color: rgba(17, 24, 39, 0.9);
+             color: #cbd5e1;
+             border-left-color: #34d399; /* Medium green */
+         }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+         html.dark .code-snippet-container {
+             background-color: #111827; /* Darker code bg */
+             color: #e2e8f0;
+             border: 1px solid #374151;
+         }
+          html.dark .btn-secondary {
+              background-color: #374151;
+              color: #e5e7eb;
+              border: 1px solid #4b5563;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563;
+          }
+          html.dark #score-circle {
+              background-color: #1f2937;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          /* Adjusted score value color for green theme */
+          html.dark #score-value {
+              color: #6ee7b7; /* Lighter green */
+          }
+           html.dark .text-gray-500 { color: #9ca3af; }
+           html.dark .text-gray-600 { color: #cbd5e1; }
+           html.dark .text-gray-700 { color: #e2e8f0; }
+           html.dark .text-gray-800 { color: #f1f5f9; }
+           /* Adjusted heading colors for green theme */
+           html.dark .text-indigo-900 { color: #a7f3d0; } /* Lighter green */
+           html.dark .text-indigo-700 { color: #6ee7b7; } /* Medium green */
+           html.dark .bg-gray-200 { background-color: #4b5563;}
+           html.dark .bg-indigo-50 { background-color: #047857;} /* Dark green */
+           html.dark .text-indigo-600 { color: #34d399; } /* Bright green */
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb;
+           }
+           html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+           html.dark .history-date { color: #9ca3af; }
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(16, 185, 129, 0.5); /* Green hover */
+        }
+        .option.selected {
+            border-color: #10b981; /* Green */
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15)); /* Green gradient */
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Progress bar green gradient */
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #10b981, #34d399);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        /* Primary button green gradient */
+        .btn-primary {
+             background: linear-gradient(to right, #10b981, #34d399);
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #059669, #10b981); /* Darker green */
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf); /* Keep submit green */
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+        /* Explanation border green */
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #34d399; /* Medium green */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #272822; /* Okaidia background */
+            border: 1px solid #444;
+            font-size: 0.9em;
+        }
+        html.dark .code-snippet-container {
+             background-color: #111827; /* Darker code bg */
+             border: 1px solid #374151;
+         }
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #fcd34d !important;
+             border-color: #fcd34d !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        /* Focus ring green */
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #10b981;
+             outline-offset: 2px;
+        }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+             outline-color: #6ee7b7; /* Lighter green focus */
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+
+         /* Specific dark mode history text */
+         html.dark .history-score { color: #f3f4f6; }
+         html.dark .history-date { color: #9ca3af; }
+         html.dark #clear-history-btn { color: #f87171; }
+         html.dark #score-history-area { border-top-color: rgba(255, 255, 255, 0.1); }
+         html.dark .history-item { border-bottom-color: rgba(255, 255, 255, 0.1); }
+
+         /* Adjusted dark mode heading colors for green theme */
+         html.dark .glass-card h2 { color: #a7f3d0; }
+         html.dark #score-history-area h3 { color: #6ee7b7; }
+         html.dark #results-container h2 { color: #a7f3d0; }
+         html.dark #review-container h2 { color: #a7f3d0; }
+         html.dark #question-text { color: #f3f4f6; }
+         html.dark .explanation strong { color: #6ee7b7; } /* Explanation title green */
+         /* Adjusted performance message bg/border for green theme */
+         html.dark .p-4.bg-blue-50 { background-color: #065f46; } /* Dark green perf message bg */
+         html.dark .p-4.border-blue-100 { border-color: rgba(52, 211, 153, 0.3); } /* Light green perf message border */
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Changed Header -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Rust Modules & Crates Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Organize your Rust code effectively!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+             <!-- Changed Start Screen Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-gray-800 dark:text-green-200">Ready to Organize?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers modules, visibility, paths, crates, and Cargo.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-green-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <!-- Updated Question Count -->
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/16</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-gray-100 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-green-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                         <!-- Updated Question Count -->
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-green-600 dark:text-green-300">0/16</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                     <!-- Adjusted performance message background/border color -->
+                    <div class="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-100 dark:border-green-700/50 mt-2">
+                         <!-- Changed Performance Message -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing modules and crates for well-structured Rust projects!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-green-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-toml.min.js"></script> <!-- Added TOML for Cargo.toml -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // *** NEW RUST MODULES & CRATES QUIZ DATA ***
+        const quizData = [
+            // Modules (mod, pub)
+            { question: "What keyword is used to define a module in Rust?",
+              options: [ "module", "namespace", "mod", "package" ],
+              correctAnswer: 2,
+              explanation: "The `mod` keyword is used to declare a new module, creating a separate namespace scope."
+            },
+            { question: "By default, are items (functions, structs, etc.) defined inside a module public or private?",
+              options: [
+                "Public to the entire crate.",
+                "Private to the module.",
+                "Public only to parent modules.",
+                "Public only if the module is declared with `pub mod`."
+              ],
+              correctAnswer: 1,
+              explanation: "Items within a module are private by default. You need to use the `pub` keyword to make them accessible outside the module."
+            },
+            { question: "How do you make a function `my_func` inside module `outer::inner` public, so it can be called from outside `outer`?",
+              code: `mod outer {\n    mod inner {\n        // How to declare my_func?\n        fn my_func() {}\n    }\n}`,
+              options: [
+                "`pub fn my_func()`",
+                "`pub(crate) fn my_func()` inside `inner`, and `pub mod inner` inside `outer`",
+                "`pub fn my_func()` inside `inner`, and `pub mod inner` inside `outer`",
+                "`pub(super) fn my_func()` inside `inner`, and `pub mod inner` inside `outer`"
+              ],
+              correctAnswer: 2,
+              explanation: "To make an item accessible outside its parent module, both the item itself (`pub fn my_func`) and its containing module (`pub mod inner`) need to be marked `pub` relative to the scope from which you want to access it."
+            },
+            { question: "What does `pub(crate)` mean when applied to an item?",
+              options: [
+                "The item is public only within the current module.",
+                "The item is public only to the parent module.",
+                "The item is public within the entire crate it's defined in, but not outside.",
+                "The item is public globally."
+              ],
+              correctAnswer: 2,
+              explanation: "`pub(crate)` makes an item visible and usable anywhere within the same crate, but keeps it private from external crates."
+            },
+             // Using Paths (use)
+            { question: "What keyword is used to bring a path into the current scope, allowing shorter access to items?",
+              options: [ "import", "require", "include", "use" ],
+              correctAnswer: 3,
+              explanation: "The `use` keyword brings paths (like modules, functions, types) into the current scope, avoiding the need to write the full path every time."
+            },
+            { question: "If you have `mod front_of_house { pub mod hosting { pub fn add_to_waitlist() {} } }`, which `use` statement allows calling `add_to_waitlist()` directly?",
+              code: `// Add use statement here\nfn main() {\n    add_to_waitlist();\n}`,
+              options: [
+                "use crate::front_of_house::hosting::add_to_waitlist;",
+                "use front_of_house::hosting::add_to_waitlist;",
+                "use crate::front_of_house::hosting::*;",
+                "use front_of_house::add_to_waitlist;"
+              ],
+              correctAnswer: 0,
+              explanation: "`use crate::front_of_house::hosting::add_to_waitlist;` brings the specific function into scope. `crate::` denotes the path starts from the crate root."
+            },
+            { question: "What is the idiomatic way to bring structs, enums, and other types into scope with `use`?",
+              options: [
+                "Use the full path to the item, e.g., `use std::collections::HashMap;`",
+                "Use the path to the parent module, e.g., `use std::collections;`",
+                "Use a glob `*`, e.g., `use std::collections::*;`",
+                "Use `pub use ...`"
+              ],
+              correctAnswer: 0,
+              explanation: "The convention is to bring the full type path into scope (e.g., `HashMap`), allowing you to refer to the type directly (`HashMap::new()`). For functions, bringing the parent module is sometimes done, but bringing the function directly is also common."
+            },
+             // Organizing Code Across Files
+            { question: "If you have `mod front_of_house;` in your `src/lib.rs` or `src/main.rs`, where does Rust look for the module's code?",
+              options: [
+                "In `src/front_of_house.rs`",
+                "In `src/front_of_house/mod.rs`",
+                "Either A or B",
+                "In `src/mods/front_of_house.rs`"
+              ],
+              correctAnswer: 2,
+              explanation: "For `mod my_module;`, Rust first looks for `src/my_module.rs`. If not found, it looks for `src/my_module/mod.rs`."
+            },
+            { question: "You have `src/main.rs` containing `mod garden;`. Inside `src/garden.rs` you have `pub mod vegetables;`. Where should the code for the `vegetables` module live?",
+              options: [
+                "`src/garden/vegetables.rs`",
+                "`src/vegetables.rs`",
+                "`src/garden.rs` (nested mod)",
+                "`src/garden/vegetables/mod.rs`"
+               ],
+              correctAnswer: 0, // Or 3, both work. Let's prefer the simpler .rs file.
+              explanation: "When `garden.rs` declares `pub mod vegetables;`, the compiler looks for the code in `src/garden/vegetables.rs` or `src/garden/vegetables/mod.rs`."
+            },
+             // Packages and Crates
+            { question: "What is a 'crate' in Rust?",
+              options: [
+                "A collection of related packages.",
+                "The smallest unit of code the Rust compiler considers.",
+                "A directory containing Rust source code and a Cargo.toml file.",
+                "An external library downloaded from crates.io."
+              ],
+              correctAnswer: 1,
+              explanation: "A crate is a binary or library. It's the compilation unit in Rust. Source files are compiled into a crate."
+            },
+            { question: "What is a 'package' in Rust?",
+              options: [
+                "A single Rust source file.",
+                "A synonym for a module.",
+                "One or more crates providing a set of functionality, defined by a Cargo.toml file.",
+                "A compressed archive of a crate found on crates.io."
+              ],
+              correctAnswer: 2,
+              explanation: "A package is defined by a `Cargo.toml` file and contains one or more crates (at least one library or binary crate). It handles building, testing, and sharing those crates."
+            },
+            { question: "Can a single Rust package contain multiple binary crates?",
+              options: [
+                "No, only one binary crate (`src/main.rs`) is allowed.",
+                "Yes, by placing additional source files in `src/bin/`.",
+                "Yes, but only if it doesn't also contain a library crate.",
+                "No, multiple binaries require multiple packages."
+              ],
+              correctAnswer: 1,
+              explanation: "A package automatically includes a binary crate if `src/main.rs` exists. Additional binary crates can be added by placing `.rs` files in the `src/bin/` directory. Each file in `src/bin/` becomes a separate binary."
+            },
+            { question: "What is the primary purpose of `src/lib.rs` in a Rust package?",
+              options: [
+                "To define the main entry point for a binary application.",
+                "To contain integration tests.",
+                "To define the root module of the library crate for the package.",
+                "To list the package's dependencies."
+              ],
+              correctAnswer: 2,
+              explanation: "`src/lib.rs` is the conventional crate root for a library crate within a package. Its contents define the public API of the library."
+            },
+             // Using External Crates
+            { question: "Which file is used by Cargo to manage a package's dependencies?",
+              options: [ "Cargo.lock", "manifest.toml", "dependencies.txt", "Cargo.toml" ],
+              correctAnswer: 3,
+              explanation: "`Cargo.toml` is the manifest file for a Rust package, containing metadata, configuration, and crucially, the list of dependencies under the `[dependencies]` section."
+            },
+            { question: "How do you add the `rand` crate (version 0.8) as a dependency in `Cargo.toml`?",
+              language: 'toml', // Specify TOML language for Prism
+              code: `[dependencies]\n# Add rand crate here`,
+              options: [
+                `rand = "0.8"`,
+                `crate rand = "0.8"`,
+                `use rand = "0.8"`,
+                `extern crate rand = "0.8"`
+              ],
+              correctAnswer: 0,
+              explanation: "Dependencies are listed under the `[dependencies]` section with the crate name as the key and the desired version string as the value (e.g., `rand = \"0.8\"`)."
+            },
+             { question: "After adding an external crate to `Cargo.toml`, how do you typically make its items available in your Rust code?",
+              options: [
+                "Run `cargo install <crate_name>`.",
+                "The items are automatically available globally.",
+                "Use the `use` keyword with the crate's name (e.g., `use rand::Rng;`).",
+                "Link the crate manually during compilation."
+              ],
+              correctAnswer: 2,
+              explanation: "Once a crate is listed in `Cargo.toml` and fetched by `cargo build` (or related commands), you use the `use` keyword just like with your own modules to bring its public items into scope (e.g., `use external_crate::some_module::SomeType;`)."
+            }
+        ];
+        const TIME_LIMIT_SECONDS = 18 * 60; // Adjust time as needed
+        const MAX_HISTORY_ITEMS = 5;
+        // *** UPDATED LOCAL STORAGE KEYS ***
+        const SCORE_HISTORY_KEY = 'rustModulesCratesQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'rustModulesCratesQuizState';
+
+        // --- DOM Elements ---
+        // (DOM element variables remain the same)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        // (State variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+
+        // --- Helper Functions ---
+        // (Helper functions remain the same)
+         function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+
+        // --- Dark Mode ---
+        // (Dark mode function remains the same)
+         function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight code after theme change
+             if (typeof Prism !== 'undefined') {
+                 // Add check for TOML highlighting
+                 Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+                 setTimeout(() => Prism.highlightAll(), 50);
+             }
+        }
+
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // (State management functions remain the same, using new keys)
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress quiz state is incompatible/invalid.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress quiz state cleared.");
+        }
+
+
+        // --- Local Storage: SCORE HISTORY ---
+        // (History functions remain the same, using new keys)
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Score history cleared.");
+             }
+        }
+
+
+        // --- UI: Display Score History ---
+        // (Display history function remains the same)
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; // Clear current list
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); // Newest first
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+
+        // --- Quiz Logic ---
+        // (Core quiz logic functions remain largely the same, adapting to new data)
+        function startQuiz() {
+             if (loadState()) { // Try to load and resume
+                 console.log("Resuming quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000; // Adjust start time
+             } else { // Start fresh
+                 console.log("Initializing a new quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true;
+
+            // Update UI elements with correct total question count
+            const totalQuestions = quizData.length;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${currentQuestionIndex + 1}/${totalQuestions}`;
+            scoreValue.textContent = `${score}/${totalQuestions}`; // Update placeholder on results screen too
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            saveState(); // Save initial state (fresh or resumed)
+        }
+
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 // Set language class, default to rust, check for specific language hints
+                 const language = question.language || 'rust'; // Use 'rust' as default
+                 code.className = `language-${language}`;
+                 const safeCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                 code.textContent = safeCode;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${safeOptionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                 const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false;
+                 if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState();
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled');
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1;
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                              if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion);
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        // --- Timer ---
+        // (Timer function remains the same)
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!quizActive) return;
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) {
+                        submitQuiz(true);
+                    }
+                    return;
+                }
+
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                     saveState();
+                 }
+            };
+
+            updateTimerDisplay();
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+
+        // --- Submit and Results ---
+        // (Submit function remains largely the same, adapting to new data/text)
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return;
+
+            quizActive = false;
+            clearInterval(timerInterval);
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            addScoreToHistory({
+                score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)),
+                timestamp: Date.now(), timeTaken: finalTime
+            });
+
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            accuracyBar.style.width = `0%`;
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100);
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Updated performance messages
+            let performanceText = "";
+            let scoreLevel = 'low';
+            if (timeUp) {
+                performanceText = "Time's up! Understanding modules and crates is key to large projects.";
+                 if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium';
+            } else {
+                if (accuracy >= 90) { performanceText = "Excellent! Your Rust code organization skills are top-notch!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 75) { performanceText = "Great job! You have a solid grasp of modules and crates."; scoreLevel = 'high'; }
+                 else if (accuracy >= 60) { performanceText = "Good work! Review visibility rules and the `use` keyword."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 40) { performanceText = "Decent effort! Focus on how packages and crates relate."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Effective code organization improves maintainability."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState();
+        }
+
+
+        // (Confetti function remains the same)
+         function triggerConfetti() {
+             if (typeof confetti !== 'function') return;
+
+             const confettiSettings = {
+                 particleCount: 100, spread: 70, origin: { y: 0.6 }, zIndex: 1000
+             };
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti(confettiSettings);
+             setTimeout(() => myConfetti({...confettiSettings, particleCount: 60, spread: 100, origin: { y: 0.7, x: 0.3 }, angle: 120, gravity: 0.7}), 200);
+             setTimeout(() => myConfetti({...confettiSettings, particleCount: 60, spread: 100, origin: { y: 0.7, x: 0.7 }, angle: 60, gravity: 0.7}), 250);
+         }
+
+        // --- Review Screen ---
+        // (Review function remains largely the same, adapting to new data)
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = '';
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/30'
+                     : 'border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/30'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  if (question.code) {
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                      const language = question.language || 'rust'; // Use 'rust' as default
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-${language}">${escapedCode}</code></pre>`;
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Choices:</p><ul class="space-y-2 list-none mb-4">`;
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+                      const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`;
+                          }
+                      } else if (i === question.correctAnswer && userAnswerIndex === null) {
+                           liClass = "font-semibold text-green-700 dark:text-green-400";
+                           iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${safeOptionText}</span>${iconHTML}</li>`;
+                 });
+                 reviewHTML += `</ul>`;
+
+                 if (question.explanation) {
+                     const explanationBorderColor = isCorrect ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400';
+                     reviewHTML += `
+                         <div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 ${explanationBorderColor}">
+                              {/* Adjusted Explanation Title Color */}
+                             <strong class="block mb-1 text-sm text-gray-800 dark:text-green-300">Explanation:</strong>
+                             <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                         </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             if (typeof Prism !== 'undefined') {
+                // Ensure autoloader path is set if needed
+                Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        // (showResultsScreen function remains the same)
+         function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        // (Restart function remains the same)
+        function restartQuiz() {
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = [];
+            startTime = undefined; timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = '';
+            resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn');
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden'); submitBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Should likely be hidden if prevBtn is hidden
+
+            displayScoreHistory();
+            console.log("Quiz reset.");
+        }
+
+        // --- Sharing ---
+        // (Share functions remain largely the same, adapting text)
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Updated share text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Rust Modules & Crates Quiz! How's your Rust code organization?`;
+             const shareUrl = window.location.href;
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My Rust Quiz Result!', // Updated title
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Successfully shared');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!");
+             }).catch(err => {
+                 console.error('Could not copy text: ', err);
+                 alert("Failed to copy results. You may need to copy manually.");
+             });
+         }
+
+        // --- Event Listeners ---
+        // (Event listeners remain the same)
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => {
+            applyDarkMode(!htmlElement.classList.contains('dark'));
+        });
+
+
+        // --- Keyboard Navigation Enhancements ---
+        // (Keyboard navigation remains the same)
+         document.addEventListener('keydown', (e) => {
+             // ... (keyboard logic unchanged) ...
+              if (!quizActive && resultsContainer.style.display !== 'block' && reviewContainer.style.display !== 'block') {
+                // Only handle start screen keys if quiz isn't active and results/review aren't shown
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (quizActive) {
+                 // Handle keys during the quiz
+                 if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+                 // Add keydown for options (A=0, B=1, etc.)
+                 else if (e.key >= 'a' && e.key <= 'z') {
+                     const optionIndex = e.key.charCodeAt(0) - 'a'.charCodeAt(0);
+                     const options = optionsContainer.querySelectorAll('.option');
+                     if (optionIndex >= 0 && optionIndex < options.length && userAnswers[currentQuestionIndex] === null) {
+                         e.preventDefault();
+                         selectOption(currentQuestionIndex, optionIndex);
+                     }
+                 }
+             } else if (resultsContainer.style.display === 'block') {
+                 // Handle keys on results screen
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (reviewContainer.style.display === 'block') {
+                 // Handle keys on review screen
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+        // --- Initial Application Load ---
+        // (Initialization function updates placeholders)
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            loadScoreHistory();
+            displayScoreHistory();
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden'); submitBtn.classList.add('hidden');
+            navSpacer.classList.toggle('hidden', true); // Hide spacer initially
+
+            // Update question count placeholders with the actual count from the new data
+            const totalQuestions = quizData.length;
+            document.getElementById('question-counter').innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question 1/${totalQuestions}`;
+            document.getElementById('score-value').textContent = `0/${totalQuestions}`;
+
+
+            console.log("Rust Modules & Crates Quiz application initialized.");
+
+            // Ensure Prism autoloader path is set correctly for potential dynamic loading
+            if (typeof Prism !== 'undefined' && Prism.plugins.autoloader) {
+                 Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+
+

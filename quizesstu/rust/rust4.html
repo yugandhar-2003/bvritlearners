@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Collections & Strings Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Slightly different gradient, still Rust-ish */
+            background: linear-gradient(135deg, #b7410e 0%, #4a4a4a 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             /* Darker Rust-themed gradient */
+            background: linear-gradient(135deg, #5a2a0a 0%, #1f1f1f 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(30, 41, 59, 0.75); /* Slightly more opaque */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb;
+         }
+         html.dark .option {
+             background-color: rgba(51, 65, 85, 0.65);
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db;
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(71, 85, 105, 0.8);
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         html.dark .option.selected {
+             background: rgba(247, 76, 0, 0.35); /* Rust orange tint */
+             border-color: #ff8a60;
+             color: #ffe0d4;
+         }
+         html.dark .option.correct {
+            background: rgba(16, 185, 129, 0.35) !important;
+            border-color: #34d399 !important;
+            color: #d1fae5 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #f87171 !important;
+             color: #fee2e2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fee2e2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(30, 41, 59, 0.85);
+             color: #cbd5e1;
+             border-left-color: #ff7733; /* Rust orange */
+         }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+         html.dark .code-snippet-container {
+             background-color: #1e293b;
+             color: #e2e8f0;
+             border: 1px solid #334155;
+         }
+          html.dark .btn-secondary {
+              background-color: #374151;
+              color: #e5e7eb;
+              border: 1px solid #4b5563;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563;
+          }
+          html.dark #score-circle {
+              background-color: #1f2937;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #ff8a60; /* Rust orange */
+          }
+           html.dark .text-gray-500 { color: #9ca3af; }
+           html.dark .text-gray-600 { color: #cbd5e1; }
+           html.dark .text-gray-700 { color: #e2e8f0; }
+           html.dark .text-gray-800 { color: #f1f5f9; }
+           html.dark .text-indigo-900 { color: #ffccb3; } /* Lighter orange */
+           html.dark .text-indigo-700 { color: #ffab91; } /* Medium orange */
+           html.dark .bg-gray-200 { background-color: #4b5563;}
+           html.dark .bg-indigo-50 { background-color: #5a2a0a;} /* Darker orange */
+           html.dark .text-indigo-600 { color: #ff8a60; } /* Rust orange */
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb;
+           }
+           html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+           html.dark .history-date { color: #9ca3af; }
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(247, 76, 0, 0.5); /* Rust orange */
+        }
+        .option.selected {
+            border-color: #f74c00; /* Rust orange */
+            background: linear-gradient(to right, rgba(247, 76, 0, 0.15), rgba(255, 100, 30, 0.15)); /* Rust orange gradient */
+            box-shadow: 0 4px 10px rgba(247, 76, 0, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #f74c00, #ff7733); /* Rust gradient */
+            box-shadow: 0 0 15px rgba(247, 76, 0, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-primary {
+             background: linear-gradient(to right, #f74c00, #ff7733); /* Rust orange */
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #e63900, #f74c00); /* Darker Rust orange */
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf);
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #f74c00; /* Rust orange */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #272822; /* Okaidia background */
+            border: 1px solid #444;
+            font-size: 0.9em;
+        }
+        html.dark .code-snippet-container {
+             background-color: #1e293b; /* Dark mode code background */
+             border: 1px solid #334155;
+         }
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #fcd34d !important;
+             border-color: #fcd34d !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #f74c00; /* Rust orange focus */
+             outline-offset: 2px;
+        }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+             outline-color: #ff8a60; /* Lighter orange focus */
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+
+         /* Specific dark mode history text */
+         html.dark .history-score { color: #f3f4f6; }
+         html.dark .history-date { color: #9ca3af; }
+         html.dark #clear-history-btn { color: #f87171; }
+         html.dark #score-history-area { border-top-color: rgba(255, 255, 255, 0.1); }
+         html.dark .history-item { border-bottom-color: rgba(255, 255, 255, 0.1); }
+
+         /* Rust specific headings dark mode */
+         html.dark .glass-card h2 { color: #ffccb3; }
+         html.dark #score-history-area h3 { color: #ffab91; }
+         html.dark #results-container h2 { color: #ffccb3; }
+         html.dark #review-container h2 { color: #ffccb3; }
+         html.dark #question-text { color: #f3f4f6; } /* Make question text clearer */
+         html.dark .explanation strong { color: #ffab91; } /* Explanation title */
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Changed Header -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Rust Collections & Strings Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Explore Vectors, Strings, Hash Maps, and Iterators!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+             <!-- Changed Start Screen Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-gray-800 dark:text-orange-200">Ready to Manage Data?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers common Rust collections: Vec, String, HashMap, and iteration.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-orange-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <!-- Updated Question Count -->
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/16</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-gray-100 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-orange-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                         <!-- Updated Question Count -->
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-orange-600 dark:text-orange-300">0/16</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-orange-50 dark:bg-orange-900/30 rounded-lg border border-orange-100 dark:border-orange-700/50 mt-2">
+                         <!-- Changed Performance Message -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing with Rust's powerful collections!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-orange-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // *** NEW RUST COLLECTIONS & STRINGS QUIZ DATA ***
+        const quizData = [
+            // Vectors (Vec<T>)
+            { question: "How do you create an empty vector capable of holding `i32` values?",
+              options: [
+                "let v = Vec::new<i32>();",
+                "let v: Vec<i32> = Vec::new();",
+                "let v = vec![i32];",
+                "let v = new Vec<i32>();"
+              ],
+              correctAnswer: 1,
+              explanation: "Use `Vec::new()` and provide a type annotation (`Vec<i32>`) for an empty vector. `Vec::new<i32>()` is not valid syntax, and `vec![]` requires initial elements (or type inference)."
+            },
+            { question: "Which macro is commonly used to create a vector with initial values?",
+              options: [
+                "vector![]",
+                "Vec![]",
+                "new_vec![]",
+                "vec![]"
+              ],
+              correctAnswer: 3,
+              explanation: "The `vec![]` macro provides a convenient way to initialize a `Vec<T>` with elements, e.g., `let v = vec![1, 2, 3];`."
+            },
+            { question: "How do you add an element to the end of an existing mutable vector `v`?",
+              code: `let mut v = vec![1, 2];\n// Add 3 to the end`,
+              options: [
+                "v.add(3);",
+                "v.append(3);",
+                "v.push(3);",
+                "v[2] = 3;"
+              ],
+              correctAnswer: 2,
+              explanation: "The `push()` method is used to add an element to the end of a vector. Index assignment (`v[2] = 3;`) would panic if the index is out of bounds."
+            },
+            { question: "What are the two primary ways to access elements in a vector `v` at a specific index `i`?",
+              options: [
+                "`v[i]` (indexing) and `v.at(i)`",
+                "`v.get(i)` and `v.read(i)`",
+                "`v[i]` (indexing) and `v.get(i)`",
+                "`v.access(i)` and `v.retrieve(i)`"
+              ],
+              correctAnswer: 2,
+              explanation: "You can use square bracket indexing `v[i]`, which panics if the index is out of bounds, or the `get(i)` method, which returns an `Option<&T>` (or `Option<&mut T>`), allowing safe handling of out-of-bounds access (`None`)."
+            },
+            { question: "What does `v.get(0)` return if `v` is `vec![10, 20]`?",
+              code: `let v = vec![10, 20];\nlet first = v.get(0);`,
+              options: [
+                "`10` (an i32)",
+                "`&10` (a reference to i32)",
+                "`Some(10)`",
+                "`Some(&10)`"
+              ],
+              correctAnswer: 3,
+              explanation: "The `get()` method returns an `Option<&T>`. Since index 0 is valid, it returns `Some` containing a reference (`&`) to the element at that index."
+            },
+
+             // Strings (String, &str)
+            { question: "What is the fundamental difference between `String` and `&str` (string slice)?",
+              options: [
+                "`String` is mutable, `&str` is immutable.",
+                "`String` is stored on the stack, `&str` on the heap.",
+                "`String` is an owned, growable string type; `&str` is a borrowed, fixed-size view into string data.",
+                "`&str` can contain non-UTF-8 data, `String` cannot."
+              ],
+              correctAnswer: 2,
+              explanation: "`String` is an owned, heap-allocated, UTF-8 encoded, growable buffer. `&str` (a string slice) is an immutable reference (a view) to a sequence of UTF-8 bytes, typically part of a `String` or a string literal."
+            },
+            { question: "How do you create an empty `String`?",
+              options: [
+                "let s = \"\";",
+                "let s = String::new();",
+                "let s = String{};",
+                "let s = new String();"
+              ],
+              correctAnswer: 1,
+              explanation: "`String::new()` creates a new, empty `String`. `\"\"` creates an empty string slice (`&str`)."
+            },
+            { question: "Which method is typically used to append a string slice (`&str`) to a `String`?",
+              code: `let mut s = String::from("Hello");\nlet s2 = ", world!";\n// Append s2 to s`,
+              options: [
+                "s.append(s2);",
+                "s.concat(s2);",
+                "s.push_str(s2);",
+                "s += s2;"
+              ],
+              correctAnswer: 2,
+              explanation: "`push_str()` appends a string slice (`&str`) to a `String` without taking ownership. The `+=` operator also works by using the `add` method, which takes ownership of `self` and concatenates with an `&str`."
+            },
+             { question: "How can you get a string slice (`&str`) of the first 5 bytes of a `String` named `s`?",
+              code: `let s = String::from("hello world");`,
+              options: [
+                "s.slice(0, 5)",
+                "s.sub(0, 5)",
+                "&s[..5]",
+                "s.get_slice(0..5)"
+              ],
+              correctAnswer: 2,
+              explanation: "Rust uses range syntax `[start..end]` for slicing. `&s[..5]` creates a string slice referencing the bytes from the beginning up to (but not including) index 5. This panics if byte indices are invalid UTF-8 boundaries."
+            },
+
+             // Hash Maps (HashMap<K, V>)
+            { question: "How do you bring `HashMap` into scope?",
+              options: [
+                "It's always in scope (in the prelude).",
+                "use std::collections::HashMap;",
+                "use std::map::HashMap;",
+                "import std::collections::HashMap;"
+              ],
+              correctAnswer: 1,
+              explanation: "`HashMap` is not in the prelude and must be explicitly brought into scope using `use std::collections::HashMap;`."
+            },
+            { question: "How do you insert a key-value pair into a `HashMap` named `scores`?",
+              code: `use std::collections::HashMap;\nlet mut scores = HashMap::new();\nlet team_name = String::from("Blue");\nlet score = 10;`,
+              options: [
+                "scores.add(team_name, score);",
+                "scores.push(team_name, score);",
+                "scores.set(team_name, score);",
+                "scores.insert(team_name, score);"
+              ],
+              correctAnswer: 3,
+              explanation: "The `insert()` method is used to add key-value pairs to a `HashMap`. Note that `insert` takes ownership of both the key and the value if they are owned types like `String`."
+            },
+            { question: "What does `scores.get(\"Blue\")` return if the key \"Blue\" exists in the `HashMap` `scores`?",
+              code: `// Assume scores HashMap has {"Blue": 10}\nlet score_option = scores.get("Blue");`,
+              options: [
+                "`10` (the value)",
+                "`Some(10)`",
+                "`&10` (a reference to the value)",
+                "`Some(&10)`"
+              ],
+              correctAnswer: 3,
+              explanation: "`get()` takes a reference to the key (`&K`) and returns an `Option<&V>`, where `&V` is a reference to the value associated with the key. It returns `None` if the key is not found."
+            },
+            { question: "Which method provides a way to insert a value only if the key does NOT already exist in a `HashMap`?",
+              options: [
+                "`insert_if_absent()`",
+                "`try_insert()`",
+                "`entry(key).or_insert(value)`",
+                "`put_if_missing()`"
+              ],
+              correctAnswer: 2,
+              explanation: "The `entry()` API is used for conditional insertion/modification. `map.entry(key).or_insert(default_value)` inserts `default_value` only if `key` is not present, and returns a mutable reference to the value."
+            },
+
+            // Iterators and Loops
+            { question: "Which is the most common way to iterate over the elements of a vector `v` immutably?",
+              code: `let v = vec![10, 20, 30];`,
+              options: [
+                "for i in v.iter_mut() { /* ... */ }",
+                "for i in v { /* ... */ }",
+                "for i in v.into_iter() { /* ... */ }",
+                "for i in v.iter() { /* ... */ }"
+              ],
+              correctAnswer: 3,
+              explanation: "`v.iter()` creates an iterator that yields immutable references (`&T`) to the elements. `for i in v` or `v.into_iter()` consumes the vector and yields owned values (`T`). `v.iter_mut()` yields mutable references (`&mut T`)."
+            },
+             { question: "If you want to modify elements of a vector `v` while iterating, which iterator method should you use?",
+              code: `let mut v = vec![1, 2, 3];`,
+              options: [
+                "`.iter()`",
+                "`.into_iter()`",
+                "`.iter_mut()`",
+                "`.modify_iter()`"
+              ],
+              correctAnswer: 2,
+              explanation: "`.iter_mut()` produces an iterator that yields mutable references (`&mut T`) to each element, allowing you to modify the vector's contents in place during the loop."
+            },
+             { question: "What is the output of this code?",
+              code: `use std::collections::HashMap;\nlet mut map = HashMap::new();\nmap.insert("one", 1);\nmap.insert("two", 2);\n\nfor (key, val) in &map {\n    println!("{}: {}", key, val);\n}`,
+              options: [
+                "Prints keys and values in insertion order.",
+                "Prints keys and values in alphabetical key order.",
+                "Prints keys and values in an arbitrary, unspecified order.",
+                "Causes a compile error because you can't iterate over a HashMap reference."
+              ],
+              correctAnswer: 2,
+              explanation: "`HashMap` does not guarantee any specific iteration order. Iterating over `&map` (using `.iter()` implicitly) yields references `(&K, &V)`. The order is determined by the hashing implementation and is not predictable."
+            }
+        ];
+        const TIME_LIMIT_SECONDS = 18 * 60; // Slightly longer for potentially more complex questions (adjust as needed)
+        const MAX_HISTORY_ITEMS = 5; // Max number of recent scores to store
+        // *** UPDATED LOCAL STORAGE KEYS ***
+        const SCORE_HISTORY_KEY = 'rustCollectionsQuizScoreHistory'; // localStorage key for score history
+        const QUIZ_STATE_KEY = 'rustCollectionsQuizState'; // localStorage key for in-progress state
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight code after theme change
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50); // Small delay ensures styles apply
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() { // Saves the current state of an *active* quiz
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() { // Loads the state of an *active* quiz to resume
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Validation: Check if saved state matches current quiz structure
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress quiz state is incompatible/invalid.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() { // Clears only the *in-progress* quiz state
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress quiz state cleared.");
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); // Keep only the most recent N items
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory(); // Update UI immediately
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; // Clear current list
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); // Newest first
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) { // Try to load and resume
+                 console.log("Resuming quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000; // Adjust start time
+             } else { // Start fresh
+                 console.log("Initializing a new quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true;
+
+            // Update UI elements with correct total question count
+            const totalQuestions = quizData.length;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${currentQuestionIndex + 1}/${totalQuestions}`;
+            scoreValue.textContent = `${score}/${totalQuestions}`; // Update placeholder on results screen too
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            saveState(); // Save initial state (fresh or resumed)
+        }
+
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container'; // Ensure this class is applied
+                 const code = document.createElement('code');
+                 code.className = 'language-rust'; // Set language for Prism
+                 // Sanitize code content before display
+                 const safeCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                 code.textContent = safeCode;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      // Use setTimeout to ensure element is in DOM and styles are applied
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0; // Make it focusable
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                // Sanitize option text before inserting as HTML
+                const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${safeOptionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                 const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false; // Enable next if answer already exists
+                 if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return; // Prevent re-selecting
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             // Enable submit button only on the last question when an answer is selected
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save state after selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); // Disable all options after selection
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Highlight the correct answer if the selected one was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             // Show checkmark on the actually correct answer only if the user was wrong
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                              if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     // If this wasn't selected, but IS the correct answer, and the user was WRONG
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct'); // Still mark it as correct for review
+                         // Optionally show the checkmark here too if needed for clarity when incorrect
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+             // Remove animation classes after a short delay
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer if prev button is visible
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Ensure buttons are enabled/disabled correctly based on whether an answer exists for the *current* question
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to next question
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to previous question
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing interval
+            if (!quizActive) return;
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                // Ensure timeElapsed is calculated correctly based on startTime
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) { // Auto-submit only if quiz was actually running
+                        submitQuiz(true); // Pass true to indicate time ran out
+                    }
+                    return;
+                }
+
+                // Update display
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                // Add/remove warning class
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400'); // Remove explicit red if not <= 0
+
+                 // Periodic save state (e.g., every 10 seconds)
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                     saveState();
+                 }
+            };
+
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000); // Update every second
+        }
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return; // Don't submit if not active unless time is up
+
+            quizActive = false; // Mark quiz as inactive
+            clearInterval(timerInterval); // Stop the timer
+
+            // Calculate score
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) { // Only count answered questions
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            // Use the currently tracked timeElapsed if submitted normally, or full time if time ran out
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            // Add attempt to score history
+            addScoreToHistory({
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: parseFloat(accuracy.toFixed(1)), // Store with one decimal place
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            });
+
+            // UI Updates for Results Screen
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Re-apply animation for fadeIn effect
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            // Update displayed values
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            // Animate accuracy bar
+            accuracyBar.style.width = `0%`; // Reset first for animation effect
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); // Apply after a short delay
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Update Performance Message and Score Circle Style
+            let performanceText = "";
+            let scoreLevel = 'low'; // Default: low
+            if (timeUp) {
+                performanceText = "Time's up! Review Rust's collections to improve.";
+                 if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium';
+            } else {
+                if (accuracy >= 90) { performanceText = "Excellent! You handle Rust collections like a pro!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 75) { performanceText = "Great job! Solid understanding of Vec, String, and HashMap."; scoreLevel = 'high'; }
+                 else if (accuracy >= 60) { performanceText = "Good work! Keep practicing with iterators."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 40) { performanceText = "Decent effort! Focus on the nuances of String vs &str."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Mastering collections is crucial in Rust."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+            // Trigger confetti for high scores (if not timed out)
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState(); // Clear the IN-PROGRESS quiz state from localStorage after submission
+        }
+
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return; // Ensure confetti library is loaded
+
+             const confettiSettings = {
+                 particleCount: 100,
+                 spread: 70,
+                 origin: { y: 0.6 },
+                 zIndex: 1000 // Ensure confetti is above other elements
+             };
+
+             const myConfetti = confetti.create(confettiCanvas, {
+                 resize: true,
+                 useWorker: true // Improves performance
+             });
+
+             myConfetti(confettiSettings);
+
+             // Optional: Add more bursts for effect
+             setTimeout(() => myConfetti({...confettiSettings, particleCount: 60, spread: 100, origin: { y: 0.7, x: 0.3 }, angle: 120, gravity: 0.7}), 200);
+             setTimeout(() => myConfetti({...confettiSettings, particleCount: 60, spread: 100, origin: { y: 0.7, x: 0.7 }, angle: 60, gravity: 0.7}), 250);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            // Re-apply animation for fadeIn effect
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth; // Trigger reflow
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review items
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 // Base classes + dynamic correct/incorrect styling
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/30'
+                     : 'border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/30'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  // Add code snippet if present
+                  if (question.code) {
+                      // Escape HTML characters in code before inserting
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-rust">${escapedCode}</code></pre>`;
+                  }
+
+                 // Display options with feedback
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Choices:</p><ul class="space-y-2 list-none mb-4">`;
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+                      const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">"); // Sanitize
+
+                      // Style the correct answer
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; // Correct icon
+                      }
+
+                      // Style the user's answer
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              // User was correct - highlight green
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                              // Icon is already set correctly above
+                          } else {
+                              // User was incorrect - highlight red and strike-through
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; // Incorrect icon
+                          }
+                      } else if (i === question.correctAnswer && userAnswerIndex === null) {
+                           // If user didn't answer, still show the correct one clearly
+                           liClass = "font-semibold text-green-700 dark:text-green-400";
+                           iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${safeOptionText}</span>${iconHTML}</li>`;
+                 });
+                 reviewHTML += `</ul>`;
+
+                 // Add Explanation if available
+                 if (question.explanation) {
+                     // Determine border color for explanation based on correctness
+                     const explanationBorderColor = isCorrect ? 'border-green-500 dark:border-green-400' : 'border-red-500 dark:border-red-400';
+                     reviewHTML += `
+                         <div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 ${explanationBorderColor}">
+                             <strong class="block mb-1 text-sm text-gray-800 dark:text-orange-300">Explanation:</strong>
+                             <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                         </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             // Re-run Prism highlighting for the newly added code blocks in the review section
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Re-apply animation for fadeIn effect
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+             // Reset state variables (keep scoreHistory)
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            questionsOrder = [];
+            startTime = undefined; // Reset start time
+            timeElapsed = 0;
+            quizActive = false;
+            clearInterval(timerInterval);
+
+            // Reset UI elements
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = ''; // Clear any lingering feedback
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block'; // Show start screen
+
+            // Re-apply animation for start screen
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; // Trigger reflow
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+            // Reset navigation buttons state
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden'); // Ensure next button is visible initially (will be hidden on last Q)
+            submitBtn.classList.add('hidden'); // Ensure submit is hidden initially
+            navSpacer.classList.remove('hidden'); // Hide spacer initially as prevBtn is hidden
+
+            // Ensure score history is shown on start screen after restart
+            displayScoreHistory();
+
+            console.log("Quiz reset.");
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Updated share text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Rust Collections & Strings Quiz! Try it out!`;
+             const shareUrl = window.location.href; // Use current page URL
+
+             if (navigator.share) { // Use Web Share API if available
+                 try {
+                     await navigator.share({
+                         title: 'My Rust Quiz Result!', // Updated title
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Successfully shared');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Fallback to clipboard if share fails (e.g., user cancels)
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 // Fallback for browsers without Web Share API
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!"); // Provide feedback
+             }).catch(err => {
+                 console.error('Could not copy text: ', err);
+                 alert("Failed to copy results. You may need to copy manually."); // Error feedback
+             });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Explicitly false for manual submit
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => {
+            applyDarkMode(!htmlElement.classList.contains('dark'));
+        });
+
+        // --- Keyboard Navigation Enhancements ---
+         document.addEventListener('keydown', (e) => {
+             if (!quizActive && resultsContainer.style.display !== 'block' && reviewContainer.style.display !== 'block') {
+                // Only handle start screen keys if quiz isn't active and results/review aren't shown
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (quizActive) {
+                 // Handle keys during the quiz
+                 if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+                 // Add keydown for options (A=0, B=1, etc.)
+                 else if (e.key >= 'a' && e.key <= 'z') {
+                     const optionIndex = e.key.charCodeAt(0) - 'a'.charCodeAt(0);
+                     const options = optionsContainer.querySelectorAll('.option');
+                     if (optionIndex >= 0 && optionIndex < options.length && userAnswers[currentQuestionIndex] === null) { // Check if answer not already selected
+                         e.preventDefault();
+                         selectOption(currentQuestionIndex, optionIndex);
+                         // Optionally auto-focus the next button after selection
+                         // setTimeout(() => {
+                         //     if (!nextBtn.disabled && !nextBtn.classList.contains('hidden')) nextBtn.focus();
+                         //     else if (!submitBtn.disabled && !submitBtn.classList.contains('hidden')) submitBtn.focus();
+                         // }, 100);
+                     }
+                 }
+             } else if (resultsContainer.style.display === 'block') {
+                 // Handle keys on results screen
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (reviewContainer.style.display === 'block') {
+                 // Handle keys on review screen
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Check and apply dark mode preference
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            // Load and display score history
+            loadScoreHistory();
+            displayScoreHistory();
+
+            // Ensure initial UI state is correct
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            // Set initial button states
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden'); // Should be visible unless last question
+            submitBtn.classList.add('hidden'); // Only visible on last question
+
+            // Update question count placeholders with the actual count from the new data
+            const totalQuestions = quizData.length;
+            document.getElementById('question-counter').innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question 1/${totalQuestions}`;
+            document.getElementById('score-value').textContent = `0/${totalQuestions}`;
+
+
+            console.log("Rust Collections Quiz application initialized.");
+        }
+
+        // Run initialization when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated Title -->
+    <title>Rust Pattern Matching & Control Flow Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* Base styles remain largely the same */
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* New gradient - Purple/Pinkish */
+            background: linear-gradient(135deg, #8e44ad 0%, #c0392b 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: 0; pointer-events: none;
+        }
+
+        /* Dark Mode Styles - Adjusted gradient */
+        html.dark body {
+             background: linear-gradient(135deg, #23074d 0%, #cc5333 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+        /* Dark mode styles adapted from previous version */
+        html.dark .glass-card { background: rgba(44, 62, 80, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ecf0f1; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #ffffff; }
+        html.dark .option { background-color: rgba(52, 73, 94, 0.65); border-color: rgba(255, 255, 255, 0.2); color: #bdc3c7; }
+        html.dark .option:hover:not(.disabled):not(.selected) { background: rgba(72, 93, 114, 0.8); border-color: rgba(255, 255, 255, 0.4); }
+        html.dark .option.selected { background: rgba(142, 68, 173, 0.35); border-color: #ab87ff; color: #f4e8ff; } /* Purple accent */
+        html.dark .option.correct { background: rgba(46, 204, 113, 0.35) !important; border-color: #2ecc71 !important; color: #d0f4e0 !important; }
+        html.dark .option.incorrect { background: rgba(231, 76, 60, 0.3) !important; border-color: #e74c3c !important; color: #f9ebea !important; }
+        html.dark .option.incorrect.selected { color: #f9ebea !important; box-shadow: inset 0 0 5px rgba(231, 76, 60, 0.3); }
+        html.dark .explanation { background-color: rgba(44, 62, 80, 0.85); color: #bdc3c7; border-left-color: #9b59b6; } /* Purple accent */
+        html.dark .review-item.correct .explanation { border-color: #27ae60; }
+        html.dark .review-item.incorrect .explanation { border-color: #c0392b; }
+        html.dark .code-snippet-container { background-color: #2c3e50; color: #ecf0f1; border: 1px solid #34495e; }
+        html.dark .btn-secondary { background-color: #7f8c8d; color: #ecf0f1; border: 1px solid #95a5a6; }
+        html.dark .btn-secondary:hover:not(:disabled) { background-color: #95a5a6; }
+        html.dark #score-circle { background-color: #34495e; border: 6px solid transparent; }
+        html.dark #score-value { color: #be90d4; } /* Lighter Purple */
+        html.dark .text-gray-500 { color: #95a5a6; } html.dark .text-gray-600 { color: #bdc3c7; } html.dark .text-gray-700 { color: #ecf0f1; } html.dark .text-gray-800 { color: #ffffff; }
+        html.dark .text-indigo-900 { color: #d2b4de; } /* Mapped indigo to purple */
+        html.dark .text-indigo-700 { color: #bb8fce; } /* Mapped indigo to purple */
+        html.dark .bg-gray-200 { background-color: #7f8c8d;}
+        html.dark .bg-indigo-50 { background-color: #5b2c6f;} /* Mapped indigo to purple */
+        html.dark .text-indigo-600 { color: #d2b4de; } /* Mapped indigo to purple */
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(76, 161, 175, 0.4), rgba(44, 62, 80, 0.3)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); color: #ecf0f1; }
+        html.dark .timer-warning { color: #f1c40f !important; border-color: #f1c40f !important; }
+        html.dark .history-date { color: #95a5a6; }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        /* Container and Glass Card */
+        .container { position: relative; z-index: 1; }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        .quiz-card { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; transform: translateY(30px); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Option Styling (Adjusted colors) */
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.7); cursor: pointer; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(142, 68, 173, 0.5); } /* Purple accent */
+        .option.selected { border-color: #8e44ad; background: linear-gradient(to right, rgba(142, 68, 173, 0.15), rgba(192, 57, 43, 0.15)); box-shadow: 0 4px 10px rgba(142, 68, 173, 0.2); }
+        .option.correct { background: linear-gradient(to right, rgba(46, 204, 113, 0.2), rgba(39, 174, 96, 0.2)) !important; border-color: #2ecc71 !important; color: #16a085 !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(231, 76, 60, 0.15), rgba(192, 57, 43, 0.15)) !important; border-color: #e74c3c !important; color: #c0392b !important; cursor: default; }
+        .option.disabled { opacity: 0.75; cursor: not-allowed; pointer-events: none; }
+        .option .feedback-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 1.3em; opacity: 0; transition: opacity 0.3s ease; }
+        .option .feedback-icon .icon-correct { color: #2ecc71; }
+        .option .feedback-icon .icon-incorrect { color: #e74c3c; }
+        .option.correct .feedback-icon .icon-correct, .option.incorrect .feedback-icon .icon-incorrect { opacity: 1; }
+        .option.correct:not(.selected) .feedback-icon .icon-correct { opacity: 1; }
+
+        /* Progress Bar (Adjusted gradient) */
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        html.dark .progress-container { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #2ecc71, #8e44ad); /* Green to Purple */ box-shadow: 0 0 15px rgba(142, 68, 173, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Results Container & Score Circle (Adjusted colors) */
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #bdc3c7, #ecf0f1) 1; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #2ecc71, #58d68d) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #f39c12, #f1c40f) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #e74c3c, #ec7063) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #58d68d, #82e0aa) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #f1c40f, #f4d03f) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #ec7063, #f1948a) 1; }
+
+        /* Buttons (Adjusted colors) */
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, #8e44ad, #c0392b); color: white; } /* Purple/Red gradient */
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #7d3c98, #a93226); } /* Darker */
+        .btn-secondary { background-color: #ecf0f1; color: #34495e; border: 1px solid #bdc3c7; }
+        .btn-secondary:hover:not(:disabled) { background-color: #bdc3c7; }
+        .btn-submit { background: linear-gradient(to right, #27ae60, #2ecc71); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #1e8449, #27ae60); }
+
+        /* Review Item Styling (Adjusted colors) */
+        .review-item { transition: all 0.3s ease; background-color: rgba(255, 255, 255, 0.05); }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.6); margin-top: 0.75rem; border-color: #7d3c98; } /* Dark purple accent */
+        html.light .review-item.correct .explanation { border-color: #2ecc71; }
+        html.light .review-item.incorrect .explanation { border-color: #e74c3c; }
+
+        /* Code Snippet Container */
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #2c3e50; color: #ecf0f1; border: 1px solid #34495e; font-size: 0.9em; }
+        html.light .code-snippet-container { background-color: #f8f9f9; color: #2c3e50; border: 1px solid #e5e7eb; }
+        html.light .code-snippet-container code[class*="language-"], html.light .code-snippet-container pre[class*="language-"] { color: #2c3e50; text-shadow: none; }
+
+        /* Text Shadow */
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); }
+
+        /* Status Badge Styling */
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #f39c12 !important; border-color: #f39c12 !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        /* Focus Styles (Adjusted color) */
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #512e5f; outline-offset: 2px; } /* Darker purple */
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #d7bde2; } /* Lighter purple */
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        /* Confetti Canvas */
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+        /* Score History */
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #7f8c8d; }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        html.dark .history-date { color: #95a5a6; }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <!-- Updated Title -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Rust Pattern Matching Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Master Rust's powerful pattern matching!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- Updated Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-gray-800 dark:text-white">Ready to Match Some Patterns?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers `match`, `if let`, `while let`, destructuring, and guards.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-200">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <!-- Status Badges -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/X</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-gray-900 dark:text-white leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <!-- Updated Title -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">Quiz Results</h2>
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-purple-600 dark:text-purple-400">0/X</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg text-gray-800 dark:text-gray-100">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg text-gray-800 dark:text-gray-100">00:00</span>
+                    </div>
+                    <!-- Adjusted result message background -->
+                    <div class="p-4 bg-purple-50 dark:bg-gray-700/30 rounded-lg border border-purple-100 dark:border-gray-600/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to improve your skills!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // --- RUST Pattern Matching & Control Flow Quiz Data ---
+        const quizData = [
+             // match Basics
+             { question: "Which keyword is fundamental for exhaustive pattern matching in Rust?", options: [ "if let", "switch", "match", "for" ], correctAnswer: 2, explanation: "`match` is Rust's powerful control flow construct for matching a value against a series of patterns." },
+             { question: "What is required for a `match` expression to compile successfully?", options: [ "At least two arms", "A default arm using `_`", "Exhaustiveness (covering all possible values)", "All arms must return the same type" ], correctAnswer: 2, explanation: "Rust enforces `match` exhaustiveness at compile time. You must have a pattern for every possible value of the input type, often using `_` as a catch-all." },
+             { question: "What is the purpose of the `_` (underscore) pattern in a `match` arm?", options: [ "Match the value 0", "Match any single value and ignore it", "Indicate an error case", "Match only mutable values" ], correctAnswer: 1, explanation: "The `_` pattern acts as a wildcard. It matches any value but doesn't bind it to a variable, effectively ignoring it." },
+
+             // if let
+             { question: "When is `if let` generally preferred over `match`?", options: [ "When matching against multiple complex patterns", "When you only care about one specific pattern and want to ignore the rest", "When you need to guarantee exhaustiveness", "When returning different types from different arms" ], correctAnswer: 1, explanation: "`if let` is concise syntax for handling only one or a few patterns from an enum or other type, avoiding the need for a `_ => {}` arm required by `match` in such cases." },
+             { question: "What does this code snippet do?", code: "let favorite_color: Option<&str> = None;\nif let Some(color) = favorite_color {\n    println!(\"Using your favorite color: {}\", color);\n} else {\n    println!(\"No favorite color set.\");\n}", options: [ "Prints the color if `Some`, otherwise panics", "Assigns `\"None\"` to `color` if `favorite_color` is `None`", "Prints the color if `Some`, prints a default message if `None`", "Causes a compile error because `Option` cannot be used with `if let`" ], correctAnswer: 2, explanation: "`if let Some(color) = favorite_color` checks if `favorite_color` is the `Some` variant. If yes, it binds the inner value to `color` and executes the first block. Otherwise, the `else` block is executed." },
+
+             // while let
+             { question: "What is the purpose of `while let`?", options: [ "To loop infinitely", "To loop while a boolean condition is true", "To loop as long as a pattern continues to match", "To replace `for` loops" ], correctAnswer: 2, explanation: "`while let` repeatedly executes its block as long as the pattern provided matches the expression. It's often used with iterators that return `Option` or `Result`." },
+             { question: "Consider `let mut stack = vec![1, 2, 3];`. Which loop correctly prints and removes elements until the stack is empty?", code: "// How to print 3, 2, 1?", options: [ "loop { if let Some(top) = stack.pop() { println!(\"{}\", top); } }", "while let Some(top) = stack.pop() { println!(\"{}\", top); }", "for top in stack.pop() { println!(\"{}\", top); }", "match stack.pop() { Some(top) => println!(\"{}\", top), _ => break, }" ], correctAnswer: 1, explanation: "`stack.pop()` returns `Option<T>`. `while let Some(top) = stack.pop()` continues looping and binding the value to `top` as long as `pop()` returns `Some`, stopping when it returns `None` (empty stack)." },
+
+             // Destructuring
+             { question: "How do you destructure a tuple `(i32, i32)` named `point` into variables `x` and `y`?", options: [ "let {x, y} = point;", "let x = point.0; let y = point.1;", "let (x, y) = point;", "destructure point into x, y;" ], correctAnswer: 2, explanation: "Tuples can be destructured in a `let` statement using `let (var1, var2) = tuple_instance;`." },
+             { question: "How do you destructure the `Point` struct in a `match` arm?", code: "struct Point { x: i32, y: i32 }\nfn print_coordinates(p: Point) {\n    match p {\n        // How to match and get x, y?\n    }\n}", options: [ "Point { x, y } => println!(\"Coords: {}, {}\", x, y)", "Point(x, y) => println!(\"Coords: {}, {}\", x, y)", "{ x, y } => println!(\"Coords: {}, {}\", x, y)", "p { x, y } => println!(\"Coords: {}, {}\", x, y)" ], correctAnswer: 0, explanation: "Structs with named fields are destructured in patterns using `StructName { field1, field2 }`, which binds the field values to variables of the same name." },
+             { question: "How can you destructure an enum variant with data?", code: "enum Message { Move { x: i32, y: i32 }, Write(String) }\nlet msg = Message::Move { x: 10, y: -5 };\nmatch msg { \n    // How to get x from Move variant?\n    Message::Write(_) => println!(\"Write msg\"),\n}", options: [ "Message::Move(x, _) => println!(\"Move to x: {}\", x)", "Message::Move { x, .. } => println!(\"Move to x: {}\", x)", "Message::Move { x } => println!(\"Move to x: {}\", x)", "Message::Move.x => println!(\"Move to x: {}\", x)" ], correctAnswer: 1, explanation: "Struct-like enum variants are destructured similarly to structs. `Message::Move { x, .. }` binds the value of the `x` field to a variable `x` and ignores other fields (`y` in this case) using `..`." },
+             { question: "What does destructuring achieve in this `let` statement?", code: "let (a, _, c, ..) = (1, 2, 3, 4, 5);", options: [ "Assigns 1 to `a`, 3 to `c`, and ignores the rest", "Assigns 1 to `a`, 2 to `_`, 3 to `c`, and ignores the rest", "Causes a compile error due to unused values", "Assigns 1 to `a`, 3 to `c`, and 4, 5 to `..`" ], correctAnswer: 0, explanation: "This destructures the tuple. `a` gets 1, `_` matches and ignores 2, `c` gets 3, and `..` matches and ignores the remaining elements (4, 5)." },
+
+             // @ Bindings and Multiple Patterns
+             { question: "What is the purpose of the `@` symbol in a pattern?", code: "match Some(5) {\n    opt @ Some(1..=10) => println!(\"Got {:?} in range\", opt),\n    _ => println!(\"Other\"),\n}", options: [ "It creates a mutable binding", "It specifies the type of the binding", "It allows binding the matched value to a variable while also testing it against a sub-pattern", "It indicates a reference pattern" ], correctAnswer: 2, explanation: "The `variable @ pattern` syntax binds the value that matches the `pattern` to the `variable`, allowing you to use the whole value while still matching on its structure or range." },
+              { question: "What does this pattern `1 | 2` match?", options: [ "The tuple `(1, 2)`", "The range from 1 to 2", "Either the value 1 OR the value 2", "The bitwise OR of 1 and 2" ], correctAnswer: 2, explanation: "The `|` (pipe) operator in a pattern allows matching against multiple alternative literal values or patterns." },
+              { question: "How can you match a range of characters?", options: [ "match c { 'a'..='z' => ... }", "match c { range('a', 'z') => ... }", "match c { char::is_alphabetic => ... }", "match c { ['a'-'z'] => ... }" ], correctAnswer: 0, explanation: "Inclusive ranges `start..=end` can be used in `match` arms to match characters (or numbers) within that range." },
+
+
+             // Match Guards
+             { question: "What is a match guard?", options: [ "A pattern that prevents mutable access", "An extra `if` condition applied after a pattern matches", "A special pattern like `_` or `..`", "A way to make `match` exhaustive" ], correctAnswer: 1, explanation: "A match guard is an additional `if condition` specified after a pattern in a `match` arm. The arm is only chosen if both the pattern matches AND the guard condition evaluates to true." },
+             { question: "In which scenario would a match guard be particularly useful?", code: "match optional_num {\n    Some(x) /* ??? */ => println!(\"Got an even number: {}\", x),\n    Some(x) => println!(\"Got an odd number: {}\", x),\n    None => (),\n}", options: [ "if x == 0", "if x % 2 == 0", "when x > 10", "guard x.is_even()" ], correctAnswer: 1, explanation: "A match guard `if x % 2 == 0` allows you to add a condition based on the value bound by the pattern (`x`) without needing nested `if` statements inside the arm." },
+             { question: "What is a key difference between matching `Some(x)` with a guard `if x > 5` and matching `Some(6..)`?", options: [ "There is no difference", "The guard checks the condition *after* binding `x`, while `6..` is part of the pattern itself", "`6..` is less efficient than the guard", "The guard can access variables outside the `match`, while `6..` cannot" ], correctAnswer: 1, explanation: "The pattern `Some(6..)` directly matches only `Some` variants containing a value 6 or greater. The guard `if x > 5` first matches any `Some(x)` and *then* checks if the bound `x` satisfies the `if` condition." },
+              { question: "Can a match guard introduce new variable bindings?", options: [ "Yes, using `let` inside the `if` condition", "No, guards can only use variables already bound by the pattern or outer scope", "Yes, but only for temporary variables", "Only if the `guard` keyword is used" ], correctAnswer: 1, explanation: "Match guards operate on variables already in scope, either from the pattern binding (like `x` in `Some(x) if x > 0`) or from the surrounding function scope. They cannot introduce new `let` bindings." },
+               { question: "Which `match` arm will be executed for `num = Some(4)`?",
+                 code: "let num = Some(4);\nmatch num {\n    Some(x) if x < 0 => println!(\"Negative\"),\n    Some(x) if x == 4 => println!(\"Four\"),\n    Some(x) => println!(\"Positive: {}\", x),\n    None => println!(\"None\"),\n}",
+                 options: [ "Negative", "Four", "Positive: 4", "None" ], correctAnswer: 1, explanation: "The value is `Some(4)`. The first arm's pattern `Some(x)` matches, but the guard `if x < 0` (4 < 0) is false. The second arm's pattern `Some(x)` matches, and its guard `if x == 4` (4 == 4) is true. Therefore, the second arm is executed." }
+        ];
+        const TIME_LIMIT_SECONDS = 20 * 60; // 20 minutes, pattern matching can be subtle
+        const MAX_HISTORY_ITEMS = 5;
+        // --- Updated Local Storage Keys ---
+        const SCORE_HISTORY_KEY = 'rustPatternMatchingQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'rustPatternMatchingQuizState';
+
+        // --- DOM Elements (References remain the same) ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        // ... (rest of DOM element references are unchanged) ...
+         const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+
+        // --- State Variables (Unchanged) ---
+        let currentQuestionIndex = 0; let score = 0; let userAnswers = []; let questionsOrder = [];
+        let startTime; let timerInterval; let timeElapsed = 0; let quizActive = false; let scoreHistory = [];
+
+        // --- Helper Functions (Unchanged) ---
+        function shuffleArray(array) { /* ... */ } function formatTime(seconds) { /* ... */ }
+         function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
+         function formatTime(seconds) { const minutes = Math.floor(seconds / 60); const secs = seconds % 60; return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; }
+
+        // --- Dark Mode (Unchanged logic) ---
+        function applyDarkMode(isDark) { /* ... */ }
+         function applyDarkMode(isDark) { const icon = darkModeToggle.querySelector('i'); if (isDark) { htmlElement.classList.add('dark'); icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); localStorage.setItem('darkMode', 'enabled'); } else { htmlElement.classList.remove('dark'); icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); localStorage.setItem('darkMode', 'disabled'); } if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAll(), 50); } }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE (Uses new QUIZ_STATE_KEY) ---
+        function saveState() { /* ... */ } function loadState() { /* ... */ } function clearState() { /* ... */ }
+         function saveState() { if (!quizActive) return; try { const state = { currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true }; localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state)); } catch (e) { console.error("Failed to save quiz state:", e); } }
+         function loadState() { const savedState = localStorage.getItem(QUIZ_STATE_KEY); if (savedState) { try { const state = JSON.parse(savedState); if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length && typeof state.currentQuestionIndex === 'number' && state.currentQuestionIndex >= 0 && state.currentQuestionIndex < quizData.length) { currentQuestionIndex = state.currentQuestionIndex; userAnswers = state.userAnswers; timeElapsed = state.timeElapsed || 0; questionsOrder = state.questionsOrder; quizActive = true; console.log("In-progress Rust Pattern Matching quiz state loaded."); return true; } else { console.warn("Saved Rust Pattern Matching quiz state is incompatible/invalid."); clearState(); return false; } } catch (e) { console.error("Failed to parse saved Rust Pattern Matching quiz state:", e); clearState(); return false; } } return false; }
+         function clearState() { localStorage.removeItem(QUIZ_STATE_KEY); console.log("In-progress Rust Pattern Matching quiz state cleared."); }
+
+        // --- Local Storage: SCORE HISTORY (Uses new SCORE_HISTORY_KEY) ---
+        function loadScoreHistory() { /* ... */ } function saveScoreHistory() { /* ... */ } function addScoreToHistory(attemptData) { /* ... */ } function clearScoreHistory() { /* ... */ }
+         function loadScoreHistory() { try { const historyJson = localStorage.getItem(SCORE_HISTORY_KEY); scoreHistory = historyJson ? JSON.parse(historyJson) : []; if (!Array.isArray(scoreHistory)) scoreHistory = []; } catch (e) { console.error("Failed to load Rust Pattern Matching score history:", e); scoreHistory = []; } }
+         function saveScoreHistory() { try { const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS); localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory)); } catch (e) { console.error("Failed to save Rust Pattern Matching score history:", e); } }
+         function addScoreToHistory(attemptData) { scoreHistory.push(attemptData); saveScoreHistory(); displayScoreHistory(); }
+         function clearScoreHistory() { if (confirm("Are you sure you want to clear all Pattern Matching quiz attempt scores? This cannot be undone.")) { scoreHistory = []; localStorage.removeItem(SCORE_HISTORY_KEY); displayScoreHistory(); console.log("Rust Pattern Matching score history cleared."); } }
+
+        // --- UI: Display Score History (Unchanged logic) ---
+        function displayScoreHistory() { /* ... */ }
+         function displayScoreHistory() { scoreHistoryList.innerHTML = ''; if (scoreHistory.length === 0) { scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`; clearHistoryBtn.classList.add('hidden'); } else { const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp); sortedHistory.forEach(attempt => { const item = document.createElement('div'); item.className = 'history-item'; const date = new Date(attempt.timestamp); const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }); item.innerHTML = ` <div class="flex-grow pr-4"> <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span> <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span> </div> <div class="history-date text-right"> ${formattedDate}<br>${formattedTime} </div> `; scoreHistoryList.appendChild(item); }); clearHistoryBtn.classList.remove('hidden'); } }
+
+        // --- Quiz Logic (Core logic unchanged) ---
+        function startQuiz() { /* ... */ } function loadQuestion(index) { /* ... */ } function selectOption(displayIndex, selectedOptionIndex) { /* ... */ } function showFeedback(displayIndex, selectedOptionIndex) { /* ... */ } function updateProgress(index) { /* ... */ } function updateNavigation() { /* ... */ } function nextQuestion() { /* ... */ } function prevQuestion() { /* ... */ }
+         function startQuiz() { if (loadState()) { console.log("Resuming Rust quiz from saved state."); startTime = Date.now() - timeElapsed * 1000; } else { console.log("Initializing a new Rust quiz session."); currentQuestionIndex = 0; score = 0; timeElapsed = 0; userAnswers = Array(quizData.length).fill(null); questionsOrder = Array.from(quizData.keys()); shuffleArray(questionsOrder); startTime = Date.now(); } startScreen.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; quizContainer.style.display = 'block'; quizActive = true; loadQuestion(currentQuestionIndex); startTimer(); updateNavigation(); saveState(); }
+         function loadQuestion(index) { if (index < 0 || index >= quizData.length) return; const questionIndexInOriginalData = questionsOrder[index]; const question = quizData[questionIndexInOriginalData]; if (!question) return; questionCard.classList.remove('animate__animated', 'animate__fadeInUp'); void questionCard.offsetWidth; questionCard.classList.add('animate__animated', 'animate__fadeInUp'); questionText.textContent = `${index + 1}. ${question.question}`; feedbackMessage.textContent = ''; codeSnippetArea.innerHTML = ''; if (question.code) { const pre = document.createElement('pre'); pre.className = 'code-snippet-container'; const code = document.createElement('code'); code.className = 'language-rust'; code.textContent = question.code; pre.appendChild(code); codeSnippetArea.appendChild(pre); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightElement(code), 0); } } optionsContainer.innerHTML = ''; const selectedAnswerIndex = userAnswers[index]; question.options.forEach((optionText, optionIndex) => { const optionElement = document.createElement('div'); optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300'; optionElement.setAttribute('role', 'radio'); optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false'); optionElement.tabIndex = 0; const label = document.createElement('span'); label.className = 'flex-grow mr-4'; label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`; const feedbackIconContainer = document.createElement('span'); feedbackIconContainer.className = 'feedback-icon text-xl'; feedbackIconContainer.innerHTML = `<i class="fas fa-check-circle icon-correct" style="opacity: 0;"></i><i class="fas fa-times-circle icon-incorrect" style="opacity: 0;"></i>`; optionElement.appendChild(label); optionElement.appendChild(feedbackIconContainer); const handleSelection = () => { if (!optionElement.classList.contains('disabled')) { selectOption(index, optionIndex); } }; optionElement.addEventListener('click', handleSelection); optionElement.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } }); optionsContainer.appendChild(optionElement); }); if (selectedAnswerIndex !== null) { showFeedback(index, selectedAnswerIndex); nextBtn.disabled = false; if (index === quizData.length - 1) submitBtn.disabled = false; } else { nextBtn.disabled = true; if (index === quizData.length - 1) submitBtn.disabled = true; } updateProgress(index); updateNavigation(); }
+         function selectOption(displayIndex, selectedOptionIndex) { if (userAnswers[displayIndex] !== null) return; userAnswers[displayIndex] = selectedOptionIndex; showFeedback(displayIndex, selectedOptionIndex); nextBtn.disabled = false; if (displayIndex === quizData.length - 1) { submitBtn.disabled = false; } saveState(); }
+         function showFeedback(displayIndex, selectedOptionIndex) { const originalQuestionIndex = questionsOrder[displayIndex]; const question = quizData[originalQuestionIndex]; const isCorrect = selectedOptionIndex === question.correctAnswer; const options = optionsContainer.querySelectorAll('.option'); options.forEach((optElement, currentOptionIndex) => { optElement.classList.add('disabled'); optElement.style.cursor = 'default'; optElement.tabIndex = -1; const iconCorrect = optElement.querySelector('.icon-correct'); const iconIncorrect = optElement.querySelector('.icon-incorrect'); if (iconCorrect) iconCorrect.style.opacity = '0'; if (iconIncorrect) iconIncorrect.style.opacity = '0'; if (currentOptionIndex === selectedOptionIndex) { optElement.classList.add('selected'); optElement.setAttribute('aria-checked', 'true'); if (isCorrect) { optElement.classList.add('correct'); if (iconCorrect) iconCorrect.style.opacity = '1'; feedbackMessage.textContent = "Correct!"; feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse'; } else { optElement.classList.add('incorrect'); if (iconIncorrect) iconIncorrect.style.opacity = '1'; feedbackMessage.textContent = "Incorrect!"; feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX'; const correctOptionElement = options[question.correctAnswer]; if (correctOptionElement) { correctOptionElement.classList.add('correct'); const correctOptIcon = correctOptionElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } } else { optElement.setAttribute('aria-checked', 'false'); if (currentOptionIndex === question.correctAnswer && !isCorrect) { optElement.classList.add('correct'); const correctOptIcon = optElement.querySelector('.icon-correct'); if (correctOptIcon) correctOptIcon.style.opacity = '1'; } } }); setTimeout(() => { feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX'); }, 1000); }
+         function updateProgress(index) { const totalQuestions = quizData.length; const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0; progressBar.style.width = `${progress}%`; questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`; }
+         function updateNavigation() { const isFirstQuestion = currentQuestionIndex === 0; const isLastQuestion = currentQuestionIndex === quizData.length - 1; const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null; prevBtn.classList.toggle('hidden', isFirstQuestion); navSpacer.classList.toggle('hidden', !isFirstQuestion); nextBtn.classList.toggle('hidden', isLastQuestion); submitBtn.classList.toggle('hidden', !isLastQuestion); nextBtn.disabled = !currentAnswerSelected; if (isLastQuestion) { submitBtn.disabled = !currentAnswerSelected; } }
+         function nextQuestion() { if (currentQuestionIndex < quizData.length - 1) { currentQuestionIndex++; loadQuestion(currentQuestionIndex); saveState(); } }
+         function prevQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; loadQuestion(currentQuestionIndex); saveState(); } }
+
+        // --- Timer (Unchanged logic) ---
+        function startTimer() { /* ... */ }
+         function startTimer() { clearInterval(timerInterval); if (!quizActive) return; const updateTimerDisplay = () => { const now = Date.now(); timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000)); const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed; if (timeRemaining <= 0) { timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`; timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400'); clearInterval(timerInterval); if(quizActive) { submitQuiz(true); } return; } timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`; timerElement.classList.toggle('timer-warning', timeRemaining <= 60 && timeRemaining > 0); timerElement.classList.remove('text-red-500', 'dark:text-red-400'); if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); } }; updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000); }
+
+        // --- Submit and Results (Adjust performance messages) ---
+        function submitQuiz(timeUp = false) { /* ... */ } function triggerConfetti() { /* ... */ }
+         function submitQuiz(timeUp = false) { if (!quizActive && !timeUp) return; quizActive = false; clearInterval(timerInterval); score = 0; userAnswers.forEach((answerIndex, displayIdx) => { if (answerIndex !== null) { const originalQuestionIndex = questionsOrder[displayIdx]; if (answerIndex === quizData[originalQuestionIndex].correctAnswer) { score++; } } }); const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed; addScoreToHistory({ score: score, totalQuestions: totalQuestions, accuracy: parseFloat(accuracy.toFixed(1)), timestamp: Date.now(), timeTaken: finalTime }); quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); scoreValue.textContent = `${score}/${totalQuestions}`; accuracyValue.textContent = `${accuracy.toFixed(1)}%`; setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); timeTaken.textContent = formatTime(finalTime); let performanceText = ""; let scoreLevel = 'low';
+             if (timeUp) { performanceText = "Time's up! Pattern matching can be tricky, let's review."; if (accuracy >= 75) scoreLevel = 'high'; else if (accuracy >= 45) scoreLevel = 'medium'; } // Adjusted thresholds
+             else { if (accuracy >= 90) { performanceText = "Amazing! You've matched all expectations!"; scoreLevel = 'high'; } else if (accuracy >= 75) { performanceText = "Great work! Your pattern matching skills are sharp."; scoreLevel = 'high'; } else if (accuracy >= 60) { performanceText = "Good job! Keep refining those patterns."; scoreLevel = 'medium'; } else if (accuracy >= 40) { performanceText = "Decent effort! Review guards and destructuring carefully."; scoreLevel = 'medium'; } else { performanceText = "Keep practicing! Pattern matching is key in Rust."; scoreLevel = 'low'; } }
+             performanceMessage.textContent = performanceText; scoreCircle.setAttribute('data-score-level', scoreLevel); if (scoreLevel === 'high' && !timeUp) triggerConfetti(); clearState(); }
+         function triggerConfetti() { if (typeof confetti !== 'function') return; const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true }); myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 }); setTimeout(() => { myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 }); myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 }); }, 200); }
+
+        // --- Review Screen (Unchanged logic) ---
+        function showReview() { /* ... */ } function showResultsScreen() { /* ... */ }
+         function showReview() { resultsContainer.style.display = 'none'; reviewContainer.style.display = 'block'; reviewContainer.classList.remove('animate__animated', 'animate__fadeIn'); void reviewContainer.offsetWidth; reviewContainer.classList.add('animate__animated', 'animate__fadeIn'); reviewQuestions.innerHTML = ''; questionsOrder.forEach((originalQuestionIndex, displayIndex) => { const question = quizData[originalQuestionIndex]; const userAnswerIndex = userAnswers[displayIndex]; const isCorrect = userAnswerIndex === question.correctAnswer; const reviewItem = document.createElement('div'); reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30' : 'border-red-500 bg-red-50 dark:bg-red-900/30' }`; let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`; if (question.code) { const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">"); reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-rust">${escapedCode}</code></pre>`; } reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`; question.options.forEach((optionText, i) => { let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = ""; let selectedMark = ""; if (i === question.correctAnswer) { liClass = "font-semibold text-green-700 dark:text-green-400"; iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; } if (i === userAnswerIndex) { selectedMark = `<span class="text-xs font-bold ${isCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} ml-2">[Your Choice]</span>`; if (!isCorrect) { liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; } } reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${optionText}</span>${iconHTML}${selectedMark}</li>`; }); reviewHTML += `</ul>`; if (question.explanation) { reviewHTML += `<div class="explanation mt-4 pt-3 border-t border-gray-200 dark:border-gray-700"><strong class="block mb-1 text-sm text-purple-800 dark:text-purple-300">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p></div>`; } /* Purple explanation */ reviewItem.innerHTML = reviewHTML; reviewQuestions.appendChild(reviewItem); }); if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 50); } }
+         function showResultsScreen() { reviewContainer.style.display = 'none'; resultsContainer.style.display = 'block'; resultsContainer.classList.remove('animate__animated', 'animate__fadeIn'); void resultsContainer.offsetWidth; resultsContainer.classList.add('animate__animated', 'animate__fadeIn'); }
+
+        // --- Restart (Uses new clearState) ---
+        function restartQuiz() { /* ... */ }
+         function restartQuiz() { currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = []; timeElapsed = 0; quizActive = false; clearInterval(timerInterval); clearState(); progressBar.style.width = '0%'; timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`; timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400'); feedbackMessage.textContent = ''; resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn'); void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn'); nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.remove('hidden'); displayScoreHistory(); console.log("Rust Pattern Matching Quiz reset."); }
+
+        // --- Sharing (Update share text) ---
+        async function shareResults() { /* ... */ } function copyToClipboard(text) { /* ... */ }
+         async function shareResults() { const totalQuestions = quizData.length; const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0; const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Rust Pattern Matching Quiz! Can you match my score?`; const shareUrl = window.location.href; if (navigator.share) { try { await navigator.share({ title: 'My Rust Quiz Result!', text: shareText, url: shareUrl }); } catch (err) { console.error('Error sharing:', err); } } else { copyToClipboard(`${shareText} ${shareUrl}`); } }
+         function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); }).catch(err => { console.error('Could not copy text: ', err); alert("Failed to copy results."); }); }
+
+        // --- Event Listeners (Unchanged) ---
+        startBtn.addEventListener('click', startQuiz); nextBtn.addEventListener('click', nextQuestion); prevBtn.addEventListener('click', prevQuestion); submitBtn.addEventListener('click', () => submitQuiz(false)); reviewBtn.addEventListener('click', showReview); restartBtn.addEventListener('click', restartQuiz); backToResults.addEventListener('click', showResultsScreen); shareBtn.addEventListener('click', shareResults); clearHistoryBtn.addEventListener('click', clearScoreHistory); darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Unchanged logic) ---
+        document.addEventListener('keydown', (e) => { /* ... */ });
+         document.addEventListener('keydown', (e) => { const activeEl = document.activeElement; const isQuizInteractable = quizContainer.style.display === 'block' || resultsContainer.style.display === 'block' || reviewContainer.style.display === 'block' || startScreen.style.display === 'block'; if (!isQuizInteractable) return; if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable)) { return; } if (quizContainer.style.display === 'block') { if ( (e.key === 'ArrowRight' || e.key.toLowerCase() === 'n') && !nextBtn.disabled && !nextBtn.classList.contains('hidden') ) { nextQuestion(); } else if ( (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'p') && !prevBtn.classList.contains('hidden') ) { prevQuestion(); } else if ( e.key === 'Enter' && !submitBtn.disabled && !submitBtn.classList.contains('hidden') ) { submitQuiz(false); } else if (optionsContainer.children.length > 0 && userAnswers[currentQuestionIndex] === null) { let optionIndex = -1; if (e.key >= '1' && e.key <= '9') optionIndex = parseInt(e.key) - 1; else if (e.key.toLowerCase() >= 'a' && e.key.toLowerCase() <= 'z') optionIndex = e.key.toLowerCase().charCodeAt(0) - 'a'.charCodeAt(0); if (optionIndex >= 0 && optionIndex < optionsContainer.children.length) { selectOption(currentQuestionIndex, optionIndex); } } } if (activeEl) { if ( (e.key === 'Enter' || e.key === ' ') ) { if (activeEl === startBtn) { e.preventDefault(); startQuiz(); } else if (activeEl === reviewBtn) { e.preventDefault(); showReview(); } else if (activeEl === restartBtn) { e.preventDefault(); restartQuiz(); } else if (activeEl === backToResults) { e.preventDefault(); showResultsScreen(); } else if (activeEl === shareBtn) { e.preventDefault(); shareResults(); } else if (activeEl === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden')) { e.preventDefault(); clearScoreHistory(); } else if (Array.from(optionsContainer.children).includes(activeEl) && !activeEl.classList.contains('disabled')) { e.preventDefault(); activeEl.click(); } } } });
+
+        // --- Initial Application Load (Uses new keys) ---
+        function initializeApp() { /* ... */ }
+         function initializeApp() { const savedDarkMode = localStorage.getItem('darkMode'); applyDarkMode(savedDarkMode === 'enabled'); loadScoreHistory(); displayScoreHistory(); quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none'; startScreen.style.display = 'block'; nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); if (typeof Prism !== 'undefined') { Prism.highlightAll(); } console.log("Rust Pattern Matching Quiz application initialized."); }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+
+
