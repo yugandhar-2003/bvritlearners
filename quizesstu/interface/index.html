@@ -12,7 +12,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Custom Styles (Dark Theme) -->
+    <!-- Custom Styles (Dark Theme with Lightning Effect) -->
     <style>
         /* --- Dark Theme Base Styles --- */
         body {
@@ -78,17 +78,44 @@
             border-radius: 15px;
             border: 1px solid #3a3a3a; /* Subtle border */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark */
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.4s ease, border-color 0.4s ease; /* Adjusted timing slightly */
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        .quiz-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45); /* Enhanced shadow */
-            border-color: #555; /* Slightly lighter border on hover */
+        /* --- Lightning Flash Animation --- */
+        @keyframes lightning-flash {
+            0% {
+                /* Start state - slightly enhanced base hover */
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 3px rgba(200, 220, 255, 0.2);
+                border-color: #555;
+            }
+            50% {
+                /* Peak flash - bright white/light blue glow */
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), /* Darker base shadow */
+                            0 0 18px 7px rgba(220, 235, 255, 0.85), /* Bright glow */
+                            0 0 4px 2px rgba(255, 255, 255, 0.9); /* Inner sharp flash */
+                border-color: #aaddff; /* Lighter blue border */
+            }
+            100% {
+                /* Return state - matches the non-animated hover state */
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+                border-color: #555;
+            }
         }
+
+        /* --- Apply Animation on Hover --- */
+        .quiz-card:hover {
+            transform: translateY(-5px); /* Keep the lift effect */
+            /* Apply the lightning animation */
+            animation: lightning-flash 0.4s ease-out forwards; /* 'forwards' keeps the end state while hovered if needed, but 100% matches desired hover */
+
+            /* We define the final hover state in the animation (100% frame),
+               so we don't need separate box-shadow/border-color here.
+               The base transition handles the smooth exit when hover ends. */
+        }
+
 
         .quiz-card-inner {
             padding: 30px 25px;
@@ -106,7 +133,7 @@
             flex-grow: 1;
         }
 
-        /* --- Attractive Icon Styles (No change needed for backgrounds) --- */
+        /* --- Attractive Icon Styles --- */
         .quiz-icon {
             width: 75px;
             height: 75px;
@@ -115,10 +142,9 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 25px auto;
-            /* Slightly adjust shadow for dark background */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            color: #fff; /* Default icon color (white) */
+            color: #fff;
             overflow: hidden;
         }
 
@@ -128,29 +154,28 @@
             transition: transform 0.3s ease;
         }
 
-        .quiz-card:hover .quiz-icon {
+        .quiz-card:hover .quiz-icon { /* Keep icon hover effect */
             transform: translateY(-5px) scale(1.05);
-            /* Slightly more pronounced shadow on hover for dark */
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
-        /* --- Specific Language Backgrounds (KEEP THESE - They provide contrast) --- */
+        /* --- Specific Language Backgrounds (KEEP THESE) --- */
         .python-icon { background-color: #3776ab; }
         .java-icon { background-color: #f89820; }
         .c-icon { background-color: #a8b9cc; }
         .cpp-icon { background-color: #649ad2; }
-        .js-icon { background-color: #f7df1e; color: #000; } /* Dark text still ok on yellow */
+        .js-icon { background-color: #f7df1e; color: #000; }
         .ruby-icon { background-color: #cc342d; }
         .go-icon { background-color: #00add8; }
-        .rust-icon { background-color: #dea584; color: #000; } /* Dark text still ok on this orange */
+        .rust-icon { background-color: #dea584; color: #000; }
         .swift-icon { background-color: #ffac45; }
         .kotlin-icon { background-color: #7f52ff; }
         .html-icon { background-color: #e34f26; }
         .css-icon { background-color: #1572b6; }
-        .react-icon { background-color: #61dafb; color: #000;} /* Dark text still ok on cyan */
+        .react-icon { background-color: #61dafb; color: #000;}
         .node-icon { background-color: #68a063; }
         .spring-icon { background-color: #6db33f; }
-        .sql-icon { background-color: #ffda44; color: #333; } /* Dark text still ok on gold */
+        .sql-icon { background-color: #ffda44; color: #333; }
         .plsql-icon { background-color: #e67e22; }
         .tsql-icon { background-color: #a9b9c7; }
         .bash-icon { background-color: #4eaa4f; }
@@ -158,7 +183,7 @@
         .perl-icon { background-color: #39457e; }
         .git-icon { background-color: #f05032; }
 
-        /* Ensure text color overrides work specifically for the icon inside (no change needed) */
+        /* Ensure text color overrides work */
         .js-icon i,
         .rust-icon i,
         .react-icon i,
@@ -166,9 +191,9 @@
            color: inherit;
         }
 
-        /* --- Quiz Button (Dark Theme adjustments optional, blue often works well) --- */
+        /* --- Quiz Button --- */
         .quiz-button {
-            background-color: #007bff; /* Primary blue */
+            background-color: #007bff;
             color: #fff;
             padding: 10px 25px;
             border-radius: 30px;
@@ -177,7 +202,7 @@
             display: inline-block;
             transition: background-color 0.3s ease, transform 0.2s ease;
             margin-top: auto;
-            border: none; /* Ensure no default border interferes */
+            border: none;
         }
 
         .quiz-button span {
@@ -185,7 +210,7 @@
         }
 
         .quiz-button:hover {
-            background-color: #0056b3; /* Darker blue on hover */
+            background-color: #0056b3;
             color: #fff;
             text-decoration: none;
             transform: scale(1.03);
@@ -523,23 +548,48 @@
                              nextRowSibling = nextRowSibling.nextElementSibling;
                          }
 
+                         // Check subsequent rows ONLY if they belong to the same category (i.e. before the next H2)
                          if (!hasVisibleCards && nextRowSibling && nextRowSibling.classList.contains('row')) {
-                            const visibleCardsNextRow = nextRowSibling.querySelectorAll('.quiz-card-container[style*="display: block"], .quiz-card-container:not([style*="display: none"])');
-                            if(visibleCardsNextRow.length > 0) hasVisibleCards = true;
+                            // Check if there's a subcategory title between the rows
+                             let elementBetween = nextRow.nextElementSibling;
+                             let isSameCategoryGroup = false;
+                             while(elementBetween && elementBetween !== nextRowSibling) {
+                                 if (elementBetween.tagName === 'H4') { // Found a subcategory title
+                                     isSameCategoryGroup = true;
+                                     break;
+                                 }
+                                 elementBetween = elementBetween.nextElementSibling;
+                             }
+
+                             if(isSameCategoryGroup) { // Only count cards in the next row if it's part of the same logical group (e.g., under the same H2)
+                                const visibleCardsNextRow = nextRowSibling.querySelectorAll('.quiz-card-container[style*="display: block"], .quiz-card-container:not([style*="display: none"])');
+                                if(visibleCardsNextRow.length > 0) hasVisibleCards = true;
+                             }
                          }
 
 
                          if (hasVisibleCards) {
                              title.style.display = '';
-                             if(subCategoryTitle) subCategoryTitle.style.display = '';
+                             // Also ensure the subcategory title is shown if its row has cards
+                             if(subCategoryTitle) {
+                                 let subCatRow = subCategoryTitle.nextElementSibling;
+                                 while(subCatRow && !subCatRow.classList.contains('row')) { subCatRow = subCatRow.nextElementSibling; }
+                                 if(subCatRow && subCatRow.classList.contains('row')){
+                                     const visibleSubCards = subCatRow.querySelectorAll('.quiz-card-container[style*="display: block"], .quiz-card-container:not([style*="display: none"])');
+                                     subCategoryTitle.style.display = visibleSubCards.length > 0 ? '' : 'none';
+                                 } else {
+                                     subCategoryTitle.style.display = 'none';
+                                 }
+                             }
                          } else {
                              title.style.display = 'none';
                              if(subCategoryTitle) subCategoryTitle.style.display = 'none';
                          }
-                     } else if (subCategoryTitle) {
-                          if(title.style.display === 'none') {
+
+                     } else if (subCategoryTitle) { // Handle case where there's only a subcategory
+                          if(title.style.display === 'none') { // If main category hidden, hide sub too
                               subCategoryTitle.style.display = 'none';
-                          } else {
+                          } else { // Otherwise, check cards under subcategory
                                let subCatRow = subCategoryTitle.nextElementSibling;
                                while(subCatRow && !subCatRow.classList.contains('row')) {
                                    subCatRow = subCatRow.nextElementSibling;
@@ -548,12 +598,19 @@
                                    const visibleSubCards = subCatRow.querySelectorAll('.quiz-card-container[style*="display: block"], .quiz-card-container:not([style*="display: none"])');
                                    subCategoryTitle.style.display = visibleSubCards.length > 0 ? '' : 'none';
                                } else {
-                                    subCategoryTitle.style.display = 'none';
+                                    subCategoryTitle.style.display = 'none'; // No row found under subcategory
                                }
                           }
+                     } else if (!nextRow) {
+                          // If a category title has no row following it before the end or next title, hide it.
+                          title.style.display = 'none';
                      }
                  });
             });
+
+            // Initial run to hide empty categories on page load if necessary
+            // (e.g., if you plan to dynamically add/remove cards later)
+             searchInput.dispatchEvent(new Event('keyup'));
         });
     </script>
 
