@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Branching & Merging Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #458588 0%, #076678 100%); /* Gruvbox Blue/Aqua */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.04) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 0; pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body { background: linear-gradient(135deg, #3c3836 0%, #282828 100%); }
+        html.dark body::before { background-image: radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px), radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        html.dark .glass-card { background: rgba(40, 40, 40, 0.75); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); color: #ebdbb2; }
+        html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text { color: #fbf1c7; }
+        html.dark .option { background-color: rgba(60, 56, 54, 0.6); border-color: rgba(255, 255, 255, 0.2); color: #d5c4a1; }
+        html.dark .option:hover:not(.disabled):not(.selected) { background: rgba(80, 73, 69, 0.8); border-color: rgba(251, 241, 199, 0.4); }
+        html.dark .option.selected { background: rgba(69, 133, 136, 0.35); border-color: #83a598; color: #fbf1c7; }
+        html.dark .option.correct { background: rgba(152, 151, 26, 0.35) !important; border-color: #b8bb26 !important; color: #fbf1c7 !important; }
+        html.dark .option.incorrect { background: rgba(251, 73, 52, 0.3) !important; border-color: #fb4934 !important; color: #fbf1c7 !important; }
+        html.dark .option.incorrect.selected { color: #fbf1c7 !important; box-shadow: inset 0 0 5px rgba(251, 73, 52, 0.3); }
+        html.dark .explanation { background-color: rgba(40, 40, 40, 0.8); color: #d5c4a1; border-left-color: #458588; }
+        html.dark .review-item.correct .explanation { border-color: #b8bb26; }
+        html.dark .review-item.incorrect .explanation { border-color: #fb4934; }
+        html.dark .code-snippet-container { background-color: #282828; color: #ebdbb2; border: 1px solid #504945; }
+        html.dark .btn-secondary { background-color: #504945; color: #ebdbb2; border: 1px solid #665c54; }
+        html.dark .btn-secondary:hover:not(:disabled) { background-color: #665c54; }
+        html.dark #score-circle { background-color: #3c3836; border: 6px solid transparent; }
+        html.dark #score-value { color: #83a598; }
+        html.dark .text-gray-500 { color: #a89984; }
+        html.dark .text-gray-600 { color: #bdae93; }
+        html.dark .text-gray-700 { color: #d5c4a1; }
+        html.dark .text-gray-800 { color: #ebdbb2; }
+        html.dark .text-indigo-900 { color: #83a598; }
+        html.dark .text-indigo-700 { color: #8ec07c; }
+        html.dark .bg-gray-200 { background-color: #504945;}
+        html.dark .bg-indigo-50 { background-color: #32302f;}
+        html.dark .text-indigo-600 { color: #83a598; }
+        html.dark .status-badge { background: linear-gradient(135deg, rgba(80, 73, 69, 0.4), rgba(60, 56, 54, 0.3)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); color: #ebdbb2; }
+        html.dark .timer-warning { color: #fabd2f !important; border-color: #fabd2f !important; }
+        html.dark .history-date { color: #a89984; }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+        html.dark .btn-primary { background: linear-gradient(to right, #458588, #076678); color: white; }
+        html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #83a598, #458588); }
+        html.dark .btn-submit { background: linear-gradient(to right, #b8bb26, #98971a); color: #282828; }
+        html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #d7df00, #b8bb26); }
+        html.dark .progress-bar { background: linear-gradient(to right, #b8bb26, #fabd2f); }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #d7df00) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #cc241d) 1; }
+        html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+        html.dark .review-item.correct { border-color: #b8bb26; }
+        html.dark .review-item.incorrect { border-color: #fb4934; }
+        html.dark .review-item ul li.text-green-700 { color: #b8bb26; }
+        html.dark .review-item ul li.text-red-700 { color: #fb4934; }
+        html.dark .review-item ul li.bg-green-100 { background-color: rgba(184, 187, 38, 0.2); ring-color: rgba(184, 187, 38, 0.5); }
+        html.dark .review-item ul li .fa-check { color: #b8bb26; }
+        html.dark .review-item ul li .fa-times { color: #fb4934; }
+        html.dark .review-item .explanation strong { color: #fabd2f; }
+        html.dark .review-item p {color: #d5c4a1; }
+        html.dark .review-item ul li { color: #d5c4a1;}
+        html.dark .review-item ul li span.text-gray-500 {color: #a89984;}
+        html.dark .option code { background-color: #504945; color: #fabd2f; } /* Dark mode code in options */
+        html.dark .review-item ul li code { background-color: #504945; color: #fabd2f; } /* Dark mode code in review options */
+        html.dark .review-item .explanation code { background-color: #504945; color: #fabd2f; } /* Dark mode code in explanations */
+
+        /* Light Mode Tweaks */
+        .glass-card { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12); border: 1px solid rgba(255, 255, 255, 0.25); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; color: #3c3836; }
+        .option { transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden; border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.75); cursor: pointer; }
+        .option:hover:not(.disabled):not(.selected) { transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); border-color: rgba(69, 133, 136, 0.5); }
+        .option.selected { border-color: #458588; background: linear-gradient(to right, rgba(69, 133, 136, 0.15), rgba(7, 102, 120, 0.15)); box-shadow: 0 4px 10px rgba(69, 133, 136, 0.2); }
+        .option.correct { background: linear-gradient(to right, rgba(152, 151, 26, 0.2), rgba(152, 151, 26, 0.15)) !important; border-color: #98971a !important; color: #79740e !important; cursor: default; transform: scale(1.02); }
+        .option.incorrect { background: linear-gradient(to right, rgba(251, 73, 52, 0.15), rgba(204, 36, 29, 0.15)) !important; border-color: #fb4934 !important; color: #9d0006 !important; cursor: default; }
+        .btn { position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px; padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+        .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+        .btn-primary { background: linear-gradient(to right, #458588, #076678); color: white; }
+        .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #83a598, #458588); }
+        .btn-secondary { background-color: #ebdbb2; color: #3c3836; border: 1px solid #d5c4a1; }
+        .btn-secondary:hover:not(:disabled) { background-color: #d5c4a1; }
+        .btn-submit { background: linear-gradient(to right, #b8bb26, #98971a); color: white; }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #d7df00, #b8bb26); }
+        .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #b8bb26, #fabd2f); box-shadow: 0 0 15px rgba(250, 189, 47, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d5c4a1, #a89984) 1; }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #98971a) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #cc241d) 1; }
+        #score-value { color: #458588; }
+        .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.65); margin-top: 0.75rem; border-color: #458588; }
+        .review-item.correct .explanation { border-color: #98971a; }
+        .review-item.incorrect .explanation { border-color: #fb4934; }
+        .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #f9f5d7; border: 1px solid #d5c4a1; font-size: 0.9em; color: #3c3836; }
+        .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); }
+        .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+        .timer-warning { animation: pulseWarning 1.5s infinite; color: #fabd2f !important; border-color: #fabd2f !important; }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+        .option:focus, .btn:focus, button:focus { outline: 2px solid #458588; outline-offset: 2px; }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #83a598; }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+        .history-item:last-child { border-bottom: none; }
+        .history-score { font-weight: 600; }
+        .history-date { font-size: 0.8rem; color: #665c54; }
+        html.dark .history-score { color: #ebdbb2; }
+        html.dark .history-date { color: #a89984; }
+        html.light .text-indigo-900 { color: #076678; }
+        html.light .text-indigo-700 { color: #458588; }
+        html.light .bg-indigo-50 { background-color: #eef7f8;}
+        html.light .text-indigo-600 { color: #458588; }
+        html.light .text-indigo-800 { color: #054b57; }
+        /* Ensure Prism okaidia looks okay in light mode code block */
+        html.light .code-snippet-container { background-color: #282a36; border-color: #44475a;}
+        html.light .code-snippet-container code[class*="language-"] { color: #f8f8f2; }
+        html.light .code-snippet-container .token.punctuation { color: #f8f8f2; }
+        html.light .code-snippet-container .token.comment { color: #6272a4; }
+        html.light .code-snippet-container .token.keyword { color: #ff79c6; }
+        html.light .code-snippet-container .token.string { color: #f1fa8c; }
+        html.light .code-snippet-container .token.number { color: #bd93f9; }
+        html.light .code-snippet-container .token.constant { color: #bd93f9; }
+        html.light .code-snippet-container .token.class-name { color: #8be9fd; }
+        html.light .code-snippet-container .token.function { color: #50fa7b; }
+        html.light .code-snippet-container .token.variable { color: #8be9fd; }
+        html.light .code-snippet-container .token.operator { color: #ff79c6; }
+        html.light .code-snippet-container .token.keyword.language-bash { color: #8be9fd; }
+        html.light .code-snippet-container .token.builtin.language-bash { color: #ff79c6; }
+        html.light .code-snippet-container .token.string.language-bash { color: #f1fa8c; }
+        html.light .code-snippet-container .token.operator.language-bash { color: #f8f8f2; }
+        /* Adjust explanation text color in light mode */
+        html.light .explanation .text-sm { color: #3c3836; }
+        html.light .explanation strong { color: #076678; }
+        /* Adjust review item text color in light mode */
+        html.light .review-item p, html.light .review-item li { color: #3c3836; }
+        html.light .review-item li.text-green-700 { color: #79740e !important; }
+        html.light .review-item li.text-red-700 { color: #9d0006 !important; }
+        html.light .review-item li.bg-green-100 { background-color: #f0f1d3 !important; ring-color: #bdcf4f !important;}
+        html.light .review-item ul li span.text-gray-500 {color: #7c6f64;}
+        /* Adjust Start Screen Colors */
+        html.light #start-screen h2 { color: #076678; }
+        html.light #start-screen p { color: #504945; }
+        html.light #score-history-area h3 { color: #054b57; }
+        html.light .history-item .history-score { color: #3c3836; }
+        html.light .history-item span.text-gray-600 { color: #504945; }
+        html.light .history-item .history-date { color: #7c6f64; }
+        /* Adjust Results Screen Colors */
+        html.light #results-container h2 { color: #076678; }
+        html.light #score-value { color: #458588; }
+        html.light #score-circle .text-gray-500 { color: #665c54; }
+        html.light #accuracy-value { color: #3c3836; }
+        html.light #time-taken { color: #3c3836; }
+        html.light #performance-message { color: #3c3836; }
+        html.light .bg-indigo-50 { background-color: #e8f7f9; border-color: #cae9ed;}
+        /* Style for `code` tags inside options/review/explanation */
+        .option code, .review-item ul li code, .explanation code {
+             background-color: rgba(0, 0, 0, 0.06); /* Light gray background */
+             color: #b58900; /* Solarized Base0 */
+             padding: 0.1em 0.4em;
+             border-radius: 4px;
+             font-size: 0.9em;
+        }
+        html.dark .option code, html.dark .review-item ul li code, html.dark .explanation code {
+             background-color: rgba(255, 255, 255, 0.1); /* Darker gray background */
+             color: #fabd2f; /* Gruvbox yellow */
+        }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Git Branching & Merging Quiz</h1> <!-- Changed Heading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your understanding of creating, switching, and merging branches in Git.</p> <!-- Changed Subheading -->
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Branch Out?</h2> <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">This quiz covers creating branches, switching between them, merging work, and handling basic conflicts.</p> <!-- Changed Text -->
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/10</span> <!-- Total questions: 10 -->
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                    <!-- Options will be dynamically inserted here -->
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                    <!-- Feedback (Correct/Incorrect) appears here -->
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div> <!-- Helps keep Next/Submit to the right -->
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/10</span> <!-- Total questions: 10 -->
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing branching and merging to streamline your Git workflow! <!-- Changed Text -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                    <!-- Review questions will be dynamically inserted here -->
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // --- Branching & Merging Questions ---
+
+            // 1. git branch <name>
+            {
+                question: "Which command creates a new branch named `feature-x` but does NOT switch to it?",
+                options: [
+                    "`git checkout feature-x`",
+                    "`git branch feature-x`",
+                    "`git switch feature-x`",
+                    "`git new-branch feature-x`"
+                ],
+                correctAnswer: 1,
+                explanation: "`git branch <branch-name>` creates a new branch pointing to the current commit (HEAD). It doesn't change your working directory or switch you to the new branch."
+            },
+            // 2. git checkout <name>
+            {
+                question: "You have an existing branch called `dev`. How do you switch your working directory to this branch?",
+                options: [
+                    "`git branch dev`",
+                    "`git merge dev`",
+                    "`git checkout dev`",
+                    "`git status dev`"
+                ],
+                correctAnswer: 2,
+                explanation: "`git checkout <existing-branch-name>` updates the files in your working directory to match the snapshot of that branch and moves the HEAD pointer to it, making it the current branch."
+            },
+            // 3. git branch (list)
+            {
+                question: "What does the command `git branch` (run without any arguments) do?",
+                options: [
+                    "Creates a default branch named 'branch'.",
+                    "Lists all the local branches in your repository, highlighting the current one.",
+                    "Deletes the current branch.",
+                    "Shows the differences between branches."
+                ],
+                correctAnswer: 1,
+                explanation: "Running `git branch` by itself provides a list of all branches in your local repository. The currently checked out branch is usually marked with an asterisk (*) and highlighted."
+            },
+            // 4. git checkout -b <name> (or switch -c)
+            {
+                question: "Which command is a shortcut to create a new branch called `bugfix-123` AND immediately switch to it?",
+                options: [
+                    "`git branch bugfix-123 && git checkout bugfix-123`",
+                    "`git checkout -b bugfix-123`",
+                    "`git commit -b bugfix-123`",
+                    "`git merge -b bugfix-123`"
+                ],
+                correctAnswer: 1,
+                explanation: "`git checkout -b <new-branch-name>` is a convenient command that combines `git branch <new-branch-name>` and `git checkout <new-branch-name>` into a single step. The modern equivalent is `git switch -c <new-branch-name>`."
+            },
+            // 5. Purpose of Branching
+            {
+                question: "What is a primary benefit of using branches in Git?",
+                options: [
+                    "To make your commit history strictly linear.",
+                    "To automatically back up your repository to a remote server.",
+                    "To isolate development work (like new features or bug fixes) without affecting the main codebase (`main`/`master`).",
+                    "To speed up the `git clone` process."
+                ],
+                correctAnswer: 2,
+                explanation: "Branching allows developers to work on different features or fixes simultaneously in isolated environments. Changes made on one branch don't affect others until explicitly merged, preventing unstable code from disrupting the main line of development."
+            },
+            // 6. git merge <branch>
+            {
+                question: "You are currently on the `main` branch and want to integrate the changes from the `feature-x` branch into `main`. Which command should you run?",
+                options: [
+                    "`git checkout feature-x` then `git merge main`",
+                    "`git merge feature-x main`",
+                    "Stay on `main` and run `git merge feature-x`",
+                    "Stay on `main` and run `git rebase feature-x`"
+                ],
+                correctAnswer: 2,
+                explanation: "`git merge <branch-to-merge-in>` integrates the specified branch's history into the *current* branch (HEAD). You must first be on the branch you want to merge *into* (e.g., `main`)."
+            },
+            // 7. Fast-Forward Merge
+            {
+                question: "What is a 'fast-forward' merge in Git?",
+                options: [
+                    "A merge that automatically resolves all conflicts.",
+                    "A merge where the target branch's tip is a direct ancestor of the branch being merged. Git simply moves the pointer forward.",
+                    "A merge that requires creating an extra merge commit.",
+                    "A type of merge used only for remote repositories."
+                ],
+                correctAnswer: 1,
+                explanation: "A fast-forward merge occurs when the history of the branch being merged (`feature-x`) contains the history of the target branch (`main`) without any divergence. Git can simply move the `main` branch pointer to the same commit as `feature-x` without creating a new merge commit."
+            },
+            // 8. Merge Conflict Indicators
+            {
+                question: "You attempt a merge and Git reports a conflict in `config.js`. What kind of markers would you expect to see inside `config.js` indicating the conflicting sections?",
+                options: [
+                    "`<<<<<<< HEAD` ... `=======` ... `>>>>>>> branch-name`",
+                    "`*** CONFLICT START ***` ... `--- YOURS ---` ... `+++ THEIRS +++` ... `*** CONFLICT END ***`",
+                    "`// CONFLICT //` blocks surrounding the changes.",
+                    "`<!-- MERGE CONFLICT -->` tags."
+                ],
+                correctAnswer: 0,
+                explanation: "Git uses standard conflict markers: `<<<<<<< HEAD` indicates the start of the changes from your current branch (HEAD), `=======` separates the two conflicting versions, and `>>>>>>> branch-name` indicates the end of the changes from the branch you were merging in."
+            },
+            // 9. Resolving Conflicts (Step 1: Edit)
+            {
+                question: "After identifying conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) in a file, what is the *first* manual step you need to take?",
+                options: [
+                    "Run `git commit` immediately.",
+                    "Run `git add <conflicted-file>`.",
+                    "Run `git merge --continue`.",
+                    "Edit the file manually to remove the conflict markers and choose the final desired code."
+                ],
+                correctAnswer: 3,
+                explanation: "Before Git can proceed, you must manually edit the conflicted file(s). This involves deciding which changes to keep (yours, theirs, or a combination), removing the `<<<<<<<`, `=======`, and `>>>>>>>` markers, and saving the file with the resolved content."
+            },
+            // 10. Resolving Conflicts (Step 2 & 3: Add & Commit)
+            {
+                question: "After manually editing a conflicted file (`style.css`) to resolve the differences and removing the conflict markers, what are the NEXT two essential Git commands to complete the merge?",
+                options: [
+                    "`git resolve style.css` then `git push`",
+                    "`git update style.css` then `git merge --finish`",
+                    "`git add style.css` then `git commit`",
+                    "`git commit -a` (this single command is sufficient)"
+                ],
+                correctAnswer: 2,
+                explanation: "Once you've edited the file to resolve the conflict, you must tell Git that the conflict is resolved by staging the file using `git add <resolved-file>`. Then, you create a merge commit (often with a pre-populated message) using `git commit` to finalize the merge process."
+            }
+        ];
+        const TIME_LIMIT_SECONDS = 8 * 60; // 8 minutes for 10 questions
+        const MAX_HISTORY_ITEMS = 5;
+        const SCORE_HISTORY_KEY = 'gitBranchingMergingQuizScoreHistory'; // Changed Key
+        const QUIZ_STATE_KEY = 'gitBranchingMergingQuizState'; // Changed Key
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = []; // Will be sized in startQuiz
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight AFTER theme change
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50);
+             }
+        }
+
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Basic validation: Check if questionsOrder length matches current quizData length
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress quiz state loaded successfully.");
+                        return true;
+                    } else {
+                        console.warn("Saved in-progress quiz state is incompatible/invalid for current quiz. Starting fresh.");
+                        clearState();
+                        return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState();
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress quiz state cleared.");
+        }
+
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) {
+                 console.log("Resuming quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 console.log("Initializing a new quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null); // Size based on current quizData
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+                 clearState(); // Clear any old incompatible state if we didn't load
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true;
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            saveState(); // Save initial state
+        }
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) {
+                console.error(`Could not load question at index ${index} (original index ${questionIndexInOriginalData})`);
+                return;
+            };
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            updateProgress(index);
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 code.className = 'language-bash'; // Use bash for commands
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                // Format options with backticks using innerHTML
+                const formattedOption = optionText.replace(/`([^`]+)`/g, '<code class="px-1 rounded text-sm font-mono">$1</code>');
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${formattedOption}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0; transition: opacity 0.3s ease;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0; transition: opacity 0.3s ease;"></i>
+                `;
+
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false;
+                 if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateNavigation();
+        }
+
+
+         function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return; // Don't allow re-answering
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save state after an answer is selected
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled');
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order after answering
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Also highlight the correct answer if the selected one was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     // If the user selected the wrong answer, make sure the actual correct answer is clearly marked 'correct' (but not 'selected')
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+            // Clear animation classes after they run
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`; // Updated total
+        }
+
+        function updateNavigation() {
+            const totalQuestions = quizData.length;
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            // Show spacer only if Prev button is visible AND it's not the last question (where submit replaces next)
+            navSpacer.classList.toggle('hidden', isFirstQuestion || isLastQuestion);
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Enable Next/Submit only if the current question has been answered
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) submitBtn.disabled = !currentAnswerSelected;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                updateNavigation(); // Update nav state after loading new question
+                saveState(); // Save state when moving to next question
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                updateNavigation(); // Update nav state after loading previous question
+                saveState(); // Save state when moving to previous question
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!quizActive) return;
+
+            const baseTime = startTime || Date.now(); // Use startTime from loadState or current time
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                // Calculate elapsed time since the *original* start time
+                timeElapsed = Math.max(0, Math.floor((now - baseTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0 && quizActive) {
+                    // Time is up AND the quiz is still marked as active
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    console.log("Timer ended, auto-submitting.");
+                    submitQuiz(true); // Pass true to indicate time ran out
+                    return; // Stop further timer updates
+                } else if (timeRemaining <= 0) {
+                    // Time is up, but quiz might have already been submitted (e.g., manually)
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval); // Ensure timer stops if it somehow keeps running
+                    return;
+                }
+
+                // Update display if time is remaining
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60 && timeRemaining > 0);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400'); // Ensure red color is removed if time > 60s
+
+                 // Save state periodically (e.g., every 10 seconds)
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); }
+            };
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000); // Update every second
+        }
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return; // Prevent double submission unless forced by timeUp
+            console.log(`Submitting quiz. Timed out: ${timeUp}`);
+            quizActive = false; // Mark quiz as inactive
+            clearInterval(timerInterval); // Stop the timer
+
+            // Calculate score based on userAnswers
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) { // Only score answered questions
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    // Double-check index validity
+                    if (originalQuestionIndex >= 0 && originalQuestionIndex < quizData.length) {
+                         if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                            score++;
+                        }
+                    } else {
+                        console.error(`Invalid originalQuestionIndex ${originalQuestionIndex} found for displayIndex ${displayIdx} during submission.`);
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            // Use the final recorded timeElapsed, unless time ran out, then use the limit
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            // Add attempt to history before displaying results
+            addScoreToHistory({
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: parseFloat(accuracy.toFixed(1)),
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            });
+
+            // Hide quiz, show results
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            // Update results display
+            scoreValue.textContent = `${score}/${totalQuestions}`; // Updated total
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            accuracyBar.style.width = `0%`; // Reset before animating
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); // Animate accuracy bar
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Performance message and score level
+            let performanceText = "";
+            let scoreLevel = 'low'; // Default
+            if (timeUp) {
+                performanceText = "Time's up! Branching and merging are key Git skills. Let's review!";
+                 // Assign score level even if time's up based on accuracy achieved
+                 if (accuracy >= 85) scoreLevel = 'high';
+                 else if (accuracy >= 60) scoreLevel = 'medium';
+            } else {
+                // Tailored messages for branching/merging quiz
+                 if (accuracy >= 95) { performanceText = "Excellent work! You're a Git branching wizard!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Great job! You have a strong handle on Git branching and merging."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Good understanding! Practice makes perfect with merge conflicts."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Not bad! Reviewing the merge process and conflict resolution will help."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Focus on the core branching commands (`branch`, `checkout`, `merge`)."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel); // Set data attribute for styling
+
+            // Trigger confetti for high scores (if not timed out)
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState(); // Clear the in-progress state AFTER successful submission
+        }
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return;
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 });
+             setTimeout(() => {
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 200);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review content
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 // Validate index again just in case
+                 if (originalQuestionIndex < 0 || originalQuestionIndex >= quizData.length) {
+                    console.error(`Invalid originalQuestionIndex ${originalQuestionIndex} during review generation.`);
+                    return;
+                 }
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex]; // Get the answer the user gave for this question *in the order it was displayed*
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 bg-green-50 dark:bg-green-900/30 dark:border-green-600'
+                     : 'border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-600'
+                 }`;
+
+                 // Question Text
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  // Optional Code Snippet
+                  if (question.code) {
+                      // Use textContent to prevent XSS, then let Prism handle it
+                      const pre = document.createElement('pre');
+                      pre.className = 'code-snippet-container mb-4 rounded-md';
+                      const code = document.createElement('code');
+                      code.className = 'language-bash';
+                      code.textContent = question.code;
+                      pre.appendChild(code);
+                      reviewHTML += pre.outerHTML; // Add the generated HTML
+                  }
+
+                 // User Answer indication
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 // Loop through options to display them
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300"; // Base class
+                      let iconHTML = "";
+                      let indicatorClass = ""; // For background/ring highlight
+
+                      if (i === question.correctAnswer) {
+                          // This is the correct answer
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                          // If user selected the correct answer, highlight it green
+                          if (i === userAnswerIndex) {
+                               indicatorClass = " ring-1 ring-green-300 dark:ring-green-600 bg-green-100 dark:bg-green-800/50";
+                          }
+                      } else if (i === userAnswerIndex) {
+                          // This is the answer the user selected, and it's incorrect
+                          liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                          iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`;
+                          indicatorClass = " ring-1 ring-red-300 dark:ring-red-600 bg-red-100 dark:bg-red-800/50";
+                      } else if (userAnswerIndex === null && i !== question.correctAnswer) {
+                          // Question was unanswered, dim other incorrect options
+                          liClass = "text-gray-500 dark:text-gray-500";
+                      }
+                      // If user answered incorrectly, the correct option (which wasn't selected) should still show the green checkmark, but without the background highlight.
+
+                      // Format backticks in review options as well
+                      const formattedOption = optionText.replace(/`([^`]+)`/g, '<code class="px-1 rounded text-sm font-mono">$1</code>');
+
+                      reviewHTML += `<li class="flex items-center p-1 rounded ${liClass} ${indicatorClass}">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${formattedOption}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+
+                 reviewHTML += `</ul>`;
+
+                 // Explanation
+                 if (question.explanation) {
+                     // Format backticks in explanation
+                     const formattedExplanation = question.explanation.replace(/`([^`]+)`/g, '<code class="px-1 rounded text-sm font-mono">$1</code>');
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                        <strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${formattedExplanation}</p>
+                                    </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             // Re-run Prism highlighting for the newly added code snippets in the review section
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Optional: Add fade-in animation if desired
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+
+        // --- Restart ---
+        function restartQuiz() {
+            // Reset all state variables
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = []; // Reset completely
+            questionsOrder = []; // Reset completely
+            timeElapsed = 0;
+            quizActive = false; // Mark as inactive
+            clearInterval(timerInterval); // Stop any lingering timer
+            clearState(); // Clear saved in-progress state
+
+            // Reset UI elements
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = ''; // Clear any lingering feedback
+
+            // Hide Results/Quiz/Review, show Start Screen
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            // Re-apply entry animation for start screen
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; // Trigger reflow
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+            // Reset button states
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden'); // Hide prev button initially
+            nextBtn.classList.remove('hidden'); // Show next button initially
+            submitBtn.classList.add('hidden'); // Hide submit button initially
+            navSpacer.classList.remove('hidden'); // Show spacer initially (will be hidden if first question)
+
+            // Refresh score history display on the start screen
+            displayScoreHistory();
+            console.log("Git Branching & Merging Quiz reset."); // Updated log message
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Git Branching & Merging Quiz! How are your branching skills?`; // Changed text
+             const shareUrl = window.location.href; // Share the quiz URL
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My Git Branching & Merging Quiz Result!', // Changed Title
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Result shared successfully via Web Share API');
+                 } catch (err) {
+                     console.error('Error sharing via Web Share API:', err);
+                     // Fallback to clipboard if Web Share API fails or is cancelled
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 // Fallback for browsers that don't support Web Share API
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!"); // Simple confirmation
+             }).catch(err => {
+                 console.error('Could not copy text to clipboard: ', err);
+                 alert("Failed to copy results. You may need to copy manually."); // Inform user of failure
+             });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Submit manually
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+         document.addEventListener('keydown', (e) => {
+             if (quizContainer.style.display === 'block' && quizActive) { // Only active during quiz
+                 const activeEl = document.activeElement;
+                 // Focus trapping might be needed for more complex scenarios, but basic button nav:
+                 if (activeEl === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (activeEl === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (activeEl === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+                 // Allow selecting options with Enter/Space is handled within loadQuestion's event listener
+             } else if (startScreen.style.display === 'block') {
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (resultsContainer.style.display === 'block') {
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (reviewContainer.style.display === 'block') {
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Apply dark mode preference first
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            // Load score history
+            loadScoreHistory();
+            displayScoreHistory();
+
+            // Set initial screen visibility
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block'; // Show start screen
+
+            // Reset button states (important if page is refreshed)
+            nextBtn.disabled = true; submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+
+            console.log("Git Branching & Merging Quiz application initialized."); // Updated log
+        }
+        // Run initialization when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
