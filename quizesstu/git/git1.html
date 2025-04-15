@@ -1,1 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Git & Version Control Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Slightly adjusted gradient - less red, more neutral/techy */
+            background: linear-gradient(135deg, #458588 0%, #076678 100%); /* Gruvbox Blue/Aqua */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             background: linear-gradient(135deg, #3c3836 0%, #282828 100%); /* Darker Gray */
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(40, 40, 40, 0.75); /* Darker Glass */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ebdbb2; /* Gruvbox light */
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #fbf1c7; /* Gruvbox lighter */
+         }
+         html.dark .option {
+             background-color: rgba(60, 56, 54, 0.6); /* Gruvbox dark bg */
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d5c4a1; /* Gruvbox light fg */
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(80, 73, 69, 0.8);
+             border-color: rgba(251, 241, 199, 0.4); /* Gruvbox light yellow */
+         }
+         html.dark .option.selected {
+             background: rgba(69, 133, 136, 0.35); /* Blue transparent */
+             border-color: #83a598; /* Gruvbox blue */
+             color: #fbf1c7;
+         }
+         html.dark .option.correct {
+            background: rgba(152, 151, 26, 0.35) !important; /* Gruvbox green transparent */
+            border-color: #b8bb26 !important; /* Gruvbox green */
+            color: #fbf1c7 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(251, 73, 52, 0.3) !important; /* Gruvbox red transparent */
+            border-color: #fb4934 !important; /* Gruvbox red */
+             color: #fbf1c7 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fbf1c7 !important;
+             box-shadow: inset 0 0 5px rgba(251, 73, 52, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(40, 40, 40, 0.8);
+             color: #d5c4a1;
+             border-left-color: #458588; /* Blue */
+         }
+        html.dark .review-item.correct .explanation { border-color: #b8bb26; } /* Gruvbox green */
+        html.dark .review-item.incorrect .explanation { border-color: #fb4934; } /* Gruvbox red */
+         html.dark .code-snippet-container {
+             background-color: #282828; /* Gruvbox dark bg */
+             color: #ebdbb2; /* Gruvbox light fg */
+             border: 1px solid #504945; /* Gruvbox gray */
+         }
+          html.dark .btn-secondary {
+              background-color: #504945; /* Gruvbox gray */
+              color: #ebdbb2;
+              border: 1px solid #665c54;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #665c54;
+          }
+          html.dark #score-circle {
+              background-color: #3c3836; /* Gruvbox darker bg */
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #83a598; /* Gruvbox blue */
+          }
+           html.dark .text-gray-500 { color: #a89984; } /* Gruvbox gray */
+           html.dark .text-gray-600 { color: #bdae93; } /* Gruvbox lighter gray */
+           html.dark .text-gray-700 { color: #d5c4a1; } /* Gruvbox light fg */
+           html.dark .text-gray-800 { color: #ebdbb2; } /* Gruvbox lighter fg */
+           html.dark .text-indigo-900 { color: #83a598; } /* Gruvbox blue */
+           html.dark .text-indigo-700 { color: #8ec07c; } /* Gruvbox light green */
+           html.dark .bg-gray-200 { background-color: #504945;} /* Gruvbox gray */
+           html.dark .bg-indigo-50 { background-color: #32302f;} /* Dark gray */
+           html.dark .text-indigo-600 { color: #83a598; } /* Gruvbox blue */
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(80, 73, 69, 0.4), rgba(60, 56, 54, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #ebdbb2;
+           }
+           html.dark .timer-warning { color: #fabd2f !important; border-color: #fabd2f !important; } /* Gruvbox yellow */
+           html.dark .history-date { color: #a89984; } /* Gruvbox gray */
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+           html.dark .btn-primary { background: linear-gradient(to right, #458588, #076678); color: white; }
+           html.dark .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #83a598, #458588); }
+           html.dark .btn-submit { background: linear-gradient(to right, #b8bb26, #98971a); color: #282828; } /* Gruvbox green */
+           html.dark .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #d7df00, #b8bb26); }
+           html.dark .progress-bar { background: linear-gradient(to right, #b8bb26, #fabd2f); } /* Green to Yellow */
+           html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #d7df00) 1; } /* Green */
+           html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; } /* Yellow/Orange */
+           html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #cc241d) 1; } /* Red */
+
+
+        /* Light Mode Tweaks for Git Theme */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            color: #3c3836; /* Darker text for light mode */
+        }
+         .option {
+             transition: all 0.25s ease-in-out; border-radius: 12px; position: relative; overflow: hidden;
+             border: 2px solid transparent; background-color: rgba(255, 255, 255, 0.75); cursor: pointer;
+         }
+         .option:hover:not(.disabled):not(.selected) {
+             transform: translateY(-4px) scale(1.01); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+             border-color: rgba(69, 133, 136, 0.5); /* Light Blue/Aqua Border */
+         }
+         .option.selected {
+             border-color: #458588; /* Blue/Aqua Border */
+             background: linear-gradient(to right, rgba(69, 133, 136, 0.15), rgba(7, 102, 120, 0.15));
+             box-shadow: 0 4px 10px rgba(69, 133, 136, 0.2);
+         }
+         .option.correct {
+             background: linear-gradient(to right, rgba(152, 151, 26, 0.2), rgba(152, 151, 26, 0.15)) !important;
+             border-color: #98971a !important; /* Gruvbox Dark Green */
+             color: #79740e !important; /* Darker Green Text */
+             cursor: default; transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(251, 73, 52, 0.15), rgba(204, 36, 29, 0.15)) !important;
+             border-color: #fb4934 !important; /* Gruvbox Red */
+             color: #9d0006 !important; /* Darker Red Text */
+             cursor: default;
+         }
+         .btn {
+             position: relative; overflow: hidden; transition: all 0.3s ease; border-radius: 50px;
+             padding: 12px 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+             box-shadow: 0 4px 15px rgba(0,0,0, 0.1); border: none;
+         }
+         .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0, 0.15); }
+         .btn:active:not(:disabled) { transform: translateY(0px); box-shadow: 0 4px 15px rgba(0,0,0, 0.1); }
+         .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+         .btn-primary { background: linear-gradient(to right, #458588, #076678); color: white; } /* Blue/Aqua Gradient */
+         .btn-primary:hover:not(:disabled) { background: linear-gradient(to right, #83a598, #458588); } /* Lighter Blue on hover */
+         .btn-secondary { background-color: #ebdbb2; color: #3c3836; border: 1px solid #d5c4a1; } /* Gruvbox Light */
+         .btn-secondary:hover:not(:disabled) { background-color: #d5c4a1; }
+         .btn-submit { background: linear-gradient(to right, #b8bb26, #98971a); color: white; } /* Gruvbox Green Gradient */
+         .btn-submit:hover:not(:disabled) { background: linear-gradient(to right, #d7df00, #b8bb26); } /* Lighter Green */
+
+         .progress-container { height: 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(5px); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.2); }
+         .progress-bar { height: 100%; border-radius: 10px; background: linear-gradient(to right, #b8bb26, #fabd2f); box-shadow: 0 0 15px rgba(250, 189, 47, 0.4); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); } /* Green to Yellow */
+
+         .results-container { display: none; animation: fadeIn 0.8s forwards; }
+         .score-circle { position: relative; transition: all 0.5s ease; border: 6px solid transparent; background-clip: padding-box; border-image: linear-gradient(to right, #d5c4a1, #a89984) 1; /* Gruvbox Gray */ }
+         .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #b8bb26, #98971a) 1; } /* Green */
+         .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fabd2f, #fe8019) 1; } /* Yellow/Orange */
+         .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fb4934, #cc241d) 1; } /* Red */
+         #score-value { color: #458588; } /* Blue/Aqua Score */
+
+         .explanation { position: relative; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border-left-width: 5px; border-style: solid; border-radius: 0 8px 8px 0; padding: 1rem 1rem 1rem 1.5rem; background-color: rgba(255, 255, 255, 0.65); margin-top: 0.75rem; border-color: #458588; /* Blue/Aqua */ }
+         .review-item.correct .explanation { border-color: #98971a; } /* Gruvbox Dark Green */
+         .review-item.incorrect .explanation { border-color: #fb4934; } /* Gruvbox Red */
+         .code-snippet-container { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; padding: 1.25rem; border-radius: 8px; position: relative; margin: 1rem 0; overflow-x: auto; background-color: #f9f5d7; border: 1px solid #d5c4a1; font-size: 0.9em; color: #3c3836; } /* Light mode code */
+
+         .shadow-text { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); }
+         .status-badge { background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(8px); border-radius: 50px; padding: 8px 18px; border: 1px solid rgba(255, 255, 255, 0.3); color: white; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem; }
+         .timer-warning { animation: pulseWarning 1.5s infinite; color: #fabd2f !important; border-color: #fabd2f !important; } /* Yellow */
+         @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+         .option:focus, .btn:focus, button:focus { outline: 2px solid #458588; outline-offset: 2px; } /* Blue focus */
+         html.dark .option:focus, html.dark .btn:focus, html.dark button:focus { outline-color: #83a598; } /* Lighter Blue focus */
+         #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+         #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+         #score-history-area { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.9rem; border-bottom: 1px dashed rgba(0, 0, 0, 0.1); }
+         .history-item:last-child { border-bottom: none; }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #665c54; }
+         html.dark .history-score { color: #ebdbb2; }
+         html.dark .history-date { color: #a89984; }
+         html.dark .review-item { background-color: rgba(255, 255, 255, 0.03); border-left-width: 4px; }
+         html.dark .review-item.correct { border-color: #b8bb26; }
+         html.dark .review-item.incorrect { border-color: #fb4934; }
+         html.dark .review-item ul li.text-green-700 { color: #b8bb26; }
+         html.dark .review-item ul li.text-red-700 { color: #fb4934; }
+         html.dark .review-item ul li.bg-green-100 { background-color: rgba(184, 187, 38, 0.2); ring-color: rgba(184, 187, 38, 0.5); }
+         html.dark .review-item ul li .fa-check { color: #b8bb26; }
+         html.dark .review-item ul li .fa-times { color: #fb4934; }
+         html.dark .review-item .explanation strong { color: #fabd2f; }
+         html.dark .review-item p {color: #d5c4a1; }
+         html.dark .review-item ul li { color: #d5c4a1;}
+         html.dark .review-item ul li span.text-gray-500 {color: #a89984;}
+
+         html.light .text-indigo-900 { color: #076678; } /* Dark Blue */
+         html.light .text-indigo-700 { color: #458588; } /* Medium Blue */
+         html.light .bg-indigo-50 { background-color: #eef7f8;} /* Very light blue */
+         html.light .text-indigo-600 { color: #458588; } /* Medium Blue */
+         html.light .text-indigo-800 { color: #054b57; } /* Darker Blue */
+
+
+         /* Ensure Prism okaidia looks okay in light mode code block */
+         html.light .code-snippet-container code[class*="language-"] { color: #f8f8f2; }
+         html.light .code-snippet-container .token.punctuation { color: #f8f8f2; }
+         html.light .code-snippet-container .token.comment { color: #6272a4; }
+         html.light .code-snippet-container .token.keyword { color: #ff79c6; }
+         html.light .code-snippet-container .token.string { color: #f1fa8c; }
+         html.light .code-snippet-container .token.number { color: #bd93f9; }
+         html.light .code-snippet-container .token.constant { color: #bd93f9; }
+         html.light .code-snippet-container .token.class-name { color: #8be9fd; }
+         html.light .code-snippet-container .token.function { color: #50fa7b; }
+         html.light .code-snippet-container .token.variable { color: #8be9fd; }
+         html.light .code-snippet-container .token.operator { color: #ff79c6; }
+         /* Override background for light mode */
+         html.light .code-snippet-container { background-color: #282a36; border-color: #44475a;}
+
+         /* Adjust explanation text color in light mode */
+         html.light .explanation .text-sm { color: #3c3836; }
+         html.light .explanation strong { color: #076678; }
+
+         /* Adjust review item text color in light mode */
+         html.light .review-item p, html.light .review-item li { color: #3c3836; }
+         html.light .review-item li.text-green-700 { color: #79740e !important; }
+         html.light .review-item li.text-red-700 { color: #9d0006 !important; }
+         html.light .review-item li.bg-green-100 { background-color: #f0f1d3 !important; ring-color: #bdcf4f !important;}
+         html.light .review-item ul li span.text-gray-500 {color: #7c6f64;}
+
+         /* Adjust Start Screen Colors */
+         html.light #start-screen h2 { color: #076678; }
+         html.light #start-screen p { color: #504945; }
+         html.light #score-history-area h3 { color: #054b57; }
+         html.light .history-item .history-score { color: #3c3836; }
+         html.light .history-item span.text-gray-600 { color: #504945; }
+         html.light .history-item .history-date { color: #7c6f64; }
+
+         /* Adjust Results Screen Colors */
+         html.light #results-container h2 { color: #076678; }
+         html.light #score-value { color: #458588; }
+         html.light #score-circle .text-gray-500 { color: #665c54; }
+         html.light #accuracy-value { color: #3c3836; }
+         html.light #time-taken { color: #3c3836; }
+         html.light #performance-message { color: #3c3836; }
+         html.light .bg-indigo-50 { background-color: #e8f7f9; border-color: #cae9ed;} /* Light blue background/border */
+
+         /* Specific style for bash language highlighting in light mode */
+        html.light .code-snippet-container .token.keyword.language-bash { color: #8be9fd; } /* Adjust as needed */
+        html.light .code-snippet-container .token.builtin.language-bash { color: #ff79c6; } /* Adjust commands like 'git', 'cd' */
+        html.light .code-snippet-container .token.string.language-bash { color: #f1fa8c; }
+        html.light .code-snippet-container .token.operator.language-bash { color: #f8f8f2; }
+
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Git & Version Control Fundamentals Quiz</h1> <!-- Changed Heading -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your understanding of Git and version control.</p> <!-- Changed Subheading -->
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Test Your Git Knowledge?</h2> <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers core Git concepts, benefits of version control, and the Git vs. GitHub distinction.</p> <!-- Changed Text -->
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to improve your Git skills!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script> <!-- Added Bash for Git commands -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // --- Git & Version Control Questions ---
+
+            // 1. What is Git?
+            { question: "What is Git?", options: ["A text editor for coding", "A web hosting service", "A distributed version control system", "A project management tool"], correctAnswer: 2, explanation: "Git is a distributed version control system (DVCS) designed to track changes in source code during software development. It allows multiple developers to collaborate efficiently." },
+            // 2. What is Version Control?
+            { question: "What is the primary purpose of a Version Control System (VCS)?", options: ["To automatically write code", "To manage project tasks and deadlines", "To track and manage changes to files over time", "To host websites"], correctAnswer: 2, explanation: "A VCS like Git allows you to record changes to files, revert to previous versions, compare changes, and collaborate with others by merging contributions." },
+            // 3. Benefits of Version Control
+            { question: "Which of the following is a key benefit of using version control?", options: ["It guarantees bug-free code", "It allows easy collaboration and tracking of project history", "It automatically deploys applications", "It replaces the need for backups"], correctAnswer: 1, explanation: "Version control makes collaboration easier by managing contributions, provides a full history of changes, and allows reverting to older states, but it doesn't guarantee bug-free code or replace backups entirely." },
+            // 4. Git vs GitHub
+            { question: "What is the main difference between Git and GitHub?", options: ["They are the same thing", "Git is a tool, GitHub is a hosting service for Git repositories", "GitHub is a tool, Git is a hosting service", "Git is only for Linux, GitHub is for Windows"], correctAnswer: 1, explanation: "Git is the version control software you run locally. GitHub (and similar services like GitLab, Bitbucket) is a web-based platform that provides hosting for Git repositories, along with collaboration features." },
+            // 5. Distributed VCS
+            { question: "Git is described as a 'Distributed' Version Control System (DVCS). What does 'Distributed' mean in this context?", options: ["The code is stored in many different files", "Every developer has a full copy of the entire repository history", "Only one central server holds the repository", "It only works over a network connection"], correctAnswer: 1, explanation: "In a DVCS like Git, each developer's working copy of the code is also a complete repository with the full history. This allows for offline work and redundancy." },
+            // 6. Repository
+            { question: "In Git, what is a 'repository' (often shortened to 'repo')?", options: ["A single file being tracked", "A specific version of the code", "The central server where code is stored", "A collection of files and their history, stored in a `.git` directory"], correctAnswer: 3, explanation: "A Git repository contains all the project files, the entire history of changes, and metadata. It's typically initialized in a project folder and includes a hidden `.git` subdirectory." },
+            // 7. Commit
+            { question: "What does it mean to 'commit' changes in Git?", options: ["To upload files to GitHub", "To save the current changes as a new snapshot in the repository's history", "To delete unwanted files", "To merge code from another branch"], correctAnswer: 1, explanation: "A 'commit' is like taking a snapshot of your project at a specific point in time. It records the changes you've staged, along with a descriptive message." },
+            // 8. Staging Area / Index
+            { question: "What is the 'staging area' (or 'index') in Git?", options: ["A backup copy of the repository", "The list of remote repositories", "A place to temporarily hold changes before committing them", "The final version of the code ready for release"], correctAnswer: 2, explanation: "The staging area is an intermediate step between your working directory (current files) and your repository history. You 'add' changes to the staging area before you 'commit' them." },
+            // 9. `git init` command
+            { question: "Which Git command is used to initialize a new, empty Git repository in the current directory?", code: "cd my_project\n# Which command goes here?", options: ["git new", "git create", "git start", "git init"], correctAnswer: 3, explanation: "`git init` creates a new Git repository in the current folder. It sets up the necessary `.git` subdirectory to start tracking changes." },
+            // 10. `git add` command
+            { question: "What is the purpose of the `git add <filename>` command?", code: "git add README.md", options: ["To commit the file immediately", "To add the file's changes to the staging area", "To delete the file from the repository", "To upload the file to GitHub"], correctAnswer: 1, explanation: "`git add` takes changes from your working directory and puts them into the staging area (index), marking them to be included in the next commit." },
+            // 11. `git commit` command
+            { question: "Which command is used to save the staged changes to the repository history?", code: "git commit -m \"Initial commit\"", options: ["git save", "git push", "git commit", "git stage"], correctAnswer: 2, explanation: "`git commit` records the snapshot of staged changes into the project's history. The `-m` flag allows you to provide a commit message directly." },
+            // 12. `git status` command
+            { question: "What does the `git status` command do?", options: ["Shows the commit history", "Shows the differences between branches", "Shows the state of the working directory and staging area", "Connects to a remote repository"], correctAnswer: 2, explanation: "`git status` displays which files have been modified, which changes are staged, which are not staged, and which files are untracked by Git." },
+            // 13. Branching
+            { question: "What is a primary benefit of using 'branches' in Git?", options: ["To permanently delete old code", "To work on new features or fixes without affecting the main codebase", "To automatically test the code", "To store large binary files"], correctAnswer: 1, explanation: "Branches allow developers to diverge from the main line of development (e.g., `main` or `master` branch) to work on features, bugs, or experiments in isolation, without disrupting the stable code." },
+            // 14. `git clone` command
+            { question: "How do you create a local copy of a remote Git repository (like one on GitHub)?", code: "git clone https://github.com/user/repo.git", options: ["git copy", "git download", "git clone", "git fetch"], correctAnswer: 2, explanation: "`git clone <url>` downloads an existing Git repository from a remote location (like GitHub) to your local machine, including all files, history, and branches." },
+            // 15. `git push` command
+            { question: "What does `git push` typically do?", options: ["Downloads changes from the remote repository", "Uploads your local commits to a remote repository", "Deletes a remote branch", "Shows the status of the remote repository"], correctAnswer: 1, explanation: "`git push` sends your committed changes from your local repository to a configured remote repository (like 'origin', often GitHub), sharing your work with others." },
+            // 16. `git pull` command
+            { question: "What is the main function of `git pull`?", options: ["To push local changes to the remote", "To fetch changes from a remote repository and merge them into your current branch", "To delete local changes", "To create a new branch"], correctAnswer: 1, explanation: "`git pull` is often used to update your local repository with changes from the remote. It combines `git fetch` (downloading changes) and `git merge` (integrating them)." },
+            // 17. Merging
+            { question: "What does 'merging' mean in Git?", options: ["Deleting a branch", "Renaming a file", "Combining changes from different branches into one", "Saving changes to the staging area"], correctAnswer: 2, explanation: "Merging is the process of integrating changes from one branch (e.g., a feature branch) into another branch (e.g., the main branch)." },
+            // 18. Conflict
+            { question: "What is a 'merge conflict' in Git?", options: ["A bug in the Git software", "When two developers try to push at the exact same time", "When Git cannot automatically combine changes because the same lines were edited differently in merging branches", "An error message indicating a full disk"], correctAnswer: 2, explanation: "A merge conflict occurs when Git detects competing changes in the same part of a file during a merge and cannot automatically resolve them. The developer needs to manually edit the file to fix the conflict." },
+            // 19. GitHub Primary Role
+            { question: "Beyond hosting repositories, what is a major role of platforms like GitHub?", options: ["Executing code directly on their servers", "Providing advanced text editing features", "Facilitating collaboration, code review, and project management around Git repositories", "Replacing the need for local Git installations"], correctAnswer: 2, explanation: "GitHub enhances Git by adding features like pull requests (for code review), issue tracking, wikis, project boards, and social coding aspects, making collaboration much easier." },
+            // 20. `.gitignore` file
+            { question: "What is the purpose of a `.gitignore` file in a Git repository?", options: ["To list all files that ARE tracked by Git", "To specify intentionally untracked files that Git should ignore", "To configure user-specific Git settings", "To store backup copies of important files"], correctAnswer: 1, explanation: "The `.gitignore` file lists patterns of files or directories (like log files, build outputs, or dependency folders) that Git should not track or show in `git status`." }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        const SCORE_HISTORY_KEY = 'gitQuizScoreHistory'; // Changed Key
+        const QUIZ_STATE_KEY = 'gitQuizState'; // Changed Key
+
+        // --- DOM Elements ---
+        // (DOM element references remain the same)
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+
+        // --- State Variables ---
+        // (State variables remain the same)
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        // (Helper functions `shuffleArray`, `formatTime` remain the same)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        // (Dark Mode logic remains the same)
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight AFTER theme change, slight delay helps sometimes
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50);
+             }
+        }
+
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        // (Logic remains the same, uses updated QUIZ_STATE_KEY)
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                     // Basic validation: check if questionsOrder length matches current quizData
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress quiz state is incompatible/invalid for current quiz.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress quiz state cleared.");
+        }
+
+
+        // --- Local Storage: SCORE HISTORY ---
+        // (Logic remains the same, uses updated SCORE_HISTORY_KEY)
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        // (Logic remains the same)
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        // (Core quiz flow logic remains the same)
+        function startQuiz() {
+             if (loadState()) {
+                 console.log("Resuming quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 console.log("Initializing a new quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+                 // Ensure state is clean before starting fresh
+                 clearState();
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true;
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            saveState(); // Initial save for new or resumed quiz
+        }
+
+        function loadQuestion(index) {
+            // (Load question logic updated for Git quizData and bash highlighting)
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) {
+                console.error(`Could not load question at index ${index} (original index ${questionIndexInOriginalData})`);
+                return;
+            };
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            // Ensure question counter reflects actual quiz length
+            updateProgress(index);
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 // Use language-bash for Prism.js with Git commands
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 code.className = 'language-bash'; // Important for command highlighting
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      // Use highlightElement for dynamically added code
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                // Simple text rendering for options, no complex HTML needed here usually
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                // Pre-create icons, hide initially
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0; transition: opacity 0.3s ease;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0; transition: opacity 0.3s ease;"></i>
+                `;
+
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                  // Ensure next/submit is enabled if an answer was previously selected
+                 nextBtn.disabled = false;
+                 if (index === quizData.length - 1) submitBtn.disabled = false;
+             } else {
+                 // Ensure next/submit is disabled if loading a question without a prior answer
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateNavigation();
+        }
+
+
+        // (selectOption, showFeedback, updateProgress, updateNavigation, nextQuestion, prevQuestion logic remains the same)
+         function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return; // Prevent re-selecting
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false; // Enable next button
+
+             // Enable submit button only if it's the last question
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save state after selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); // Disable all options
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 // Ensure icons start hidden before applying styles
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 // Style the option the user selected
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Also highlight the actual correct option if the user was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct'); // Add 'correct' class for styling
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark on correct answer
+                         }
+                     }
+                 } else {
+                      // Handle non-selected options
+                      optElement.setAttribute('aria-checked', 'false');
+                     // Also highlight the correct answer if the user picked wrong, even if this isn't the selected one
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct'); // Add 'correct' class for styling
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark on correct answer
+                     }
+                 }
+            });
+            // Remove animation classes after a delay to allow replay on revisit
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            // Update counter text to reflect the correct total number of questions
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const totalQuestions = quizData.length;
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion || isLastQuestion); // Hide spacer if prev hidden OR if next hidden (last question)
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Disable next/submit if current question hasn't been answered
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) submitBtn.disabled = !currentAnswerSelected;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to next question
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to previous question
+            }
+        }
+
+        // --- Timer ---
+        // (Timer logic remains the same)
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!quizActive) return;
+
+            // Ensure timeElapsed reflects loaded state correctly
+            const baseTime = startTime || Date.now(); // Use saved start time or current time
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                // Calculate elapsed based on initial startTime and current time
+                timeElapsed = Math.max(0, Math.floor((now - baseTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0 && quizActive) { // Check quizActive to prevent auto-submit after manual submit
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    console.log("Timer ended, auto-submitting.");
+                    submitQuiz(true); // Auto-submit only if quiz was active
+                    return;
+                } else if (timeRemaining <= 0) {
+                    // If time is up but quiz is not active (already submitted), just show 00:00
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval); // Stop timer if running unnecessarily
+                    return;
+                }
+
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60 && timeRemaining > 0);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400'); // Remove red color if not time up
+
+                 // Periodic save state during the quiz
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) { saveState(); }
+            };
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+        // --- Submit and Results ---
+        // (Submit logic remains the same, calculates based on new quizData)
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) {
+                console.log("Submit blocked: Quiz not active.");
+                return; // Prevent double submission or submitting inactive quiz
+            }
+            console.log(`Submitting quiz. Timed out: ${timeUp}`);
+            quizActive = false; // Mark quiz as inactive FIRST
+            clearInterval(timerInterval); // Stop timer immediately
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    // Verify originalQuestionIndex is valid before accessing quizData
+                    if (originalQuestionIndex >= 0 && originalQuestionIndex < quizData.length) {
+                         if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                            score++;
+                        }
+                    } else {
+                        console.error(`Invalid originalQuestionIndex ${originalQuestionIndex} found for displayIndex ${displayIdx}`);
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            // Add attempt to score history
+            addScoreToHistory({
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: parseFloat(accuracy.toFixed(1)),
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            });
+
+            // --- UI Updates for Results Screen ---
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Re-trigger animation
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            // Animate accuracy bar
+            accuracyBar.style.width = `0%`; // Reset first for animation effect
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); // Apply width after short delay
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Performance Message & Score Circle Style
+            let performanceText = "";
+            let scoreLevel = 'low'; // Default: low
+            if (timeUp) {
+                performanceText = "Time's up! Let's review your Git knowledge.";
+                 if (accuracy >= 85) scoreLevel = 'high'; else if (accuracy >= 60) scoreLevel = 'medium';
+            } else {
+                if (accuracy >= 95) { performanceText = "Outstanding! Git Master!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent work! Strong grasp of Git fundamentals."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! You're well on your way with version control."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Keep practicing those Git commands."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep studying! Review the answers and try again."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel); // Apply attribute for styling
+
+            // Trigger confetti for high scores (if not timed out)
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState(); // Clear the IN-PROGRESS quiz state after successful submission
+        }
+
+        // (Confetti logic remains the same)
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return;
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 });
+             // Add a couple more bursts for fun
+             setTimeout(() => {
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 200);
+         }
+
+        // --- Review Screen ---
+        // (Review logic updated for Git quizData and bash highlighting)
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+             // Re-trigger animation
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth; // Trigger reflow
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review items
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 // Add validation check for originalQuestionIndex
+                 if (originalQuestionIndex < 0 || originalQuestionIndex >= quizData.length) {
+                    console.error(`Invalid originalQuestionIndex ${originalQuestionIndex} during review generation.`);
+                    return; // Skip this iteration
+                 }
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 // Add appropriate classes for styling correct/incorrect review items
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 bg-green-50 dark:bg-green-900/30 dark:border-green-600'
+                     : 'border-red-500 bg-red-50 dark:bg-red-900/30 dark:border-red-600'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  // Add code snippet if it exists for the question
+                  if (question.code) {
+                      const escapedCode = question.code; // textContent handles escaping in modern browsers
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-bash">${escapedCode}</code></pre>`; // Use language-bash
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+                      let indicatorClass = ""; // For background/ring styling
+
+                      // Determine styles based on correctness and user selection
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                          if (i === userAnswerIndex) { // User chose the correct answer
+                               indicatorClass = " ring-1 ring-green-300 dark:ring-green-600 bg-green-100 dark:bg-green-800/50";
+                          }
+                      } else if (i === userAnswerIndex) { // User chose an incorrect answer
+                          liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                          iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`;
+                          indicatorClass = " ring-1 ring-red-300 dark:ring-red-600 bg-red-100 dark:bg-red-800/50";
+                      } else if (userAnswerIndex === null && i !== question.correctAnswer) {
+                          // Question unanswered, not the correct answer
+                          liClass = "text-gray-500 dark:text-gray-500";
+                      }
+                      // Else: it's an incorrect option the user didn't pick - default liClass is fine.
+
+
+                      reviewHTML += `<li class="flex items-center p-1 rounded ${liClass} ${indicatorClass}">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${optionText}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+
+                 reviewHTML += `</ul>`;
+
+                 // Add explanation if available
+                 if (question.explanation) {
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                        <strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                    </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             // Re-run Prism highlighting for the dynamically added code blocks in review
+             if (typeof Prism !== 'undefined') {
+                 // Use highlightAllUnder for potentially multiple code blocks
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        // (showResultsScreen logic remains the same)
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+             // Re-trigger animation
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+
+        // --- Restart ---
+        // (Restart logic remains the same)
+        function restartQuiz() {
+             // Reset state variables (except scoreHistory)
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            questionsOrder = [];
+            timeElapsed = 0;
+            quizActive = false;
+            clearInterval(timerInterval);
+            clearState(); // Clear any lingering saved state
+
+            // Reset UI elements
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = '';
+
+            // Hide quiz/results/review, show start screen
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            // Re-trigger start screen animation
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; // Trigger reflow
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+
+            // Reset buttons state
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden'); // Ensure Next is visible initially (will be hidden by updateNav if needed)
+            submitBtn.classList.add('hidden'); // Ensure Submit is hidden initially
+            navSpacer.classList.remove('hidden'); // Reset spacer visibility
+
+            // Refresh score history display on the start screen
+            displayScoreHistory();
+            console.log("Quiz reset.");
+        }
+
+        // --- Sharing ---
+        // (Sharing logic updated for Git topic)
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Git & Version Control Fundamentals Quiz! Test your knowledge!`; // Changed text
+             const shareUrl = window.location.href; // Or a specific URL for the quiz
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My Git Quiz Result!', // Changed Title
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Result shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Fallback to clipboard copy if share fails (e.g., user cancels)
+                     copyToClipboard(`${shareText} ${shareUrl}`);
+                 }
+             } else {
+                 // Fallback for browsers that don't support navigator.share
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        // (copyToClipboard logic remains the same)
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!");
+             })
+             .catch(err => {
+                 console.error('Could not copy text: ', err);
+                 alert("Failed to copy results. You may need to copy manually.");
+             });
+         }
+
+        // --- Event Listeners ---
+        // (Event listeners remain the same)
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Ensure it passes false for manual submit
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+        // (Keyboard navigation logic remains the same)
+         document.addEventListener('keydown', (e) => {
+            // Check if the quiz container is visible
+             if (quizContainer.style.display === 'block') {
+                 // Focus is within the quiz container or on navigation buttons
+                 const activeEl = document.activeElement;
+                 if (!activeEl) return; // Exit if no element is focused
+
+                 if (activeEl === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (activeEl === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (activeEl === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+                 // Allow selecting options with Enter/Space already handled by option keydown listener
+             } else if (startScreen.style.display === 'block') {
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (resultsContainer.style.display === 'block') {
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (reviewContainer.style.display === 'block') {
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+
+        // --- Initial Application Load ---
+        // (Initialization logic remains the same)
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory();
+            displayScoreHistory();
+
+            // Ensure only start screen is visible initially
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            // Reset button states just in case browser cached something weird
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            submitBtn.classList.add('hidden'); // Submit hidden initially
+            nextBtn.classList.remove('hidden'); // Next shown initially
+
+            console.log("Git Quiz application initialized.");
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
