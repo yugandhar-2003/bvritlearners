@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Programming Quizzes</title> <!-- Changed Title -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Modern Quiz Styles -->
+    <link rel="stylesheet" href="../modern-quiz-styles.css">
+    <!-- Custom Styles (if needed) -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Back Button (Adjust href if needed) -->
+    <a href="../../tutorials/index.html" class="back-button" style="position: absolute; top: 20px; left: 20px; color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+        <i class="fas fa-arrow-left"></i> Back to Tutorials
+    </a>
+
+    <div class="container">
+        <h1>C++ Programming Quizzes</h1> <!-- Changed Heading -->
+        <p style="margin-bottom: 2rem;">Test your C++ programming knowledge with these interactive quizzes</p> <!-- Changed Paragraph -->
+
+        <div class="quiz-grid">
+            <!-- C++ Basics Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Basics Quiz</h3>
+                    <p class="quiz-card-description">Test knowledge of C++ syntax, data types, variables, basic I/O (cout/cin), and namespaces.</p>
+                    <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/c++1.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- C++ Operators & Expressions Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Operators & Expressions Quiz</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions on arithmetic, relational, logical, and other C++ operators.</p>
+                     <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/c++2.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- C++ Control Structures Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Control Structures Quiz</h3>
+                    <p class="quiz-card-description">Evaluate understanding of if/else, switch, for, while loops, break, and continue statements.</p>
+                     <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/c++3.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- C++ Functions Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Functions Quiz</h3>
+                    <p class="quiz-card-description">Test knowledge of function overloading, parameters, return values, scope, and inline functions.</p>
+                     <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/c++4.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- C++ Arrays & Strings Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Arrays & Strings Quiz</h3>
+                    <p class="quiz-card-description">Assess your understanding of C-style arrays, `std::array`, C-style strings, and `std::string`.</p>
+                     <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/cp++5.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- C++ Pointers & Dynamic Memory Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Pointers & Dynamic Memory Quiz</h3>
+                    <p class="quiz-card-description">Challenge yourself with questions about pointers, references, `new`, `delete`, and memory management.</p>
+                     <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/c++6.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- C++ Templates & Exception Handling Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Templates & Exception Handling Quiz</h3>
+                    <p class="quiz-card-description">Test your knowledge of function/class templates and exception handling (`try`, `catch`, `throw`).</p>
+                     <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/c++7.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+
+            <!-- C++ Standard Template Library (STL) Quiz -->
+            <div class="quiz-card">
+                <div class="quiz-card-content">
+                    <h3 class="quiz-card-title">C++ Standard Template Library (STL) Quiz</h3>
+                    <p class="quiz-card-description">Evaluate your understanding of STL containers (vectors, maps, etc.), iterators, and algorithms.</p>
+                     <!-- Note: Adjust the href path if your folder structure is different -->
+                    <a href="../C++/c++10.html"><button class="buttony"><i class="fas fa-play-circle"></i> Take Quiz</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add a script to handle the active tab state -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make the first quiz card active by default
+            const firstCard = document.querySelector('.quiz-card');
+            if (firstCard) {
+                firstCard.classList.add('active');
+            }
+
+            // Add hover effects
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    cards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
