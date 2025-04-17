@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Changed Title -->
+    <title>C++ Arrays & Strings Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Slightly adjusted gradient for C++ feel (optional) */
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             /* Darker gradient for C++ dark mode (optional) */
+            background: linear-gradient(135deg, #1e3a8a 0%, #5b21b6 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb;
+         }
+         html.dark .option {
+             background-color: rgba(51, 65, 85, 0.6);
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db;
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(71, 85, 105, 0.8);
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         html.dark .option.selected {
+             background: rgba(99, 102, 241, 0.35); /* Use theme color */
+             border-color: #818cf8;
+             color: #e0e7ff;
+         }
+         html.dark .option.correct {
+            background: rgba(16, 185, 129, 0.35) !important;
+            border-color: #34d399 !important;
+            color: #d1fae5 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #f87171 !important;
+             color: #fee2e2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fee2e2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(30, 41, 59, 0.8);
+             color: #cbd5e1;
+             border-left-color: #60a5fa; /* Adjusted border color */
+         }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+         html.dark .code-snippet-container {
+             background-color: #1e293b; /* Okaidia-like background */
+             color: #f8f8f2; /* Okaidia text */
+             border: 1px solid #334155;
+         }
+          html.dark .btn-secondary {
+              background-color: #374151;
+              color: #e5e7eb;
+              border: 1px solid #4b5563;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563;
+          }
+          html.dark #score-circle {
+              background-color: #1f2937;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #93c5fd; /* Adjusted score color */
+          }
+           html.dark .text-gray-500 { color: #9ca3af; }
+           html.dark .text-gray-600 { color: #cbd5e1; }
+           html.dark .text-gray-700 { color: #e2e8f0; }
+           html.dark .text-gray-800 { color: #f1f5f9; }
+           html.dark .text-blue-900 { color: #bfdbfe; } /* Updated header text color */
+           html.dark .text-blue-700 { color: #93c5fd; } /* Updated score value color */
+           html.dark .bg-gray-200 { background-color: #4b5563;}
+           html.dark .bg-blue-50 { background-color: #1e3a8a;} /* Adjusted accent background */
+           html.dark .text-blue-600 { color: #93c5fd; }
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb;
+           }
+           html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+           html.dark .history-date { color: #9ca3af; }
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(59, 130, 246, 0.5); /* Adjusted hover border */
+        }
+        .option.selected {
+            border-color: #3b82f6; /* Adjusted selected border */
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.15)); /* Adjusted selected background */
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #34d399, #3b82f6); /* Adjusted progress bar */
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-primary {
+             background: linear-gradient(to right, #3b82f6, #60a5fa); /* Adjusted primary button */
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #2563eb, #3b82f6);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf);
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #60a5fa; /* Adjusted explanation border */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        /* C++ Logo (Optional) - Placeholder */
+        .cpp-logo img, .cpp-logo svg {
+            /* animation: pulseLogo 2.5s infinite ease-in-out; */ /* Keep if desired */
+            height: 40px; /* Example size */
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #2d2d2d; /* Adjusted for C++ feel, similar to Okaidia */
+            color: #f8f8f2;
+            border: 1px solid #444;
+            font-size: 0.9em;
+        }
+
+        /* Ensure Prism Okaidia colors apply correctly */
+        html.dark .code-snippet-container {
+            background-color: #272822; /* Okaidia default */
+            color: #f8f8f2;
+             border: 1px solid #334155;
+        }
+        html.light .code-snippet-container {
+            background-color: #f5f5f5; /* Light mode code background */
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        /* Explicitly target code within pre for Prism styles */
+        .code-snippet-container code[class*="language-"] {
+             color: #f8f8f2; /* Okaidia text */
+             text-shadow: none;
+        }
+         html.light .code-snippet-container code[class*="language-"] {
+             color: #333;
+         }
+
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #facc15 !important;
+             border-color: #facc15 !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #2563eb; /* Adjusted focus ring */
+             outline-offset: 2px;
+        }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+             outline-color: #93c5fd; /* Adjusted dark focus ring */
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Optional C++ Logo -->
+            <!-- <span class="cpp-logo"><img src="path/to/cpp_logo.svg" alt="C++ Logo"></span> -->
+            <!-- Changed Header -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">C++ Arrays & Strings Challenge</h1>
+            <!-- Changed Subtitle -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your knowledge of C++ arrays and string handling!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+             <!-- Changed Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-blue-900 dark:text-blue-200">Ready to Test Your C++ Data Structures?</h2>
+             <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers 1D/2D arrays, multidimensional arrays, C-style character arrays (strings), and the `std::string` class.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- Changed Text Color & Title -->
+                <h3 class="text-lg font-semibold mb-3 text-blue-800 dark:text-blue-300">Recent Arrays & Strings Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                 <!-- Changed Text Color -->
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-blue-900 dark:text-blue-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- Changed Text Color -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-blue-900 dark:text-blue-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                         <!-- Changed Text Color -->
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-blue-700 dark:text-blue-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                      <!-- Adjusted Accent BG -->
+                     <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-700/50 mt-2">
+                        <!-- Changed Text -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to master C++ arrays and strings!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- Changed Text Color -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-blue-900 dark:text-blue-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+             // C++ Arrays & Strings Questions
+             // 1. 1D Array Declaration
+             { question: "Which is a correct way to declare an integer array named `scores` that can hold 10 elements in C++?", options: ["int scores[10];", "array<int, 10> scores;", "int scores = new int[10];", "scores int[10];"], correctAnswer: 0, explanation: "`int scores[10];` is the standard C-style array declaration for an integer array of size 10. `array<int, 10>` uses the `<array>` header (STL), and `new int[10]` dynamically allocates memory." },
+             // 2. 1D Array Initialization
+             { question: "What are the contents of the array `nums` after this declaration?", code: "int nums[5] = {10, 20, 30};", options: ["{10, 20, 30, 0, 0}", "{10, 20, 30, garbage, garbage}", "{10, 20, 30}", "Compilation Error"], correctAnswer: 0, explanation: "When initializing an array with fewer elements than its declared size using an initializer list, the remaining elements are automatically initialized to zero (for numeric types)." },
+             // 3. Accessing 1D Array Element
+             { question: "What value will be printed by the code?", code: "#include <iostream>\n\nint main() {\n  int data[] = {5, 15, 25, 35};\n  std::cout << data[2];\n  return 0;\n}", options: ["5", "15", "25", "35"], correctAnswer: 2, explanation: "Array indexing in C++ starts at 0. `data[0]` is 5, `data[1]` is 15, and `data[2]` is 25." },
+             // 4. Iterating 1D Array (for loop)
+             { question: "What is the output of this loop?", code: "#include <iostream>\n\nint main() {\n  int arr[] = {1, 2, 3};\n  for (int i = 0; i < 3; ++i) {\n    std::cout << arr[i] * 2 << \" \";\n  }\n  return 0;\n}", options: ["1 2 3 ", "2 4 6 ", "0 2 4 ", "Compilation Error"], correctAnswer: 1, explanation: "The loop iterates through the array elements (1, 2, 3). In each iteration, the element `arr[i]` is multiplied by 2 and printed. 1*2=2, 2*2=4, 3*2=6." },
+             // 5. Range-based for loop (1D Array)
+             { question: "Which type of loop provides a more concise way to iterate over all elements of an array or container without using indices?", options: ["while loop", "do-while loop", "Standard for loop", "Range-based for loop"], correctAnswer: 3, explanation: "The range-based for loop (introduced in C++11, e.g., `for (int x : arr)`) iterates over each element of a range (like an array or STL container) directly, simplifying the code." },
+             // 6. 2D Array Declaration
+             { question: "How do you correctly declare a 2D integer array `matrix` with 3 rows and 4 columns?", options: ["int matrix[3][4];", "int matrix[3, 4];", "int matrix[][];", "matrix int[3][4];"], correctAnswer: 0, explanation: "For a 2D C-style array, you specify the number of rows and then the number of columns in separate square brackets: `dataType arrayName[rows][columns];`." },
+             // 7. Accessing 2D Array Element
+             { question: "Given `int grid[2][3] = {{1, 2, 3}, {4, 5, 6}};`, what is the value of `grid[1][1]`?", options: ["1", "2", "4", "5"], correctAnswer: 3, explanation: "2D array access uses `array[rowIndex][columnIndex]`. `grid[1]` refers to the second row (`{4, 5, 6}`), and `[1]` within that row refers to the second element, which is 5 (remembering 0-based indexing)." },
+             // 8. Iterating 2D Array (Nested Loops)
+             { question: "How many times will the inner statement `std::cout << \"*\";` execute?", code: "#include <iostream>\n\nint main() {\n  int rows = 2;\n  int cols = 4;\n  for (int i = 0; i < rows; ++i) {\n    for (int j = 0; j < cols; ++j) {\n      std::cout << \"*\";\n    }\n  }\n  return 0;\n}", options: ["2", "4", "6", "8"], correctAnswer: 3, explanation: "The outer loop runs `rows` (2) times. The inner loop runs `cols` (4) times for *each* iteration of the outer loop. Total executions = rows * cols = 2 * 4 = 8." },
+             // 9. C-style String Declaration (char array)
+             { question: "Which correctly declares a C-style string (character array) initialized with \"Hello\"?", options: ["char str[] = \"Hello\";", "string str = \"Hello\";", "char str = 'Hello';", "char* str = \"Hello\";"], correctAnswer: 0, explanation: "`char str[] = \"Hello\";` declares a character array `str` and initializes it with the characters 'H', 'e', 'l', 'l', 'o', and importantly, the null terminator `\\0` automatically added. `char* str = \"Hello\";` creates a pointer to a string literal, which is often read-only." },
+             // 10. Null Termination
+             { question: "What character signifies the end of a C-style string stored in a character array?", options: ["'\\n' (newline)", "'\\0' (null character)", "EOF (End Of File)", "'.' (period)"], correctAnswer: 1, explanation: "C-style strings are null-terminated, meaning a special null character (`\\0`, whose integer value is 0) is placed after the last actual character to mark the string's end. Functions like `strlen` rely on this." },
+             // 11. `strlen` function
+             { question: "What value does `strlen(\"C++\")` return? (Assuming `<cstring>` or `<string.h>` is included)", options: ["2", "3", "4", "5"], correctAnswer: 1, explanation: "The `strlen` function counts the number of characters in a C-style string *before* the null terminator. \"C++\" has 3 characters ('C', '+', '+')." },
+             // 12. C-style String Issues
+             { question: "What is a major drawback of using C-style character arrays for strings compared to `std::string`?", options: ["They cannot store spaces", "Fixed size, susceptible to buffer overflows", "They are slower", "They require special header files"], correctAnswer: 1, explanation: "C-style arrays have a fixed size determined at compile time. If you try to copy a longer string into a smaller buffer (e.g., using `strcpy`), it can write past the end of the array (buffer overflow), leading to crashes or security vulnerabilities. `std::string` manages memory automatically." },
+             // 13. `std::string` Declaration & Initialization
+             { question: "Which header file is typically needed to use the `std::string` class?", options: ["<iostream>", "<cstring>", "<string>", "<str.h>"], correctAnswer: 2, explanation: "The standard C++ string class `std::string` is defined in the `<string>` header file." },
+             // 14. `std::string` Concatenation
+             { question: "What is the value of `fullName`?", code: "#include <string>\n#include <iostream>\n\nint main() {\n  std::string firstName = \"Jane\";\n  std::string lastName = \"Doe\";\n  std::string fullName = firstName + \" \" + lastName;\n  // std::cout << fullName;\n  return 0;\n}", options: ["JaneDoe", "Jane Doe", "DoeJane", "Compilation Error"], correctAnswer: 1, explanation: "The `+` operator is overloaded for `std::string` to perform concatenation. It joins the strings together, resulting in \"Jane Doe\"." },
+             // 15. `std::string` Length/Size
+             { question: "Which method is commonly used to get the length (number of characters) of a `std::string` object named `myStr`?", options: ["myStr.length() or myStr.size()", "strlen(myStr)", "myStr.capacity()", "sizeof(myStr)"], correctAnswer: 0, explanation: "Both `myStr.length()` and `myStr.size()` return the number of characters currently stored in the `std::string` object. They are equivalent. `strlen` is for C-style strings. `capacity` tells how much memory is allocated, and `sizeof` gives the size of the string object itself, not the content length." },
+             // 16. `std::string` Accessing Characters
+             { question: "How can you access the character at index 1 of a `std::string s = \"World\";`?", options: ["s[1]", "s.at(1)", "Both A and B", "s.get(1)"], correctAnswer: 2, explanation: "You can use the square bracket operator `s[1]` (like arrays) or the `s.at(1)` member function. `at()` provides bounds checking (throws an exception if the index is invalid), while `[]` might lead to undefined behavior if the index is out of bounds." },
+             // 17. `std::string` Comparison
+             { question: "What does the expression `std::string(\"apple\") < std::string(\"apply\")` evaluate to?", options: ["true", "false", "Compilation Error", "0"], correctAnswer: 0, explanation: "Comparison operators (`<`, `>`, `==`, etc.) are overloaded for `std::string` to perform lexicographical (dictionary order) comparison. 'apple' comes before 'apply' alphabetically, so the expression is true." },
+             // 18. `std::string` Substring
+             { question: "What would `myString.substr(1, 3)` return if `myString` is \"Programming\"?", code: "#include <string>\n#include <iostream>\n\nint main() {\n std::string myString = \"Programming\";\n std::string sub = myString.substr(1, 3);\n // std::cout << sub;\n return 0;\n}", options: ["\"Pro\"", "\"rog\"", "\"ogr\"", "\"ram\""], correctAnswer: 1, explanation: "`.substr(pos, count)` extracts a substring starting at index `pos` (1-based index 'r') and taking `count` (3) characters. So, it extracts 'r', 'o', 'g'." },
+             // 19. C-style vs `std::string`
+             { question: "Which is generally preferred for string manipulation in modern C++ due to safety and ease of use?", options: ["C-style character arrays", "`std::string` class", "Using `malloc`/`free` with `char*`", "Both are equally good"], correctAnswer: 1, explanation: "`std::string` manages its own memory, prevents buffer overflows, provides convenient member functions for common operations (concatenation, searching, substrings, etc.), making it safer and easier to use than raw character arrays." },
+             // 20. Multidimensional Array Concept
+             { question: "A 3D array `int cube[2][3][4];` can be visualized as:", options: ["A single row of integers", "A grid or table of integers", "Multiple grids (layers) of integers", "A pointer to an integer"], correctAnswer: 2, explanation: "A 3D array extends the 2D concept. You can think of `cube[2][3][4]` as 2 layers, where each layer is a 3x4 grid of integers." }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 Minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // --- Changed Local Storage Keys ---
+        const SCORE_HISTORY_KEY = 'cppArraysStringsQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'cppArraysStringsQuizState';
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight after mode change, especially for code blocks
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50); // Small delay helps ensure styles applied
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Basic validation: check if quizActive and arrays look reasonable
+                    // Use quizData.length to ensure compatibility if questions change
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true; // Mark as active since we are loading state
+                        // Changed Log Message
+                        console.log("In-progress C++ Arrays & Strings quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         // Changed Log Message
+                         console.warn("Saved C++ Arrays & Strings quiz state is incompatible/invalid.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                     // Changed Log Message
+                    console.error("Failed to parse saved C++ Arrays & Strings quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+             // Changed Log Message
+            console.log("In-progress C++ Arrays & Strings quiz state cleared.");
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                 // Changed Log Message
+                console.error("Failed to load C++ Arrays & Strings score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save C++ Arrays & Strings score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             // Changed Confirmation Message
+             if (confirm("Are you sure you want to clear all previous C++ Arrays & Strings attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                  // Changed Log Message
+                 console.log("C++ Arrays & Strings score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+
+            if (scoreHistory.length === 0) {
+                 // Changed Text
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous C++ Arrays & Strings attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) { // Try to load and resume
+                  // Changed Log Message
+                 console.log("Resuming C++ Arrays & Strings quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else { // Start fresh
+                 // Changed Log Message
+                 console.log("Initializing a new C++ Arrays & Strings quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+                 quizActive = true; // Mark as active immediately for a fresh start
+                 saveState(); // Save the initial shuffled state immediately
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            // quizActive is set above now
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            // State is saved inside loadState or right after fresh start setup
+        }
+
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = ''; // Clear previous feedback
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 // Use 'nohighlight' initially to prevent flicker, Prism will add correct class
+                 pre.className = 'code-snippet-container nohighlight';
+                 const code = document.createElement('code');
+                 code.className = 'language-cpp'; // Set language for Prism
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 // Highlight *after* appending to DOM
+                 if (typeof Prism !== 'undefined') {
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0; // Make it focusable
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                 // Escape HTML in option text to prevent injection issues
+                 const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${safeOptionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                // Icons initially hidden
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     // Only allow selection if it hasn't been answered yet
+                     if (userAnswers[index] === null) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault(); // Prevent scrolling on space
+                        handleSelection();
+                    }
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             // If an answer was previously selected (e.g., using Prev button or resuming), show feedback
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+             } else {
+                  // Disable Next/Submit if no answer selected for the current question
+                  nextBtn.disabled = true;
+                  if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            // Double check: Should only be called if userAnswers[displayIndex] is null
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex); // Show correctness immediately
+
+            // Enable navigation now that an answer is selected
+            nextBtn.disabled = false;
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save state after each answer selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); // Disable all options after one is chosen
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 // Ensure icons start invisible before applying styles
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1'; // Show checkmark
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1'; // Show cross
+                         feedbackMessage.textContent = "Incorrect.";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Also highlight the correct answer if the user was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                              // Add checkmark to the actual correct answer for clarity
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     // If this option is the correct one, but wasn't selected (because user was wrong)
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct'); // Highlight it anyway
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark
+                     }
+                 }
+            });
+             // Remove animation classes after a short delay
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer if Prev is shown
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Enable/disable Next/Submit based on whether the *current* question has been answered
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                // No need to save state here, loadQuestion calls updateNavigation which depends on userAnswers
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                 // No need to save state here
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            if (!quizActive) return; // Don't start if quiz isn't active
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                // Ensure timeElapsed doesn't go negative if system clock changes
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) { // Only auto-submit if the quiz was still considered active
+                        console.log("Time's up! Auto-submitting.");
+                        submitQuiz(true); // Pass true to indicate time ran out
+                    }
+                    return;
+                }
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                // Add/remove warning class for the last minute
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400'); // Ensure red text is removed if time > 0
+
+                 // Periodic save of state (e.g., every 10 seconds)
+                 if (quizActive && timeElapsed > 0 && timeElapsed % 10 === 0) {
+                      saveState();
+                 }
+            };
+
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000); // Update every second
+        }
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+            // Prevent double submission or submission when not active
+            if (!quizActive && !timeUp) return;
+
+            console.log(`Submitting quiz. Time up: ${timeUp}`);
+            quizActive = false; // Mark quiz as inactive
+            clearInterval(timerInterval); // Stop the timer
+
+            // Calculate score based on saved answers
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) { // Check if the question was answered
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            // Use the final timeElapsed, unless time ran out, then use the limit
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            // Add attempt to score history
+            addScoreToHistory({
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: parseFloat(accuracy.toFixed(1)), // Store as number
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            });
+
+            // UI Updates for Results
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            // Animate accuracy bar
+            accuracyBar.style.width = `0%`; // Reset first
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); // Then animate
+
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Set performance message and score circle style
+            let performanceText = ""; let scoreLevel = 'low';
+            if (timeUp) {
+                 // Changed Text
+                performanceText = "Time's up! Let's review your C++ arrays and strings knowledge.";
+                 // Assign level even if time ran out
+                 if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium';
+            } else {
+                // Changed Text (Examples)
+                if (accuracy >= 95) { performanceText = "Outstanding! Master of C++ Arrays & Strings!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 80) { performanceText = "Excellent work! Solid handling of arrays and strings."; scoreLevel = 'high'; }
+                 else if (accuracy >= 65) { performanceText = "Great job! You understand C++ arrays and strings well."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Keep practicing array and string manipulation."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Review C++ arrays and the string class."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+             // Trigger confetti for high scores (if not time up)
+             if (scoreLevel === 'high' && !timeUp) {
+                  triggerConfetti();
+             }
+
+            clearState(); // Clear the IN-PROGRESS quiz state from localStorage after successful submission
+        }
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') {
+                 console.warn("Confetti function not available.");
+                 return;
+             }
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+              // Customize confetti appearance
+             myConfetti({
+                 particleCount: 150,
+                 spread: 100,
+                 origin: { y: 0.6 },
+                 gravity: 0.8,
+                 ticks: 350,
+                 zIndex: 1000, // Ensure it's above other elements
+                 colors: ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ffffff'] // Theme colors
+             });
+             // Optional: smaller bursts after the main one
+             setTimeout(() => {
+                  myConfetti({ particleCount: 50, spread: 120, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 50, spread: 120, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 250);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review items
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                  // Adjust background based on correctness, more subtle
+                 const correctnessClass = isCorrect
+                     ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                     : (userAnswerIndex === null ? 'border-gray-400 bg-gray-50 dark:bg-gray-700/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20');
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${correctnessClass}`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  // Add code snippet if present, ensuring correct highlighting class
+                  if (question.code) {
+                      // Escape HTML characters in code to prevent rendering issues
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md nohighlight"><code class="language-cpp">${escapedCode}</code></pre>`; // Use nohighlight initially
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Options:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 // Display options with feedback
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+                      const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+
+                      // Style the correct answer
+                      if (i === question.correctAnswer) {
+                           liClass = "font-semibold text-green-700 dark:text-green-400";
+                           iconHTML = `<i class="fas fa-check ml-2 text-green-500" title="Correct Answer"></i>`;
+                      }
+
+                      // Style the user's answer
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              // User's correct answer: Add subtle highlight
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              // User's incorrect answer: Strike-through and red
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500" title="Your Incorrect Answer"></i>`;
+                          }
+                      } else if (userAnswerIndex === null && i === question.correctAnswer) {
+                           // If unanswered, still highlight the correct one
+                           liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1";
+                           iconHTML += ` <span class="text-xs text-gray-500">(Correct)</span>`;
+                      }
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${safeOptionText}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+                 reviewHTML += `</ul>`;
+
+                 // Add explanation
+                 if (question.explanation) {
+                     const explanationClass = isCorrect ? 'correct' : (userAnswerIndex === null ? 'unanswered' : 'incorrect');
+                      // Use explanation border color based on correctness
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 ${explanationClass}">
+                                        <strong class="block mb-1 text-sm text-blue-800 dark:text-blue-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                     </div>`;
+                 } else if (userAnswerIndex === null) {
+                      reviewHTML += `<p class="mt-3 text-sm text-yellow-600 dark:text-yellow-400">Question not answered.</p>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             // Re-run Prism highlighting after adding all elements
+             if (typeof Prism !== 'undefined') {
+                  setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Add fade-in animation for smooth transition back
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+             // Clear active quiz state and variables
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = [];
+            timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+            clearState(); // Clear any leftover in-progress state from localStorage
+
+            // Reset UI elements to initial state
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = ''; // Clear feedback message
+            optionsContainer.innerHTML = ''; // Clear options
+            codeSnippetArea.innerHTML = ''; // Clear code area
+            questionText.textContent = 'Question goes here'; // Reset question text
+
+            // Hide quiz, results, review; show start screen
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            // Reset button states
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Show spacer next to hidden prev button
+
+            // Ensure start screen animation plays again
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; // Trigger reflow
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+            // Refresh score history display on the start screen
+            displayScoreHistory();
+
+            // Changed Log Message
+            console.log("C++ Arrays & Strings Quiz reset.");
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Changed Share Text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the C++ Arrays & Strings Quiz! Test your skills!`;
+             const shareUrl = window.location.href; // Or a specific landing page URL
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                          // Changed Title
+                         title: 'My C++ Arrays & Strings Quiz Result!',
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Result shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Fallback or message if user cancels share
+                 }
+             } else {
+                 // Fallback for browsers without navigator.share
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!"); // Simple feedback
+             }).catch(err => {
+                 console.error('Could not copy results: ', err);
+                 alert("Failed to copy results. You can manually copy the text."); // Inform user of failure
+             });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Explicitly false for timeUp
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Accessibility) ---
+         document.addEventListener('keydown', (e) => {
+             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return; // Ignore keydowns in inputs
+
+             // Check focus and button state before acting
+             if (document.activeElement === nextBtn && !nextBtn.disabled && !nextBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+             else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+             else if (document.activeElement === submitBtn && !submitBtn.disabled && !submitBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+             else if (document.activeElement === startBtn && !startBtn.disabled && startScreen.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+             else if (document.activeElement === reviewBtn && resultsContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+             else if (document.activeElement === restartBtn && resultsContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+             else if (document.activeElement === backToResults && reviewContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             else if (document.activeElement === shareBtn && resultsContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             else if (document.activeElement === darkModeToggle && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); applyDarkMode(!htmlElement.classList.contains('dark')); }
+         });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Set dark mode based on preference/localStorage
+            const savedDarkMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyDarkMode(savedDarkMode === 'enabled' || (savedDarkMode !== 'disabled' && prefersDark));
+
+            loadScoreHistory(); // Load C++ score history using the *new* key
+            displayScoreHistory(); // Display it on start screen
+
+            // Ensure correct initial visibility states
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block'; // Show start screen initially
+
+            // Initial button states
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Ensure spacer is visible initially
+
+            // Changed Log Message
+            console.log("C++ Arrays & Strings Quiz application initialized.");
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+
+
+
