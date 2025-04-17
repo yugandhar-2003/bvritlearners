@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Basics Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #00599C 0%, #4DBCE9 100%); /* C++ Themed Gradient */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+            background: linear-gradient(135deg, #0a192f 0%, #172a45 100%); /* Dark C++ theme */
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(200, 200, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(200, 200, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(17, 34, 51, 0.7); /* Darker card */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(136, 146, 176, 0.2); /* Lighter border for contrast */
+            color: #ccd6f6; /* General text color */
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #e6f1ff; /* Heading color */
+         }
+         html.dark .option {
+             background-color: rgba(30, 48, 70, 0.6);
+             border-color: rgba(136, 146, 176, 0.3);
+             color: #a8b2d1; /* Option text */
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(40, 60, 85, 0.8);
+             border-color: rgba(136, 146, 176, 0.5);
+         }
+         html.dark .option.selected {
+             background: rgba(100, 181, 246, 0.25); /* Blueish tint for selected */
+             border-color: #64b5f6;
+             color: #e3f2fd;
+         }
+         html.dark .option.correct {
+            background: rgba(76, 175, 80, 0.25) !important; /* Green tint */
+            border-color: #4caf50 !important;
+            color: #e8f5e9 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(244, 67, 54, 0.2) !important; /* Red tint */
+            border-color: #f44336 !important;
+             color: #ffebee !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #ffebee !important;
+             box-shadow: inset 0 0 5px rgba(244, 67, 54, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(17, 34, 51, 0.8);
+             color: #a8b2d1;
+             border-left-color: #64b5f6; /* Blue accent */
+         }
+        html.dark .review-item.correct .explanation { border-color: #4caf50; }
+        html.dark .review-item.incorrect .explanation { border-color: #f44336; }
+         html.dark .code-snippet-container {
+             background-color: #011627; /* Different dark code background */
+             color: #d6deeb;
+             border: 1px solid #1f3652;
+         }
+          html.dark .btn-secondary {
+              background-color: #1e3b5a;
+              color: #ccd6f6;
+              border: 1px solid #2b4c7e;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #2a4a6e;
+          }
+          html.dark #score-circle {
+              background-color: #0a192f;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #64ffda; /* Accent color for score */
+          }
+           html.dark .text-gray-500 { color: #8892b0; }
+           html.dark .text-gray-600 { color: #a8b2d1; }
+           html.dark .text-gray-700 { color: #ccd6f6; }
+           html.dark .text-gray-800 { color: #e6f1ff; }
+           html.dark .text-indigo-900 { color: #a8b2d1; } /* Adjusted indigo */
+           html.dark .text-indigo-700 { color: #8892b0; } /* Adjusted indigo */
+           html.dark .bg-gray-200 { background-color: #2b4c7e;}
+           html.dark .bg-indigo-50 { background-color: #172a45;}
+           html.dark .text-indigo-600 { color: #64ffda; } /* Accent color */
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(30, 59, 90, 0.4), rgba(23, 42, 69, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(100, 255, 218, 0.2); /* Accent border */
+                color: #ccd6f6;
+           }
+           html.dark .timer-warning { color: #ffcc80 !important; border-color: #ffcc80 !important; } /* Orange warning */
+           html.dark .history-date { color: #8892b0; }
+           html.dark #score-history-area { border-top: 1px solid rgba(100, 255, 218, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(100, 255, 218, 0.1); }
+           html.dark .btn-primary {
+                background: linear-gradient(to right, #2196F3, #4FC3F7); /* Brighter blue */
+                color: white;
+           }
+           html.dark .btn-primary:hover:not(:disabled) {
+                background: linear-gradient(to right, #1976D2, #29B6F6);
+           }
+
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 89, 156, 0.5); /* C++ Blue Hover */
+        }
+        .option.selected {
+            border-color: #00599C; /* C++ Blue Selected */
+            background: linear-gradient(to right, rgba(0, 89, 156, 0.15), rgba(77, 188, 233, 0.15));
+            box-shadow: 0 4px 10px rgba(0, 89, 156, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(100, 255, 218, 0.1); /* Accent progress background */
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #4DBCE9, #007acc); /* C++ Blue Progress */
+            box-shadow: 0 0 15px rgba(0, 122, 204, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html.dark .progress-bar {
+             background: linear-gradient(to right, #64ffda, #4fc3f7); /* Accent progress */
+        }
+
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #64ffda) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #ffcc80) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-primary {
+             background: linear-gradient(to right, #007acc, #00599C); /* C++ Blue Button */
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #00599C, #004080);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf);
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+          html.dark .btn-submit {
+              background: linear-gradient(to right, #4caf50, #81c784); /* Green submit in dark */
+          }
+          html.dark .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #388e3c, #66bb6a);
+          }
+
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(100, 255, 218, 0.05); }
+
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #4DBCE9; /* Light Blue accent */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #f5f5f5; /* Lighter code background for light mode */
+            border: 1px solid #ddd;
+            font-size: 0.9em;
+            color: #333; /* Darker code text */
+        }
+        /* Okaidia theme handles dark mode code automatically via prism */
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #fbc02d !important; /* Yellow warning */
+             border-color: #fbc02d !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #00599C; /* C++ Blue focus */
+             outline-offset: 2px;
+        }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+             outline-color: #64ffda; /* Accent focus in dark mode */
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+         /* Dark mode history handled via general dark text colors */
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Changed Header Text -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">C++ Basics Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test your C++ fundamentals!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-blue-900 dark:text-blue-200">Ready to Test Your Skills?</h2> <!-- Adjusted Color -->
+            <!-- Changed Description -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers C++ basics: program structure, variables, types, I/O, and comments.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <h3 class="text-lg font-semibold mb-3 text-blue-800 dark:text-blue-300">Recent Attempts</h3> <!-- Adjusted Color -->
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-blue-900 dark:text-blue-200 leading-snug">Question goes here</h3> <!-- Adjusted Color -->
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+            <h2 class="text-3xl font-bold mb-6 text-center text-blue-900 dark:text-blue-200">Quiz Results</h2> <!-- Adjusted Color -->
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-blue-700 dark:text-blue-300">0/20</span> <!-- Adjusted Color -->
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-700/50 mt-2"> <!-- Adjusted Color -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to improve your skills!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                <h2 class="text-3xl font-bold mb-8 text-center text-blue-900 dark:text-blue-200">Review Answers</h2> <!-- Adjusted Color -->
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // NEW: C++ Quiz Data
+        const quizData = [
+             // Question 1: Basic Structure & Output
+             { question: "Which line is necessary to print output to the console using `cout` in C++?", options: ["#include <stdio.h>", "#include <iostream>", "using namespace io;", "int main()"], correctAnswer: 1, explanation: "The `<iostream>` header file provides definitions for standard input/output stream objects like `cout` and `cin`." },
+             // Question 2: Variable Declaration
+             { question: "How do you correctly declare an integer variable named `count` and initialize it to 10 in C++?", options: ["count = 10;", "int count = 10;", "integer count = 10;", "var count = 10;"], correctAnswer: 1, explanation: "In C++, you must specify the data type (like `int`) before the variable name when declaring it." },
+             // Question 3: Console Output
+             { question: "Which statement correctly prints the text 'Hello, C++!' followed by a newline to the console?", options: ["print(\"Hello, C++!\");", "console.log(\"Hello, C++!\");", "cout << \"Hello, C++!\" << endl;", "printf(\"Hello, C++!\\n\");"], correctAnswer: 2, explanation: "`cout` is the standard output stream, `<<` is the insertion operator, and `endl` inserts a newline character and flushes the stream." },
+             // Question 4: Console Input
+             { question: "Which statement correctly reads an integer value from the user into a variable `age` (assuming `age` is declared as `int`)?", options: ["read(age);", "cin >> age;", "input(age);", "scanf(\"%d\", &age);"], correctAnswer: 1, explanation: "`cin` is the standard input stream, and `>>` is the extraction operator used to read data from the input stream into a variable." },
+             // Question 5: Single-line Comment
+             { question: "How do you write a single-line comment in C++?", options: ["# This is a comment", "// This is a comment", "/* This is a comment */", "-- This is a comment"], correctAnswer: 1, explanation: "C++ uses `//` to start a single-line comment, which extends to the end of the line." },
+             // Question 6: Data Type - Character
+             { question: "Which data type is typically used to store a single character, like 'A' or '$', in C++?", options: ["string", "char", "character", "text"], correctAnswer: 1, explanation: "The `char` data type is used to store single characters." },
+             // Question 7: Main Function
+             { question: "What is the standard name for the function where execution begins in a C++ program?", options: ["start()", "main()", "run()", "execute()"], correctAnswer: 1, explanation: "The `main()` function is the designated entry point for every C++ program." },
+             // Question 8: Namespace std
+             { question: "What is the purpose of the statement `using namespace std;` often seen near the top of C++ files?", options: ["To include the standard library", "To declare standard variables", "To avoid prefixing standard library names like `cout` and `cin` with `std::`", "To define the main function"], correctAnswer: 2, explanation: "`using namespace std;` brings all the names (like `cout`, `cin`, `endl`, `string`) from the `std` namespace into the current scope, avoiding the need for `std::cout`, `std::cin`, etc." },
+             // Question 9: Multi-line Comment
+             { question: "How do you write a comment that spans multiple lines in C++?", options: ["// Comment line 1 \n // Comment line 2", "''' Multi-line \n comment '''", "/* Multi-line \n comment */", "## Multi-line \n comment ##"], correctAnswer: 2, explanation: "C++ uses `/*` to start a multi-line comment and `*/` to end it. Everything between these delimiters is ignored by the compiler." },
+             // Question 10: String Header
+             { question: "Which standard C++ header file must typically be included to use the `string` data type?", options: ["<iostream>", "<string>", "<cstring>", "<vector>"], correctAnswer: 1, explanation: "The standard C++ `string` class is defined in the `<string>` header file." },
+             // Question 11: Boolean Type
+             { question: "What are the two keyword literals representing the boolean data type (`bool`) values in C++?", options: ["0 and 1", "TRUE and FALSE", `"true" and "false"`, "true and false"], correctAnswer: 3, explanation: "The `bool` type in C++ uses the keywords `true` and `false`." },
+             // Question 12: Fundamental Data Types
+             { question: "Which of the following is NOT a fundamental data type in C++?", options: ["int", "float", "array", "double", "char", "bool"], correctAnswer: 2, explanation: "`int`, `float`, `double`, `char`, and `bool` are fundamental types. An array is a compound type (derived from other types)." },
+             // Question 13: Outputting Variables
+             { question: "What is the output of the following C++ code snippet?", code: "#include <iostream>\n\nint main() {\n  int score = 95;\n  std::cout << \"Score: \" << score;\n  return 0;\n}", options: ["Score: score", "Score: 95", "Error", "score"], correctAnswer: 1, explanation: "The code uses `cout` to print the string literal \"Score: \" followed by the value stored in the integer variable `score` (which is 95)." },
+             // Question 14: Semicolons
+             { question: "What character is generally required at the end of most individual statements in C++?", options: [": (colon)", ", (comma)", ". (period)", "; (semicolon)"], correctAnswer: 3, explanation: "Most statements in C++ (like declarations, assignments, function calls, `cin`/`cout` operations) must end with a semicolon (;)." },
+             // Question 15: `#include` directive
+             { question: "What is the primary function of the `#include` preprocessor directive in C++?", options: ["Compile the code", "Define a new function", "Insert the contents of the specified header file", "Declare a variable"], correctAnswer: 2, explanation: "The `#include` directive tells the preprocessor to copy the entire content of the specified file (usually a header file) into the current file before compilation." },
+             // Question 16: Variable Naming Rules
+             { question: "Which of the following is an INVALID variable name in C++?", options: ["_value", "totalScore", "my_variable", "2ndPlace"], correctAnswer: 3, explanation: "Variable names in C++ cannot start with a digit. They can start with a letter or an underscore." },
+             // Question 17: `cin` and Whitespace
+             { question: "By default, when reading input using `cin >> variable;`, what happens when `cin` encounters whitespace (like a space, tab, or newline)?", options: ["It reads the whitespace into the variable", "It stops reading for that variable", "It causes an error", "It ignores the whitespace"], correctAnswer: 1, explanation: "The `>>` operator typically stops reading input for the current variable when it encounters whitespace. The whitespace is left in the input buffer for subsequent reads." },
+             // Question 18: Basic Arithmetic
+             { question: "What will the following C++ code output?", code: "#include <iostream>\n\nint main() {\n  int x = 5;\n  int y = 2;\n  std::cout << x / y;\n  return 0;\n}", options: ["2.5", "2", "3", "Error"], correctAnswer: 1, explanation: "When dividing two integers (`int`) in C++, the result is also an integer. The fractional part is truncated (discarded). So, 5 / 2 results in 2." },
+             // Question 19: Data Type for Decimals
+             { question: "Which data type is commonly used in C++ to store numbers with decimal points, like 3.14 or -0.5?", options: ["int", "char", "double", "bool"], correctAnswer: 2, explanation: "`float` and `double` are used for floating-point numbers (numbers with decimals). `double` typically offers higher precision than `float`." },
+             // Question 20: Purpose of `return 0;` in `main`
+             { question: "What does `return 0;` at the end of the `main` function typically signify in C++?", options: ["The program encountered an error", "The program executed successfully", "The program should run again", "The program is returning the value zero"], correctAnswer: 1, explanation: "By convention, returning 0 from `main` indicates that the program terminated successfully. Non-zero return values usually indicate an error occurred." }
+        ];
+
+        const TIME_LIMIT_SECONDS = 15 * 60;
+        const MAX_HISTORY_ITEMS = 5;
+        // NEW: Updated Local Storage Keys
+        const SCORE_HISTORY_KEY = 'cppQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'cppQuizState';
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight code after theme change
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50); // Small delay might help
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                     // Basic validation: Ensure keys exist and array lengths match current quizData
+                     if (state.quizActive &&
+                         typeof state.currentQuestionIndex === 'number' &&
+                         Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length &&
+                         Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length &&
+                         typeof state.timeElapsed === 'number')
+                     {
+                        currentQuestionIndex = state.currentQuestionIndex;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress quiz state is incompatible/invalid. Clearing.");
+                         clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress quiz state cleared.");
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) {
+                    console.warn("Invalid score history format found. Resetting.");
+                    scoreHistory = [];
+                }
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                 // Ensure only valid attempts are saved (basic check)
+                 const validHistory = scoreHistory.filter(attempt =>
+                     typeof attempt.score === 'number' &&
+                     typeof attempt.totalQuestions === 'number' &&
+                     typeof attempt.accuracy === 'number' &&
+                     typeof attempt.timestamp === 'number' &&
+                     typeof attempt.timeTaken === 'number'
+                 );
+                const limitedHistory = validHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) {
+                 console.log("Resuming quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 console.log("Initializing a new quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+                 quizActive = true; // Set active only for new or successfully loaded state
+                 saveState(); // Save initial state
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+        }
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length || !quizActive) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 // Use 'language-cpp' for C++ highlighting
+                 pre.className = 'code-snippet-container line-numbers'; // Added line-numbers for Prism plugin
+                 const code = document.createElement('code');
+                 code.className = 'language-cpp';
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                     // Needs a slight delay for DOM update sometimes
+                     setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false; // Enable next if already answered
+                 if (index === quizData.length - 1) submitBtn.disabled = false; // Enable submit if last and answered
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null || !quizActive) return; // Prevent changes after selection or if quiz inactive
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save state after selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); // Disable all options after one is chosen
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Highlight the correct answer if the selected one was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                      // Highlight correct answer even if not selected (only when an incorrect answer was chosen)
+                      if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+            // Remove animation classes after they play
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer only when prev button is visible
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1 && quizActive) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to next question
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0 && quizActive) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to previous question
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            if (!quizActive) return; // Don't start if quiz isn't active
+
+            const updateTimerDisplay = () => {
+                 if (!quizActive) { // Stop timer if quiz becomes inactive (e.g., submitted)
+                     clearInterval(timerInterval);
+                     return;
+                 }
+                const now = Date.now();
+                // Ensure timeElapsed doesn't go backward if system clock changes
+                timeElapsed = Math.max(timeElapsed, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time Up!`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if (quizActive) { // Only auto-submit if it wasn't already submitted
+                         submitQuiz(true); // Pass true to indicate time ran out
+                    }
+                    return;
+                }
+
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60); // Add warning class if <= 60s left
+                if (timeRemaining > 60) { // Remove warning styles if time is sufficient
+                    timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+                }
+
+
+                 // Periodic save state during the quiz (e.g., every 15 seconds)
+                 if (timeElapsed > 0 && timeElapsed % 15 === 0) {
+                     saveState();
+                 }
+            };
+
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+            if (!quizActive && !timeUp) return; // Prevent double submission unless forced by timeUp
+
+            quizActive = false; // Mark quiz as inactive
+            clearInterval(timerInterval); // Stop the timer
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (quizData[originalQuestionIndex] && answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? parseFloat(((score / totalQuestions) * 100).toFixed(1)) : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            // Add attempt to score history
+             const attemptData = {
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: accuracy,
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            };
+            addScoreToHistory(attemptData);
+
+            // UI Updates for Results
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy}%`;
+            // Animate accuracy bar width
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); // Small delay for transition
+            timeTaken.textContent = formatTime(finalTime);
+
+            let performanceText = ""; let scoreLevel = 'low';
+            if (timeUp) {
+                performanceText = "Time's up! Let's review your answers.";
+                 if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium';
+            } else {
+                if (accuracy >= 95) { performanceText = "Outstanding! C++ Ace!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 80) { performanceText = "Excellent work! Strong fundamentals."; scoreLevel = 'high'; }
+                 else if (accuracy >= 60) { performanceText = "Great job! You're getting the hang of it."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 40) { performanceText = "Good effort! Keep practicing the basics."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep studying! Review the concepts and try again."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+            if (scoreLevel === 'high' && !timeUp && score > 0) triggerConfetti();
+
+            clearState(); // Clear the IN-PROGRESS quiz state after submission
+        }
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return;
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 });
+             setTimeout(() => {
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 200);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = '';
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+                 const reviewItem = document.createElement('div');
+                 // Adjusted review item styles for better contrast
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${ isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20' }`;
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+                  if (question.code) {
+                      // Ensure C++ code is highlighted
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">"); // Basic escaping
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md line-numbers"><code class="language-cpp">${escapedCode}</code></pre>`;
+                  }
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300"; let iconHTML = "";
+                      if (i === question.correctAnswer) {
+                           liClass = "font-semibold text-green-700 dark:text-green-300"; // Brighter green for dark mode correct
+                           iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                       }
+                      if (i === userAnswerIndex) {
+                           if (isCorrect) {
+                               liClass += " ring-1 ring-green-300 dark:ring-green-500 rounded px-2 py-1 bg-green-100 dark:bg-green-800/30";
+                           } else {
+                               liClass = "font-semibold text-red-700 dark:text-red-400 line-through"; // Keep red consistent
+                               iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`;
+                           }
+                      } else if (i === question.correctAnswer && !isCorrect) {
+                          // Also highlight the correct answer if the user chose incorrectly
+                          liClass = "font-semibold text-green-700 dark:text-green-300";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${optionText}</span>${iconHTML}</li>`;
+                 });
+                 reviewHTML += `</ul>`;
+                 if (question.explanation) {
+                      // Adjusted explanation text color for dark mode
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-600"><strong class="block mb-1 text-sm text-blue-800 dark:text-blue-300">Explanation:</strong><p class="text-sm text-gray-600 dark:text-gray-300">${question.explanation}</p></div>`;
+                 }
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+             // Re-run Prism highlighting for the review section
+             if (typeof Prism !== 'undefined') { setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0); }
+        }
+
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+            // Reset state vars
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = [];
+            timeElapsed = 0; quizActive = false; clearInterval(timerInterval); clearState();
+
+            // Reset UI elements
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = '';
+            resultsContainer.style.display = 'none'; quizContainer.style.display = 'none'; reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; startScreen.classList.add('animate__animated', 'animate__zoomIn');
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden'); navSpacer.classList.add('hidden'); // Reset nav spacer too
+
+            displayScoreHistory(); // Show history on start screen
+            console.log("Quiz reset.");
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? parseFloat(((score / totalQuestions) * 100).toFixed(1)) : 0;
+             // Updated share text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy}%) on the C++ Basics Quiz! Test your knowledge!`;
+             const shareUrl = window.location.href;
+             if (navigator.share) {
+                 try { await navigator.share({ title: 'My C++ Quiz Result!', text: shareText, url: shareUrl }); }
+                 catch (err) { console.error('Error sharing:', err); /* Maybe provide fallback */ }
+             } else {
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => { alert("Results copied to clipboard!"); })
+             .catch(err => { console.error('Could not copy: ', err); alert("Failed to copy results. You may need to enable clipboard permissions."); });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Enhanced) ---
+         document.addEventListener('keydown', (e) => {
+             // Only handle keys if the relevant element is visible and not disabled
+             const isQuizVisible = quizContainer.style.display === 'block';
+             const isResultsVisible = resultsContainer.style.display === 'block';
+             const isReviewVisible = reviewContainer.style.display === 'block';
+
+             if (e.key === 'Enter' || e.key === ' ') {
+                 const activeEl = document.activeElement;
+                 if (activeEl === startBtn && startScreen.style.display === 'block') { e.preventDefault(); startQuiz(); }
+                 else if (isQuizVisible) {
+                     if (activeEl === nextBtn && !nextBtn.disabled && !nextBtn.classList.contains('hidden')) { e.preventDefault(); nextQuestion(); }
+                     else if (activeEl === prevBtn && !prevBtn.classList.contains('hidden')) { e.preventDefault(); prevQuestion(); }
+                     else if (activeEl === submitBtn && !submitBtn.disabled && !submitBtn.classList.contains('hidden')) { e.preventDefault(); submitQuiz(false); }
+                 } else if (isResultsVisible) {
+                     if (activeEl === reviewBtn) { e.preventDefault(); showReview(); }
+                     else if (activeEl === restartBtn) { e.preventDefault(); restartQuiz(); }
+                     else if (activeEl === shareBtn) { e.preventDefault(); shareResults(); }
+                 } else if (isReviewVisible) {
+                     if (activeEl === backToResults) { e.preventDefault(); showResultsScreen(); }
+                 } else if (activeEl === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden')) {
+                     e.preventDefault(); clearScoreHistory();
+                 }
+             } else if (e.key >= '1' && e.key <= '4' && isQuizVisible && userAnswers[currentQuestionIndex] === null) {
+                 // Allow selecting options 1-4 with keys A-D or 1-4
+                 const optionIndex = parseInt(e.key) - 1;
+                 const options = optionsContainer.querySelectorAll('.option');
+                 if (options[optionIndex]) { options[optionIndex].click(); }
+             } else if (e.key.toUpperCase() >= 'A' && e.key.toUpperCase() <= 'D' && isQuizVisible && userAnswers[currentQuestionIndex] === null) {
+                 const optionIndex = e.key.toUpperCase().charCodeAt(0) - 65; // A=0, B=1, etc.
+                 const options = optionsContainer.querySelectorAll('.option');
+                 if (options[optionIndex]) { options[optionIndex].click(); }
+             }
+         });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+            loadScoreHistory();
+            displayScoreHistory();
+            // Ensure only start screen is visible initially
+            quizContainer.style.display = 'none'; resultsContainer.style.display = 'none'; reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            // Ensure buttons are in correct initial state
+            nextBtn.disabled = true; submitBtn.disabled = true; prevBtn.classList.add('hidden');
+
+            console.log("C++ Quiz application initialized.");
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+    <!-- Include Prism Line Numbers Plugin JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <!-- Include Prism Line Numbers Plugin CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+
+</body>
+</html>
