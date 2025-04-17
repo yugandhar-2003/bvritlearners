@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Changed Title -->
+    <title>C++ Pointers & Dynamic Memory Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Slightly adjusted gradient for C++ feel (optional) */
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             /* Darker gradient for C++ dark mode (optional) */
+            background: linear-gradient(135deg, #1e3a8a 0%, #5b21b6 100%);
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb;
+         }
+         html.dark .option {
+             background-color: rgba(51, 65, 85, 0.6);
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db;
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(71, 85, 105, 0.8);
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         html.dark .option.selected {
+             background: rgba(99, 102, 241, 0.35); /* Use theme color */
+             border-color: #818cf8;
+             color: #e0e7ff;
+         }
+         html.dark .option.correct {
+            background: rgba(16, 185, 129, 0.35) !important;
+            border-color: #34d399 !important;
+            color: #d1fae5 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #f87171 !important;
+             color: #fee2e2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fee2e2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(30, 41, 59, 0.8);
+             color: #cbd5e1;
+             border-left-color: #60a5fa; /* Adjusted border color */
+         }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+         html.dark .code-snippet-container {
+             background-color: #1e293b; /* Okaidia-like background */
+             color: #f8f8f2; /* Okaidia text */
+             border: 1px solid #334155;
+         }
+          html.dark .btn-secondary {
+              background-color: #374151;
+              color: #e5e7eb;
+              border: 1px solid #4b5563;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563;
+          }
+          html.dark #score-circle {
+              background-color: #1f2937;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #93c5fd; /* Adjusted score color */
+          }
+           html.dark .text-gray-500 { color: #9ca3af; }
+           html.dark .text-gray-600 { color: #cbd5e1; }
+           html.dark .text-gray-700 { color: #e2e8f0; }
+           html.dark .text-gray-800 { color: #f1f5f9; }
+           html.dark .text-blue-900 { color: #bfdbfe; } /* Updated header text color */
+           html.dark .text-blue-700 { color: #93c5fd; } /* Updated score value color */
+           html.dark .bg-gray-200 { background-color: #4b5563;}
+           html.dark .bg-blue-50 { background-color: #1e3a8a;} /* Adjusted accent background */
+           html.dark .text-blue-600 { color: #93c5fd; }
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb;
+           }
+           html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+           html.dark .history-date { color: #9ca3af; }
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(59, 130, 246, 0.5); /* Adjusted hover border */
+        }
+        .option.selected {
+            border-color: #3b82f6; /* Adjusted selected border */
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.15)); /* Adjusted selected background */
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #34d399, #3b82f6); /* Adjusted progress bar */
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-primary {
+             background: linear-gradient(to right, #3b82f6, #60a5fa); /* Adjusted primary button */
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #2563eb, #3b82f6);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf);
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #60a5fa; /* Adjusted explanation border */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        /* C++ Logo (Optional) - Placeholder */
+        .cpp-logo img, .cpp-logo svg {
+            /* animation: pulseLogo 2.5s infinite ease-in-out; */ /* Keep if desired */
+            height: 40px; /* Example size */
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #2d2d2d; /* Adjusted for C++ feel, similar to Okaidia */
+            color: #f8f8f2;
+            border: 1px solid #444;
+            font-size: 0.9em;
+        }
+
+        /* Ensure Prism Okaidia colors apply correctly */
+        html.dark .code-snippet-container {
+            background-color: #272822; /* Okaidia default */
+            color: #f8f8f2;
+             border: 1px solid #334155;
+        }
+        html.light .code-snippet-container {
+            background-color: #f5f5f5; /* Light mode code background */
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        /* Explicitly target code within pre for Prism styles */
+        .code-snippet-container code[class*="language-"] {
+             color: #f8f8f2; /* Okaidia text */
+             text-shadow: none;
+        }
+         html.light .code-snippet-container code[class*="language-"] {
+             color: #333;
+         }
+
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #facc15 !important;
+             border-color: #facc15 !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #2563eb; /* Adjusted focus ring */
+             outline-offset: 2px;
+        }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+             outline-color: #93c5fd; /* Adjusted dark focus ring */
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Optional C++ Logo -->
+            <!-- <span class="cpp-logo"><img src="path/to/cpp_logo.svg" alt="C++ Logo"></span> -->
+            <!-- Changed Header -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">C++ Pointers & Dynamic Memory Challenge</h1>
+            <!-- Changed Subtitle -->
+            <p class="text-lg md:text-xl text-white text-opacity-90">Master pointers, memory allocation, and smart pointers!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+             <!-- Changed Text -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-blue-900 dark:text-blue-200">Ready to Tackle Pointers?</h2>
+             <!-- Changed Text -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers pointer basics, arithmetic, `new`/`delete`, pointers with arrays/functions/objects, and smart pointers (`unique_ptr`, `shared_ptr`).</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                 <!-- Changed Text Color & Title -->
+                <h3 class="text-lg font-semibold mb-3 text-blue-800 dark:text-blue-300">Recent Pointers & Memory Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                 <!-- Changed Text Color -->
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-blue-900 dark:text-blue-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- Changed Text Color -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-blue-900 dark:text-blue-200">Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                         <!-- Changed Text Color -->
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-blue-700 dark:text-blue-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                      <!-- Adjusted Accent BG -->
+                     <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-700/50 mt-2">
+                        <!-- Changed Text -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to master C++ pointers and memory management!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- Changed Text Color -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-blue-900 dark:text-blue-200">Review Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [
+            // C++ Pointers & Dynamic Memory Questions
+            // 1. Pointer Declaration
+            { question: "How do you correctly declare a pointer `p` that can point to an integer?", options: ["int *p;", "int p*;", "pointer<int> p;", "*int p;"], correctAnswer: 0, explanation: "`int *p;` declares `p` as a pointer to an integer. The asterisk (`*`) signifies it's a pointer type. It can store the memory address of an `int` variable." },
+            // 2. Address-of Operator
+            { question: "Which operator is used to get the memory address of a variable?", options: ["*", "&", "->", "."], correctAnswer: 1, explanation: "The address-of operator (`&`) returns the memory address of its operand. Example: `int x = 10; int* p = &x;` makes `p` point to `x`." },
+            // 3. Dereference Operator
+            { question: "What does the dereference operator (`*`) do when applied to a pointer?", options: ["Gets the address stored in the pointer", "Accesses the value stored at the memory address the pointer holds", "Allocates memory", "Checks if the pointer is null"], correctAnswer: 1, explanation: "The dereference operator (`*`) accesses or modifies the value at the memory location pointed to by the pointer. Example: `*p = 20;` changes the value of the variable `p` points to." },
+            // 4. Pointer Initialization
+            { question: "What is the value of `*ptr` after this code executes?", code: "int main() {\n  int val = 50;\n  int* ptr = &val;\n  *ptr = 100;\n  return 0;\n}", options: ["50", "100", "The address of val", "Undefined behavior"], correctAnswer: 1, explanation: "`ptr` points to `val`. `*ptr = 100;` dereferences `ptr` and assigns 100 to the memory location it points to, effectively changing `val` to 100. So, `*ptr` (the value pointed to by `ptr`) is 100." },
+            // 5. Null Pointer
+            { question: "What keyword is preferred in modern C++ (C++11 onwards) to represent a null pointer?", options: ["NULL", "0", "nullptr", "void*"], correctAnswer: 2, explanation: "`nullptr` is a typesafe keyword introduced in C++11 specifically to represent a null pointer. While `NULL` (often defined as 0) works, `nullptr` prevents potential ambiguities, especially with function overloading." },
+            // 6. Dynamic Allocation (Single Element)
+            { question: "Which operator is used to dynamically allocate memory for a single integer on the heap?", options: ["alloc", "malloc", "create", "new"], correctAnswer: 3, explanation: "The `new` operator is the C++ way to allocate memory on the free store (heap). `new int` allocates enough space for one integer and returns a pointer to it." },
+            // 7. Dynamic Allocation (Array)
+            { question: "How do you dynamically allocate an array of 10 integers using `new`?", options: ["new int(10);", "new int[10];", "new array<int>(10);", "int* p = new 10;"], correctAnswer: 1, explanation: "`new int[10];` allocates contiguous memory for 10 integers on the heap and returns a pointer to the first element of the allocated block." },
+            // 8. Deallocation (Single Element)
+            { question: "Which operator must be used to deallocate memory allocated with `new int`?", options: ["delete", "free", "release", "destroy"], correctAnswer: 0, explanation: "Memory allocated with `new` must be deallocated using the `delete` operator to prevent memory leaks. Example: `int* p = new int; delete p;`" },
+            // 9. Deallocation (Array)
+            { question: "Which operator must be used to deallocate memory allocated with `new int[10]`?", options: ["delete", "delete[]", "free[]", "release[]"], correctAnswer: 1, explanation: "Memory allocated for an array using `new T[size]` must be deallocated using the `delete[]` operator. Using `delete` instead of `delete[]` on array memory leads to undefined behavior (often only the first element's destructor is called, and memory might not be fully reclaimed)." },
+            // 10. Memory Leak
+            { question: "What is a memory leak?", options: ["Accessing memory that has been deallocated", "Forgetting to deallocate dynamically allocated memory", "Allocating too much memory", "A pointer pointing to an invalid address"], correctAnswer: 1, explanation: "A memory leak occurs when dynamically allocated memory is no longer needed but is not deallocated (using `delete` or `delete[]`). This memory remains reserved and unavailable for reuse, potentially exhausting system resources over time." },
+            // 11. Dangling Pointer
+            { question: "What is a dangling pointer?", options: ["A pointer that hasn't been initialized", "A pointer pointing to memory that has already been deallocated", "A pointer set to nullptr", "A pointer to an array"], correctAnswer: 1, explanation: "A dangling pointer points to a memory location that is no longer valid (e.g., after `delete` has been called on it, or it points to a local variable whose scope has ended). Dereferencing a dangling pointer leads to undefined behavior." },
+            // 12. Pointer Arithmetic
+            { question: "If `int* p` points to the first element of an integer array `arr`, what address does `p + 1` point to?", options: ["The next byte in memory", "The address of the second integer in the array", "The same address as p", "An invalid address"], correctAnswer: 1, explanation: "Pointer arithmetic is scaled by the size of the type being pointed to. If `p` points to `arr[0]`, `p + 1` points to `arr[1]`. The address is incremented by `sizeof(int)` bytes." },
+            // 13. Pointer Comparison
+            { question: "Given `int arr[5]; int* p1 = &arr[1]; int* p2 = &arr[3];`, what is the result of `p1 < p2`?", options: ["true", "false", "Compilation Error", "Undefined Behavior"], correctAnswer: 0, explanation: "Pointers pointing to elements within the same array (or one past the end) can be meaningfully compared using relational operators. Since `p1` points to an earlier element than `p2`, `p1 < p2` evaluates to true." },
+            // 14. Pointers and Functions (Pass by Pointer)
+            { question: "How can a function modify the value of a variable passed from the caller using a pointer?", code: "void increment(int* ptr) {\n  // How to increase the value pointed to by ptr?\n}\nint main() {\n  int x = 10;\n  increment(&x);\n  // x should be 11 now\n  return 0;\n}", options: ["ptr = ptr + 1;", "*ptr = *ptr + 1;", "&ptr = &ptr + 1;", "ptr++"], correctAnswer: 1, explanation: "To modify the value *at the address* the pointer holds, you must dereference the pointer first. `*ptr = *ptr + 1;` reads the value pointed to by `ptr`, adds 1, and writes the result back to the same memory location." },
+            // 15. Pointers and Objects
+            { question: "If `objPtr` is a pointer to an object of class `MyClass` with a member function `doSomething()`, how do you call this function?", options: ["objPtr.doSomething()", "objPtr->doSomething()", "*objPtr.doSomething()", "&objPtr->doSomething()"], correctAnswer: 1, explanation: "The arrow operator (`->`) is used to access members (variables or functions) of an object through a pointer to that object. `objPtr->doSomething()` is shorthand for `(*objPtr).doSomething()`." },
+            // 16. `this` Pointer
+            { question: "What is the `this` pointer in C++ class methods?", options: ["A pointer to the base class", "A pointer to the currently executing function", "A pointer to the object on which the member function was called", "A pointer to static members of the class"], correctAnswer: 2, explanation: "Inside a non-static member function of a class, the `this` keyword acts as a pointer to the specific object instance for which the function was invoked. It allows the method to access the object's own members." },
+            // 17. `std::unique_ptr`
+            { question: "What is the primary characteristic of `std::unique_ptr`?", options: ["It allows multiple pointers to own the same resource", "It automatically deletes the managed object when it goes out of scope", "It uses reference counting", "It can be freely copied"], correctAnswer: 1, explanation: "`std::unique_ptr` (from `<memory>`) provides exclusive ownership of a dynamically allocated resource. When the `unique_ptr` object itself is destroyed (e.g., goes out of scope), it automatically calls `delete` (or `delete[]`) on the raw pointer it manages, preventing memory leaks. It cannot be copied, only moved." },
+            // 18. `std::shared_ptr`
+            { question: "How does `std::shared_ptr` manage the lifetime of the object it points to?", options: ["Exclusive ownership, deletes when out of scope", "Manual deletion is required", "Using a reference count", "It never deletes the object"], correctAnswer: 2, explanation: "`std::shared_ptr` (from `<memory>`) allows multiple `shared_ptr` instances to co-own a single resource. It maintains a reference count. The resource is automatically deleted only when the last `shared_ptr` pointing to it is destroyed or reset." },
+            // 19. `std::weak_ptr`
+            { question: "What is a common use case for `std::weak_ptr`?", options: ["Replacing `std::unique_ptr` for better performance", "Managing arrays dynamically", "Breaking circular references between `std::shared_ptr` objects", "Providing guaranteed non-null pointers"], correctAnswer: 2, explanation: "`std::weak_ptr` holds a non-owning ('weak') reference to an object managed by a `std::shared_ptr`. It does not affect the reference count. It's often used to observe a resource without keeping it alive, and crucially, to break potential ownership cycles that could prevent resources from being deallocated." },
+            // 20. Smart Pointers vs Raw Pointers
+            { question: "Why are smart pointers (like `unique_ptr`, `shared_ptr`) generally preferred over raw pointers (`new`/`delete`) in modern C++?", options: ["They are faster", "They help prevent memory leaks and dangling pointers through automatic resource management (RAII)", "They can point to any data type", "They require less memory"], correctAnswer: 1, explanation: "Smart pointers automate the management of dynamically allocated memory using the RAII (Resource Acquisition Is Initialization) principle. They automatically release the resource when the smart pointer object goes out of scope, significantly reducing the risk of memory leaks and making code safer and easier to reason about compared to manual `new` and `delete`." }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 Minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // --- Changed Local Storage Keys ---
+        const SCORE_HISTORY_KEY = 'cppPointersQuizScoreHistory'; // New Key
+        const QUIZ_STATE_KEY = 'cppPointersQuizState';         // New Key
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = []; // Holds loaded score history
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight after mode change, especially for code blocks
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50); // Small delay helps ensure styles applied
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Basic validation: check if quizActive and arrays look reasonable
+                    // Use quizData.length to ensure compatibility if questions change
+                    if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true; // Mark as active since we are loading state
+                        // Changed Log Message
+                        console.log("In-progress C++ Pointers & Memory quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         // Changed Log Message
+                         console.warn("Saved C++ Pointers & Memory quiz state is incompatible/invalid.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                     // Changed Log Message
+                    console.error("Failed to parse saved C++ Pointers & Memory quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+             // Changed Log Message
+            console.log("In-progress C++ Pointers & Memory quiz state cleared.");
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                 // Changed Log Message
+                console.error("Failed to load C++ Pointers & Memory score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save C++ Pointers & Memory score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             // Changed Confirmation Message
+             if (confirm("Are you sure you want to clear all previous C++ Pointers & Dynamic Memory attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                  // Changed Log Message
+                 console.log("C++ Pointers & Memory score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+
+            if (scoreHistory.length === 0) {
+                 // Changed Text
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous C++ Pointers & Memory attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) { // Try to load and resume
+                  // Changed Log Message
+                 console.log("Resuming C++ Pointers & Memory quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else { // Start fresh
+                 // Changed Log Message
+                 console.log("Initializing a new C++ Pointers & Memory quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+                 quizActive = true; // Mark as active immediately for a fresh start
+                 saveState(); // Save the initial shuffled state immediately
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            // quizActive is set above now
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            // State is saved inside loadState or right after fresh start setup
+        }
+
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = ''; // Clear previous feedback
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 // Use 'nohighlight' initially to prevent flicker, Prism will add correct class
+                 pre.className = 'code-snippet-container nohighlight';
+                 const code = document.createElement('code');
+                 code.className = 'language-cpp'; // Set language for Prism
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 // Highlight *after* appending to DOM
+                 if (typeof Prism !== 'undefined') {
+                      setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0; // Make it focusable
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                 // Escape HTML in option text to prevent injection issues
+                 const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${safeOptionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                // Icons initially hidden
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     // Only allow selection if it hasn't been answered yet
+                     if (userAnswers[index] === null) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault(); // Prevent scrolling on space
+                        handleSelection();
+                    }
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             // If an answer was previously selected (e.g., using Prev button or resuming), show feedback
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+             } else {
+                  // Disable Next/Submit if no answer selected for the current question
+                  nextBtn.disabled = true;
+                  if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            // Double check: Should only be called if userAnswers[displayIndex] is null
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex); // Show correctness immediately
+
+            // Enable navigation now that an answer is selected
+            nextBtn.disabled = false;
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save state after each answer selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); // Disable all options after one is chosen
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 // Ensure icons start invisible before applying styles
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1'; // Show checkmark
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1'; // Show cross
+                         feedbackMessage.textContent = "Incorrect.";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Also highlight the correct answer if the user was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                              // Add checkmark to the actual correct answer for clarity
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     // If this option is the correct one, but wasn't selected (because user was wrong)
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct'); // Highlight it anyway
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show checkmark
+                     }
+                 }
+            });
+             // Remove animation classes after a short delay
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer if Prev is shown
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            // Enable/disable Next/Submit based on whether the *current* question has been answered
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                // No need to save state here, loadQuestion calls updateNavigation which depends on userAnswers
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                 // No need to save state here
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing timer
+            if (!quizActive) return; // Don't start if quiz isn't active
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                // Ensure timeElapsed doesn't go negative if system clock changes
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) { // Only auto-submit if the quiz was still considered active
+                        console.log("Time's up! Auto-submitting.");
+                        submitQuiz(true); // Pass true to indicate time ran out
+                    }
+                    return;
+                }
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                // Add/remove warning class for the last minute
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400'); // Ensure red text is removed if time > 0
+
+                 // Periodic save of state (e.g., every 10 seconds)
+                 if (quizActive && timeElapsed > 0 && timeElapsed % 10 === 0) {
+                      saveState();
+                 }
+            };
+
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000); // Update every second
+        }
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+            // Prevent double submission or submission when not active
+            if (!quizActive && !timeUp) return;
+
+            console.log(`Submitting quiz. Time up: ${timeUp}`);
+            quizActive = false; // Mark quiz as inactive
+            clearInterval(timerInterval); // Stop the timer
+
+            // Calculate score based on saved answers
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) { // Check if the question was answered
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            // Use the final timeElapsed, unless time ran out, then use the limit
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            // Add attempt to score history
+            addScoreToHistory({
+                score: score,
+                totalQuestions: totalQuestions,
+                accuracy: parseFloat(accuracy.toFixed(1)), // Store as number
+                timestamp: Date.now(),
+                timeTaken: finalTime
+            });
+
+            // UI Updates for Results
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            // Animate accuracy bar
+            accuracyBar.style.width = `0%`; // Reset first
+            setTimeout(() => { accuracyBar.style.width = `${accuracy}%`; }, 100); // Then animate
+
+            timeTaken.textContent = formatTime(finalTime);
+
+            // Set performance message and score circle style
+            let performanceText = ""; let scoreLevel = 'low';
+            if (timeUp) {
+                 // Changed Text
+                performanceText = "Time's up! Review your C++ pointer and memory management concepts.";
+                 // Assign level even if time ran out
+                 if (accuracy >= 80) scoreLevel = 'high'; else if (accuracy >= 50) scoreLevel = 'medium';
+            } else {
+                // Changed Text (Examples)
+                if (accuracy >= 95) { performanceText = "Outstanding! Master of C++ Pointers & Memory!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 80) { performanceText = "Excellent work! Strong grasp of pointers and memory management."; scoreLevel = 'high'; }
+                 else if (accuracy >= 65) { performanceText = "Great job! You understand pointer concepts well."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Keep practicing `new`/`delete` and smart pointers."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Review pointer syntax and memory allocation rules."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+             // Trigger confetti for high scores (if not time up)
+             if (scoreLevel === 'high' && !timeUp) {
+                  triggerConfetti();
+             }
+
+            clearState(); // Clear the IN-PROGRESS quiz state from localStorage after successful submission
+        }
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') {
+                 console.warn("Confetti function not available.");
+                 return;
+             }
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+              // Customize confetti appearance
+             myConfetti({
+                 particleCount: 150,
+                 spread: 100,
+                 origin: { y: 0.6 },
+                 gravity: 0.8,
+                 ticks: 350,
+                 zIndex: 1000, // Ensure it's above other elements
+                 colors: ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ffffff'] // Theme colors
+             });
+             // Optional: smaller bursts after the main one
+             setTimeout(() => {
+                  myConfetti({ particleCount: 50, spread: 120, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 50, spread: 120, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 250);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review items
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                  // Adjust background based on correctness, more subtle
+                 const correctnessClass = isCorrect
+                     ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                     : (userAnswerIndex === null ? 'border-gray-400 bg-gray-50 dark:bg-gray-700/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20');
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${correctnessClass}`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  // Add code snippet if present, ensuring correct highlighting class
+                  if (question.code) {
+                      // Escape HTML characters in code to prevent rendering issues
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md nohighlight"><code class="language-cpp">${escapedCode}</code></pre>`; // Use nohighlight initially
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Options:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 // Display options with feedback
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+                      const safeOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+
+                      // Style the correct answer
+                      if (i === question.correctAnswer) {
+                           liClass = "font-semibold text-green-700 dark:text-green-400";
+                           iconHTML = `<i class="fas fa-check ml-2 text-green-500" title="Correct Answer"></i>`;
+                      }
+
+                      // Style the user's answer
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              // User's correct answer: Add subtle highlight
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              // User's incorrect answer: Strike-through and red
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500" title="Your Incorrect Answer"></i>`;
+                          }
+                      } else if (userAnswerIndex === null && i === question.correctAnswer) {
+                           // If unanswered, still highlight the correct one
+                           liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1";
+                           iconHTML += ` <span class="text-xs text-gray-500">(Correct)</span>`;
+                      }
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${safeOptionText}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+                 reviewHTML += `</ul>`;
+
+                 // Add explanation
+                 if (question.explanation) {
+                     const explanationClass = isCorrect ? 'correct' : (userAnswerIndex === null ? 'unanswered' : 'incorrect');
+                      // Use explanation border color based on correctness
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 ${explanationClass}">
+                                        <strong class="block mb-1 text-sm text-blue-800 dark:text-blue-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                     </div>`;
+                 } else if (userAnswerIndex === null) {
+                      reviewHTML += `<p class="mt-3 text-sm text-yellow-600 dark:text-yellow-400">Question not answered.</p>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             // Re-run Prism highlighting after adding all elements
+             if (typeof Prism !== 'undefined') {
+                  setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Add fade-in animation for smooth transition back
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+             // Clear active quiz state and variables
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = [];
+            timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+            clearState(); // Clear any leftover in-progress state from localStorage
+
+            // Reset UI elements to initial state
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = ''; // Clear feedback message
+            optionsContainer.innerHTML = ''; // Clear options
+            codeSnippetArea.innerHTML = ''; // Clear code area
+            questionText.textContent = 'Question goes here'; // Reset question text
+
+            // Hide quiz, results, review; show start screen
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            // Reset button states
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Show spacer next to hidden prev button
+
+            // Ensure start screen animation plays again
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; // Trigger reflow
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+            // Refresh score history display on the start screen
+            displayScoreHistory();
+
+            // Changed Log Message
+            console.log("C++ Pointers & Memory Quiz reset.");
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Changed Share Text
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the C++ Pointers & Dynamic Memory Quiz! Test your skills!`;
+             const shareUrl = window.location.href; // Or a specific landing page URL
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                          // Changed Title
+                         title: 'My C++ Pointers & Memory Quiz Result!',
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Result shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Fallback or message if user cancels share
+                 }
+             } else {
+                 // Fallback for browsers without navigator.share
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!"); // Simple feedback
+             }).catch(err => {
+                 console.error('Could not copy results: ', err);
+                 alert("Failed to copy results. You can manually copy the text."); // Inform user of failure
+             });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Explicitly false for timeUp
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Accessibility) ---
+         document.addEventListener('keydown', (e) => {
+             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return; // Ignore keydowns in inputs
+
+             // Check focus and button state before acting
+             if (document.activeElement === nextBtn && !nextBtn.disabled && !nextBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+             else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+             else if (document.activeElement === submitBtn && !submitBtn.disabled && !submitBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+             else if (document.activeElement === startBtn && !startBtn.disabled && startScreen.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+             else if (document.activeElement === reviewBtn && resultsContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+             else if (document.activeElement === restartBtn && resultsContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+             else if (document.activeElement === backToResults && reviewContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             else if (document.activeElement === shareBtn && resultsContainer.style.display !== 'none' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             else if (document.activeElement === darkModeToggle && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); applyDarkMode(!htmlElement.classList.contains('dark')); }
+         });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Set dark mode based on preference/localStorage
+            const savedDarkMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyDarkMode(savedDarkMode === 'enabled' || (savedDarkMode !== 'disabled' && prefersDark));
+
+            loadScoreHistory(); // Load C++ score history using the *new* key
+            displayScoreHistory(); // Display it on start screen
+
+            // Ensure correct initial visibility states
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block'; // Show start screen initially
+
+            // Initial button states
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Ensure spacer is visible initially
+
+            // Changed Log Message
+            console.log("C++ Pointers & Memory Quiz application initialized.");
+        }
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
+
