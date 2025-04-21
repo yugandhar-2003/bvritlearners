@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CHANGE: Title updated for Structures & Enums -->
+    <title>Swift Structures & Enums Quiz</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* CHANGE: Adjusted gradient for a slightly different feel, still Swift-orange based */
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             background: linear-gradient(135deg, #374151 0%, #1f2937 100%); /* Darker gray gradient */
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(55, 65, 81, 0.7); /* Darker glass */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb;
+         }
+         html.dark .option {
+             background-color: rgba(75, 85, 99, 0.6); /* Slightly lighter dark option */
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db;
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(107, 114, 128, 0.8);
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         html.dark .option.selected {
+             background: rgba(234, 88, 12, 0.35); /* Dark orange accent */
+             border-color: #f97316;
+             color: #ffedd5; /* Lighter orange text */
+         }
+         html.dark .option.correct {
+            background: rgba(16, 185, 129, 0.35) !important;
+            border-color: #34d399 !important;
+            color: #d1fae5 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #f87171 !important;
+             color: #fee2e2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fee2e2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(55, 65, 81, 0.8); /* Match card */
+             color: #cbd5e1;
+             border-left-color: #f97316; /* Swift orange border */
+         }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+         html.dark .code-snippet-container {
+             background-color: #1e293b;
+             color: #e2e8f0;
+             border: 1px solid #334155;
+         }
+          html.dark .btn-secondary {
+              background-color: #374151;
+              color: #e5e7eb;
+              border: 1px solid #4b5563;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563;
+          }
+          html.dark #score-circle {
+              background-color: #1f2937;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #fb923c; /* Swift orange score value */
+          }
+           html.dark .text-gray-500 { color: #9ca3af; }
+           html.dark .text-gray-600 { color: #cbd5e1; }
+           html.dark .text-gray-700 { color: #e2e8f0; }
+           html.dark .text-gray-800 { color: #f1f5f9; }
+           html.dark .text-indigo-900 { color: #fdba74; } /* Swift Lighter orange */
+           html.dark .text-indigo-700 { color: #fb923c; } /* Swift orange */
+           html.dark .bg-gray-200 { background-color: #4b5563;}
+           html.dark .bg-indigo-50 { background-color: #4a2103;} /* Dark orange bg */
+           html.dark .text-indigo-600 { color: #fb923c; }
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb;
+           }
+           html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+           html.dark .history-date { color: #9ca3af; }
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+            /* Update focus rings for dark mode */
+            html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+                outline-color: #fb923c; /* Swift orange focus */
+            }
+
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(249, 115, 22, 0.5); /* Swift orange hover border */
+        }
+        .option.selected {
+            border-color: #f97316; /* Swift orange selected border */
+            background: linear-gradient(to right, rgba(249, 115, 22, 0.15), rgba(234, 88, 12, 0.15)); /* Swift orange gradient */
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #fbbf24, #f97316); /* Progress bar orange gradient */
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-primary {
+             background: linear-gradient(to right, #f97316, #ea580c); /* Swift orange buttons */
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #ea580c, #c2410c); /* Darker orange hover */
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf);
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #f97316; /* Swift orange explanation border */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #272822; /* Okaidia theme background */
+            border: 1px solid #444;
+            font-size: 0.9em;
+        }
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #fcd34d !important; /* Yellow warning */
+             border-color: #fcd34d !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        /* Focus ring styles */
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #c2410c; /* Darker Swift orange focus */
+             outline-offset: 2px;
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+
+         /* Text color adjustments for Swift theme */
+         .text-indigo-900 { color: #9a3412; } /* Darker orange */
+         .text-indigo-700 { color: #c2410c; }
+         .bg-indigo-50 { background-color: #fff7ed; } /* Very light orange */
+         .text-indigo-600 { color: #ea580c; }
+
+         /* Ensure dark mode overrides take precedence */
+         html.dark .text-indigo-900 { color: #fdba74; } /* Lighter orange for dark mode */
+         html.dark .text-indigo-700 { color: #fb923c; }
+         html.dark .bg-indigo-50 { background-color: #4a2103;} /* Dark orange bg for dark mode */
+         html.dark .text-indigo-600 { color: #fb923c; }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- CHANGE: Header updated for Structures & Enums -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Swift Structures & Enums Quiz</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Test Your Knowledge of Value Types in Swift!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+            <!-- CHANGE: Start screen text updated for Structures & Enums -->
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-indigo-900 dark:text-indigo-200">Ready to Dive into Structs & Enums?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers: `struct` vs. `class`, value/reference types, raw/associated values, methods, and more.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-indigo-800 dark:text-indigo-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/20</span>
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-indigo-900 dark:text-indigo-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- CHANGE: Results title updated for Structures & Enums -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-indigo-900 dark:text-indigo-200">Structures & Enums Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-indigo-700 dark:text-indigo-300">0/20</span>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                    <div class="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-700/50 mt-2">
+                         <!-- CHANGE: Performance message updated for Structures & Enums -->
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing with Swift's value types!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- CHANGE: Review title updated for Structures & Enums -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-900 dark:text-indigo-200">Review Structure & Enum Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        // CHANGE: quizData updated for Swift Structures & Enums
+        const quizData = [
+            // Question 1: Struct vs Class - Core Difference
+            { question: "What is the fundamental difference between a `struct` and a `class` in Swift?", options: ["Structs can have methods, classes cannot", "Structs are value types, classes are reference types", "Classes support inheritance, structs do not", "Structs are stored on the heap, classes on the stack"], correctAnswer: 1, explanation: "`struct` instances are value types, meaning they are copied when assigned or passed. `class` instances are reference types, meaning assignments or passes create a shared reference to the *same* instance." },
+            // Question 2: Value Type Behavior
+            { question: "What will be printed by this code?", code: "struct Point { var x: Int }\nvar p1 = Point(x: 10)\nvar p2 = p1\np2.x = 20\nprint(p1.x)", options: ["10", "20", "nil", "Compile Error"], correctAnswer: 0, explanation: "Structs are value types. When `p2 = p1` occurs, `p2` gets a *copy* of `p1`. Modifying `p2.x` does not affect the original `p1`. Therefore, `p1.x` remains 10." },
+            // Question 3: Reference Type Behavior (Contrast)
+            { question: "What will be printed by this code?", code: "class Point { var x: Int = 0 }\nvar p1 = Point()\np1.x = 10\nvar p2 = p1\np2.x = 20\nprint(p1.x)", options: ["10", "20", "0", "Compile Error"], correctAnswer: 1, explanation: "Classes are reference types. When `p2 = p1` occurs, both `p1` and `p2` refer to the *same instance* in memory. Modifying `p2.x` changes the `x` property of that single instance, which `p1` also references. Therefore, `p1.x` becomes 20." },
+            // Question 4: Enum Basic Definition
+            { question: "Which syntax correctly defines a basic Swift enumeration?", options: ["enum Direction { north, south, east, west }", "struct Direction { case north, south, east, west }", "class Direction { state north, south, east, west }", "enumeration Direction { north; south; east; west; }"], correctAnswer: 0, explanation: "Enumerations are defined using the `enum` keyword, followed by the type name and curly braces containing the `case` values." },
+            // Question 5: Enum Raw Values
+            { question: "How do you access the raw value of an enum case?", code: "enum Planet: Int { case mercury = 1, venus, earth }\nlet earthRaw = Planet.earth.rawValue", options: ["Planet.earth.value", "Planet.earth.raw", "Planet.earth.rawValue", "Planet.getRaw(earth)"], correctAnswer: 2, explanation: "If an enum has a raw value type (like `Int` or `String`), you access the raw value of a specific case using the `.rawValue` property. Swift automatically assigns incremental integer raw values if you only provide the first one (Venus = 2, Earth = 3)." },
+            // Question 6: Enum Associated Values - Definition
+            { question: "What is the purpose of associated values in Swift enums?", options: ["To provide a default underlying value (like Int or String)", "To store additional, custom information *alongside* a specific case", "To allow enums to inherit from classes", "To define static properties on the enum type"], correctAnswer: 1, explanation: "Associated values allow you to attach extra data of different types to specific enum cases. This is useful for representing states that carry context or specific data, unlike raw values which are fixed for each case." },
+            // Question 7: Enum Associated Values - Usage
+            { question: "How would you typically extract the associated value `code` from the `qrCode` case?", code: "enum Barcode { case upc(Int, Int, Int, Int)\n                 case qrCode(String) }\nlet productBarcode = Barcode.qrCode(\"ABC123XYZ\")", options: ["productBarcode.qrCode.value", "if case .qrCode(let code) = productBarcode { ... }", "productBarcode.associatedValue", "productBarcode.value as? String"], correctAnswer: 1, explanation: "You use pattern matching with `switch` or `if case let` (or `guard case let`) to check for a specific case and simultaneously bind its associated values to temporary constants or variables (like `code` here)." },
+            // Question 8: `mutating` Keyword in Structs
+            { question: "Why is the `mutating` keyword required for the `advance` method in this struct?", code: "struct Counter {\n    var count = 0\n    mutating func advance() {\n        count += 1\n    }\n}", options: ["To indicate the method returns a value", "Because structs are reference types", "To allow the method to modify the struct's own properties", "It's only needed for methods that take parameters"], correctAnswer: 2, explanation: "Because structs are value types, methods that modify the instance's properties (`count` in this case) must be marked with the `mutating` keyword. This explicitly indicates the method changes the struct's state." },
+            // Question 9: Methods in Enums
+            { question: "Can you define methods within Swift enumerations?", options: ["Yes, both instance and static methods", "No, methods are only allowed in structs and classes", "Only static methods", "Only methods that don't access `self`"], correctAnswer: 0, explanation: "Yes, Swift enums can have methods, just like structs and classes. These can be instance methods (operating on a specific case) or type methods (using the `static` keyword)." },
+            // Question 10: Memberwise Initializer for Structs
+            { question: "What type of initializer does Swift automatically provide for structs if you don't define any custom ones?", code: "struct Size { var width: Double; var height: Double }", options: ["A default initializer `Size()`", "An initializer taking no arguments", "A memberwise initializer `Size(width:height:)`", "No initializer is provided automatically"], correctAnswer: 2, explanation: "If a struct doesn't define any custom initializers, Swift automatically provides a *memberwise initializer* that takes arguments for each of the struct's stored properties (e.g., `Size(width: 10.0, height: 5.0)`)." },
+            // Question 11: When to Prefer Structs
+            { question: "In which scenario is using a `struct` generally preferred over a `class` in Swift?", options: ["Modeling hierarchical relationships (like UIViews)", "When you need Objective-C interoperability", "Representing simple data values with no identity (like Point, Size, Color)", "When you need a single, shared instance (Singleton pattern)"], correctAnswer: 2, explanation: "Structs are ideal for representing data that doesn't have a distinct identity, where copying the value is the desired behavior (e.g., coordinates, measurements, colors). Classes are better for entities with identity, state that needs to be shared, or when inheritance is required." },
+            // Question 12: Identity Operator (`===`)
+            { question: "What does the identity operator (`===`) check in Swift?", options: ["If two value types have the same property values", "If two variables refer to the exact same class instance", "If two types conform to the same protocol", "If two enums have the same raw value"], correctAnswer: 1, explanation: "The identity operators (`===` and `!==`) are used only with *reference types* (class instances). They check if two constants or variables point to the very same object instance in memory, not just if their contents are equivalent." },
+            // Question 13: Copy-on-Write
+            { question: "What optimization technique do many Swift standard library value types (like Array, String, Dictionary) use?", options: ["Automatic Reference Counting (ARC)", "Lazy Initialization", "Copy-on-Write (CoW)", "Dispatch Queues"], correctAnswer: 2, explanation: "Copy-on-Write is an optimization where the actual copying of a value type's underlying data is deferred until one of the copies is about to be modified. This avoids expensive copying if the data is only read." },
+            // Question 14: Enum with Methods Example
+            { question: "What would `action.description` return?", code: "enum PlayerAction {\n    case move(x: Int, y: Int)\n    case attack(power: Int)\n\n    var description: String {\n        switch self {\n        case .move(let x, let y): return \"Moved to (\\(x), \\(y))\"\n        case .attack(let power): return \"Attacked with power \\(power)\"\n        }\n    }\n}\nlet action = PlayerAction.attack(power: 15)", options: ["\"Attacked with power 15\"", "\"attack(power: 15)\"", "\"PlayerAction.attack\"", "Compile Error"], correctAnswer: 0, explanation: "The code defines a computed property `description` inside the enum. It uses a `switch` statement on `self` to determine the current case and return a custom string description, including the associated value (`power` in this case)." },
+            // Question 15: `Equatable` Protocol for Structs
+            { question: "If a struct's properties are all `Equatable`, how can you make the struct itself `Equatable`?", code: "struct Vector: Equatable {\n    var x: Double\n    var y: Double\n}", options: ["You must manually implement the `==` operator", "Swift automatically synthesizes the `==` operator", "You need to inherit from a base `Equatable` class", "Use the `===` operator instead"], correctAnswer: 1, explanation: "If all stored properties of a struct (or enum) conform to the `Equatable` protocol, Swift can automatically synthesize the implementation of the `==` operator for you. You just need to declare conformance by adding `: Equatable`." },
+            // Question 16: Enum `CaseIterable` Protocol
+            { question: "What does conforming an enum to the `CaseIterable` protocol provide?", code: "enum Season: CaseIterable { case spring, summer, autumn, winter }", options: ["The ability to assign raw values", "A collection of all the enum's cases (e.g., `Season.allCases`)", "Automatic `Equatable` conformance", "The ability to have associated values"], correctAnswer: 1, explanation: "Conforming to `CaseIterable` automatically provides a static property named `allCases` which is a collection containing all of the enumeration's cases in the order they are defined. This is useful for iterating over all possible values." },
+            // Question 17: Choosing Struct vs Class for Performance
+            { question: "Why might structs sometimes offer better performance than classes?", options: ["Structs always use less memory", "Structs avoid the overhead of reference counting (ARC)", "Structs support multithreading automatically", "Structs are dynamically dispatched"], correctAnswer: 1, explanation: "Structs, being value types, don't require Automatic Reference Counting for memory management, reducing overhead compared to classes. They are often stored on the stack (if possible), which can be faster to allocate and deallocate than heap allocation used for classes." },
+            // Question 18: Modifying a struct passed to a function
+            { question: "What happens when you pass a struct to a function and modify it inside?", code: "struct MyValue { var value = 0 }\n\nfunc modify(_ v: MyValue) {\n    var mutableV = v\n    mutableV.value = 100\n}\n\nvar val = MyValue()\nmodify(val)\nprint(val.value)", options: ["100", "0", "Compile Error", "Runtime Crash"], correctAnswer: 1, explanation: "Structs are passed by *value* (copied). The `modify` function receives a copy of `val`. Even though `mutableV` is changed inside the function, it's modifying the *copy*, not the original `val`. The original `val` remains unchanged, so `val.value` is still 0." },
+            // Question 19: Enum for State Management
+            { question: "Why are enums often a good choice for representing state?", code: "enum NetworkState { case initial, loading, success(Data), failure(Error) }", options: ["They allow only one state to be active at a time", "They clearly define all possible valid states", "They can store relevant data with each state using associated values", "All of the above"], correctAnswer: 3, explanation: "Enums are excellent for state management because they enforce type safety (only defined states are possible), clearly enumerate all possibilities, and can conveniently hold state-specific data using associated values (like the `Data` on success or `Error` on failure)." },
+            // Question 20: Structs containing other Structs
+            { question: "Is the following code valid Swift?", code: "struct Point { var x: Double, y: Double }\nstruct Rect { var origin: Point; var size: Size }\nstruct Size { var width: Double, height: Double }", options: ["Yes, structs can contain instances of other structs", "No, structs cannot contain other structs", "Only if the nested structs are declared first", "No, it causes a reference cycle"], correctAnswer: 0, explanation: "Yes, this is perfectly valid. Structs can contain properties that are instances of other structs (or enums, classes, etc.). Because they are value types, assigning a `Rect` copies the `Rect` itself, along with its contained `Point` and `Size` values." }
+        ];
+
+        const TIME_LIMIT_SECONDS = 15 * 60; // 15 minutes
+        const MAX_HISTORY_ITEMS = 5;
+        // CHANGE: LocalStorage keys updated for Structures & Enums Quiz
+        const SCORE_HISTORY_KEY = 'swiftStructsEnumsQuizScoreHistory';
+        const QUIZ_STATE_KEY = 'swiftStructsEnumsQuizState';
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight code after mode change
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 0);
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                // Use the updated key
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save quiz state:", e); }
+        }
+
+        function loadState() {
+             // Use the updated key
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Basic validation (check if structure matches current quiz)
+                     if (state.quizActive && Array.isArray(state.questionsOrder) && state.questionsOrder.length === quizData.length && Array.isArray(state.userAnswers) && state.userAnswers.length === quizData.length) {
+                        currentQuestionIndex = state.currentQuestionIndex || 0;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        // CHANGE: Log message updated
+                        console.log("In-progress Structures & Enums quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         // CHANGE: Log message updated
+                         console.warn("Saved in-progress quiz state is incompatible/invalid for Structures & Enums quiz.");
+                        clearState(); return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress quiz state:", e);
+                    clearState(); return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+             // Use the updated key
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            // CHANGE: Log message updated
+            console.log("In-progress Structures & Enums quiz state cleared.");
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                // Use the updated key
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = [];
+            } catch (e) {
+                console.error("Failed to load score history:", e);
+                scoreHistory = [];
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                // Use the updated key
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            scoreHistory.push(attemptData);
+            saveScoreHistory();
+            displayScoreHistory();
+        }
+
+        function clearScoreHistory() {
+             // CHANGE: Confirmation message updated
+             if (confirm("Are you sure you want to clear all previous attempt scores for the Structures & Enums quiz? This cannot be undone.")) {
+                 scoreHistory = [];
+                  // Use the updated key
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 // CHANGE: Log message updated
+                 console.log("Structures & Enums score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = '';
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) {
+                 // CHANGE: Log message updated
+                 console.log("Resuming Structures & Enums quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000;
+             } else {
+                 // CHANGE: Log message updated
+                 console.log("Initializing a new Structures & Enums quiz session.");
+                 currentQuestionIndex = 0; score = 0;
+                 userAnswers = Array(quizData.length).fill(null);
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys());
+                 shuffleArray(questionsOrder);
+                 startTime = Date.now();
+             }
+
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true;
+
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+            updateNavigation();
+            saveState(); // Save initial state
+        }
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= quizData.length) return;
+
+            const questionIndexInOriginalData = questionsOrder[index];
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return;
+
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth;
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.textContent = `${index + 1}. ${question.question}`;
+            feedbackMessage.textContent = '';
+
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container';
+                 const code = document.createElement('code');
+                 code.className = 'language-swift'; // Ensure Swift language class
+                 code.textContent = question.code;
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                     setTimeout(() => Prism.highlightElement(code), 0);
+                 }
+             }
+
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index];
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0;
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                // Basic HTML escaping for option text
+                const escapedOptionText = optionText.replace(/</g, "<").replace(/>/g, ">");
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${escapedOptionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) {
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); }
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+             } else {
+                 nextBtn.disabled = true;
+                 if (index === quizData.length - 1) submitBtn.disabled = true;
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+            if (userAnswers[displayIndex] !== null) return; // Prevent changing answer
+
+            userAnswers[displayIndex] = selectedOptionIndex;
+            showFeedback(displayIndex, selectedOptionIndex);
+            nextBtn.disabled = false;
+
+             if (displayIndex === quizData.length - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save state after selection
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled');
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1;
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1';
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct');
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                              if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                         }
+                     }
+                 } else {
+                      optElement.setAttribute('aria-checked', 'false');
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct');
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1';
+                     }
+                 }
+            });
+             setTimeout(() => {
+                 feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+             }, 1000);
+        }
+
+
+        function updateProgress(index) {
+            const totalQuestions = quizData.length;
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion);
+            navSpacer.classList.toggle('hidden', !isFirstQuestion);
+            nextBtn.classList.toggle('hidden', isLastQuestion);
+            submitBtn.classList.toggle('hidden', !isLastQuestion);
+
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState();
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval);
+            if (!quizActive) return;
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval);
+                    if(quizActive) {
+                        submitQuiz(true);
+                    }
+                    return;
+                }
+
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400');
+
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                     saveState();
+                 }
+            };
+
+            updateTimerDisplay();
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+        }
+
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+             if (!quizActive && !timeUp) return;
+             quizActive = false;
+             clearInterval(timerInterval);
+
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx];
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = quizData.length;
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed;
+
+            addScoreToHistory({
+                 score: score,
+                 totalQuestions: totalQuestions,
+                 accuracy: parseFloat(accuracy.toFixed(1)),
+                 timestamp: Date.now(),
+                 timeTaken: finalTime
+             });
+
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`;
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`;
+            accuracyBar.style.width = `${accuracy}%`;
+            timeTaken.textContent = formatTime(finalTime);
+
+            let performanceText = "";
+            let scoreLevel = 'low';
+            if (timeUp) {
+                 // CHANGE: Updated performance message for Structs & Enums (time up)
+                 performanceText = "Time's up! Review value vs. reference types and keep coding!";
+                 if (accuracy >= 85) scoreLevel = 'high';
+                 else if (accuracy >= 60) scoreLevel = 'medium';
+             } else {
+                 // CHANGE: Updated performance messages for Structs & Enums
+                 if (accuracy >= 95) { performanceText = "Fantastic! You have a solid grasp of Swift's value types!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent work! You clearly understand structs and enums."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! You're comfortable with Swift's structures and enumerations."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Focus on the differences between value and reference types."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep practicing! Mastering structs and enums is crucial for effective Swift."; scoreLevel = 'low'; }
+             }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel);
+
+             if (scoreLevel === 'high' && !timeUp) {
+                 triggerConfetti();
+             }
+
+             clearState(); // Clear the IN-PROGRESS state after submission
+        }
+
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') {
+                 console.warn("Confetti function not available.");
+                 return;
+             }
+             const myConfetti = confetti.create(confettiCanvas, {
+                 resize: true, useWorker: true
+             });
+             myConfetti({
+                 particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000
+             });
+             setTimeout(() => {
+                 myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7, x: 0.1 }, angle: 120, gravity: 0.7, ticks: 300 });
+                 myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7, x: 0.9 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 200);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'block';
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth;
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = '';
+
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex];
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                     isCorrect
+                     ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
+                     : 'border-red-500 bg-red-50 dark:bg-red-900/30'
+                 }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  if (question.code) {
+                      // Escape HTML in code snippets for security
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">");
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-swift">${escapedCode}</code></pre>`;
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300";
+                      let iconHTML = "";
+                      // Escape HTML in options text
+                      const escapedOption = optionText.replace(/</g, "<").replace(/>/g, ">");
+
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400";
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`;
+                      }
+
+                      if (i === userAnswerIndex) {
+                          if (isCorrect) {
+                              liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`;
+                          }
+                      }
+
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded">
+                                        <span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span>
+                                        <span class="flex-grow">${escapedOption}</span>
+                                        ${iconHTML}
+                                     </li>`;
+                 });
+
+                 reviewHTML += `</ul>`;
+
+                 if (question.explanation) {
+                     const explanationBorderClass = isCorrect ? 'border-green-500 dark:border-green-500' : 'border-red-500 dark:border-red-500';
+                     reviewHTML += `<div class="explanation mt-3 border-l-4 ${explanationBorderClass} pl-4 py-2 bg-gray-100 dark:bg-gray-700/50 rounded">
+                                        <strong class="block mb-1 text-sm text-indigo-800 dark:text-indigo-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${question.explanation}</p>
+                                    </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = [];
+            timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = '';
+
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth;
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden');
+
+            displayScoreHistory();
+            // CHANGE: Log message updated
+            console.log("Structures & Enums Quiz reset.");
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const totalQuestions = quizData.length;
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // CHANGE: Updated share text for Structures & Enums
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Swift Structures & Enums Quiz! How well do you know Swift's value types?`;
+             const shareUrl = window.location.href;
+
+             if (navigator.share) {
+                 try {
+                     await navigator.share({
+                         title: 'My Swift Structures & Enums Quiz Result!', // CHANGE: Title updated
+                         text: shareText,
+                         url: shareUrl,
+                     });
+                     console.log('Results shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     copyToClipboard(`${shareText} ${shareUrl}`); // Fallback if share fails
+                 }
+             } else {
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+        function copyToClipboard(text) {
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Results copied to clipboard!");
+             }).catch(err => {
+                 console.error('Could not copy text: ', err);
+                 alert("Failed to copy results to clipboard.");
+             });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false));
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation ---
+         document.addEventListener('keydown', (e) => {
+             if (!quizActive && resultsContainer.style.display === 'none' && reviewContainer.style.display === 'none') {
+                 if (document.activeElement === startBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); startQuiz(); }
+                 else if (document.activeElement === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); clearScoreHistory(); }
+             } else if (quizActive) {
+                 if (document.activeElement === nextBtn && !nextBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); nextQuestion(); }
+                 else if (document.activeElement === prevBtn && !prevBtn.classList.contains('hidden') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); prevQuestion(); }
+                 else if (document.activeElement === submitBtn && !submitBtn.disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); submitQuiz(false); }
+                 // Allow selecting options with number keys (1-4 for A-D)
+                 else if (e.key >= '1' && e.key <= '4' && userAnswers[currentQuestionIndex] === null) {
+                     const optionIndex = parseInt(e.key) - 1;
+                     const options = optionsContainer.querySelectorAll('.option');
+                     if (optionIndex < options.length) {
+                         e.preventDefault();
+                         selectOption(currentQuestionIndex, optionIndex);
+                     }
+                 }
+             } else if (resultsContainer.style.display === 'block') {
+                 if (document.activeElement === reviewBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showReview(); }
+                 else if (document.activeElement === restartBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); restartQuiz(); }
+                 else if (document.activeElement === shareBtn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); shareResults(); }
+             } else if (reviewContainer.style.display === 'block') {
+                 if (document.activeElement === backToResults && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showResultsScreen(); }
+             }
+         });
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            loadScoreHistory(); // Load history using the potentially new key
+            displayScoreHistory();
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+
+            // CHANGE: Log message updated
+            console.log("Swift Structures & Enums Quiz application initialized.");
+        }
+
+        // --- Start the app ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
