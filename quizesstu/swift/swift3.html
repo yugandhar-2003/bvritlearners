@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift Functions Quiz</title> <!-- Changed Title -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); /* Swift-like colors */
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Subtle background pattern */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Dark Mode Styles */
+        html.dark body {
+             background: linear-gradient(135deg, #1c1917 0%, #292524 100%); /* Darker Swift-like */
+        }
+        html.dark body::before {
+             background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        html.dark .glass-card {
+            background: rgba(30, 41, 59, 0.7); /* Revert to generic dark for cards */
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+        }
+         html.dark .glass-card h1, html.dark .glass-card h2, html.dark .glass-card h3, html.dark .glass-card #question-text {
+             color: #f9fafb;
+         }
+         html.dark .option {
+             background-color: rgba(51, 65, 85, 0.6);
+             border-color: rgba(255, 255, 255, 0.2);
+             color: #d1d5db;
+         }
+         html.dark .option:hover:not(.disabled):not(.selected) {
+             background: rgba(71, 85, 105, 0.8);
+             border-color: rgba(255, 255, 255, 0.4);
+         }
+         html.dark .option.selected {
+             background: rgba(251, 146, 60, 0.35); /* Orange tint for selection */
+             border-color: #fb923c;
+             color: #ffedd5;
+         }
+         html.dark .option.correct {
+            background: rgba(16, 185, 129, 0.35) !important;
+            border-color: #34d399 !important;
+            color: #d1fae5 !important;
+         }
+         html.dark .option.incorrect {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #f87171 !important;
+             color: #fee2e2 !important;
+         }
+          html.dark .option.incorrect.selected {
+             color: #fee2e2 !important;
+             box-shadow: inset 0 0 5px rgba(248, 113, 113, 0.3);
+         }
+         html.dark .explanation {
+             background-color: rgba(30, 41, 59, 0.8);
+             color: #cbd5e1;
+             border-left-color: #f97316; /* Swift orange */
+         }
+        html.dark .review-item.correct .explanation { border-color: #10b981; }
+        html.dark .review-item.incorrect .explanation { border-color: #ef4444; }
+         html.dark .code-snippet-container {
+             background-color: #1e293b;
+             color: #e2e8f0;
+             border: 1px solid #334155;
+         }
+          html.dark .btn-secondary {
+              background-color: #374151;
+              color: #e5e7eb;
+              border: 1px solid #4b5563;
+          }
+          html.dark .btn-secondary:hover:not(:disabled) {
+              background-color: #4b5563;
+          }
+          html.dark #score-circle {
+              background-color: #1f2937;
+              border: 6px solid transparent; /* Keep border for gradient */
+          }
+          html.dark #score-value {
+              color: #fb923c; /* Swift orange accent */
+          }
+           html.dark .text-gray-500 { color: #9ca3af; }
+           html.dark .text-gray-600 { color: #cbd5e1; }
+           html.dark .text-gray-700 { color: #e2e8f0; }
+           html.dark .text-gray-800 { color: #f1f5f9; }
+           html.dark .text-orange-900 { color: #ffedd5; } /* Adjusting theme colors */
+           html.dark .text-orange-700 { color: #fb923c; }
+           html.dark .bg-gray-200 { background-color: #4b5563;}
+           html.dark .bg-orange-50 { background-color: #431407;} /* Dark orange bg */
+           html.dark .text-orange-600 { color: #f97316; }
+           html.dark .status-badge {
+                background: linear-gradient(135deg, rgba(55, 65, 81, 0.4), rgba(31, 41, 55, 0.3));
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                color: #e5e7eb;
+           }
+           html.dark .timer-warning { color: #fcd34d !important; border-color: #fcd34d !important; }
+           html.dark .history-date { color: #9ca3af; }
+           html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+           html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .quiz-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        .option {
+            transition: all 0.25s ease-in-out;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+        }
+        .option:hover:not(.disabled):not(.selected) {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: rgba(249, 115, 22, 0.5); /* Swift orange hover */
+        }
+        .option.selected {
+            border-color: #f97316; /* Swift orange */
+            background: linear-gradient(to right, rgba(251, 146, 60, 0.15), rgba(234, 88, 12, 0.15));
+            box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2);
+        }
+
+         .option.correct {
+             background: linear-gradient(to right, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)) !important;
+             border-color: #10b981 !important;
+             color: #047857 !important;
+             cursor: default;
+             transform: scale(1.02);
+         }
+          .option.incorrect {
+             background: linear-gradient(to right, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.15)) !important;
+             border-color: #ef4444 !important;
+             color: #b91c1c !important;
+             cursor: default;
+         }
+         .option.disabled {
+             opacity: 0.75;
+             cursor: not-allowed;
+             pointer-events: none;
+         }
+         .option .feedback-icon {
+             position: absolute;
+             right: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.3em;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+         .option .feedback-icon .icon-correct { color: #10b981; }
+         .option .feedback-icon .icon-incorrect { color: #ef4444; }
+         .option.correct .feedback-icon .icon-correct,
+         .option.incorrect .feedback-icon .icon-incorrect {
+             opacity: 1;
+         }
+         .option.correct:not(.selected) .feedback-icon .icon-correct {
+             opacity: 1;
+         }
+
+        .progress-container {
+            height: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        html.dark .progress-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(to right, #fb923c, #f97316); /* Swift orange gradient */
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-container { display: none; animation: fadeIn 0.8s forwards; }
+        .score-circle {
+            position: relative;
+            transition: all 0.5s ease;
+            border: 6px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #d1d5db, #9ca3af) 1;
+        }
+        .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #34d399, #2dd4bf) 1; }
+        .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fbbf24, #f59e0b) 1; }
+        .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #f87171, #ef4444) 1; }
+        html.dark .score-circle[data-score-level="high"] { border-image: linear-gradient(135deg, #6ee7b7, #5eead4) 1; }
+        html.dark .score-circle[data-score-level="medium"] { border-image: linear-gradient(135deg, #fcd34d, #fbbf24) 1; }
+        html.dark .score-circle[data-score-level="low"] { border-image: linear-gradient(135deg, #fda4af, #f87171) 1; }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+            border: none;
+        }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+        }
+        .btn:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.1);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-primary {
+             background: linear-gradient(to right, #f97316, #ea580c); /* Swift orange */
+             color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+             background: linear-gradient(to right, #ea580c, #c2410c);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+         .btn-secondary:hover:not(:disabled) {
+             background-color: #d1d5db;
+         }
+         .btn-submit {
+             background: linear-gradient(to right, #10b981, #2dd4bf);
+             color: white;
+         }
+          .btn-submit:hover:not(:disabled) {
+              background: linear-gradient(to right, #059669, #14b8a6);
+          }
+
+        .review-item {
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        html.light .review-item:hover { background-color: rgba(0, 0, 0, 0.02); }
+        html.dark .review-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+
+        .explanation {
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left-width: 5px;
+            border-style: solid;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1rem 1rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.75rem;
+            border-color: #f97316; /* Swift orange */
+        }
+        html.light .review-item.correct .explanation { border-color: #10b981; }
+        html.light .review-item.incorrect .explanation { border-color: #ef4444; }
+
+        .code-snippet-container {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 1.25rem;
+            border-radius: 8px;
+            position: relative;
+            margin: 1rem 0;
+            overflow-x: auto;
+            background-color: #272822; /* Keep code editor theme */
+            border: 1px solid #444;
+            font-size: 0.9em;
+        }
+        html.dark .code-snippet-container {
+             background-color: #1e293b; /* Adjust dark code editor theme if needed */
+             color: #e2e8f0;
+             border: 1px solid #334155;
+        }
+
+        .shadow-text {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+        }
+        .timer-warning {
+            animation: pulseWarning 1.5s infinite;
+             color: #facc15 !important;
+             border-color: #facc15 !important;
+        }
+        @keyframes pulseWarning { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.03); } }
+
+        .option:focus, .btn:focus, button:focus {
+             outline: 2px solid #c2410c; /* Swift orange focus */
+             outline-offset: 2px;
+        }
+        html.dark .option:focus, html.dark .btn:focus, html.dark button:focus {
+             outline-color: #fb923c;
+        }
+        #dark-mode-toggle:focus { outline: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5); }
+
+        #confetti-canvas {
+             position: absolute;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             pointer-events: none;
+             z-index: 50;
+         }
+
+        /* Styling for the Score History Area */
+        #score-history-area {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+        }
+         .history-item:last-child {
+             border-bottom: none;
+         }
+         .history-score { font-weight: 600; }
+         .history-date { font-size: 0.8rem; color: #6b7280; }
+        html.dark .history-date { color: #9ca3af; }
+        html.dark #score-history-area { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        html.dark .history-item { border-bottom: 1px dashed rgba(255, 255, 255, 0.1); }
+
+    </style>
+</head>
+<body class="antialiased text-gray-800 dark:text-gray-200">
+    <div class="absolute top-4 right-4 z-20">
+        <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition focus:outline-none focus:ring-2 focus:ring-white/50">
+            <i class="fas fa-moon text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 md:py-16 min-h-screen flex flex-col justify-center">
+        <!-- Header -->
+        <div class="text-center mb-10 md:mb-12 animate__animated animate__fadeInDown">
+             <!-- Changed Title -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 shadow-text">Swift Functions Mastery</h1>
+            <p class="text-lg md:text-xl text-white text-opacity-90">Challenge your Swift function knowledge!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="max-w-lg mx-auto text-center glass-card p-8 md:p-10 animate__animated animate__zoomIn">
+
+            <h2 class="text-2xl md:text-3xl font-semibold mb-4 text-orange-900 dark:text-orange-200">Ready to Test Your Swift Function Skills?</h2>
+             <!-- Changed Description -->
+            <p class="text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Covers function declaration, parameters, return types, labels, variadic parameters, default values, function types, and closures.</p>
+            <button id="start-btn" class="btn btn-primary flex items-center justify-center mx-auto w-full sm:w-auto">
+                <span>Start Quiz</span>
+                <i class="fas fa-play ml-2"></i>
+            </button>
+
+            <!-- Score History Area -->
+            <div id="score-history-area" class="text-left mt-8 pt-6 border-t border-white/20 dark:border-white/10">
+                <h3 class="text-lg font-semibold mb-3 text-orange-800 dark:text-orange-300">Recent Attempts</h3>
+                <div id="score-history-list">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Loading history...</p>
+                </div>
+                 <button id="clear-history-btn" class="text-xs text-red-600 dark:text-red-400 hover:underline mt-4 hidden">Clear History</button>
+            </div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="max-w-3xl mx-auto hidden w-full">
+            <!-- Progress Bar -->
+             <div class="mb-6 progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Status Badges (Counter & Timer) -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-sm mb-6 space-y-3 sm:space-y-0">
+                <span id="question-counter" class="status-badge"><i class="fas fa-list-ol mr-2"></i>Question 1/15</span> <!-- Total questions updated below in JS -->
+                <span id="timer" class="status-badge"><i class="fas fa-stopwatch mr-2"></i>Time: 00:00</span>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="quiz-card glass-card p-6 md:p-10 mb-6">
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold mb-6 md:mb-8 text-orange-900 dark:text-orange-200 leading-snug">Question goes here</h3>
+                <div id="code-snippet-area" class="mb-5"></div>
+                <div id="options-container" class="space-y-4">
+                </div>
+                <div id="feedback-message" class="mt-5 text-center font-medium" style="min-height: 1.5em;">
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center mt-8">
+                <button id="prev-btn" class="btn btn-secondary hidden">
+                    <i class="fas fa-arrow-left mr-2"></i> Prev
+                </button>
+                 <div id="nav-spacer" class="flex-grow"></div>
+                <button id="next-btn" class="btn btn-primary hidden" disabled> Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" class="btn btn-submit hidden" disabled>
+                    Submit <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="results-container max-w-2xl mx-auto glass-card p-8 md:p-10 relative overflow-hidden">
+            <canvas id="confetti-canvas"></canvas>
+             <!-- Changed Title -->
+            <h2 class="text-3xl font-bold mb-6 text-center text-orange-900 dark:text-orange-200">Swift Functions Quiz Results</h2>
+
+            <!-- Score Circle -->
+            <div class="flex justify-center mb-8">
+                <div id="score-circle" class="score-circle w-40 h-40 md:w-48 md:h-48 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 shadow-xl">
+                    <div class="text-center">
+                        <span id="score-value" class="block text-4xl md:text-5xl font-bold text-orange-700 dark:text-orange-300">0/15</span> <!-- Total questions updated below in JS -->
+                        <span class="text-gray-500 dark:text-gray-400 text-sm md:text-base mt-1">Correct</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats: Accuracy & Time -->
+            <div class="space-y-6 mb-8">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-bullseye mr-2 text-green-500"></i>Accuracy</span>
+                        <span id="accuracy-value" class="font-bold text-lg">0%</span>
+                    </div>
+                    <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                        <div id="accuracy-bar" class="h-3 bg-gradient-to-r from-green-400 to-teal-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 dark:text-gray-300"><i class="fas fa-clock mr-2 text-blue-500"></i>Time Taken</span>
+                        <span id="time-taken" class="font-bold text-lg">00:00</span>
+                    </div>
+                     <!-- Adjusted Performance Message -->
+                    <div class="p-4 bg-orange-50 dark:bg-orange-900/30 rounded-lg border border-orange-100 dark:border-orange-700/50 mt-2">
+                        <p id="performance-message" class="text-center text-sm md:text-base text-gray-700 dark:text-gray-300">
+                            Keep practicing to master Swift functions!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Review, Restart, Share -->
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="review-btn" class="btn btn-primary w-full flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Review Answers
+                </button>
+                <button id="restart-btn" class="btn btn-secondary w-full flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Restart Quiz
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <button id="share-btn" class="btn btn-submit btn-sm py-2 px-5 rounded-full inline-flex items-center text-sm">
+                    <i class="fas fa-share-alt mr-2"></i> Share Score
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Container -->
+        <div id="review-container" class="hidden max-w-3xl mx-auto space-y-6 my-8 w-full">
+             <div class="glass-card p-8 md:p-10">
+                 <!-- Changed Title -->
+                <h2 class="text-3xl font-bold mb-8 text-center text-orange-900 dark:text-orange-200">Review Swift Functions Answers</h2>
+                <div id="review-questions" class="space-y-8">
+                </div>
+                 <button id="back-to-results" class="btn btn-primary w-full mt-10 flex items-center justify-center">
+                     <i class="fas fa-arrow-left mr-2"></i> Back to Results
+                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- Configuration ---
+        const quizData = [ // *** NEW SWIFT FUNCTIONS QUESTIONS ***
+            // Question 1: Basic Declaration
+            { question: "How do you declare a simple function named `printWelcome` that takes no parameters and returns nothing in Swift?", options: ["def printWelcome():", "function printWelcome() {}", "func printWelcome()", "void printWelcome() => {}"], correctAnswer: 2, explanation: "Swift functions are declared using the `func` keyword, followed by the function name and parentheses `()`. If it returns nothing, `-> Void` can be omitted." },
+            // Question 2: Calling a Function
+            { question: "Given a function declared as `func calculateTotal()`, how do you call it?", options: ["calculateTotal", "call calculateTotal()", "calculateTotal()", "invoke calculateTotal"], correctAnswer: 2, explanation: "You call a Swift function by writing its name followed by parentheses `()`, including any necessary arguments inside the parentheses." },
+            // Question 3: Parameters
+            { question: "What is the correct syntax for a function `greet` that accepts a `String` parameter named `person`?", options: ["func greet(person String)", "func greet(String person)", "func greet(person: String)", "func greet<String>(person)"], correctAnswer: 2, explanation: "Parameters are defined within the parentheses as `parameterName: Type`. The name comes first, followed by a colon and the type." },
+            // Question 4: Return Types
+            { question: "How do you specify that a function `getUserAge` should return an `Int` value?", options: ["func getUserAge(): Int", "func getUserAge() returns Int", "func getUserAge() -> Int", "func getUserAge() Int"], correctAnswer: 2, explanation: "The return type is specified after the parameter list using an arrow `->` followed by the type (`Int` in this case)." },
+            // Question 5: Argument Labels and Parameter Names
+            { question: "In the function signature `func move(toX x: Int, yPosition y: Int)`, what is `toX`?", options: ["Parameter Name", "Type Annotation", "Argument Label", "Return Type"], correctAnswer: 2, explanation: "The name used when *calling* the function (`toX`) is the Argument Label. The name used *inside* the function body (`x`) is the Parameter Name." },
+            // Question 6: Parameter Names
+            { question: "In the function signature `func move(toX x: Int, yPosition y: Int)`, what is `x`?", options: ["Argument Label", "Parameter Name", "Function Name", "Type"], correctAnswer: 1, explanation: "The name used *inside* the function's implementation (`x`) is the Parameter Name. `toX` is the argument label used when calling." },
+            // Question 7: Omitting Argument Labels
+            { question: "How do you define a function parameter `message` so that no argument label is required when calling the function?", options: ["func log(_ message: String)", "func log(message: String, label: none)", "func log(noLabel message: String)", "func log(message: String = _)"], correctAnswer: 0, explanation: "Using an underscore `_` before the parameter name (`_ message: String`) tells Swift that no argument label should be used when calling this function." },
+            // Question 8: Default Parameter Values
+            { question: "What is the correct syntax to provide a default value of `true` for a `Bool` parameter named `isEnabled`?", options: ["func configure(isEnabled: Bool default true)", "func configure(isEnabled: Bool = true)", "func configure(isEnabled: Bool is true)", "func configure(default isEnabled: Bool = true)"], correctAnswer: 1, explanation: "You assign a default value directly after the type using an equals sign (`=`), like `parameterName: Type = defaultValue`." },
+            // Question 9: Variadic Parameters Syntax
+            { question: "Which syntax allows a function parameter `numbers` to accept zero or more `Int` values?", options: ["func sum(numbers: [Int])", "func sum(numbers: Int...)", "func sum(numbers: Int*)", "func sum(variadic numbers: Int)"], correctAnswer: 1, explanation: "Three dots (`...`) after the type (`Int...`) indicate a variadic parameter, meaning it can accept zero or more arguments of that type." },
+            // Question 10: Variadic Parameters Type Inside Function
+            { question: "Inside a function declared with `func processScores(_ scores: Double...)`, what is the data type of the `scores` parameter within the function body?", options: ["Double", "[Double]", "(Double)", "Variadic<Double>"], correctAnswer: 1, explanation: "A variadic parameter is received inside the function as an array of the specified type. So, `scores` will be of type `[Double]` (an array of Doubles)." },
+            // Question 11: Function Type Declaration
+            { question: "How would you declare a variable `calculator` that can hold a function taking two `Int`s and returning an `Int`?", options: ["var calculator: Func(Int, Int) -> Int", "var calculator: Function<Int, Int, Int>", "var calculator: (Int, Int) -> Int", "var calculator = (Int, Int) => Int"], correctAnswer: 2, explanation: "Function types are written similar to function signatures: `(ParameterTypes) -> ReturnType`. So, `(Int, Int) -> Int` represents a function taking two Ints and returning an Int." },
+            // Question 12: Assigning Function to Variable
+            { question: "Given `func multiply(a: Int, b: Int) -> Int { return a * b }`, how do you assign this function to the variable `mathOperation` (assuming `mathOperation` has the correct function type)?", options: ["mathOperation = multiply()", "mathOperation = &multiply", "mathOperation.set(multiply)", "mathOperation = multiply"], correctAnswer: 3, explanation: "You can assign a function directly to a variable of a compatible function type just by using the function's name without parentheses." },
+            // Question 13: Basic Closure Syntax
+            { question: "Which of the following is a valid basic syntax for a closure in Swift that takes a `String` and returns `Void` (nothing)?", options: ["{ String s -> Void in print(s) }", "(s: String) => { print(s) }", "{ (s: String) -> Void in print(s) }", "lambda (s: String) { print(s) }"], correctAnswer: 2, explanation: "Closures are enclosed in curly braces `{}`. The parameter list `(s: String)` and return type `-> Void` (optional if inferrable) are followed by the `in` keyword, separating the definition from the closure body." },
+            // Question 14: Closures as Arguments
+            { question: "How are closures commonly used with Swift collection methods like `map`, `filter`, or `sorted`?", options: ["To define the collection type", "As default values for the methods", "To provide custom logic for transformation, filtering, or sorting", "To handle potential errors during iteration"], correctAnswer: 2, explanation: "Closures are frequently passed as arguments to higher-order functions like `map`, `filter`, and `sorted` to customize their behavior on collection elements." },
+            // Question 15: Implicit Returns in Single-Expression Closures
+            { question: "If a closure contains only a single expression, what keyword can often be omitted?", code: "let names = [\"Chris\", \"Alex\", \"Ewa\"]\nlet reversedNames = names.sorted(by: { s1, s2 in s1 > s2 })", options: ["in", "func", "return", "by"], correctAnswer: 2, explanation: "Swift allows omitting the `return` keyword in closures (and functions) that consist of only a single expression whose value is the intended return value." }
+        ];
+        const TIME_LIMIT_SECONDS = 15 * 60; // Keep timer duration (15 mins)
+        const MAX_HISTORY_ITEMS = 5;
+        const SCORE_HISTORY_KEY = 'swiftFunctionsQuizScoreHistory'; // *** CHANGED Local Storage Key ***
+        const QUIZ_STATE_KEY = 'swiftFunctionsQuizState'; // *** CHANGED Local Storage Key ***
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const questionCard = document.getElementById('question-card');
+        const questionText = document.getElementById('question-text');
+        const codeSnippetArea = document.getElementById('code-snippet-area');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreValue = document.getElementById('score-value');
+        const scoreCircle = document.getElementById('score-circle');
+        const accuracyValue = document.getElementById('accuracy-value');
+        const accuracyBar = document.getElementById('accuracy-bar');
+        const timeTaken = document.getElementById('time-taken');
+        const timerElement = document.getElementById('timer');
+        const reviewBtn = document.getElementById('review-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewContainer = document.getElementById('review-container');
+        const reviewQuestions = document.getElementById('review-questions');
+        const backToResults = document.getElementById('back-to-results');
+        const performanceMessage = document.getElementById('performance-message');
+        const shareBtn = document.getElementById('share-btn');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const navSpacer = document.getElementById('nav-spacer');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const htmlElement = document.documentElement;
+        const scoreHistoryList = document.getElementById('score-history-list');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let questionsOrder = [];
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+        let quizActive = false;
+        let scoreHistory = [];
+        const totalQuestions = quizData.length; // Store total questions
+
+        // --- Helper Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // --- Dark Mode ---
+        function applyDarkMode(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                htmlElement.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                htmlElement.classList.remove('dark');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+             // Re-highlight code after theme change
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAll(), 50); // Small delay might help
+             }
+        }
+
+        // --- Local Storage: IN-PROGRESS QUIZ STATE ---
+        function saveState() {
+            if (!quizActive) return;
+            try {
+                 const state = {
+                    currentQuestionIndex, userAnswers, timeElapsed, questionsOrder, quizActive: true
+                };
+                localStorage.setItem(QUIZ_STATE_KEY, JSON.stringify(state));
+             } catch (e) { console.error("Failed to save Swift Functions quiz state:", e); }
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem(QUIZ_STATE_KEY);
+            if (savedState) {
+                try {
+                    const state = JSON.parse(savedState);
+                    // Basic validation: check if keys exist and arrays have expected length
+                    if (state.quizActive &&
+                        Array.isArray(state.questionsOrder) && state.questionsOrder.length === totalQuestions &&
+                        Array.isArray(state.userAnswers) && state.userAnswers.length === totalQuestions &&
+                        typeof state.currentQuestionIndex === 'number' && state.currentQuestionIndex < totalQuestions && state.currentQuestionIndex >= 0)
+                    {
+                        currentQuestionIndex = state.currentQuestionIndex;
+                        userAnswers = state.userAnswers;
+                        timeElapsed = state.timeElapsed || 0;
+                        questionsOrder = state.questionsOrder;
+                        quizActive = true;
+                        console.log("In-progress Swift Functions quiz state loaded successfully.");
+                        return true;
+                    } else {
+                         console.warn("Saved in-progress Swift Functions quiz state is incompatible/invalid.");
+                         clearState(); // Clear invalid state
+                         return false;
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved in-progress Swift Functions quiz state:", e);
+                    clearState(); // Clear corrupted state
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        function clearState() {
+            localStorage.removeItem(QUIZ_STATE_KEY);
+            console.log("In-progress Swift Functions quiz state cleared.");
+        }
+
+        // --- Local Storage: SCORE HISTORY ---
+        function loadScoreHistory() {
+            try {
+                const historyJson = localStorage.getItem(SCORE_HISTORY_KEY);
+                scoreHistory = historyJson ? JSON.parse(historyJson) : [];
+                if (!Array.isArray(scoreHistory)) scoreHistory = []; // Ensure it's an array
+            } catch (e) {
+                console.error("Failed to load Swift Functions score history:", e);
+                scoreHistory = []; // Reset on error
+            }
+        }
+
+        function saveScoreHistory() {
+            try {
+                // Ensure history doesn't exceed max items
+                const limitedHistory = scoreHistory.slice(-MAX_HISTORY_ITEMS);
+                localStorage.setItem(SCORE_HISTORY_KEY, JSON.stringify(limitedHistory));
+            } catch (e) { console.error("Failed to save Swift Functions score history:", e); }
+        }
+
+        function addScoreToHistory(attemptData) {
+            // Basic validation of attempt data before adding
+            if (typeof attemptData.score === 'number' && typeof attemptData.totalQuestions === 'number' &&
+                typeof attemptData.accuracy === 'number' && typeof attemptData.timestamp === 'number') {
+                scoreHistory.push(attemptData);
+                saveScoreHistory();
+                displayScoreHistory(); // Update UI immediately
+            } else {
+                console.error("Invalid attempt data format, not saving to history:", attemptData);
+            }
+        }
+
+        function clearScoreHistory() {
+             if (confirm("Are you sure you want to clear all previous Swift Functions quiz attempt scores? This cannot be undone.")) {
+                 scoreHistory = [];
+                 localStorage.removeItem(SCORE_HISTORY_KEY);
+                 displayScoreHistory();
+                 console.log("Swift Functions score history cleared.");
+             }
+        }
+
+        // --- UI: Display Score History ---
+        function displayScoreHistory() {
+            scoreHistoryList.innerHTML = ''; // Clear current list
+
+            if (scoreHistory.length === 0) {
+                scoreHistoryList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400">No previous Swift Functions attempts recorded yet.</p>`;
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                // Sort by timestamp, newest first
+                const sortedHistory = [...scoreHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+                sortedHistory.forEach(attempt => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const date = new Date(attempt.timestamp);
+                    const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+                    item.innerHTML = `
+                        <div class="flex-grow pr-4">
+                            <span class="history-score text-gray-800 dark:text-gray-100">${attempt.score}/${attempt.totalQuestions}</span>
+                            <span class="text-gray-600 dark:text-gray-300"> (${attempt.accuracy}%)</span>
+                        </div>
+                        <div class="history-date text-right">
+                           ${formattedDate}<br>${formattedTime}
+                        </div>
+                    `;
+                    scoreHistoryList.appendChild(item);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+             if (loadState()) { // Try to load and resume
+                 console.log("Resuming Swift Functions quiz from saved state.");
+                 startTime = Date.now() - timeElapsed * 1000; // Adjust start time based on saved elapsed time
+             } else { // Start fresh
+                 console.log("Initializing a new Swift Functions quiz session.");
+                 currentQuestionIndex = 0;
+                 score = 0;
+                 userAnswers = Array(totalQuestions).fill(null); // Reset answers array
+                 timeElapsed = 0;
+                 questionsOrder = Array.from(quizData.keys()); // Create index array [0, 1, ..., n-1]
+                 shuffleArray(questionsOrder); // Shuffle the order
+                 startTime = Date.now(); // Record start time for new quiz
+             }
+
+            // Ensure UI reset and setup
+            startScreen.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            quizActive = true; // Mark quiz as active
+
+            // Update dynamic text based on total questions
+            updateTotalQuestionText();
+
+            loadQuestion(currentQuestionIndex); // Load the first or resumed question
+            startTimer(); // Start or restart the timer
+            updateNavigation(); // Update nav buttons based on current index
+            saveState(); // Save the initial state (important for resume on refresh)
+        }
+
+         // Update elements showing total questions
+        function updateTotalQuestionText() {
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${currentQuestionIndex + 1}/${totalQuestions}`;
+            scoreValue.textContent = `${score}/${totalQuestions}`; // Update on results screen too
+        }
+
+
+        function loadQuestion(index) {
+            if (index < 0 || index >= totalQuestions) return; // Boundary check
+
+            const questionIndexInOriginalData = questionsOrder[index]; // Get the actual question index based on shuffled order
+            const question = quizData[questionIndexInOriginalData];
+            if (!question) return; // Safety check
+
+            // Reset animation for question card
+            questionCard.classList.remove('animate__animated', 'animate__fadeInUp');
+            void questionCard.offsetWidth; // Trigger reflow
+            questionCard.classList.add('animate__animated', 'animate__fadeInUp');
+
+            questionText.innerHTML = `${index + 1}. ${question.question}`; // Use innerHTML for potential formatting? (Safer with textContent if no HTML needed)
+            feedbackMessage.textContent = ''; // Clear previous feedback
+
+             // Handle code snippet
+             codeSnippetArea.innerHTML = '';
+             if (question.code) {
+                 const pre = document.createElement('pre');
+                 pre.className = 'code-snippet-container'; // Use the defined class
+                 const code = document.createElement('code');
+                 code.className = 'language-swift'; // Correct language class for Swift
+                 code.textContent = question.code; // Set code content
+                 pre.appendChild(code);
+                 codeSnippetArea.appendChild(pre);
+                 if (typeof Prism !== 'undefined') {
+                      setTimeout(() => Prism.highlightElement(code), 0); // Highlight async
+                 }
+             }
+
+            // Generate options
+            optionsContainer.innerHTML = '';
+            const selectedAnswerIndex = userAnswers[index]; // Get previously selected answer for this question (if any)
+
+            question.options.forEach((optionText, optionIndex) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-4 border rounded-lg flex justify-between items-center text-gray-700 dark:text-gray-300';
+                optionElement.setAttribute('role', 'radio');
+                optionElement.setAttribute('aria-checked', selectedAnswerIndex === optionIndex ? 'true' : 'false');
+                optionElement.tabIndex = 0; // Make it focusable
+
+                const label = document.createElement('span');
+                label.className = 'flex-grow mr-4';
+                 // Use innerHTML carefully if options might contain HTML, otherwise textContent
+                label.innerHTML = `<span class="font-semibold mr-2">${String.fromCharCode(65 + optionIndex)}.</span> ${optionText}`;
+
+                const feedbackIconContainer = document.createElement('span');
+                feedbackIconContainer.className = 'feedback-icon text-xl';
+                feedbackIconContainer.innerHTML = `
+                    <i class="fas fa-check-circle icon-correct text-green-500" style="opacity: 0;"></i>
+                    <i class="fas fa-times-circle icon-incorrect text-red-500" style="opacity: 0;"></i>
+                `;
+
+                optionElement.appendChild(label);
+                optionElement.appendChild(feedbackIconContainer);
+
+                 const handleSelection = () => {
+                     if (!optionElement.classList.contains('disabled')) { // Only allow selection if not already answered
+                         selectOption(index, optionIndex);
+                     }
+                 };
+                optionElement.addEventListener('click', handleSelection);
+                 optionElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelection(); } // Allow selection with Enter/Space
+                });
+                optionsContainer.appendChild(optionElement);
+            });
+
+             // If an answer was previously selected (e.g., navigating back/forward or resuming), show feedback
+             if (selectedAnswerIndex !== null) {
+                 showFeedback(index, selectedAnswerIndex);
+                 nextBtn.disabled = false; // Enable next if answered
+                 if (index === totalQuestions - 1) submitBtn.disabled = false; // Enable submit if last question is answered
+             } else {
+                 nextBtn.disabled = true; // Disable next if not answered
+                 if (index === totalQuestions - 1) submitBtn.disabled = true; // Disable submit if last question not answered
+             }
+            updateProgress(index);
+            updateNavigation();
+        }
+
+        function selectOption(displayIndex, selectedOptionIndex) {
+             // Prevent re-selecting if already answered for this question view
+            if (userAnswers[displayIndex] !== null) return;
+
+            userAnswers[displayIndex] = selectedOptionIndex; // Store the user's choice
+            showFeedback(displayIndex, selectedOptionIndex); // Display correct/incorrect styling
+            nextBtn.disabled = false; // Enable the next button
+
+             // Enable submit button if this is the last question
+             if (displayIndex === totalQuestions - 1) {
+                 submitBtn.disabled = false;
+             }
+            saveState(); // Save the updated answers to localStorage
+        }
+
+        function showFeedback(displayIndex, selectedOptionIndex) {
+             const originalQuestionIndex = questionsOrder[displayIndex];
+             const question = quizData[originalQuestionIndex];
+             const isCorrect = selectedOptionIndex === question.correctAnswer;
+             const options = optionsContainer.querySelectorAll('.option');
+
+             options.forEach((optElement, currentOptionIndex) => {
+                 optElement.classList.add('disabled'); // Disable all options after selection
+                 optElement.style.cursor = 'default';
+                 optElement.tabIndex = -1; // Remove from tab order
+
+                 const iconCorrect = optElement.querySelector('.icon-correct');
+                 const iconIncorrect = optElement.querySelector('.icon-incorrect');
+                 // Reset icons first
+                 if (iconCorrect) iconCorrect.style.opacity = '0';
+                 if (iconIncorrect) iconIncorrect.style.opacity = '0';
+
+                 // Mark the selected option
+                 if (currentOptionIndex === selectedOptionIndex) {
+                     optElement.classList.add('selected');
+                     optElement.setAttribute('aria-checked', 'true');
+                     if (isCorrect) {
+                         optElement.classList.add('correct');
+                         if (iconCorrect) iconCorrect.style.opacity = '1'; // Show check
+                         feedbackMessage.textContent = "Correct!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-green-600 dark:text-green-400 animate__animated animate__pulse';
+                     } else {
+                         optElement.classList.add('incorrect');
+                         if (iconIncorrect) iconIncorrect.style.opacity = '1'; // Show cross
+                         feedbackMessage.textContent = "Incorrect!";
+                         feedbackMessage.className = 'mt-5 text-center font-medium text-red-600 dark:text-red-400 animate__animated animate__shakeX';
+                         // Also highlight the correct answer if the selected one was wrong
+                         const correctOptionElement = options[question.correctAnswer];
+                         if (correctOptionElement) {
+                             correctOptionElement.classList.add('correct'); // Add 'correct' styling to the actual correct answer
+                             const correctOptIcon = correctOptionElement.querySelector('.icon-correct');
+                             if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show check on correct answer
+                         }
+                     }
+                 } else {
+                     // If this option wasn't selected, but IS the correct answer (and the user picked wrong)
+                     if (currentOptionIndex === question.correctAnswer && !isCorrect) {
+                         optElement.classList.add('correct'); // Highlight the correct answer for the user
+                         const correctOptIcon = optElement.querySelector('.icon-correct');
+                         if (correctOptIcon) correctOptIcon.style.opacity = '1'; // Show check on correct answer
+                     }
+                      optElement.setAttribute('aria-checked', 'false'); // Ensure others are marked unchecked
+                 }
+            });
+            // Remove animation classes after they finish
+            setTimeout(() => {
+                feedbackMessage.classList.remove('animate__animated', 'animate__pulse', 'animate__shakeX');
+            }, 1000);
+        }
+
+
+        function updateProgress(index) {
+            const progress = totalQuestions > 0 ? ((index + 1) / totalQuestions) * 100 : 0;
+            progressBar.style.width = `${progress}%`;
+            questionCounter.innerHTML = `<i class="fas fa-list-ol mr-2"></i>Question ${index + 1}/${totalQuestions}`;
+        }
+
+        function updateNavigation() {
+            const isFirstQuestion = currentQuestionIndex === 0;
+            const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+
+            prevBtn.classList.toggle('hidden', isFirstQuestion); // Hide Prev on first Q
+            navSpacer.classList.toggle('hidden', !isFirstQuestion); // Show spacer when Prev is visible
+            nextBtn.classList.toggle('hidden', isLastQuestion); // Hide Next on last Q
+            submitBtn.classList.toggle('hidden', !isLastQuestion); // Show Submit only on last Q
+
+            // Disable Next/Submit if the current question hasn't been answered yet
+            const currentAnswerSelected = userAnswers[currentQuestionIndex] !== null;
+            nextBtn.disabled = !currentAnswerSelected;
+            if (isLastQuestion) {
+                submitBtn.disabled = !currentAnswerSelected;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to next question
+            }
+        }
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+                saveState(); // Save state when moving to previous question
+            }
+        }
+
+        // --- Timer ---
+        function startTimer() {
+            clearInterval(timerInterval); // Clear any existing interval
+            if (!quizActive) return; // Don't start if quiz isn't active
+
+            const updateTimerDisplay = () => {
+                const now = Date.now();
+                // Calculate elapsed time based on potentially adjusted startTime
+                timeElapsed = Math.max(0, Math.floor((now - startTime) / 1000));
+                const timeRemaining = TIME_LIMIT_SECONDS - timeElapsed;
+
+                if (timeRemaining <= 0) {
+                    timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: 00:00`;
+                    timerElement.classList.add('timer-warning', 'text-red-500', 'dark:text-red-400');
+                    clearInterval(timerInterval); // Stop the timer
+                    if(quizActive) { // Ensure quiz hasn't already been submitted
+                        submitQuiz(true); // Auto-submit when time runs out
+                    }
+                    return;
+                }
+
+                // Update display
+                timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(timeRemaining)}`;
+                // Add warning class if time is low (e.g., <= 60 seconds)
+                timerElement.classList.toggle('timer-warning', timeRemaining <= 60);
+                timerElement.classList.remove('text-red-500', 'dark:text-red-400'); // Remove explicit red if not 0
+
+                 // Periodic save state (e.g., every 10 seconds)
+                 if (timeElapsed > 0 && timeElapsed % 10 === 0) {
+                     saveState();
+                 }
+            };
+
+            updateTimerDisplay(); // Initial display
+            timerInterval = setInterval(updateTimerDisplay, 1000); // Update every second
+        }
+
+
+        // --- Submit and Results ---
+        function submitQuiz(timeUp = false) {
+             if (!quizActive && !timeUp) return; // Prevent double submission unless it's a time-up event
+
+             quizActive = false; // Mark quiz as inactive
+             clearInterval(timerInterval); // Stop the timer
+
+            // Calculate score
+            score = 0;
+            userAnswers.forEach((answerIndex, displayIdx) => {
+                if (answerIndex !== null) {
+                    const originalQuestionIndex = questionsOrder[displayIdx]; // Get original index
+                    if (answerIndex === quizData[originalQuestionIndex].correctAnswer) {
+                        score++;
+                    }
+                }
+            });
+
+            const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+            const finalTime = timeUp ? TIME_LIMIT_SECONDS : timeElapsed; // Use full time if time ran out
+
+            // Add attempt to score history
+             const attemptData = {
+                 score: score,
+                 totalQuestions: totalQuestions,
+                 accuracy: parseFloat(accuracy.toFixed(1)), // Store accuracy with one decimal
+                 timestamp: Date.now(),
+                 timeTaken: finalTime
+             };
+            addScoreToHistory(attemptData);
+
+            // UI Updates for Results Screen
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            // Trigger fade-in animation for results
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth; // Trigger reflow
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+
+            scoreValue.textContent = `${score}/${totalQuestions}`; // Display final score/total
+            accuracyValue.textContent = `${accuracy.toFixed(1)}%`; // Display accuracy with one decimal
+            accuracyBar.style.width = `${accuracy}%`; // Update accuracy bar width
+            timeTaken.textContent = formatTime(finalTime); // Display formatted time taken
+
+            // Performance message and score circle styling
+            let performanceText = ""; let scoreLevel = 'low'; // Default to low
+            if (timeUp) {
+                performanceText = "Time's up! Let's see how you did with Swift Functions.";
+                 // Determine level even if time's up
+                 if (accuracy >= 85) scoreLevel = 'high';
+                 else if (accuracy >= 60) scoreLevel = 'medium';
+            } else {
+                 // Different messages based on accuracy
+                 if (accuracy >= 95) { performanceText = "Outstanding! Swift Function Master!"; scoreLevel = 'high'; }
+                 else if (accuracy >= 85) { performanceText = "Excellent work! Strong grasp of Swift functions."; scoreLevel = 'high'; }
+                 else if (accuracy >= 70) { performanceText = "Great job! Well on your way with Swift functions."; scoreLevel = 'medium'; }
+                 else if (accuracy >= 50) { performanceText = "Good effort! Keep practicing Swift functions."; scoreLevel = 'medium'; }
+                 else { performanceText = "Keep studying Swift functions! Review & try again."; scoreLevel = 'low'; }
+            }
+             performanceMessage.textContent = performanceText;
+             scoreCircle.setAttribute('data-score-level', scoreLevel); // Set data attribute for styling
+
+             // Trigger confetti for high scores (if not timed out)
+            if (scoreLevel === 'high' && !timeUp) {
+                triggerConfetti();
+            }
+
+            clearState(); // Clear the IN-PROGRESS quiz state from localStorage after submission
+        }
+
+        function triggerConfetti() {
+             if (typeof confetti !== 'function') return; // Check if confetti library loaded
+             const myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+             myConfetti({ particleCount: 130, spread: 120, origin: { y: 0.6 }, gravity: 0.8, ticks: 350, zIndex: 1000 });
+             // Add a little burst effect
+             setTimeout(() => {
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 120, gravity: 0.7, ticks: 300 });
+                  myConfetti({ particleCount: 60, spread: 150, origin: { y: 0.7 }, angle: 60, gravity: 0.7, ticks: 300 });
+             }, 200);
+         }
+
+        // --- Review Screen ---
+        function showReview() {
+            resultsContainer.style.display = 'none'; // Hide results
+            reviewContainer.style.display = 'block'; // Show review
+            // Trigger fade-in animation for review
+            reviewContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void reviewContainer.offsetWidth; // Trigger reflow
+            reviewContainer.classList.add('animate__animated', 'animate__fadeIn');
+            reviewQuestions.innerHTML = ''; // Clear previous review items
+
+            // Iterate through the *order* the questions were presented
+            questionsOrder.forEach((originalQuestionIndex, displayIndex) => {
+                 const question = quizData[originalQuestionIndex];
+                 const userAnswerIndex = userAnswers[displayIndex]; // User's answer for this question
+                 const isCorrect = userAnswerIndex === question.correctAnswer;
+
+                 const reviewItem = document.createElement('div');
+                 // Apply different border/background based on correctness
+                 reviewItem.className = `review-item p-4 md:p-6 rounded-lg mb-6 border-l-4 shadow-sm ${
+                    isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
+                              : 'border-red-500 bg-red-50 dark:bg-red-900/30'
+                }`;
+
+                 let reviewHTML = `<p class="font-semibold mb-3 text-lg text-gray-800 dark:text-gray-100">${displayIndex + 1}. ${question.question}</p>`;
+
+                  // Add code snippet if it exists
+                  if (question.code) {
+                      // Basic escaping for HTML display within <pre><code>
+                      const escapedCode = question.code.replace(/</g, "<").replace(/>/g, ">"); // Correct escaping
+                      reviewHTML += `<pre class="code-snippet-container mb-4 rounded-md"><code class="language-swift">${escapedCode}</code></pre>`; // Use language-swift
+                  }
+
+                 reviewHTML += `<p class="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">Your Answer:</p><ul class="space-y-2 list-none mb-4">`;
+
+                 // Display all options, highlighting user's choice and the correct answer
+                 question.options.forEach((optionText, i) => {
+                      let liClass = "text-gray-700 dark:text-gray-300"; // Base class
+                      let iconHTML = ""; // No icon by default
+
+                      if (i === question.correctAnswer) {
+                          liClass = "font-semibold text-green-700 dark:text-green-400"; // Correct answer style
+                          iconHTML = `<i class="fas fa-check ml-2 text-green-500"></i>`; // Correct icon
+                      }
+
+                      if (i === userAnswerIndex) { // If this was the user's answer
+                          if (isCorrect) {
+                              // Add highlighting if it was the correct selection
+                               liClass += " ring-1 ring-green-300 dark:ring-green-600 rounded px-2 py-1 bg-green-100 dark:bg-green-800/50";
+                          } else {
+                              // Style for incorrect selection
+                              liClass = "font-semibold text-red-700 dark:text-red-400 line-through";
+                              iconHTML = `<i class="fas fa-times ml-2 text-red-500"></i>`; // Incorrect icon
+                          }
+                      }
+                       // Escape option text before inserting into HTML
+                      const escapedOptionText = optionText.replace(/</g, "<").replace(/>/g, ">"); // Correct escaping
+                      reviewHTML += `<li class="flex items-center ${liClass} p-1 rounded"><span class="font-mono mr-2 text-sm text-gray-500 dark:text-gray-400">${String.fromCharCode(65 + i)}.</span><span class="flex-grow">${escapedOptionText}</span>${iconHTML}</li>`;
+                 });
+
+                 reviewHTML += `</ul>`;
+
+                 // Add explanation if available
+                 if (question.explanation) {
+                    // Escape explanation text
+                    const escapedExplanation = question.explanation.replace(/</g, "<").replace(/>/g, ">");
+                     reviewHTML += `<div class="explanation mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                        <strong class="block mb-1 text-sm text-orange-800 dark:text-orange-300">Explanation:</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">${escapedExplanation}</p> <!-- Used escaped text -->
+                                    </div>`;
+                 }
+
+                 reviewItem.innerHTML = reviewHTML;
+                 reviewQuestions.appendChild(reviewItem);
+            });
+
+             // Re-run Prism highlighting for the review section's code blocks
+             if (typeof Prism !== 'undefined') {
+                 setTimeout(() => Prism.highlightAllUnder(reviewQuestions), 0);
+             }
+        }
+
+        function showResultsScreen() {
+            reviewContainer.style.display = 'none'; // Hide review
+            resultsContainer.style.display = 'block'; // Show results
+            // Optional: Add animation if desired when returning
+            resultsContainer.classList.remove('animate__animated', 'animate__fadeIn');
+            void resultsContainer.offsetWidth;
+            resultsContainer.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // --- Restart ---
+        function restartQuiz() {
+             // Reset state variables (keep scoreHistory loaded)
+            currentQuestionIndex = 0; score = 0; userAnswers = []; questionsOrder = [];
+            timeElapsed = 0; quizActive = false; clearInterval(timerInterval);
+
+            // Reset UI elements to initial state
+            progressBar.style.width = '0%';
+            timerElement.innerHTML = `<i class="fas fa-stopwatch mr-2"></i>Time: ${formatTime(TIME_LIMIT_SECONDS)}`;
+            timerElement.classList.remove('timer-warning', 'text-red-500', 'dark:text-red-400');
+            feedbackMessage.textContent = ''; // Clear any leftover feedback
+             scoreCircle.setAttribute('data-score-level', 'low'); // Reset score circle style
+
+            // Hide quiz/results/review, show start screen
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            // Reset start screen animation
+            startScreen.classList.remove('animate__animated', 'animate__zoomIn', 'animate__fadeIn');
+            void startScreen.offsetWidth; // Trigger reflow
+            startScreen.classList.add('animate__animated', 'animate__zoomIn');
+
+            // Reset navigation buttons state
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden'); // Ensure spacer is back if prev is hidden
+
+             clearState(); // Clear any lingering in-progress state from local storage
+
+            displayScoreHistory(); // Re-display history on the start screen
+            console.log("Swift Functions Quiz reset.");
+        }
+
+        // --- Sharing ---
+         async function shareResults() {
+             const accuracy = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+             // Update share text for Swift Functions
+             const shareText = `I scored ${score}/${totalQuestions} (${accuracy.toFixed(1)}%) on the Swift Functions Quiz! Challenge yourself!`;
+             const shareUrl = window.location.href; // Use current page URL
+
+             if (navigator.share) { // Use Web Share API if available
+                 try {
+                     await navigator.share({
+                         title: 'My Swift Functions Quiz Result!', // Share dialog title
+                         text: shareText,
+                         url: shareUrl
+                     });
+                     console.log('Shared successfully');
+                 } catch (err) {
+                     console.error('Error sharing:', err);
+                     // Fallback or message if user cancels/share fails
+                      if (err.name !== 'AbortError') {
+                          alert('Could not share results. You can copy them instead.');
+                      }
+                 }
+             } else { // Fallback to clipboard
+                 copyToClipboard(`${shareText} ${shareUrl}`);
+             }
+         }
+
+         function copyToClipboard(text) {
+             // Use modern Clipboard API
+             navigator.clipboard.writeText(text).then(() => {
+                 alert("Swift Functions Quiz results copied to clipboard!"); // Success message
+             }).catch(err => {
+                 console.error('Could not copy results: ', err);
+                 alert("Failed to copy results to clipboard."); // Error message
+             });
+         }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        prevBtn.addEventListener('click', prevQuestion);
+        submitBtn.addEventListener('click', () => submitQuiz(false)); // Pass false for manual submit
+        reviewBtn.addEventListener('click', showReview);
+        restartBtn.addEventListener('click', restartQuiz);
+        backToResults.addEventListener('click', showResultsScreen);
+        shareBtn.addEventListener('click', shareResults);
+        clearHistoryBtn.addEventListener('click', clearScoreHistory);
+        darkModeToggle.addEventListener('click', () => applyDarkMode(!htmlElement.classList.contains('dark')));
+
+        // --- Keyboard Navigation (Accessibility Enhancement) ---
+         document.addEventListener('keydown', (e) => {
+             // Check if the focused element is one of the buttons and handle Enter/Space
+             const activeEl = document.activeElement;
+             if ((e.key === 'Enter' || e.key === ' ') && activeEl) {
+                 if (activeEl === nextBtn && !nextBtn.disabled) { e.preventDefault(); nextQuestion(); }
+                 else if (activeEl === prevBtn && !prevBtn.classList.contains('hidden')) { e.preventDefault(); prevQuestion(); }
+                 else if (activeEl === submitBtn && !submitBtn.disabled) { e.preventDefault(); submitQuiz(false); }
+                 else if (activeEl === startBtn) { e.preventDefault(); startQuiz(); }
+                 else if (activeEl === reviewBtn) { e.preventDefault(); showReview(); }
+                 else if (activeEl === restartBtn) { e.preventDefault(); restartQuiz(); }
+                 else if (activeEl === backToResults) { e.preventDefault(); showResultsScreen(); }
+                 else if (activeEl === shareBtn) { e.preventDefault(); shareResults(); }
+                 else if (activeEl === clearHistoryBtn && !clearHistoryBtn.classList.contains('hidden')) { e.preventDefault(); clearScoreHistory(); }
+                 // Add more keyboard interactions if needed (e.g., selecting options with arrow keys/numbers)
+             }
+         });
+
+
+        // --- Initial Application Load ---
+        function initializeApp() {
+            // Apply saved dark mode preference
+            const savedDarkMode = localStorage.getItem('darkMode');
+            applyDarkMode(savedDarkMode === 'enabled');
+
+            loadScoreHistory(); // Load previous scores from local storage
+            displayScoreHistory(); // Display them on the start screen
+
+            // Ensure initial UI state is correct (start screen visible, others hidden)
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            reviewContainer.style.display = 'none';
+            startScreen.style.display = 'block';
+
+            // Update total questions text elements initially
+             updateTotalQuestionText();
+
+            // Reset nav buttons initially
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            prevBtn.classList.add('hidden');
+
+            console.log("Swift Functions Quiz application initialized.");
+        }
+
+        // --- Run Initialization ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>
