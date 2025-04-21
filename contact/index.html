@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - BVRIT Learning</title>
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <!-- GSAP Animation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    
+
     <style>
         /* Dark Theme Variables */
         :root {
@@ -28,26 +28,26 @@
             --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             --transition: 0.3s ease;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-        
+
         body {
             background-color: var(--dark-bg);
             color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
+            display: flex; /* Body acts as the main flex container */
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 80px 20px 20px; /* Added top padding to prevent overlap with back button */
             flex-wrap: wrap;
-            gap: 30px;
+            gap: 30px; /* Gap between profile cards */
         }
-        
+
         /* Background Animation */
         .bg-animation {
             position: fixed;
@@ -59,7 +59,7 @@
             opacity: 0.1;
             overflow: hidden;
         }
-        
+
         .bg-animation .square {
             position: absolute;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
@@ -67,7 +67,7 @@
             animation: float 25s linear infinite;
             opacity: 0.3;
         }
-        
+
         @keyframes float {
             0% {
                 transform: translateY(100%) rotate(0deg);
@@ -78,7 +78,7 @@
                 opacity: 0;
             }
         }
-        
+
         /* Profile Card */
         .profile-card {
             background-color: var(--dark-surface);
@@ -89,36 +89,37 @@
             max-width: 400px;
             position: relative;
             transition: all var(--transition);
-            flex: 1;
-            min-width: 300px;
+            flex: 1; /* Allows cards to grow/shrink */
+            min-width: 300px; /* Minimum width before wrapping */
         }
-        
+
         .profile-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
         }
-        
+
         /* Card Header */
         .card-header {
             height: 120px;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             position: relative;
+            display: flex; /* Use flex to center content vertically */
+            justify-content: center;
+            align-items: center; /* Center text vertically */
         }
-        
+
         .card-header h3 {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            /* Removed absolute positioning for better centering */
             color: var(--text-primary);
             font-size: 1.2rem;
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0;
-            z-index: 1;
+            padding: 0 15px; /* Add some horizontal padding */
+            text-align: center;
         }
-        
+
         /* Profile Image */
         .profile-image {
             width: 150px;
@@ -128,28 +129,29 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            top: 45px;
+            top: 45px; /* Position relative to card-header */
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: all var(--transition);
+            z-index: 2; /* Ensure image is above header background */
         }
-        
+
         .profile-image:hover {
             transform: translateX(-50%) scale(1.05);
         }
-        
+
         .profile-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         /* Card Body */
         .card-body {
-            padding: 80px 30px 30px;
+            padding: 80px 30px 30px; /* Default padding (top is large for profile image) */
             text-align: center;
         }
-        
+
         .profile-name {
             font-size: 1.8rem;
             font-weight: 600;
@@ -159,20 +161,20 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        
+
         .profile-info {
             color: var(--text-secondary);
             margin-bottom: 5px;
             font-size: 1rem;
         }
-        
+
         .profile-college {
             color: var(--text-secondary);
             margin-bottom: 20px;
             font-size: 0.9rem;
             font-style: italic;
         }
-        
+
         /* Social Links */
         .social-links {
             display: flex;
@@ -180,7 +182,7 @@
             gap: 15px;
             margin-top: 20px;
         }
-        
+
         .social-link {
             width: 45px;
             height: 45px;
@@ -192,22 +194,22 @@
             transition: all var(--transition);
             box-shadow: var(--shadow);
         }
-        
+
         .social-link:hover {
             transform: translateY(-5px);
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
         }
-        
+
         .social-link img {
             width: 24px;
             height: 24px;
             transition: all var(--transition);
         }
-        
+
         .social-link:hover img {
             filter: brightness(0) invert(1);
         }
-        
+
         /* Back Button */
         .back-button {
             position: fixed;
@@ -225,46 +227,55 @@
             transition: all var(--transition);
             z-index: 100;
         }
-        
+
         .back-button:hover {
             color: var(--primary-color);
             background-color: var(--dark-surface-2);
             transform: translateX(-5px);
         }
-        
+
         /* Responsive Styles */
         @media (max-width: 480px) {
+            body {
+                 padding-top: 70px; /* Adjust padding for smaller screens */
+            }
             .profile-card {
                 max-width: 320px;
+                min-width: 280px; /* Adjust min-width */
             }
-            
+
             .profile-image {
                 width: 120px;
                 height: 120px;
                 top: 60px;
             }
-            
+
             .card-body {
+                /* Default padding adjusted slightly */
                 padding: 70px 20px 25px;
             }
-            
+             /* Adjust padding specifically for cards without profile image on small screens */
+            .profile-card:not(:has(.profile-image)) .card-body {
+                 padding-top: 30px;
+            }
+
             .profile-name {
                 font-size: 1.5rem;
             }
-            
+
             .profile-info {
                 font-size: 0.9rem;
             }
-            
+
             .profile-college {
                 font-size: 0.8rem;
             }
-            
+
             .social-link {
                 width: 40px;
                 height: 40px;
             }
-            
+
             .social-link img {
                 width: 20px;
                 height: 20px;
@@ -275,127 +286,150 @@
 <body>
     <!-- Background Animation -->
     <div class="bg-animation" id="bgAnimation"></div>
-    
+
     <!-- Back Button -->
     <a href="../index.html" class="back-button">
         <i class="fas fa-arrow-left"></i> Back to Home
     </a>
-    
-   
-    <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
-     
-        <div class="profile-card">
-            <div class="card-header">
-                <h3>Developer</h3>
-                <div class="profile-image">
-                    <img src="yogimama.jpeg" alt="Profile Image">
-                </div>
+
+    <!-- Profile Card: Developer -->
+    <div class="profile-card">
+        <div class="card-header">
+             <!-- Profile Image is positioned absolutely over this header -->
+            <div class="profile-image">
+                <img src="yogimama.jpeg" alt="Profile Image">
             </div>
-            
-            <div class="card-body">
-                <h2 class="profile-name">P.Yugandhar</h2>
-                <p class="profile-info">21211A05N6</p>
-                <p class="profile-info">CSE [2021-2025]</p>
-                <p class="profile-college">B V Raju Institute of Technology</p>
-                
-                <div class="social-links">
-                    <a href="mailto:21211A05N6@bvrit.ac.in" class="social-link">
-                        <img src="mail.png" alt="Email">
-                    </a>
-                    <a href="https://www.linkedin.com/in/yugandhar-p21032003/" class="social-link">
-                        <img src="linkedin.png" alt="LinkedIn">
-                    </a>
-                    <a href="https://github.com/yugandhar-2003/" class="social-link">
-                        <img src="github.png" alt="GitHub">
-                    </a>
-                    <a href="https://www.instagram.com/_yugandhar_y_o_g_i_21" class="social-link">
-                        <img src="instagram-new.png" alt="Instagram">
-                    </a>
-                </div>
-            </div>
+             <!-- Header text might be less prominent here due to image -->
+             <h3 style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%);">Developer</h3>
         </div>
 
-        
-        <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px;">
-     
-        <div class="profile-card">
-            <div class="card-header">
-                <h3>Developer</h3>
-                <div class="profile-image">
-                    <img src="yogimama.jpeg" alt="Profile Image">
-                </div>
-            </div>
-            
-            <div class="card-body">
-                <h2 class="profile-name">P.Yugandhar</h2>
-                <p class="profile-info">21211A05N6</p>
-                <p class="profile-info">CSE [2021-2025]</p>
-                <p class="profile-college">B V Raju Institute of Technology</p>
-                
-                <div class="social-links">
-                    <a href="mailto:21211A05N6@bvrit.ac.in" class="social-link">
-                        <img src="mail.png" alt="Email">
-                    </a>
-                    <a href="https://www.linkedin.com/in/yugandhar-p21032003/" class="social-link">
-                        <img src="linkedin.png" alt="LinkedIn">
-                    </a>
-                    <a href="https://github.com/yugandhar-2003/" class="social-link">
-                        <img src="github.png" alt="GitHub">
-                    </a>
-                    <a href="https://www.instagram.com/_yugandhar_y_o_g_i_21" class="social-link">
-                        <img src="instagram-new.png" alt="Instagram">
-                    </a>
-                </div>
+        <div class="card-body">
+            <h2 class="profile-name">P.Yugandhar</h2>
+            <p class="profile-info">21211A05N6</p>
+            <p class="profile-info">CSE [2021-2025]</p>
+            <p class="profile-college">B V Raju Institute of Technology</p>
+
+            <div class="social-links">
+                <a href="mailto:21211A05N6@bvrit.ac.in" class="social-link">
+                    <img src="mail.png" alt="Email">
+                </a>
+                <a href="https://www.linkedin.com/in/yugandhar-p21032003/" class="social-link">
+                    <img src="linkedin.png" alt="LinkedIn">
+                </a>
+                <a href="https://github.com/yugandhar-2003/" class="social-link">
+                    <img src="github.png" alt="GitHub">
+                </a>
+                <a href="https://www.instagram.com/_yugandhar_y_o_g_i_21" class="social-link">
+                    <img src="instagram-new.png" alt="Instagram">
+                </a>
             </div>
         </div>
+    </div>
 
-       
+    <!-- Profile Card: UI/UX Contributor 1 -->
+    <div class="profile-card">
+        <div class="card-header">
+            <h3>UI/UX Contributor</h3>
+            <!-- No profile image here -->
+        </div>
+        <!-- Adjusted padding-top because there's no profile image -->
+        <div class="card-body" style="padding-top: 30px;">
+            <h2 class="profile-name">G.Ruthwik</h2>
+            <p class="profile-info">24211A05L5</p>
+            <p class="profile-info">CSE [2024-2028]</p>
+            <p class="profile-college">B V Raju Institute of Technology</p>
+
+            <div class="social-links">
+                <a href="mailto:24211A05L5@bvrit.ac.in" class="social-link">
+                    <img src="mail.png" alt="Email">
+                </a>
+                <a href="https://www.instagram.com/ruthwik000/" class="social-link"> <!-- Assuming LinkedIn link wasn't intended here -->
+                    <img src="linkedin.png" alt="LinkedIn">
+                </a>
+                <a href="https://github.com/Ruthwik000" class="social-link">
+                    <img src="github.png" alt="GitHub">
+                </a>
+                <a href="https://www.instagram.com/ruthwik000/" class="social-link">
+                    <img src="instagram-new.png" alt="Instagram">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Card: UI/UX Contributor 2 -->
+    <div class="profile-card">
+        <div class="card-header">
+            <h3>UI/UX Contributor</h3>
+            <!-- No profile image here -->
+        </div>
+         <!-- Adjusted padding-top because there's no profile image -->
+        <div class="card-body" style="padding-top: 30px;">
+            <h2 class="profile-name">Saiful</h2>
+            <p class="profile-info">24211A05L5</p> <!-- Note: Same Roll No as Ruthwik? Verify if correct -->
+            <p class="profile-info">CSE [2024-2028]</p>
+            <p class="profile-college">B V Raju Institute of Technology</p>
+
+            <div class="social-links">
+                <a href="mailto:24211A05L5@bvrit.ac.in" class="social-link"> <!-- Verify email if Roll No is different -->
+                    <img src="mail.png" alt="Email">
+                </a>
+                <a href="https://www.linkedin.com/in/saiful-rehaman-793781323" class="social-link">
+                    <img src="linkedin.png" alt="LinkedIn">
+                </a>
+                <a href="https://github.com/Ruthwik000" class="social-link"> <!-- Verify GitHub link for Saiful -->
+                    <img src="github.png" alt="GitHub">
+                </a>
+                <a href="https://www.instagram.com/" class="social-link"> <!-- Update Instagram link -->
+                    <img src="instagram-new.png" alt="Instagram">
+                </a>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         // Initialize background animation
         function createBackgroundAnimation() {
             const bgAnimation = document.getElementById('bgAnimation');
             const squareCount = 15;
-            
+
             for (let i = 0; i < squareCount; i++) {
                 const square = document.createElement('div');
                 square.classList.add('square');
-                
-                // Random size between 30px and 100px
                 const size = Math.random() * 70 + 30;
                 square.style.width = `${size}px`;
                 square.style.height = `${size}px`;
-                
-                // Random position
                 square.style.left = `${Math.random() * 100}%`;
-                
-                // Random delay
                 square.style.animationDelay = `${Math.random() * 15}s`;
-                
-                // Random duration between 15s and 30s
                 square.style.animationDuration = `${Math.random() * 15 + 15}s`;
-                
                 bgAnimation.appendChild(square);
             }
         }
-        
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
-            // Create background animation
             createBackgroundAnimation();
-            
+
             // Animate elements with GSAP
             if (typeof gsap !== 'undefined') {
-                gsap.from('.profile-card', {opacity: 0, y: 30, duration: 1, ease: 'power3.out'});
-                // Changed from gsap.from to gsap.to to ensure the image stays visible
-                // First make sure the image is visible initially
-                gsap.set('.profile-image', {opacity: 1, scale: 1});
-                // Then apply a subtle animation effect that won't make it disappear
-                gsap.to('.profile-image', {scale: 1.05, duration: 0.8, delay: 0.3, ease: 'back.out(1.7)', yoyo: true, repeat: 1});
-                gsap.from('.profile-name', {opacity: 0, y: 20, duration: 0.8, delay: 0.5, ease: 'power3.out'});
+                // Animate all profile cards together
+                gsap.from('.profile-card', {opacity: 0, y: 30, duration: 1, stagger: 0.2, ease: 'power3.out'});
+
+                // Animate profile image specifically (only for the card that has it)
+                if (document.querySelector('.profile-image')) {
+                     gsap.set('.profile-image', {opacity: 1, scale: 1});
+                     gsap.from('.profile-image', {scale: 0.5, opacity: 0, duration: 0.8, delay: 0.3, ease: 'back.out(1.7)'});
+                }
+
+                // Stagger animations for content within each card
+                gsap.from('.profile-name', {opacity: 0, y: 20, duration: 0.8, delay: 0.5, stagger: 0.2, ease: 'power3.out'});
                 gsap.from('.profile-info', {opacity: 0, y: 20, duration: 0.8, delay: 0.7, stagger: 0.1, ease: 'power3.out'});
-                gsap.from('.profile-college', {opacity: 0, y: 20, duration: 0.8, delay: 0.9, ease: 'power3.out'});
-                gsap.set('.social-link', {opacity: 1, y: 20});
-                gsap.to('.social-link', {opacity: 1, y: 0, duration: 0.5, delay: 1.1, stagger: 0.1, ease: 'power3.out'});
+                gsap.from('.profile-college', {opacity: 0, y: 20, duration: 0.8, delay: 0.9, stagger: 0.2, ease: 'power3.out'});
+
+                // Animate social links (ensure they are visible first)
+                gsap.set('.social-link', {opacity: 0, y: 20}); // Start hidden
+                gsap.to('.social-link', {opacity: 1, y: 0, duration: 0.5, delay: 1.1, stagger: 0.05, ease: 'power3.out'}); // Stagger within each card
+
                 gsap.from('.back-button', {opacity: 0, x: -20, duration: 0.8, delay: 0.3, ease: 'power3.out'});
             }
         });
